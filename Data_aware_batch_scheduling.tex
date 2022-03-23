@@ -1,0 +1,145 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx, amssymb, amsfonts, color, diagbox, colortbl, pdfpages, listings, amsmath, caption, subcaption, xspace, xcolor, pifont, fullpage, algorithm, algpseudocode}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+\setlength{\parskip}{0.2 cm}
+\newcommand{\nbPU}{\ensuremath{\vert PU \vert}\xspace}
+\newcommand{\card}[1]{\ensuremath{\left|{#1}\right|}\xspace}
+\newcommand{\live}{\ensuremath{L}\xspace}
+\newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\dataset}{\ensuremath{\mathbb{D}}\xspace}
+\newcommand{\taskset}{\ensuremath{\mathbb{T}}\xspace}
+\newcommand{\packageset}{\ensuremath{\mathbb{P}}\xspace}
+\newcommand{\inputs}{\ensuremath{\mathcal{D}}\xspace}
+\newcommand{\nbloads}{\ensuremath{\mathit{\mathit{\#Loads}}}\xspace}
+\newcommand{\starpu}{\textsc{StarPU}\xspace}
+
+\begin{document}
+
+\tableofcontents
+\listoffigures
+\newpage
+
+\section{Framework}
+
+\subsection{Formalization of the problem}
+\subsection{What do we measure ?}
+\subsection{Formalization of the goal}
+
+I gave this some consideration and realized that we have a very real and quite applicable real-world use case related to this when considering our HPC clusters at an aggregate level:
+
+It is common that a user submits several, (tens to hundreds) jobs using the same multi-GB reference database.
+Individual (small) input datasets (<100MB each, maybe) are run against this reference.
+Users tend to submit each such run as a separate batch job.
+The job might try to read the reference DB directly from a shared filesystem, which is sometimes disastrous if the reads are done using lots of scattered I/O.
+The other option is that they stage the file onto a local scratch file system, only then to read it into memory.
+If they do so, they will probably store it in a separate job-specific local dir, so even if two jobs would run on the same node (simultaneously or in a serialized manner), they would copy the master reference file from the network file system anew.
+
+Users can manually bunch a number of input files into a single job to reduce the effects from this,
+but ideally what one would like is that a data dependency was staged pinned into physical memory
+before or concurrently with the job starting and then kept there if multiple jobs were executed on the same node.
+One would also then want to maximize the coutilization of nodes for related jobs,
+while still allowing scheduling at the granularity of individual input files to avoid having idle nodes.
+
+Unfortunately, the main scheduling of jobs is done using the Slurm scheduler, which is quite a beast.
+I guess it would be possible to e.g. extract the content of a subset of jobs, consider what the actual
+resource allocation was like and just do a simulation of what other behaviors would be possible.
+---------------------------------
+
+We could add a scheduler between the file management system and the workers.
+The workers have a way to store files (with a limit on the memory size), as well as a cache page which contains the files/data recently used.
+Our scheduler would be used to distribute the load between the workers
+but also to have a vision of what the memory of each worker contains in order to re-use as much as possible a file already loaded on a worker's local memory.
+Load balancing and file re-use can be two opposing goals, so it would be interesting to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example).
+---------------------------------
+
+In the real problem, the scheduling is cluster wide and slurm would receive a mix of various jobs that do not use any particular reference data and jobs that use different reference data sets, but that can be grouped according to which data set they need.
+
+A practical question is to think about what could actually be implemented. Would it be realistic to think about making any changes to slurm or another cluster wide scheduler? Would it work to put an intermediate scheduler layer in between. What would that look like in this case? Should it be limited to the reference data type of jobs? How would we then know how much resources to allocate for these....?
+
+Many of the jobs will run on one core, so there is locality both across one node and connected with one worker thread. Does that matter or not?
+
+If the access to the data is done through mmap it is actually possible to use the same data instance across threads within one node (NUMA effects can be considered) as well as for jobs running on the same thread. This also means that each job needs less memory, which could be important.
+
+A question is how to think about load balancing, which also depends a bit on how to think about jobs. In general, the job queue will never run out, and probably there will be enough single core jobs to supply all worker threads (I think). But, there could also be the case where the user herself packages a lot of small work into one large job and then runs this on a full node. Then internal scheduling for load-balancing would be relevant, while all the small work would use the same reference data.
+---------------------------------
+
+Can we modify Slurm ? We could add an intermediate scheduler that start slurm jobs ?
+Do we have a knowledge on the memory size allocated to each thread ? If yes we can compute the memory load on each worker and 
+schedule accordingly.
+What was missing in my image was that there are multiple nodes and that workers can share data inside a node with mmap ?
+So you would have data locality on a thread and on a node.
+---------------------------------
+
+I have been looking into SLURM and a batch scheduler simulator
+Is a real implementation possible without disturbing everyone jobs or only simulation ?
+Voir ce qu'il peuvent fournir fichiers de plateforme et d'appli, fichiers xml, geyson files
+Particularité du cluster ?
+With SLURM I can get info on idling nodes, dead nodes and occupied nodes (and their completion time). And I can get the info of a job (time it will take and space it will occupy and nodes required)
+I have an active project in SUPR and have requested an account at uppmax
+
+fake jobs in real
+
+memory map IO depends on the size of the data set the number of nodes
+optimize core hours submitted
+mem map : imagine read files IO and copy in memory. But in real they just share the same I nodes wihout reading twice
+I need to co exist with other jobs using the mem map
+
+Tradeoff in fairness and optimization ? Yes we can do that
+Do we have user smart (giving good task sharing data) ?
+
+User submit X jobs this way
+Give davice to the user
+
+make simulation 1000 jobs on the same file what do we do to schedule ?
+
+Architecture peut etre une refinement sur les sockets
+
+All jobs would be all single nodes
+
+We neglect jobs that use multiple nodes
+
+Simulate packing on nodes
+
+we can have nfo on nodes memory and file sizes
+
+Maybe have data on which files are often used ?
+---------------------------------
+
+Some jobs use memory map, writing files on the memory. An other job on the same node can read from this without writing himself beforehand. So if I am co-existing with other jobs using the same file, the memory space taken is smaller.
+Should we go for a node even if we can't fill it completly with our jobs ? What do we loose from this ?
+Tradeoff in fairness (for users) and optimization ?
+Do we have smart users ? Or do they just submit random jobs ? The case would be one user submiting 1000 jobs and then we give him advice on how to submit for it to perform in a good way. We could say the schedulers does everything or the schedulers give advices to the user on how to submit. Anyway the user will have to declare with flags dependencies and data. We can simulate 1000 jobs with the same file.
+Sockets architecture can be a refinement.
+All jobs are exclusively single nodes. It's rare to have multi-nodes and data shares and dependencies. We can translate this thus into a packing problem with jobs on one side and nodes on the other.
+We can get info on nodes memory (128 GB (m"moire disque) usually and 20 cores) and size of files (20 to a few hundreds GB).
+Get statistics on which files are more popular ? We can extract metadata to get actual statistics. Having artificial set of files is fine.
+We need to schedule also with other jobs not using files.
+Carl will extract some sample lines.
+---------------------------------
+
+En simu je peux faire des schedulers et en réel tester des choses plus modestes
+---------------------------------
+
+We can use dynamic job to simulate transfers
+I can data mine the jobs and the cluster information first, do a state of the art on batch scheduling with file sharing.
+
+Estimated time of a transfer ? Can we simply compute it with the size of the input file and the bandwidth ? yes + dispersion/ecart type
+Measure queue time ? Yes we can
+What is the default algorithm on SLURM ? I've found that it most often the backfill algorithm ? Yes mainly backfill. So starting from this and modifying it could be good ? Also would be a point of comparison ? There is also a priority queue algorithm
+
+Issue of core time a cause de petits jobs et de gros jobs qui arrive ? Un peu éloignées. Small job are schedule agressivly.	
+
+data dependance.
+
+data locality
+measure core-hours were used + total time + en option queue time + Quantité de IO
+
+faire dépot git formalisation
+
+1 job 1 noeud ?
+
+\end{document}
