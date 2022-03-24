@@ -65,7 +65,9 @@ it does not delay other jobs.
 This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
 for execution~\cite{Maui_Scheduler}.
 Thus our starting point can be the Backfill algorithm.
-\textbf{We will add a data-aware strategy that maximize data reuse while maintaining Backfill's basic principle.}
+To be precise, we will be using EASY-Backfilling, a scheduler known to be efficient and able to prevent starvation~\cite{easybf}.
+\textbf{We will add a data-aware strategy that maximize data reuse while maintaining EASY-Backfill's basic principle.}
+\todo[inline]{Maxime : Are you using EASY-backfilling or another backfilling scheduler ?}
 
 \section{Problem Modeling}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
