@@ -6,13 +6,22 @@
 \algnewcommand\algorithmicforeach{\textbf{for each}}
 \algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
 \setlength{\parskip}{0.2 cm}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
 
 % Commands
 \newcommand{\Node}[1]{\ensuremath{\mathrm{Node}_{#1}}\xspace}
 \newcommand{\inputs}{\ensuremath{\mathcal{F}}\xspace}
-\newcommand{\size}{\ensuremath{\mathcal{M}}\xspace}
+\newcommand{\memory}{\ensuremath{\mathcal{M}}\xspace}
+\newcommand{\duration}{\mathit{Duration}\xspace}
+\newcommand{\core}{\mathit{Cores}\xspace}
+\newcommand{\submissiontime}{\mathit{Subtime}\xspace}
+\newcommand{\start}{\mathit{Starttime}\xspace}
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
+\newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\nbloads}{\ensuremath{\mathit{\mathit{Loads}}}\xspace}
+\newcommand{\live}{\ensuremath{L}\xspace}
 
 \title{Data Aware Batch Scheduling}
 \author{Maxime GONTHIER - Carl NETTELBLAD - Elisabeth LARSSON \\ Samuel THIBAULT - Loris MARCHAL}
@@ -46,7 +55,7 @@ Our scheduler would be used to \textbf{distribute the load between the workers b
 Clusters already use the efficient SLURM scheduler in order todistribute jobs.
 \textbf{Thus our goal is to add a scheduler before the SLURM scheduler that would allocate to each job a node.}
 
-\section{Framework}
+\section{Related Work}
 
 SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tolerant and highly scalable.
 Schedulers are part of the standart configuration. The Backfill algorithm is very widely used~\cite{New_Backfill}.
@@ -60,24 +69,24 @@ Thus our starting point can be the Backfill algorithm.
 
 \section{Problem Modeling}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
-denoted by $\Node{1},\ldots, \Node{K}$. \todo[inline]{Maxime: Should we talk about nodes or workers ?}
-%~ As proposed in
-%~ previous work~\cite{tasks-sharing-files07}, tasks sharing their input
-%~ data can be modeled as a bipartite graph
-%~ $G=(\taskset\cup\dataset, E)$. The vertices of this graph are on one
-%~ side the tasks $\taskset=\{T_1,\ldots, T_m\}$ and on the other side
-%~ the data $\dataset=\{D_1,\ldots, D_n\}$. An edge connects a task $T_i$
-%~ and a data $D_j$ if task $T_i$ requires $D_j$ as input data. 
+denoted by $\Node{1},\ldots, \Node{K}$.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
 We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. 
-Each file has a size noted $\size(F_i)$.
-Each of the $K$ nodes is equipped with a memory of limited size $M$. \todo{Maxime: Does all nodes have the same size ?}
-%~ which may contain at most $M$ data simultaneously. 
+Each file has a size noted $\memory(F_i)$.
+Each job has a submission time $\submissiontime(J_i)$ and an 
+expected duration time $\duration(J_i)$.
+Each job request a certain number of cores $\core(J_i)$. 
+\todo[inline]{Does all nodes have the same number of cores ? Can we have situation
+where a job is requesting more cores than some nodes have ?}
+Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{1})$.
+\todo[inline]{Maxime: Does all nodes have the same size ?}
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
 $\inputs(J_i)$ must be in the memory of $\Node{k}$. 
 We do not consider the data output of jobs.
 Each of the $m$ jobs must be processed on some of the $K$ nodes. 
+We consider that all jobs are single nodes.
+Among these $m$ jobs, some of them do not have an input file but must be scheduled.
 Our goal is to determine how to distribute the job set to
 the nodes in order to minimize the total makespan.
 Our objective is also to come up with a schedule with
@@ -90,165 +99,120 @@ Each node is connected to the file sharing system with a limited bandwidth.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
 
-We now define more formally the allocation of the tasks to the GPU and
+\todo[inline]{Maxime: It would make sense to represent our problem with a bi-partite graph were edges are file shares, nodes are jobs and the nodes are weighted with the duration of a jobs ? The issue is that I don't know how to represent the submission time ?}
+
+There is locality both across one node and connected with one worker thread:
+indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
+So if I am co-existing with other jobs using the same file, the memory space taken is smaller.
+\todo[inline]{Maxime: Should we add a new layer of locality with for example: $\mathcal{M}(W_i)$, with $W_i$ one worker thread ?}
+
+We now define more formally the allocation of the jobs to the node and
 their schedule.
 We denote by $\sigma(k,i)$ the $i^\text{th}$ job
 processed on $\Node{k}$ and by $\evict(k,i)$ the set of file to
 be evicted from the memory of $\Node{k}$ before the processing
 of this $i^\text{th}$ job.
-\todo[inline]{Maxime: Can we control the eviction policy of files ?}
 
-%~ We also let $\mathit{nb}_k$ be the number of tasks
-%~ allocated to $\GPU{k}$. On $\GPU{k}$, the schedule is made of a
-%~ succession of $\mathit{nb}_k$ steps, each step being composed of the
-%~ following three stages (in this order):
-%~ \begin{compactenum}
-%~ \item All data in $\evict(k,i)$ are evicted (unloaded) from the
-  %~ memory of $\GPU{k}$;
-%~ \item The input data in  $\inputs(T_{\sigma(k,i)})$ that are not yet in
-  %~ memory are loaded in the memory of $\GPU{k}$;
-%~ \item Task $T_{\sigma(k,i)}$ is processed on $\GPU{k}$.
-%~ \end{compactenum}
+On $\Node{k}$, the schedule is made of a
+succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
+following stages (in this order):
+\begin{enumerate}
+\item Eviction of files if the memory is saturated ? \todo[inline]{Maxime: Can we control the eviction policy of files ?}
+\item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
+\item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\duration(J_i)$.
+\end{enumerate}
+Let's note $\mathit{Makespan}$ the time it took to execute $\jobset$ on the current cluster.
 
-%~ Using the previous definition, we define the \emph{live data} $\live(k,i)$
-%~ as the data in memory of $\GPU{k}$ during the computation of $T_{\sigma(k,i)}$, which
-%~ can be defined recursively:
-%~ $$
-%~ \live(k,i)=
-%~ \begin{cases}
-  %~ \inputs(T_{\sigma(k,1)}) & \text{if~}i=1\\
-%~ \Big(\live(k,i-1) \backslash \evict(k,i)\Big) \cup \inputs(T_{\sigma(k,i)})
-%~ & \text{otherwise}
-%~ \end{cases}
-%~ $$
- %~ This is explained as follows: when processing its very first task, the
-%~ memory of a GPU contains only the inputs of this task. When processing
-%~ some task $T_j=T_{\sigma(k,i)}$ at step $i$, first some data are 
-%~ possibly evicted from the memory of $\GPU{k}$ (that is
-%~ $\evict(k,i)$), then the missing inputs of task $T_j$ are loaded.
-%~ As noted above, each GPU has a bounded memory so it can only
-%~ accommodate $M$ distinct input data (we recall that all data have the
-%~ same size). This can be expressed as
-%~ $$\forall k=1,\ldots,K, \forall i=1,\ldots,\mathit{nb}_k, \qquad \card{\live(k,i)}\leq M.$$
-%~ Our objective is both to ensure a good load balancing and to minimize
-%~ the amount of data movement:
-%~ \begin{itemize}
-%~ \item[\bf Objective 1: Load Balancing.] We assume that all tasks have the
-  %~ same processing time on any GPU. Thus, load-balancing the work on
-  %~ each GPU amounts to minimizing the maximum number of tasks on any GPU:
-  %~ $$\textbf{Obj. 1}: \quad \mathit{minimize} \max_{k}  \mathit{nb}_k$$
-%~ \item[\bf Objective 2: Data Movement.] The second objective is to limit
-  %~ the amount of data movement, that is, to minimize the number of
-  %~ \emph{load} operations from the main memory to the memory of the
-  %~ GPUs: we consider that data are not modified so no \emph{store}
-  %~ operation occurs when evicting a data from a GPU memory. With the
-  %~ natural assumption that no input for task $T_{\sigma(k,i)}$ is
-  %~ evicted from $\GPU{k}$ right before its processing
-  %~ ($\evict(k,i) \cap \inputs(T_{\sigma(k,i)}) = \emptyset$), the
-  %~ number of loads on $\GPU{k}$ can be computed as follows:
-%~ $$
-%~ \nbloads_k =\sum_i \Big|\inputs\left(T_{\sigma(k,i)}\right) \backslash \live(k,i-1)\Big|
-%~ $$
-%~ Then, our objective is simply to minimize the total number of loads:
-  %~ $$\textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k$$
-%~ \end{itemize}
-%~ In prior work, the special case with a single GPU have been studied~\cite{gonthier:hal-03290998},
-%~ and it has been shown that given a schedule $\sigma$, it is
-%~ possible to derive an optimal eviction policy $\evict$ by following Belady's
-%~ rule~\cite{belady66}: always evict the data whose next usage is the
-%~ furthest in the future. This rule can be extended to the multi-GPU
-%~ case: once tasks have been partitioned among GPUs and ordered for
-%~ computation, that is, once $\sigma$ is set, we may compute the optimal
-%~ eviction scheme for each GPU by applying Belady's rule. Hence our
-%~ objective is only to find a schedule $\sigma$ of the tasks on
-%~ the GPUs. The decision version of the bi-objective problem is then
-%~ expressed as follows.
-%~ \begin{definition}[Bi-Obj-Multi-GPU-Task-Scheduling]
-  %~ Given a number $K$ of GPUs, $m$ tasks sharing their inputs according
-  %~ to a bipartite graph $G$, and two bounds $W$ and $C$, is there a
-  %~ schedule $\sigma$ % and an eviction policy $\evict$
-  %~ such that
-  %~ $\max_{k}  \mathit{nb}_k \leq W$ and $\sum_k \nbloads_k \leq C$?
-%~ \end{definition}
-%~ A previous study of the single-GPU
-%~ case~\cite{gonthier:hal-03290998} proved that ordering tasks to
-%~ minimize the data movement is NP-complete. As this sub-problem is
-%~ contained in the more general problem presented here, this proves the
-%~ complexity of the bi-objective problem.
-%~ \begin{theorem}
-  %~ The Bi-Obj-Multi-GPU-Task-Scheduling problem is NP-complete.
-%~ \end{theorem}
-%~ Note that the previous model can easily be extended to
-  %~ heterogeneous tasks (with different processing times) and
-  %~ heterogeneous data (with different sizes).
-  
-  
-  
-Many of the jobs will run on one core, so there is locality both across one node and connected with one worker thread. Does that matter or not?
-If the access to the data is done through mmap it is actually possible to use the same data instance across threads within one node (NUMA effects can be considered) as well as for jobs running on the same thread. This also means that each job needs less memory, which could be important.
-A question is how to think about load balancing, which also depends a bit on how to think about jobs. In general, the job queue will never run out, and probably there will be enough single core jobs to supply all worker threads (I think). But, there could also be the case where the user herself packages a lot of small work into one large job and then runs this on a full node. Then internal scheduling for load-balancing would be relevant, while all the small work would use the same reference data.
+We define the \emph{live data} $\live(k,i)$
+as the data in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
+can be defined recursively:
+$$
+\live(k,i)=
+\begin{cases}
+  \inputs(J_{\sigma(k,1)}) & \text{if~}i=1\\
+\Big(\live(k,i-1) \backslash \evict(k,i)\Big) \cup \inputs(J_{\sigma(k,i)})
+& \text{otherwise}
+\end{cases}
+$$
 
-So you would have data locality on a thread and on a node.
-
-With SLURM I can get info on idling nodes, dead nodes and occupied nodes (and their completion time). And I can get the info of a job (time it will take and space it will occupy and nodes required)
-I need to co exist with other jobs using the mem map
-Do we have user smart (giving good task sharing data) ?
-All jobs would be all single nodes
-We neglect jobs that use multiple nodes
-
-En simu je peux faire des schedulers et en réel tester des choses plus modestes
-Issue of core time a cause de petits jobs et de gros jobs qui arrive ? Un peu éloignées. Small job are schedule agressivly.	
-
-We can use dynamic job to simulate transfers
-Some jobs use memory map, writing files on the memory. An other job on the same node can read from this without writing himself beforehand. So if I am co-existing with other jobs using the same file, the memory space taken is smaller.
-Should we go for a node even if we can't fill it completly with our jobs ? What do we loose from this ?
-Do we have smart users ? Or do they just submit random jobs ? The case would be one user submiting 1000 jobs and then we give him advice on how to submit for it to perform in a good way. We could say the schedulers does everything or the schedulers give advices to the user on how to submit. Anyway the user will have to declare with flags dependencies and data. We can simulate 1000 jobs with the same file.
-Sockets architecture can be a refinement.
-All jobs are exclusively single nodes. It's rare to have multi-nodes and data shares and dependencies. We can translate this thus into a packing problem with jobs on one side and nodes on the other.
-We need to schedule also with other jobs not using files.
-
-On va partir de backfill
-
-$m$ jobs.
-
-\section{Measurements and experiments}
-
-As mentioned before, the main measure will be the total makespan of a set of jobs.
-However, other measures are also important:
+Our objective is double:
 \begin{itemize}
-	\item	The number of core-hours used. With $NCore_i$ the number of processor units used by job $i$ and $T(j_i)$ the duration of job $i$ in hours, we have:
+	\item \textbf{Objective 1: Minimize makespan}
 		$$
-			\#Core-hours = \sum^{m}_{0} NCore_i \times T(j_i) + D(j_i) \notin M()
+			\textbf{Obj. 1}: \quad \mathit{minimize}~\mathit{Makespan}
 		$$
-	\item	
+	\item \textbf{Objective 2: Minimize files movement} 
+		The second objective is to limit
+	    the amount of file movement, that is, to minimize the sum of the sizes of
+	    each file loaded from the file sharing system to the memory of the
+	    nodes. We consider that files are not modified. With the
+	    natural assumption that no input for job $J_{\sigma(k,i)}$ is
+	    evicted from $\Node{k}$ right before its processing
+	    ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
+	    number of loads on $\Node{k}$ can be computed as follows:
+		$$
+			\nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
+		$$
+		Then, our objective is simply to minimize the total number of loads:
+		$$
+			\textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
+		$$
 \end{itemize}
 
+\begin{definition}[Bi-Obj-Batch-Scheduling]
+  Given a number $K$ of nodes, $m$ jobs sharing their inputs files
+  %~ according to a bipartite graph $G$, 
+  and two bounds $W$ and $C$, is there a
+  schedule $\sigma$ % and an eviction policy $\evict$
+  such that $\mathit{Makespan} \leq W$ and $\sum_k \nbloads_k \leq C$?
+\end{definition}
 
-Tradeoff in fairness (for users) and optimization ?
+Load balancing and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
 
-Load balancing and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example).
-cor hours
-equity / queue time
-total time
-Tradeoff in fairness and optimization ? Yes we can do that
-we can have nfo on nodes memory and file sizes
-Maybe have data on which files are often used ?
-measure core-hours were used + total time + en option queue time + Quantité de IO
+\section{Other measurements}
 
-Measure queue time ? Yes we can
+As mentioned before, the main measure will be the total makespan of a set of jobs as well as the amount of loads.
+However, other measures are also important:
 
+Each job has a start time $\start(J_i)$, the actual time at which the job was executed.
+We also want to measure the average queue time of a job in order
+to evaluate our scheduler in terms of fairness. We can do:
+$$
+	Average\_queue\_time = \frac{\sum^{m}_{i = 0} \start(J_i) - \submissiontime(J_i)}{m}
+$$
+\todo[inline]{Maxime: Should this be in the objectives above ?}
 
-\section{Data mining for an accurate simulation}
-Estimated time of a transfer ? Can we simply compute it with the size of the input file and the bandwidth ? yes + dispersion/ecart type
-I can data mine the jobs and the cluster information first, do a state of the art on batch scheduling with file sharing.
+We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
+With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
+$$
+	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times \duration(J_i) + \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
+$$
 
-xml
-json
-Do we have a knowledge on the memory size allocated to each thread ? If yes we can compute the memory load on each worker and 
-schedule accordingly.
+\section{The use of simulation}
 
-We can get info on nodes memory (128 GB (m"moire disque) usually and 20 cores) and size of files (20 to a few hundreds GB).
-Get statistics on which files are more popular ? We can extract metadata to get actual statistics. Having artificial set of files is fine.
+The use of simulation is motivated both by the fidelity of similated results as well as energy savings. 
+We will be using Batsim, a precise and realistic~\cite{Batsim} resource and job management system (RJMS) simulator.
+Batsim JSON-formatted workloads are extensible and allow easy workload generation. 
+Moreover, Batsim provides clear information about scheduling metrics and job placement.
+We will add a scheduler using Batsched~\footnote{\url{https://gitlab.inria.fr/batsim/batsched}}.
+
+\paragraph{Data mining for an accurate simulation}
+A number of informations must be retrieved in order to accurately 
+simulate the use case of Uppsala's University cluster:
+\begin{itemize}
+	\item	.xml files of the cluster containing informations on the nodes.
+	\item	Bandwidth of each node in order to compute the estimated time of a file load with: $\frac{\memory(F_i)}{\mathit{Bandwidth(\Node{i})}}$.
+	\item	Size of input files (20 to 100 GB ?)
+	\item	Duration of jobs
+	\item	Are some files more popular ?
+	\item	Total number of jobs
+	\item	Number of available nodes
+	\item	Size of node's memory (128 GB ?)
+\end{itemize}
+
+\paragraph{How to simulate data transfers ?}
+We can use dynamic job of duration the time it would take to transfer the file on the node in order
+to simulate file loads.
 
 \printbibliography
 \end{document}
