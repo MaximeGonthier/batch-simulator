@@ -42,13 +42,13 @@
 
 When using a HPC cluster, users may submits tens to hundreds jobs using the same multi-GB input file.
 Users tend to submit each such run as a separate batch job.
-The job will read inputs directly from a shared filesystem, which can be disastrous if the number of I/O are important.
-\textbf{How can we minimize the amount of transfers between the shared filesystem and the workers ?}
+The job will read inputs directly from a shared file system, which can be disastrous if the number of I/O are important.
+We can thus ask ourselves, \textbf{how can we minimize the amount of transfers between the shared file system and the nodes ?}
 
 Users can manually group together input files into a single job to reduce the effects from I/O reads.
 Ideally, we would like to let the user submit jobs the way they want and schedule efficiently jobs on nodes.
 The workers have a way to store files (with a limit on the memory size), as well as a cache page which contains the files/data recently used.
-Thus, a way to minimize data transfers is to create a scheduler that \textbf{take into consideration data locality and schedule on the same nodes jobs sharing inputs}.
+Thus, a way to minimize data transfers is to create a scheduler that \textbf{take into consideration data locality and schedule on the same node jobs sharing inputs}.
 
 Our scheduler would be used to \textbf{distribute the load between the workers but also to have a vision of what the memory of each worker contains in order to re-use as much as possible a file already loaded on a worker's local memory}.
 
@@ -58,27 +58,27 @@ Clusters already use the efficient SLURM scheduler in order todistribute jobs.
 \section{Related Work}
 
 SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tolerant and highly scalable.
-Schedulers are part of the standart configuration. The Backfill algorithm is very widely used~\cite{New_Backfill}.
+Schedulers are part of the standard configuration. The Backfill algorithm is very widely used~\cite{New_Backfill}.
 Backfill is based on the First Come - First Served principle. While the scheduler is running, jobs in the queue are sorted by priority and queueing time~\cite{New_Backfill}.
 If there are not enough nodes to start a job, Backfill takes the next job from the queue and sets it for execution if there are enough nodes for this job and 
 it does not delay other jobs.
 This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
 for execution~\cite{Maui_Scheduler}.
 Thus our starting point can be the Backfill algorithm.
-\textbf{We will add a data-aware strategy that maximize data reuse while maintaining the Backfill's basic principle.}
+\textbf{We will add a data-aware strategy that maximize data reuse while maintaining Backfill's basic principle.}
 
 \section{Problem Modeling}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
-We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. 
+We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. $\inputs(J_i)$ can be empty.
 Each file has a size noted $\memory(F_i)$.
 Each job has a submission time $\submissiontime(J_i)$ and an 
 expected duration time $\duration(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
-\todo[inline]{Does all nodes have the same number of cores ? Can we have situation
+\todo[inline]{Maxime: Does all nodes have the same number of cores ? Can we have situation
 where a job is requesting more cores than some nodes have ?}
-Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{1})$.
+Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$.
 \todo[inline]{Maxime: Does all nodes have the same size ?}
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
@@ -86,7 +86,6 @@ $\inputs(J_i)$ must be in the memory of $\Node{k}$.
 We do not consider the data output of jobs.
 Each of the $m$ jobs must be processed on some of the $K$ nodes. 
 We consider that all jobs are single nodes.
-Among these $m$ jobs, some of them do not have an input file but must be scheduled.
 Our goal is to determine how to distribute the job set to
 the nodes in order to minimize the total makespan.
 Our objective is also to come up with a schedule with
@@ -103,7 +102,7 @@ we aim at restricting the amount of data movement.
 
 There is locality both across one node and connected with one worker thread:
 indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
-So if I am co-existing with other jobs using the same file, the memory space taken is smaller.
+So if a job is co-existing with other jobs using the same file, the memory space taken is smaller.
 \todo[inline]{Maxime: Should we add a new layer of locality with for example: $\mathcal{M}(W_i)$, with $W_i$ one worker thread ?}
 
 We now define more formally the allocation of the jobs to the node and
@@ -111,20 +110,19 @@ their schedule.
 We denote by $\sigma(k,i)$ the $i^\text{th}$ job
 processed on $\Node{k}$ and by $\evict(k,i)$ the set of file to
 be evicted from the memory of $\Node{k}$ before the processing
-of this $i^\text{th}$ job.
+of this $i^\text{th}$ job ($\evict(k,i)$ can be empty if there is enough space to fit the new files).
 
 On $\Node{k}$, the schedule is made of a
 succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
 following stages (in this order):
 \begin{enumerate}
-\item Eviction of files if the memory is saturated ? \todo[inline]{Maxime: Can we control the eviction policy of files ?}
+\item Eviction of files if the memory is saturated; \todo[inline]{Maxime: Can we control the eviction policy of files ?}
 \item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
 \item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\duration(J_i)$.
 \end{enumerate}
-Let's note $\mathit{Makespan}$ the time it took to execute $\jobset$ on the current cluster.
 
 We define the \emph{live data} $\live(k,i)$
-as the data in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
+as the files in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
 can be defined recursively:
 $$
 \live(k,i)=
@@ -134,6 +132,8 @@ $$
 & \text{otherwise}
 \end{cases}
 $$
+
+Let's denote $\mathit{Makespan}$, the time it took to execute $\jobset$ on a set of $K$ nodes.
 
 Our objective is double:
 \begin{itemize}
@@ -149,7 +149,7 @@ Our objective is double:
 	    natural assumption that no input for job $J_{\sigma(k,i)}$ is
 	    evicted from $\Node{k}$ right before its processing
 	    ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
-	    number of loads on $\Node{k}$ can be computed as follows:
+	    amount of loads $\memory$ on $\Node{k}$ can be computed as follows:
 		$$
 			\nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
 		$$
@@ -167,7 +167,7 @@ Our objective is double:
   such that $\mathit{Makespan} \leq W$ and $\sum_k \nbloads_k \leq C$?
 \end{definition}
 
-Load balancing and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
+Load balancing/minimizing makespan and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
 
 \section{Other measurements}
 
@@ -185,12 +185,12 @@ $$
 We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
 With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
 $$
-	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times \duration(J_i) + \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
+	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))
 $$
 
 \section{The use of simulation}
 
-The use of simulation is motivated both by the fidelity of similated results as well as energy savings. 
+The use of simulation is motivated both by the fidelity of simulated results as well as energy savings. 
 We will be using Batsim, a precise and realistic~\cite{Batsim} resource and job management system (RJMS) simulator.
 Batsim JSON-formatted workloads are extensible and allow easy workload generation. 
 Moreover, Batsim provides clear information about scheduling metrics and job placement.
@@ -211,7 +211,7 @@ simulate the use case of Uppsala's University cluster:
 \end{itemize}
 
 \paragraph{How to simulate data transfers ?}
-We can use dynamic job of duration the time it would take to transfer the file on the node in order
+We can add dynamic job of duration the time it would take to transfer the file on the node in order
 to simulate file loads.
 
 \printbibliography
