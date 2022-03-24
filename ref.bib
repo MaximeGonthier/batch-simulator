@@ -1,0 +1,49 @@
+@InProceedings{SLURM,
+author="Yoo, Andy B.
+and Jette, Morris A.
+and Grondona, Mark",
+editor="Feitelson, Dror
+and Rudolph, Larry
+and Schwiegelshohn, Uwe",
+title="SLURM: Simple Linux Utility for Resource Management",
+booktitle="Job Scheduling Strategies for Parallel Processing",
+year="2003",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="44--60",
+abstract="A new cluster resource management system called Simple Linux Utility Resource Management (SLURM) is described in this paper. SLURM, initially developed for large Linux clusters at the Lawrence Livermore National Laboratory (LLNL), is a simple cluster manager that can scale to thousands of processors. SLURM is designed to be flexible and fault-tolerant and can be ported to other clusters of different size and architecture with minimal effort. We are certain that SLURM will benefit both users and system architects by providing them with a simple, robust, and highly scalable parallel job execution environment for their cluster system.",
+isbn="978-3-540-39727-4"
+}
+
+@article{New_Backfill,
+title = {Introducing New Backfill-based Scheduler for SLURM Resource Manager},
+journal = {Procedia Computer Science},
+volume = {66},
+pages = {661-669},
+year = {2015},
+note = {4th International Young Scientist Conference on Computational Science},
+issn = {1877-0509},
+doi = {https://doi.org/10.1016/j.procs.2015.11.075},
+url = {https://www.sciencedirect.com/science/article/pii/S1877050915034249},
+author = {Sergei Leonenkov and Sergey Zhumatiy},
+keywords = {SLURM, supercomputer, scheduling algorithms, backfill},
+abstract = {The work proposes a design for a new external scheduler for SLURM (Simple Linux Utility for Resource Management). Schedulers, included in SLURM by default are good enough for many sites, but big supercomputers serving many users meet limitations of standard SLURM schedulers. In this work we discover methods to break these limitations via implementing new portable SLURM scheduler. We address the problem of maximizing the number of users, whose requests are processed in each given moment of time, and decrease start time of user's first task. Our approach is based on standard backfill algorithm and includes additional features, such as simplification of SLURM priority system, replacing slow SQL-based accounting checks by faster ACL checks and upgrading cluster administration convenience.}
+}
+
+@InProceedings{Maui_Scheduler,
+author="Jackson, David
+and Snell, Quinn
+and Clement, Mark",
+editor="Feitelson, Dror G.
+and Rudolph, Larry",
+title="Core Algorithms of the Maui Scheduler",
+booktitle="Job Scheduling Strategies for Parallel Processing",
+year="2001",
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="87--102",
+abstract="The Maui scheduler has received wide acceptance in the HPC community as a highly configurable and effective batch scheduler. It is currently in use on hundreds of SP, O2K, and Linux cluster systems throughout the world including a high percentage of the largest and most cutting edge research sites. While the algorithms used within Maui have proven themselves effective, nothing has been published to date documenting these algorithms nor the configurable aspects they support. This paper focuses on three areas of Maui scheduling, specifically, backfill, job prioritization, and fairshare. It briefly discusses the goals of each component, the issues and corresponding design decisions, and the algorithms enabling the Maui policies. It also covers the configurable aspects of each algorithm and the impact of various parameter selections.",
+isbn="978-3-540-45540-0"
+}
+
+
