@@ -70,6 +70,26 @@ To be precise, we will be using EASY-Backfilling, a scheduler known to be effici
 \textbf{We will add a data-aware strategy that maximize data reuse while maintaining EASY-Backfill's basic principle.}
 \todo[inline]{Maxime : Are you using EASY-backfilling or another backfilling scheduler ?}
 
+\subsection{Improving SLURM and other batch systems}
+To deal with communication-intensive jobs on SLURM, a solution is to minimize network contention by allocating nodes on the least
+contended switches~\cite{minimize_network_contention}. In our case we have
+jobs with one large file transfers that must be done before the computation start, which is different.
+Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
+
+In "Explicit Control in a Batch-Aware Distributed File System"~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
+we are presented with "Batch-Aware Distributed File System", a system designed to orchestrate large, 
+I/O-intensive batch workloads on remote computing clusters.
+It adds "storage servers" that export access to the disk. And a scheduler that
+manage jobs. 
+Like us, they use detailed knowledge of workload characteristics.
+However, the main idea is not data reuse but to
+facilitates the execution of I/O intensive batch
+jobs by selecting appropriate storage policies
+in regards to I/O scoping (creating a custom environment for each job
+for data that will be used a lot by the job, thus not accessing the main disk too
+much) and space allocation.
+
+
 \subsection{About memory-aware scheduling}
 Memory-aware scheduling on clusters have been studied in the past.
  
@@ -85,6 +105,12 @@ The main differences are that they are using dynamic jobs. Also, we would like t
 manage eviction and optimize data reuse during the scheduling phase, instead of
 receding execution on nodes.
 
+Some researchers~\cite{Nikolopoulos2003AdaptiveSU}
+are focusing on a better utilization of idling memory together with 
+thrashing limitation. Our focus will be to control data loads and eviction so the
+processing order will naturally limits thrashing.
+
+\subsection{HDFS, a popular distributed file system}
 HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that incorporate memory-aware scheduling.
 HDFS is suitable for applications that have large data sets. 
 "Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
@@ -102,11 +128,6 @@ To resolve these issues, Mammoth~\cite{Mammoth} was created. It optimize memory 
 Our approach is different because we are not dealing with MapReduce or memory allocation.
 Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would like to maintain
 equity among users  while optimizing I/O.
-
-Some researchers~\cite{Nikolopoulos2003AdaptiveSU}
-are focusing on a better utilization of idling memory together with 
-thrashing limitation. Our focus will be to control data loads and eviction so the
-processing order will naturally limits thrashing.
 
 \section{Problem Modeling}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,

@@ -32,5 +32,3 @@ From file ccgrid.2002.1017108.pdf : "Adaptive Scheduling under Memory Pressure o
 	memory pressure at arbitrary points of execution in a
 	program, and takes into account the relative priorities
 	of jobs.
-
-From file
