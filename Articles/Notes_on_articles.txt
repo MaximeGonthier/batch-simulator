@@ -1,0 +1,36 @@
+From file tuning_easybf.pdf : "Tuning EASY-Backfilling Queues"
+	Goal: Tuning EASY-bf using queue reordering policies in order
+	to minimize the average waiting time
+	Describe the EASY-bf algorithm: The EASY heuristic uses a job queue to perform job starting/reservation
+	(the primary queue) and job backfilling (the backfilling queue). These queues
+	can be dissociated and the heuristic can be parametrized via both a primary
+	policy and a backfilling policy. This is typically done by ordering both queues in
+	an identical manner using job attributes.
+	Add a pseudo-code of EASY-bf
+	Will test 7 different queue reordering policies: FCFS: First-Come First-Serve, which is the widely used default policy [24].
+	LCFS: Last-Come First-Serve.	LPF: Longest estimated Processing time p e j First.	SPF: Smallest estimated Processing time p e j First [25].
+	LQF: Largest resource requirement q j First.	SQF: Smallest resource requirement q j First.
+	Conclusion: The first conclusion is that reordering the primary queue is more
+	beneficial than simply reordering the backfilling queue. However, this introduces
+	a risk on the maximum values of the objective, which we control by hybridiz-
+	ing FCFS and the reordering policy via a thresholding mechanism. Finally, we
+	showed that the experimental performance of the thresholded heuristics general-
+	izes well. Therefore, this framework allows a system administrator to tune EASY
+	using a simulator. Moreover, the attitude torwards risk in maximum values can
+	be adapted via the threshold value. With a low threshold value, the increase
+	in maximal cost is small but the learned policy does not take too much risk.
+	It is possible to gain more by increasing the threshold, but this comes with an
+	increase in the maximal cost. Two questions concerning the learning of EASY
+	policies arise from this work.
+	First, the stability of other EASY heuristic classes remains unknown. The
+	”simple” class of composed of 7 primary policies and 7 backfilling policies (cardi-
+	nality 49) can generalize using thresholding.
+
+From file ccgrid.2002.1017108.pdf : "Adaptive Scheduling under Memory Pressure on Multiprogrammed Clusters"
+	Present an adaptive scheduling
+	strategy that prevents thrashing, enables adaptation to
+	memory pressure at arbitrary points of execution in a
+	program, and takes into account the relative priorities
+	of jobs.
+
+From file

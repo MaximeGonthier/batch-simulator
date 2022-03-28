@@ -1,3 +1,51 @@
+@inproceedings{loadbalance_and_trashing,
+author = {Mills, Richard Tran and Stathopoulos, Andreas and Smirni, Evgenia},
+title = {Algorithmic Modifications to the Jacobi-Davidson Parallel Eigensolver to Dynamically Balance External CPU and Memory Load},
+year = {2001},
+isbn = {158113410X},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/377792.377903},
+doi = {10.1145/377792.377903},
+abstract = {Clusters of workstations (COWs) and SMPs have become popular and cost effective means of solving scientific problems. Because such environments may be heterogenous and/or time shared, dynamic load balancing is central to achieving high performance. Our thesis is that new levels of sophistication are required in parallel algorithm design and in the interaction of the algorithms with the runtime system. To support this thesis, we illustrate a novel approach for application-level balancing of external CPU and memory load on parallel iterative methods that employ some form of local preconditioning on each node. There are two key ideas. First, because all nodes need not perform their portion of the preconditioning phase to the same accuracy, the code can achieve perfect loadbalance, dynamically adapting to external CPU load, if we stop the preconditioning phase on all processors after a fixed amount of time. Second, if the program detects memory thrashing on a node, it recedes its preconditioning phase from that node, hopefully speeding the completion of competing jobs hence the relinquishing of their resources. We have implemented our load balancing approach in a state-of-the-art, coarse grain parallel Jacobi-Davidson eigensolver. Experimental results show that the new method adapts its algorithm based on runtime system information, without compromising the overall convergence behavior. We demonstrate the effectiveness of the new algorithm in a COW environment under (a) variable CPU load and (b) variable memory availability caused by competing applications.},
+booktitle = {Proceedings of the 15th International Conference on Supercomputing},
+pages = {454–463},
+numpages = {10},
+location = {Sorrento, Italy},
+series = {ICS '01}
+}
+
+@article{Nikolopoulos2003AdaptiveSU,
+  title={Adaptive scheduling under memory constraints on non-dedicated computationalfarms},
+  author={Dimitrios S. Nikolopoulos and Constantine D. Polychronopoulos},
+  journal={Future Gener. Comput. Syst.},
+  year={2003},
+  volume={19},
+  pages={505-519}
+}
+
+@ARTICLE{Mammoth,  author={Shi, Xuanhua and Chen, Ming and He, Ligang and Xie, Xu and Lu, Lu and Jin, Hai and Chen, Yong and Wu, Song},  journal={IEEE Transactions on Parallel and Distributed Systems},   title={Mammoth: Gearing Hadoop Towards Memory-Intensive MapReduce Applications},   year={2015},  volume={26},  number={8},  pages={2300-2315},  doi={10.1109/TPDS.2014.2345068}}
+
+@INPROCEEDINGS{issue_with_hdfs,
+  author={Weets, Jean-François and Kakhani, Manish Kumar and Kumar, Anil},
+  booktitle={2015 International Conference on Green Computing and Internet of Things (ICGCIoT)}, 
+  title={Limitations and challenges of HDFS and MapReduce}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={545-549},
+  doi={10.1109/ICGCIoT.2015.7380524}}
+
+@article{hdfs,
+  title={HDFS architecture guide},
+  author={Borthakur, Dhruba and others},
+  journal={Hadoop apache project},
+  volume={53},
+  number={1-13},
+  pages={2},
+  year={2008}
+}
+
 @InProceedings{SLURM,
 author="Yoo, Andy B.
 and Jette, Morris A.

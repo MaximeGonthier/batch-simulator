@@ -57,6 +57,7 @@ Clusters already use the efficient SLURM scheduler in order todistribute jobs.
 
 \section{Related Work}
 
+\subsection{About SLURM}
 SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tolerant and highly scalable.
 Schedulers are part of the standard configuration. The Backfill algorithm is very widely used~\cite{New_Backfill}.
 Backfill is based on the First Come - First Served principle. While the scheduler is running, jobs in the queue are sorted by priority and queueing time~\cite{New_Backfill}.
@@ -68,6 +69,44 @@ Thus our starting point can be the Backfill algorithm.
 To be precise, we will be using EASY-Backfilling, a scheduler known to be efficient and able to prevent starvation~\cite{easybf}.
 \textbf{We will add a data-aware strategy that maximize data reuse while maintaining EASY-Backfill's basic principle.}
 \todo[inline]{Maxime : Are you using EASY-backfilling or another backfilling scheduler ?}
+
+\subsection{About memory-aware scheduling}
+Memory-aware scheduling on clusters have been studied in the past.
+ 
+"Algorithmic Modifications to the
+Jacobi-Davidson Parallel Eigensolver to Dynamically Balance External CPU and Memory Load"~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
+estimate the time needed by the fastest processor to perform the required $m$ jobs. Thus they can equilibrate the load
+with this information. In our study we could use a similar strategy by estimating the 
+processing time of a job, the length of a file transfer, and the amount of file transfers needed
+(\todo[inline]{Maxime: for this we need to control load and eviction, is it possible ? Is it accurate ?}).
+To deal with memory constraint the strategy applied in the paper is to check if 
+nodes are thrashing data. If yes, it will recede execution of jobs on this node.
+The main differences are that they are using dynamic jobs. Also, we would like to 
+manage eviction and optimize data reuse during the scheduling phase, instead of
+receding execution on nodes.
+
+HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that incorporate memory-aware scheduling.
+HDFS is suitable for applications that have large data sets. 
+"Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
+It will migrate a computation closer to where the data is located rather than moving the data to where
+the application is running.
+Here are our main differences with HDFS. Firstly, HDFS is made for commodity hardware, prone
+to more errors and breakdown, so to minimize the risk of failure, data are redundant on the nodes.
+In our use case, the scheduler will run on professional clusters and the main point is to load as 
+little data as possible. Secondly, HDFS is mainly a storage system, with metadata as transactions historic or
+block location. Those concept are not relevant in our use case. Thirdly, the scheduling 
+can have issues. A paper describe in detail some problems from MapReduce~\cite{issue_with_hdfs}, the
+programming language used in HFDS: the static configuration of the memory allocation, the one-task assigned buffers, the
+lake of concurrent task running strategy and the I/O negative impact in memory during the shuffling phase.
+To resolve these issues, Mammoth~\cite{Mammoth} was created. It optimize memory usage on a node depending on the hardware configuration.
+Our approach is different because we are not dealing with MapReduce or memory allocation.
+Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would like to maintain
+equity among users  while optimizing I/O.
+
+Some researchers~\cite{Nikolopoulos2003AdaptiveSU}
+are focusing on a better utilization of idling memory together with 
+thrashing limitation. Our focus will be to control data loads and eviction so the
+processing order will naturally limits thrashing.
 
 \section{Problem Modeling}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
