@@ -11,11 +11,13 @@
 
 % Commands
 \newcommand{\Node}[1]{\ensuremath{\mathrm{Node}_{#1}}\xspace}
+\newcommand{\flow}[1]{\ensuremath{\mathit{flow}_{#1}}\xspace}
 \newcommand{\inputs}{\ensuremath{\mathcal{F}}\xspace}
 \newcommand{\memory}{\ensuremath{\mathcal{M}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{Subtime}\xspace}
+\newcommand{\completiontime}{\mathit{Completiontime}\xspace}
 \newcommand{\start}{\mathit{Starttime}\xspace}
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
@@ -134,13 +136,13 @@ We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
 We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. $\inputs(J_i)$ can be empty.
-Each file has a size noted $\memory(F_i)$.
+Each file has a size in MB noted $\memory(F_i)$.
 Each job has a submission time $\submissiontime(J_i)$ and an 
 expected duration time $\duration(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
 \todo[inline]{Maxime: Does all nodes have the same number of cores ? Can we have situation
 where a job is requesting more cores than some nodes have ?}
-Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$.
+Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
 \todo[inline]{Maxime: Does all nodes have the same size ?}
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
@@ -148,11 +150,12 @@ $\inputs(J_i)$ must be in the memory of $\Node{k}$.
 We do not consider the data output of jobs.
 Each of the $m$ jobs must be processed on some of the $K$ nodes. 
 We consider that all jobs are single nodes.
-Our goal is to determine how to distribute the job set to
-the nodes in order to minimize the total makespan.
-Our objective is also to come up with a schedule with
-few data movement, as they largely impact the overall processing
-time as mentioned earlier. 
+
+%~ Our goal is to determine how to distribute the job set to
+%~ the nodes in order to minimize the total makespan.
+%~ Our objective is also to come up with a schedule with
+%~ few data movement, as they largely impact the overall processing
+%~ time as mentioned earlier. 
 
 The file sharing system initially contains all of $\fileset$.
 Each node is connected to the file sharing system with a limited bandwidth.
@@ -178,7 +181,7 @@ On $\Node{k}$, the schedule is made of a
 succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
 following stages (in this order):
 \begin{enumerate}
-\item Eviction of files if the memory is saturated; \todo[inline]{Maxime: Can we control the eviction policy of files ?}
+\item Eviction of files if the memory is saturated; \todo[inline]{Maxime: Can we control the eviction policy of files ? In simulation I can, in real can I ?}
 \item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
 \item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\duration(J_i)$.
 \end{enumerate}
@@ -195,41 +198,67 @@ $$
 \end{cases}
 $$
 
-Let's denote $\mathit{Makespan}$, the time it took to execute $\jobset$ on a set of $K$ nodes.
+%~ Let's denote $\mathit{Makespan}$, the time it took to execute all of $\jobset$ on a set of $K$ nodes.
 
-Our objective is double:
-\begin{itemize}
-	\item \textbf{Objective 1: Minimize makespan}
-		$$
-			\textbf{Obj. 1}: \quad \mathit{minimize}~\mathit{Makespan}
-		$$
-	\item \textbf{Objective 2: Minimize files movement} 
-		The second objective is to limit
-	    the amount of file movement, that is, to minimize the sum of the sizes of
-	    each file loaded from the file sharing system to the memory of the
-	    nodes. We consider that files are not modified. With the
-	    natural assumption that no input for job $J_{\sigma(k,i)}$ is
-	    evicted from $\Node{k}$ right before its processing
-	    ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
-	    amount of loads $\memory$ on $\Node{k}$ can be computed as follows:
-		$$
-			\nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
-		$$
-		Then, our objective is simply to minimize the total number of loads:
-		$$
-			\textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
-		$$
-\end{itemize}
+%~ Our objective is double:
+%~ \begin{itemize}
+	%~ \item \textbf{Objective 1: Minimize makespan}
+		%~ $$
+			%~ \textbf{Obj. 1}: \quad \mathit{minimize}~\mathit{Makespan}
+		%~ $$
+	%~ \item \textbf{Objective 2: Minimize files movement} 
+		%~ The second objective is to limit
+	    %~ the amount of file movement, that is, to minimize the sum of the sizes of
+	    %~ each file loaded from the file sharing system to the memory of the
+	    %~ nodes. We consider that files are not modified. With the
+	    %~ natural assumption that no input for job $J_{\sigma(k,i)}$ is
+	    %~ evicted from $\Node{k}$ right before its processing
+	    %~ ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
+	    %~ amount of loads $\memory$ on $\Node{k}$ can be computed as follows:
+		%~ $$
+			%~ \nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
+		%~ $$
+		%~ Then, our objective is simply to minimize the total number of loads:
+		%~ $$
+			%~ \textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
+		%~ $$
+%~ \end{itemize}
 
-\begin{definition}[Bi-Obj-Batch-Scheduling]
-  Given a number $K$ of nodes, $m$ jobs sharing their inputs files
-  %~ according to a bipartite graph $G$, 
-  and two bounds $W$ and $C$, is there a
-  schedule $\sigma$ % and an eviction policy $\evict$
-  such that $\mathit{Makespan} \leq W$ and $\sum_k \nbloads_k \leq C$?
-\end{definition}
+%~ \begin{definition}[Bi-Obj-Batch-Scheduling]
+  %~ Given a number $K$ of nodes, $m$ jobs sharing their inputs files
+  % according to a bipartite graph $G$, 
+  %~ and two bounds $W$ and $C$, is there a
+  %~ schedule $\sigma$ % and an eviction policy $\evict$
+  %~ such that $\mathit{Makespan} \leq W$ and $\sum_k \nbloads_k \leq C$?
+%~ \end{definition}
 
-Load balancing/minimizing makespan and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
+%~ Load balancing/minimizing makespan and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
+
+\textbf{Objective: Minimize the maximum \flow{}}
+		We define the \flow{J_i} of a job as:
+		$$
+			\flow{J_i} = \completiontime(J_i) - \submissiontime(J_i)
+		$$
+		Our goal is:
+		$$
+			\textbf{Obj.}: \quad \mathit{minimize}~\mathit{max}(\flow{J_1}, \flow{J_2}, ..., \flow{J_m})
+		$$
+	%~ \item \textbf{Objective 2: Minimize files movement} 
+		%~ The second objective is to limit
+	    %~ the amount of file movement, that is, to minimize the sum of the sizes of
+	    %~ each file loaded from the file sharing system to the memory of the
+	    %~ nodes. We consider that files are not modified. With the
+	    %~ natural assumption that no input for job $J_{\sigma(k,i)}$ is
+	    %~ evicted from $\Node{k}$ right before its processing
+	    %~ ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
+	    %~ amount of loads $\memory$ on $\Node{k}$ can be computed as follows:
+		%~ $$
+			%~ \nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
+		%~ $$
+		%~ Then, our objective is simply to minimize the total number of loads:
+		%~ $$
+			%~ \textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
+		%~ $$
 
 \section{Other measurements}
 
