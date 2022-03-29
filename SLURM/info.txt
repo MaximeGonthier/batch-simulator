@@ -1,0 +1,47 @@
+ssh plafrim
+
+salloc --time=00:30:00 -C bora puis ssh le noeud puis srun pour lancer des scripts
+OU
+sbatch Scripts_maxime/PlaFRIM-Grid5k/test_slurm.sh avec dedans des configs pour les nodes. Ensuite le résultat est écrit dans un .out précisé dans le fichier .sh
+Ou sbatch test_slurm_mpi.sh 
+
+sinfo
+squeue
+scancel <job-id> ou scancel -u pour tuer tous les jobs à mon nom
+
+mpirun -np $NB_PROC -x OMP_NUM_THREADS=$NB_THREADS  -report-bindings -map-by ppr:$NB_BLOCK_BY_NODES:node:pe=$NB_THREADS  $EXECUTABLE +F $FILE_PARAMETER
+																	 -map-by core		  
+
+En mode srun on pourrait faire pour controler le CPU sur lequel on fais l'exécutable:
+srun --cpu-bind=mask_cpu:0x1 hello.mpi
+srun --cpu-bind=mask_cpu:0x1,0x2 hello.mpi
+OU
+srun --cpu-bind=map_cpu:0 hello.mpi
+Est-ce que je peux vraiment bind une tâche à un CPU en particulier? Ou est-ce que j'ai juste besoin de choisir le socket ?
+
+Code dans SLURM
+
+Je peux modifier directement le code slurm (sur une branche différente) dans le cluster SUPR ?
+J'ai trouvé un papier sur slurm et un simulateur slurm ou la personne ajoute un scheduler et le test en simulation : https://hal.archives-ouvertes.fr/hal-03354948/document
+
+
+
+Choisir le noeud et non pas le core
+Regarder l'etat actuel des jobs et noeuds avant de faire un choix avec sudo squeue
+
+Récupérer les nodes utilisé en ce moment et leurs temps de terminaison prévu: sudo squeue --format=%L,%R
+Avec cela je peux savoir si la node sera dispo ou pas pour travailler dessus ainsi que quelles nodes sont dispo
+
+Utiliser aussi sinfo pour les downs (sinfo --dead) et recup les idles
+
+Dans le sbatch mettre #SBATCH -w bora[008-010] pour prendre plusieurs noeuds
+Faire gaffe a sinfo --reservation, voir si y a pas des resa en attentes
+
+sinfo --state=IDLE pour les noeuds idle
+
+faire > fichier.txt pour output dans un fichier les résultats de sinfo et squeue
+
+Pour des infos sur les noeuds: scontrol show node ou scontrol show node "nodename"
+
+
+Un job me dit quel temps et place il va prendre. Donc pas besoin de perfmodels.

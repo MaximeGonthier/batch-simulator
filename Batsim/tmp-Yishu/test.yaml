@@ -1,0 +1,10 @@
+batcmd: batsim -p batsim-src-stable/platforms/cluster8.xml -w batsim-src-stable/workloads/test.json
+  -e expe-out/log111/expe_0 --enable-dynamic-jobs --enable-profile-reuse --acknowledge-dynamic-jobs
+  --forward-profiles-on-submission --events batsim-src-stable/events/events_test.txt --disable-schedule-tracing 
+failure-timeout: 5
+output-dir: expe-out/log111
+ready-timeout: 10
+schedcmd: batsched -v conservative_bf_node_stealing --variant_options={\"heuristic_choice\":1\,\"victim_choice\":1\,\"decision_choice\":1}
+  --queue_order fcfs_prio
+simulation-timeout: 604800
+success-timeout: 3600

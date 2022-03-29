@@ -1,0 +1,23 @@
+2021-11-04 23:51:20 jobstate=COMPLETED jobid=22838152 username=srimag account=snic2021-22-167 start=1636066245 end=1636066280 submit=1636063769 nodes=r72 procs=6 batch=yes jobname=nf-NFCORE_RNASEQ_RNASEQ_SUBREAD_FEATURECOUNTS_(MG_M_RT_rep1) partition=core limit=08:00:00
+
+2021-11-04 23:51:20 jobstate=COMPLETED jobid=22837935 username=srimag account=snic2021-22-167 start=1636066245 end=1636066280 submit=1636063399 nodes=r295 procs=6 batch=yes jobname=nf-NFCORE_RNASEQ_RNASEQ_RSEQC_RSEQC_BAMSTAT_(MG_M_RT_rep3) partition=core limit=08:00:00
+
+2021-11-04 23:51:23 jobstate=COMPLETED jobid=22838258 username=cnluzon account=snic2020-15-9 start=1636066245 end=1636066283 submit=1636064124 nodes=r316 procs=8 batch=yes jobname=deeptools_fingerprint_1273 partition=core limit=18:00:00
+
+2021-11-04 23:51:26 jobstate=COMPLETED jobid=22837181 username=louel account=snic2020-15-61 start=1636064925 end=1636066286 submit=1636061885 nodes=r267 procs=6 batch=yes jobname=nf-MACS2_(K4me3-AZA_R3_vs_input-AZA_R3) partition=core limit=08:00:00
+
+2021-11-04 23:51:28 jobstate=COMPLETED jobid=22837808 username=srimag account=snic2021-22-167 start=1636065915 end=1636066288 submit=1636062979 nodes=r194 procs=6 batch=yes jobname=nf-NFCORE_RNASEQ_RNASEQ_BEDTOOLS_GENOMECOV_(MG_M_RT_rep2) partition=core limit=08:00:00
+
+2021-11-04 23:51:29 jobstate=COMPLETED jobid=22839619 username=madeline account=p2018002 start=1636066245 end=1636066289 submit=1636065930 nodes=r382 procs=1 batch=yes jobname=snakejob.af_counts.3304.sh partition=core limit=1-00:00:00
+
+2021-11-04 23:51:37 jobstate=COMPLETED jobid=22837749 username=louel account=snic2020-15-61 start=1636065585 end=1636066297 submit=1636062750 nodes=r350 procs=6 batch=yes jobname=nf-BIGWIG_(K4me3-COMBO_R2) partition=core limit=08:00:00
+
+2021-11-04 23:51:38 jobstate=COMPLETED jobid=22837869 username=srimag account=snic2021-22-167 start=1636066245 end=1636066298 submit=1636063284 nodes=r47 procs=6 batch=yes jobname=nf-NFCORE_RNASEQ_RNASEQ_RSEQC_RSEQC_INNERDISTANCE_(MG_M_RT_rep3) partition=core limit=08:00:00
+
+2021-11-04 23:51:39 jobstate=COMPLETED jobid=22837873 username=srimag account=snic2021-22-167 start=1636066245 end=1636066299 submit=1636063289 nodes=r58 procs=6 batch=yes jobname=nf-NFCORE_RNASEQ_RNASEQ_RSEQC_RSEQC_JUNCTIONSATURATION_(MG_M_RT_rep3) partition=core limit=08:00:00
+
+2021-11-04 23:51:43 jobstate=COMPLETED jobid=22837899 username=srimag account=snic2021-22-167 start=1636066245 end=1636066303 submit=1636063319 nodes=r173 procs=6 batch=yes jobname=nf-NFCORE_RNASEQ_RNASEQ_STRINGTIE_(MG_M_RT_rep3) partition=core limit=08:00:00
+
+2021-11-04 23:51:45 jobstate=COMPLETED jobid=22831033 username=maxil account=p2018003 start=1636061959 end=1636066304 submit=1636019669 nodes=r461 procs=2 batch=yes jobname=HC_HGDP00769_Japanese.13 partition=core limit=3-00:00:00
+
+2021-11-04 23:51:51 jobstate=COMPLETED jobid=22839641 username=madeline account=p2018002 start=1636066245 end=1636066311 submit=1636065958 nodes=r241 procs=1 batch=yes jobname=snakejob.af_counts.1691.sh partition=core limit=1-00:00:00

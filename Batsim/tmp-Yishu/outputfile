@@ -1,0 +1,1 @@
+time="2022-03-14 15:09:38.821" level=error msg="Cannot open description file" err="open ./test_MIRA_2017June_MTBF1h_downtime1h_0_0.yaml: no such file or directory" filename=./test_MIRA_2017June_MTBF1h_downtime1h_0_0.yaml

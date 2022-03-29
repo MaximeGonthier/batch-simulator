@@ -1,0 +1,9 @@
+batcmd: batsim -p batsim-src-stable/platforms/cluster8.xml -w batsim-src-stable/workloads/test.json
+  -e expe-out/log111/expe_0
+  --forward-profiles-on-submission --events batsim-src-stable/events/events_test.txt --disable-schedule-tracing 
+failure-timeout: 5
+output-dir: expe-out/log111
+ready-timeout: 10
+schedcmd: batsched -v my_scheduler
+simulation-timeout: 604800
+success-timeout: 3600

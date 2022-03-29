@@ -1,0 +1,1 @@
+batsim -p batsim-src-stable/platforms/cluster8.xml -w batsim-src-stable/workloads/test.json -e expe-out/log111/expe_0 --forward-profiles-on-submission --events batsim-src-stable/events/events_test.txt --disable-schedule-tracing

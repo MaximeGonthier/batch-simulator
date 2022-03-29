@@ -1,0 +1,45 @@
+Conseils à l'utilisation de C++ et Nix
+
+. pour acceder normalement aux struct
+-> pour acceder aux pointeurs de struct
+
+LOG_F(INFO, "Test"); pour print dans le fichier sched.err.log dans le dossier expe-out/log/
+Puis cat /home/gonthier/these_gonthier_maxime/Stage_Suede/Batsim/batsched-Maxime/expe-out/log/sched.err.log
+
+"%s", job->id.c_str() pour afficher un string. Utilie pour job_id. attention l'id du job c'est id
+et non pas unique_number.
+
+Ils utilisent IntervalSet pour définir les noeuds allouées à un job.
+
+Dans les fichiers .json res est le nb de noeuds demandés
+
+Dans le main on recupere le ressource selector avec string selection_policy = flag_selection_policy.Get(); depuis une var d'env --policy tonchoix dans le fichier .yalm après le batsched -v my_scheduler.
+Ensuite cela est envoyé dans scheduller.cpp et dans my_scheduler.cpp au moment de prendre des décisions. C'est cela qui décide quel fonction fill de locality.cpp est utilisé. Il y en a 1 par type de choix. 
+Par défaut c'est basic donc BasicResourceSelector::fit. C'est la fonction qui alloue les noeuds aux allocs. 
+Si moi je veux ajouter une fonction fit il me faut donc une nouvelle classe dataaware qui s'appelle avec la var d'env --policy dataaware.
+Dans le locality.hpp et locality.cpp il faut déclarer toute une nouvelle classe ainsi qu'ajouter au moment du parse dans main.cpp l'appel à new Tonselectorclass. Apres tu peux modifier les fonctions fit comme tu veux sans avoir a changer le nom des fonctions dans schedule.cpp.
+
+Les fonctions qui appellent de toutes fonctions sont dans schedule.cpp avec
+Schedule::JobAlloc Schedule::add_job_first_fit et Schedule::JobAlloc Schedule::add_job_first_fit_data_aware
+Il y a aussi _schedule.query_wait mais qui n'est appellé que par l'algo conservative_bf
+
+Pour ajouter des fichiers il faut les mettre dans meson.build de batsched/
+
+Dans json_worload.cpp/.hpp j'ai ajouté un élément a la struct job. On initialise les job dans le main avec l'appel a la fonction de json_workload.cpp void Workload::add_job_from_json_object_data_aware
+
+J'ai ajouté un fichier .hpp de struct globale nottament pour les nodes et les jobs (si on le garde celui pour les jobs).
+
+Attention les fichier .json peuvent poser pb! Avec celui de yishu avec les profils:
+        "delay.A.2": {
+            "Rfirst": 0,
+            "Tfirst": 0,
+            "checkpoint_cost": 2.5,
+            "checkpoint_period": 0,
+            "delay": 10,
+            "recovery_cost": 2.5,
+            "type": "delay",
+            "total_failure_rate":1e+7
+        }
+J'avais des crash quelquesoit le scheduler, correspondant a des execution plusieurs fois sur le meme noeud que je pense available mais qui ne l'est pas en réalité. Peut etre a cause de failure rate ? Ou des checkpoint ?
+
+Attention dans les fichiers .yalm on ne peut pas mettre des commentaires pour la première ligne car y a un retour a la ligne pour expé et tout.
