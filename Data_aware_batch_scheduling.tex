@@ -132,6 +132,8 @@ Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would
 equity among users  while optimizing I/O.
 
 \section{Problem Modeling}
+
+\subsection{Framework}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
@@ -185,6 +187,7 @@ following stages (in this order):
 \item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
 \item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\duration(J_i)$.
 \end{enumerate}
+It is important to note that the file transfers are done before the computation and can not be overlapped.
 
 We define the \emph{live data} $\live(k,i)$
 as the files in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
@@ -234,6 +237,7 @@ $$
 
 %~ Load balancing/minimizing makespan and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
 
+\subsection{Formalization of the objective}
 \textbf{Objective: Minimize the maximum \flow{}}
 		We define the \flow{J_i} of a job as:
 		$$
@@ -259,11 +263,12 @@ $$
 		%~ $$
 			%~ \textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
 		%~ $$
+A secondary objective is to minimize the amount of file loaded in MB.
 
 \section{Other measurements}
 
-As mentioned before, the main measure will be the total makespan of a set of jobs as well as the amount of loads.
-However, other measures are also important:
+%~ As mentioned before, the main measure will be the total makespan of a set of jobs as well as the amount of loads.
+%~ Other measures are also important:
 
 Each job has a start time $\start(J_i)$, the actual time at which the job was executed.
 We also want to measure the average queue time of a job in order
@@ -271,13 +276,14 @@ to evaluate our scheduler in terms of fairness. We can do:
 $$
 	Average\_queue\_time = \frac{\sum^{m}_{i = 0} \start(J_i) - \submissiontime(J_i)}{m}
 $$
-\todo[inline]{Maxime: Should this be in the objectives above ?}
+\todo[inline]{Maxime: Should this be in the objectives above ? Or the max queue time ?}
 
 We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
 With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
 $$
-	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))
+	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\mathit{Bandwidth(\Node{i})}}
 $$
+\todo[inline]{Maxime: Should min $\#Corehours$ be a goal ?}
 
 \section{The use of simulation}
 
