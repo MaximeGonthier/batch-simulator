@@ -77,7 +77,7 @@ struct linked_list *set_of_task;
 
 int main(int argc, char ** argv)
 {
-	set_of_task->init_set_of_task();
+	//~ set_of_task->init_set_of_task();
 	
     const set<string> variants_set = {"my_scheduler", "conservative_bf", "crasher", "easy_bf", "easy_bf_fast", /* Maxime */
                                       "easy_bf_plot_liquid_load_horizon",
@@ -428,20 +428,20 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
                     //~ double checkpoint_cost = event_data["profile"]["checkpoint_cost"].GetDouble();
                     int res = event_data["job"]["res"].GetInt();
                     
-					int temp_tab_data[event_data["job"]["data"].Size()];
-					int i = 0;
+					//~ int temp_tab_data[event_data["job"]["data"].Size()];
+					//~ int i = 0;
 					
 					IntervalSet data;
 					
                     for (rapidjson::GenericValue<rapidjson::UTF8<> >::ConstValueIterator itr = event_data["job"]["data"].Begin(); itr != event_data["job"]["data"].End(); ++itr)
                     {
 						data.insert(itr->GetInt());
-						temp_tab_data[i] = itr->GetInt(); /* TODO : pas besoin du coup ? */
-						i++;
+						//~ temp_tab_data[i] = itr->GetInt(); /* TODO : pas besoin du coup ? */
+						//~ i++;
 					}
 					
 					/* Ajout dans la liste chainée de cette nouvelle tâche. */
-					set_of_task->add_task_set_of_task(temp_tab_data, event_data["job"]["data"].Size(), job_id);
+					//~ set_of_task->add_task_set_of_task(temp_tab_data, event_data["job"]["data"].Size(), job_id);
 					
 					/* TODO-Maxime : Je met directement dans la struct job l'ensemble de ces tâches. Est-ce que on a vraiment besoin de la struct globale set_of_task du coup ? */
 					/* Sous la forme d'Intervalset. */

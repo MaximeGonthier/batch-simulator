@@ -13,6 +13,9 @@ using namespace std;
 
 #include "../pempek_assert.hpp"
 
+/* TODO : a suppr */
+int test = 0;
+
 struct node *set_of_node;
 
 void My_Scheduler::print_intervalset_machine(IntervalSet nodes, int size)
@@ -100,7 +103,7 @@ void My_Scheduler::make_decisions(double date,
 
     // Queue sorting by priority
     const Job * priority_job_after = nullptr;
-    sort_queue_while_handling_priority_job(priority_job_before, priority_job_after, update_info, compare_info);
+    sort_queue_while_handling_priority_job(priority_job_before, priority_job_after, update_info, compare_info, date);
 
     // If no resources have been released, we can just try to backfill the newly-released jobs
     if (_jobs_ended_recently.empty())
@@ -120,7 +123,7 @@ void My_Scheduler::make_decisions(double date,
                 Schedule::JobAlloc alloc = _schedule.add_job_first_fit_data_aware(new_job, _selector);
                 if ( alloc.started_in_first_slice)
                 {
-					LOG_F(INFO, "Execute %s", new_job_id.c_str());
+					LOG_F(INFO, "Execute %s backfill", new_job_id.c_str());
                     _decision->add_execute_job(new_job_id, alloc.used_machines, date);
                     _queue->remove_job(new_job);
                     nb_available_machines -= new_job->nb_requested_resources;
@@ -151,7 +154,7 @@ void My_Scheduler::make_decisions(double date,
 
                 if (alloc.started_in_first_slice)
                 {
-					LOG_F(INFO, "Execute %s", job->id.c_str());
+					LOG_F(INFO, "Execute %s no backfill prio", job->id.c_str());
                     _decision->add_execute_job(job->id, alloc.used_machines, date);
                     job_it = _queue->remove_job(job_it); // Updating job_it to remove on traversal
                     priority_job_after = _queue->first_job_or_nullptr();
@@ -165,7 +168,7 @@ void My_Scheduler::make_decisions(double date,
 
                 if (alloc.started_in_first_slice)
                 {
-					LOG_F(INFO, "Execute %s", job->id.c_str());
+					LOG_F(INFO, "Execute %s no backfill no prio", job->id.c_str());
                     _decision->add_execute_job(job->id, alloc.used_machines, date);
                     job_it = _queue->remove_job(job_it);
                 }
@@ -177,13 +180,20 @@ void My_Scheduler::make_decisions(double date,
             }
         }
     }
+    
+    /* Pour dire que les jobs dynamiques sont terminées. */
+    if (test == 1)
+    {
+		_decision->add_scheduler_finished_submitting_jobs(date);
+	}
 }
 
 
 void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_job_before,
                                                              const Job *& priority_job_after,
                                                              SortableJobOrder::UpdateInformation * update_info,
-                                                             SortableJobOrder::CompareInformation * compare_info)
+                                                             SortableJobOrder::CompareInformation * compare_info,
+                                                             double date)
 {
     if (_debug)
 		LOG_F(1, "sort_queue_while_handling_priority_job beginning, %s", _schedule.to_string().c_str());
@@ -213,22 +223,25 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 
             if (alloc.started_in_first_slice)
             {
-				LOG_F(INFO, "Execute %s in if (alloc.started_in_first_slice) of sort_queue", priority_job_after->id.c_str());
-				print_intervalset_machine(alloc.used_machines, alloc.used_machines.size());
-				
-				//~ IntervalSet test_intervalset;
-				//~ for (int i = 0; i < priority_job_after->nb_requested_resources; i++)
-				//~ {
-					//~ test_intervalset.insert(i);
-				//~ }
-				//~ LOG_F(INFO, "New custom Intervalset!");
-				//~ print_intervalset_machine(test_intervalset, test_intervalset.size());
-				
+				//~ print_intervalset_machine(alloc.used_machines, alloc.used_machines.size());
+				LOG_F(INFO, "Execute %s in queue sort", priority_job_after->id.c_str());	
+										
                 _decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);
                 //~ _decision->add_execute_job(priority_job_after->id, test_intervalset, (double)update_info->current_date);
                 _queue->remove_job(priority_job_after);
                 priority_job_after = _queue->first_job_or_nullptr();
                 could_run_priority_job = true;
+                
+                 /* TODO : Add dynamic job for data load ?  A suppr ? */
+                 if (test == 0)
+                 {
+						submit_delay_job(10.0, date);
+						//~ string job_id = "dynamic!" + to_string(11);
+						string job_id = "w0!" + to_string(11);
+						_decision->add_execute_job(job_id, alloc.used_machines, date);
+
+					test = 1;
+				}
             }
         }
     }
@@ -237,161 +250,41 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 		LOG_F(1, "sort_queue_while_handling_priority_job ending, %s", _schedule.to_string().c_str());
 }
 
-
-//~ My_Scheduler::My_Scheduler(Workload *workload, SchedulingDecision * decision, Queue * queue, ResourceSelector *selector, double rjms_delay, rapidjson::Document *variant_options) : ISchedulingAlgorithm(workload, decision, queue, selector, rjms_delay, variant_options)
-//~ {	
-    //~ if (variant_options->HasMember("fraction_of_machines_to_use"))
-    //~ {
-        //~ PPK_ASSERT_ERROR((*variant_options)["fraction_of_machines_to_use"].IsNumber(),
-                //~ "Invalid options: 'fraction_of_machines_to_use' should be a number");
-        //~ fraction_of_machines_to_use = (*variant_options)["fraction_of_machines_to_use"].GetDouble();
-        //~ PPK_ASSERT_ERROR(fraction_of_machines_to_use > 0 && fraction_of_machines_to_use <= 1,
-                         //~ "Invalid options: 'fraction_of_machines_to_use' should be in ]0,1] "
-                         //~ "but got value=%g", fraction_of_machines_to_use);
-    //~ }
-
-    //~ if (variant_options->HasMember("custom_mapping"))
-    //~ {
-        //~ PPK_ASSERT_ERROR((*variant_options)["custom_mapping"].IsBool(),
-                //~ "Invalid options: 'custom_mapping' should be a boolean");
-        //~ custom_mapping = (*variant_options)["custom_mapping"].GetBool();
-    //~ }
-
-    //~ if (variant_options->HasMember("set_job_metadata"))
-    //~ {
-        //~ PPK_ASSERT_ERROR((*variant_options)["set_job_metadata"].IsBool(),
-                //~ "Invalid options: 'set_job_metadata' should be a boolean");
-        //~ set_job_metadata = (*variant_options)["set_job_metadata"].GetBool();
-    //~ }
-
-    //~ LOG_F(INFO, "custom_mapping: %s", custom_mapping?"true":"false");
-    //~ LOG_F(INFO, "fraction_of_machines_to_use: %g", fraction_of_machines_to_use);
-    //~ LOG_F(INFO, "set_job_metadata: %d", set_job_metadata);
-//~ }
-
-//~ My_Scheduler::~My_Scheduler()
-//~ {
-
-//~ }
-
-//~ /* La on ajoute les machines */
-//~ void My_Scheduler::on_simulation_start(double date, const rapidjson::Value & batsim_config)
-//~ {
-    //~ (void) date;
-    //~ (void) batsim_config;
-
-    //~ available_machines.insert(IntervalSet::ClosedInterval(0, _nb_machines - 1));
-    //~ PPK_ASSERT_ERROR(available_machines.size() == (unsigned int) _nb_machines);
-//~ }
-
-//~ void My_Scheduler::on_simulation_end(double date)
-//~ {
-	//~ (void) date;
-//~ }
-
-//~ void My_Scheduler::make_decisions(double date,
-                            //~ SortableJobOrder::UpdateInformation *update_info,
-                            //~ SortableJobOrder::CompareInformation *compare_info)
-//~ {
-	/* Print in INFO the data */
-    //~ set_of_task->print_set_of_task();
-	//~ set_of_task->pointeur = set_of_task->head;
-	//~ for (int j = 0; j < set_of_task->size_linked_list; j++)
-	//~ {
-		//~ for (int i = 0; i < set_of_task->pointeur->nb_data; i++)
-		//~ {
-			//~ LOG_F(INFO, "%d ", set_of_task->pointeur->tab_data[i]);
-		//~ }
-		//~ set_of_task->pointeur = set_of_task->pointeur->next;
-	//~ }
+void My_Scheduler::submit_delay_job(double delay, double date)
+{
+	int nb_submitted_jobs = 11; /* TODO a declarer ou incrementer aileurs. Utile ? Ouu pour les noms des jobs */
 	
+    //~ string workload_name = "dynamic";
+    string workload_name = "w0";
 
-    //~ // Let's update available machines
-    //~ for (const string & ended_job_id : _jobs_ended_recently)
-    //~ {
-        //~ available_machines.insert(current_allocations[ended_job_id]);
-        //~ current_allocations.erase(ended_job_id);
-    //~ }
+    double submit_time = date;
+    double walltime = delay + 5;
+    int res = 1;
+    //~ string profile = "delay_" + std::to_string(delay);
+    string profile = "delay.A.0";
 
-    //~ // Handle machine (un)availability from user events
-    //~ unavailable_machines -= _machines_that_became_available_recently;
-    //~ unavailable_machines += _machines_that_became_unavailable_recently;
+    int buf_size = 128;
 
-    //~ // Let's handle recently released jobs
-    //~ for (const string & new_job_id : _jobs_released_recently)
-    //~ {
-        //~ const Job * new_job = (*_workload)[new_job_id];
+    string job_id = to_string(nb_submitted_jobs);
+    string unique_job_id = workload_name + "!" + job_id;
 
-        //~ if (new_job->nb_requested_resources > _nb_machines)
-            //~ _decision->add_reject_job(new_job_id, date);
-        //~ else
-            //~ _queue->append_job(new_job, update_info);
-    //~ }
+    char * buf_job = new char[buf_size];
+    int nb_chars = snprintf(buf_job, buf_size,
+             R"foo({"id":"%s", "subtime":%g, "walltime":%g, "res":%d, "profile":"%s"})foo",
+             job_id.c_str(), submit_time, walltime, res, profile.c_str());
+    PPK_ASSERT_ERROR(nb_chars < buf_size - 1);
 
-    //~ // Queue sorting
-    //~ _queue->sort_queue(update_info, compare_info);
-
-	//~ /* Ancien */
-    //~ fill(date);
-    
-    /* Nouveau */
-   	//~ auto job_it = _queue->begin();
-	//~ const Job * job = (*job_it)->job;
-    //~ int nb_machines_to_allocate = ceil(fraction_of_machines_to_use * job->nb_requested_resources);
-    //~ IntervalSet used_machines = used_machines.left(nb_machines_to_allocate);
-    //~ _decision->add_execute_job(job->id, used_machines, date);
-//~ }
-
-//~ void My_Scheduler::fill(double date)
-//~ {
-	//~ LOG_F(INFO, "Beggining of fill.");
-    //~ IntervalSet usable_machines = available_machines - unavailable_machines;
-    //~ if (_debug)
-        //~ LOG_F(1, "fill, usable_machines=%s", usable_machines.to_string_hyphen().c_str());
-
-    //~ int nb_usable = usable_machines.size();
-    //~ for (auto job_it = _queue->begin(); job_it != _queue->end() && nb_usable > 0; )
-    //~ {
-        //~ const Job * job = (*job_it)->job;
-
-        //~ // If it fits I sits (http://knowyourmeme.com/memes/if-it-fits-i-sits)
-        //~ IntervalSet used_machines;
-
-        //~ if (_selector->fit(job, usable_machines, used_machines))
-        //~ {
-            //~ // Fewer machines might be used that those selected by the fitting algorithm
-            //~ int nb_machines_to_allocate = ceil(fraction_of_machines_to_use * job->nb_requested_resources);
-            //~ PPK_ASSERT_ERROR(nb_machines_to_allocate > 0 && nb_machines_to_allocate <= job->nb_requested_resources);
-            //~ used_machines = used_machines.left(nb_machines_to_allocate);
-
-            //~ if (custom_mapping)
-            //~ {
-                //~ vector<int> executor_to_allocated_resource_mapping;
-                //~ executor_to_allocated_resource_mapping.resize(job->nb_requested_resources);
-                //~ for (int i = 0; i < job->nb_requested_resources; ++i)
-                    //~ executor_to_allocated_resource_mapping[i] = i % nb_machines_to_allocate;
-				//~ LOG_F(INFO, "Execute %s", job->id.c_str());
-                //~ _decision->add_execute_job(job->id, used_machines, date, executor_to_allocated_resource_mapping);
-            //~ }
-            //~ else
-            //~ {
-                //~ _decision->add_execute_job(job->id, used_machines, date);
-            //~ }
-
-            //~ current_allocations[job->id] = used_machines;
-
-            //~ usable_machines.remove(used_machines);
-            //~ available_machines.remove(used_machines);
-            //~ nb_usable -= used_machines.size();
-
-            //~ if (set_job_metadata)
-                //~ _decision->add_set_job_metadata(job->id,
-                                                //~ "just some metadata for job " + job->id,
-                                                //~ date);
-
-            //~ job_it = _queue->remove_job(job);
-        //~ }
-        //~ else
-            //~ job_it++;
-    //~ }
-//~ }
+    char * buf_profile = new char[buf_size];
+    nb_chars = snprintf(buf_profile, buf_size,
+            R"foo({"type": "delay", "delay": %g})foo", delay);
+    PPK_ASSERT_ERROR(nb_chars < buf_size - 1);
+	
+	//~ _decision->add_submit_profile(workload_name, profile, buf_profile, date);
+	
+    _decision->add_submit_job(workload_name, job_id, profile,
+                              buf_job, buf_profile, date,
+                              false);
+                              
+    delete[] buf_job;
+    delete[] buf_profile;
+}

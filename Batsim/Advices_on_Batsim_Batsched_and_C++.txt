@@ -43,3 +43,25 @@ Attention les fichier .json peuvent poser pb! Avec celui de yishu avec les profi
 J'avais des crash quelquesoit le scheduler, correspondant a des execution plusieurs fois sur le meme noeud que je pense available mais qui ne l'est pas en réalité. Peut etre a cause de failure rate ? Ou des checkpoint ?
 
 Attention dans les fichiers .yalm on ne peut pas mettre des commentaires pour la première ligne car y a un retour a la ligne pour expé et tout.
+
+Si j'ajoute les jobs dynamique il faut notifier a batsim qu'on a finis de les faire sinon ca deadlock. Donc pour tester d'autres schedulers
+qui ne gèrent pas ca il ne faut pas mettre dans le .yalm   --disable-schedule-tracing et  --enable-dynamic-jobs (voir https://batsim.readthedocs.io/en/latest/protocol.html?highlight=dynamic#dynamic-registration-of-jobs).
+Si on veut gérér les jobs dynamiques il faut ajouter dans le make_decision des chedulers un : _decision->add_scheduler_finished_submitting_jobs(date); pour dire
+que les jobs dynamiques sont finis; Exemple d'ago avec dynamic jobs : https://gitlab.inria.fr/batsim/batsched/blob/master/src/algo/submitter.cpp.
+
+Explication fichier yalm:
+batcmd: batsim -p batsim-src-stable/platforms/cluster8.xml -w batsim-src-stable/workloads/workload-Maxime-small.json # CLuster et workload
+  -e expe-out/expe_0 # Dossier des outputs
+  --forward-profiles-on-submission # Je sais pas
+  --disable-schedule-tracing # Je sais pas
+  --enable-dynamic-jobs # Activer les jobs dynamiques
+  --acknowledge-dynamic-jobs # Prendre en compte les jobs dynamiques
+  --enable-profile-reuse # Autoriser à ré-utiliser le même workloads/profiles pour les jobs dynamiques
+failure-timeout: 5
+output-dir: expe-out/
+ready-timeout: 10
+schedcmd: batsched -v my_scheduler --policy dataaware # Scheduler choisi
+simulation-timeout: 604800
+success-timeout: 3600
+
+--enable-compute-sharing # Autorise de mettre en parallèle plusieurs jobs sur une node

@@ -1,6 +1,10 @@
 batcmd: batsim -p batsim-src-stable/platforms/cluster8.xml -w batsim-src-stable/workloads/workload-Maxime-small.json
   -e expe-out/expe_0
-  --forward-profiles-on-submission --disable-schedule-tracing 
+  --forward-profiles-on-submission
+  --disable-schedule-tracing
+  --enable-dynamic-jobs
+  --acknowledge-dynamic-jobs
+  --enable-profile-reuse
 failure-timeout: 5
 output-dir: expe-out/
 ready-timeout: 10
