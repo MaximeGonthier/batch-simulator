@@ -15,6 +15,7 @@
 \newcommand{\inputs}{\ensuremath{\mathcal{F}}\xspace}
 \newcommand{\memory}{\ensuremath{\mathcal{M}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
+\newcommand{\bandwidth}{\mathit{BW}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{Subtime}\xspace}
 \newcommand{\completiontime}{\mathit{Completiontime}\xspace}
@@ -70,7 +71,6 @@ for execution~\cite{Maui_Scheduler}.
 Thus our starting point can be the Backfill algorithm.
 To be precise, we will be using EASY-Backfilling, a scheduler known to be efficient and able to prevent starvation~\cite{easybf}.
 \textbf{We will add a data-aware strategy that maximize data reuse while maintaining EASY-Backfill's basic principle.}
-\todo[inline]{Maxime : Are you using EASY-backfilling or another backfilling scheduler ?}
 
 \subsection{Improving SLURM and other batch systems}
 To deal with communication-intensive jobs on SLURM, a solution is to minimize network contention by allocating nodes on the least
@@ -99,8 +99,7 @@ Memory-aware scheduling on clusters have been studied in the past.
 Jacobi-Davidson Parallel Eigensolver to Dynamically Balance External CPU and Memory Load"~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
 estimate the time needed by the fastest processor to perform the required $m$ jobs. Thus they can equilibrate the load
 with this information. In our study we could use a similar strategy by estimating the 
-processing time of a job, the length of a file transfer, and the amount of file transfers needed
-(\todo[inline]{Maxime: for this we need to control load and eviction, is it possible ? Is it accurate ?}).
+processing time of a job, the length of a file transfer, and the amount of file transfers needed.
 To deal with memory constraint the strategy applied in the paper is to check if 
 nodes are thrashing data. If yes, it will recede execution of jobs on this node.
 The main differences are that they are using dynamic jobs. Also, we would like to 
@@ -142,10 +141,22 @@ Each file has a size in MB noted $\memory(F_i)$.
 Each job has a submission time $\submissiontime(J_i)$ and an 
 expected duration time $\duration(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
-\todo[inline]{Maxime: Does all nodes have the same number of cores ? Can we have situation
-where a job is requesting more cores than some nodes have ?}
+
+\todo[inline]{Maxime: Does all nodes have the same number of cores ? $\rightarrow$ No, 
+some nodes will be quiped with 16 cores and other 20.}
+
+\todo[inline]{Can we have situation where a job is requesting more cores than some nodes have ? Like 18 for example ? $\rightarrow$
+ ?}
+
 Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
-\todo[inline]{Maxime: Does all nodes have the same size ?}
+The memory size can be different among all nodes.
+
+\todo[inline]{We would have 2 kind of data ? The first one is an heavy file that need to be copied on 
+a local disk (the memory of the node). The second one are small data, using the network file system. This second
+type of data do not takes space on the memory of the node ?}
+\todo[inline]{About memory map. We could represent that with two layers of memory ?
+One that represent memory map and the other one the rest of the memory.}
+
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
 $\inputs(J_i)$ must be in the memory of $\Node{k}$. 
@@ -161,11 +172,9 @@ We consider that all jobs are single nodes.
 
 The file sharing system initially contains all of $\fileset$.
 Each node is connected to the file sharing system with a limited bandwidth.
-\todo[inline]{Maxime: Each node has a different bandwidth to load files ?}
+Each node has the same bandwidth noted $\bandwidth$.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
-
-\todo[inline]{Maxime: It would make sense to represent our problem with a bi-partite graph were edges are file shares, nodes are jobs and the nodes are weighted with the duration of a jobs ? The issue is that I don't know how to represent the submission time ?}
 
 There is locality both across one node and connected with one worker thread:
 indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
@@ -281,7 +290,7 @@ $$
 We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
 With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
 $$
-	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\mathit{Bandwidth(\Node{i})}}
+	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\bandwidth}
 $$
 \todo[inline]{Maxime: Should min $\#Corehours$ be a goal ?}
 

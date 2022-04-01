@@ -65,3 +65,22 @@ simulation-timeout: 604800
 success-timeout: 3600
 
 --enable-compute-sharing # Autorise de mettre en parallèle plusieurs jobs sur une node
+
+Pour gérer les evictions, ce que je peux faire:
+	Au moment de submitted ++ une var globale de vrai job non fais
+	Dans la struct machines mettre next job / id machine
+	Au moment de l'alloc si j'ai besoin de faire un chargement
+		Je créé le job dynamique
+		j'incrémente le nb de job dynamique
+		Je le lance sur le noeud choisis par le alloc.
+		Je met la tache prévu dans next job de la machine
+	Dans job completed
+		Je check si le noedu qui viens de se liberer avait un next job et si la tache etait une tache dynamique
+			Si oui
+				Je lance le next job
+				j incremente le nb de job dyn fini
+				je l'enleve de next job de la machine
+			Sinon
+				J incremente le nb de vrai job fini
+	Si tous les jobs finis + tous les jobs dynamqiues finis
+		Je lance le job dynamqie completed truc

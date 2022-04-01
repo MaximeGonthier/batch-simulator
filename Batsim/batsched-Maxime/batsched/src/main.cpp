@@ -419,6 +419,8 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
             else if (event_type == "JOB_SUBMITTED")
             {
                 string job_id = event_data["job_id"].GetString();
+                
+                LOG_F(INFO, "Job %s submitted", job_id.c_str());
 				
 				/* Maxime */
 				if(scheduling_variant == "my_scheduler")
@@ -454,9 +456,12 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
 				
                 algo->on_job_release(current_date, {job_id});
             }
-            else if (event_type == "JOB_COMPLETED")
+            else if (event_type == "JOB_COMPLETED") /* Un job est terminé */
             {
                 string job_id = event_data["job_id"].GetString();
+                
+                LOG_F(INFO, "Job %s completed", job_id.c_str());	
+                
                 workload[job_id]->completion_time = current_date;
                 algo->on_job_end(current_date, {job_id});
             }

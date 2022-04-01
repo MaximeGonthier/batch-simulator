@@ -181,7 +181,8 @@ void My_Scheduler::make_decisions(double date,
         }
     }
     
-    /* Pour dire que les jobs dynamiques sont terminées. */
+    /* Pour dire que les jobs dynamiques sont terminées. 
+     * Il faut que je compte le nb de jobs dynamique ou que je sache quand ils sont tous finis pour pouvoir déclencher cela. */
     if (test == 1)
     {
 		_decision->add_scheduler_finished_submitting_jobs(date);
@@ -223,25 +224,25 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 
             if (alloc.started_in_first_slice)
             {
+				//~ /* TODO : Add dynamic job for data load a mettre avant et une fois terminé mettre le job prévu sur le noeud */
+				if (test == 0) /* If I need to simulate a file load. */
+                {
+					//~ submit_delay_job(10.0, date);
+					//~ string job_id = "w0!" + to_string(11);
+					//~ _decision->add_execute_job(job_id, alloc.used_machines, date);
+
+					test = 1; /* I need to increment the number of dynamic job created ? */
+					
+					//~ /* Quand le job dynamique sera terminé, je mettrais sur le noeud, le vrai job qui était prévu. */
+				}
+				
 				//~ print_intervalset_machine(alloc.used_machines, alloc.used_machines.size());
 				LOG_F(INFO, "Execute %s in queue sort", priority_job_after->id.c_str());	
 										
                 _decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);
-                //~ _decision->add_execute_job(priority_job_after->id, test_intervalset, (double)update_info->current_date);
                 _queue->remove_job(priority_job_after);
                 priority_job_after = _queue->first_job_or_nullptr();
                 could_run_priority_job = true;
-                
-                 /* TODO : Add dynamic job for data load ?  A suppr ? */
-                 if (test == 0)
-                 {
-						submit_delay_job(10.0, date);
-						//~ string job_id = "dynamic!" + to_string(11);
-						string job_id = "w0!" + to_string(11);
-						_decision->add_execute_job(job_id, alloc.used_machines, date);
-
-					test = 1;
-				}
             }
         }
     }
