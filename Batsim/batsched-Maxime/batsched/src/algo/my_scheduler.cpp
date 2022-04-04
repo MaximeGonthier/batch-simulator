@@ -226,20 +226,25 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 
             if (alloc.started_in_first_slice)
             {
-				/* TODO : Add dynamic job for data load a mettre avant et une fois terminé mettre le job prévu sur le noeud */
-				if ((priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size() != 0)
-				{
-					LOG_F(INFO, "Need at least one data load!");	
-				}
-				if (test == 0) /* If I need to simulate a file load. */
+				if (test == 0) /* TODO : to delete. I just test here to do it just one time. */
                 {
-					//~ submit_delay_job(10.0, date);
-					//~ string job_id = "w0!" + to_string(11);
-					//~ _decision->add_execute_job(job_id, alloc.used_machines, date);
+					/* TODO : Add dynamic job for data load a mettre avant et une fois terminé mettre le job prévu sur le noeud */
+					if ((priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size() != 0)
+					{
+						LOG_F(INFO, "Need at least one data load!");
+						/* Next job is the one that was supposed to run. */	
+						set_of_node[alloc.used_machines[0]].id_next_job = priority_job_after->id;
+						/* Add delay job and when it's finished execute this one on the node. */
+						
+					}
 
-					test = 1; /* I need to increment the number of dynamic job created ? */
-					
-					//~ /* Quand le job dynamique sera terminé, je mettrais sur le noeud, le vrai job qui était prévu. */
+						//~ submit_delay_job(10.0, date);
+						//~ string job_id = "w0!" + to_string(11);
+						//~ _decision->add_execute_job(job_id, alloc.used_machines, date);
+
+						test = 1; /* I need to increment the number of dynamic job created ? */
+						
+						//~ /* Quand le job dynamique sera terminé, je mettrais sur le noeud, le vrai job qui était prévu. */
 				}
 				
 				LOG_F(INFO, "Execute %s in queue sort. %d data load needed", priority_job_after->id.c_str(), (priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size());
