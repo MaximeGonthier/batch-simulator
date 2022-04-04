@@ -18,16 +18,17 @@ extern struct node *set_of_node; /* Tab of struct for the nodes. */
 struct node /* Struct showing data on the nodes. It will be a tab of struct because we know before hand the number of nodes. */
 {
     IntervalSet data; /* IntervalSet is the set of data loaded in memory. */
-    //~ int id;
+    string id_next_job; /* The next job to be computed on this node. This is used when we have a data load. We create a dynamic job for the job and the job that was supposed to run will be here. It is tested in job completed in the main. */
 };
 
-struct task
-{
-	string id;
-    int *tab_data;
-    int nb_data;
-    task *next;
-};
+
+//~ struct task
+//~ {
+	//~ string id;
+    //~ int *tab_data;
+    //~ int nb_data;
+    //~ task *next;
+//~ };
 
 //~ class linked_list /* Linked list of the set of task and their data. */
 //~ {

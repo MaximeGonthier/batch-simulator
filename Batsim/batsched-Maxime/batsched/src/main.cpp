@@ -73,7 +73,7 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision &d, Worklo
 #endif
 
 /* Maxime */
-struct linked_list *set_of_task;
+//~ struct linked_list *set_of_task;
 
 int main(int argc, char ** argv)
 {

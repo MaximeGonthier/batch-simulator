@@ -50,9 +50,11 @@ void My_Scheduler::on_simulation_start(double date, const rapidjson::Value & bat
 	/* Init struct of set of node. */
 	set_of_node = (struct node*) malloc(_nb_machines*sizeof(node));
 	IntervalSet s;
+	//~ string empty_string = "z";
 	for (int i = 0; i < _nb_machines; i++)
 	{
 		set_of_node[i].data = s;
+		set_of_node[i].id_next_job = "null";
 	}
 	
     _schedule = Schedule(_nb_machines, date);
@@ -224,7 +226,11 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 
             if (alloc.started_in_first_slice)
             {
-				//~ /* TODO : Add dynamic job for data load a mettre avant et une fois terminé mettre le job prévu sur le noeud */
+				/* TODO : Add dynamic job for data load a mettre avant et une fois terminé mettre le job prévu sur le noeud */
+				if ((priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size() != 0)
+				{
+					LOG_F(INFO, "Need at least one data load!");	
+				}
 				if (test == 0) /* If I need to simulate a file load. */
                 {
 					//~ submit_delay_job(10.0, date);
@@ -236,8 +242,23 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 					//~ /* Quand le job dynamique sera terminé, je mettrais sur le noeud, le vrai job qui était prévu. */
 				}
 				
-				//~ print_intervalset_machine(alloc.used_machines, alloc.used_machines.size());
-				LOG_F(INFO, "Execute %s in queue sort", priority_job_after->id.c_str());	
+				LOG_F(INFO, "Execute %s in queue sort. %d data load needed", priority_job_after->id.c_str(), (priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size());
+
+				/* I add into the global struct of node the data loaded with this new task. */
+				/* TODO-Maxime : deal with eviction ? */
+				LOG_F(INFO, "Intervalset from job");
+				for (int i = 0; i < priority_job_after->data.size(); i++)
+				{
+					LOG_F(INFO, "%d", priority_job_after->data[i]);
+				}
+				LOG_F(INFO, "Allocated node in fit is %d", alloc.used_machines[0]);
+				set_of_node[alloc.used_machines[0]].data += priority_job_after->data;
+				LOG_F(INFO, "Intervalset from node %d after adding new data", alloc.used_machines[0]);
+				for (int i = 0; i < set_of_node[alloc.used_machines[0]].data.size(); i++)
+				{
+					LOG_F(INFO, "%d", set_of_node[alloc.used_machines[0]].data[i]);
+				}
+				
 										
                 _decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);
                 _queue->remove_job(priority_job_after);

@@ -56,7 +56,7 @@ Thus, a way to minimize data transfers is to create a scheduler that \textbf{tak
 
 Our scheduler would be used to \textbf{distribute the load between the workers but also to have a vision of what the memory of each worker contains in order to re-use as much as possible a file already loaded on a worker's local memory}.
 
-Clusters already use the efficient SLURM scheduler in order todistribute jobs.
+Clusters already use the efficient SLURM scheduler in order to distribute jobs.
 \textbf{Thus our goal is to add a scheduler before the SLURM scheduler that would allocate to each job a node.}
 
 \section{Related Work}

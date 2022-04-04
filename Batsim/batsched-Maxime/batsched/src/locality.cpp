@@ -117,24 +117,24 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 					LOG_F(INFO, "New max data share");
 				}
 			}
-			/* Pb : j'aloue sur des nodes qui ont refusé le job juste avant et ca crash. */
 			allocated = index_max_data_share;
 			PPK_ASSERT_ERROR(allocated.size() == (unsigned int)job->nb_requested_resources);
-			
-			/* I add into the global struct of node the data loaded with this new task. */
-			/* TODO-Maxime : deal with eviction ? */
-			LOG_F(INFO, "Intervalset from job");
-			for (i = 0; i < job->data.size(); i++)
-			{
-				LOG_F(INFO, "%d", job->data[i]);
-			}
-			LOG_F(INFO, "Allocated node in fit is %d", allocated[0]);
-			set_of_node[allocated[0]].data += job->data;
-			LOG_F(INFO, "Intervalset from node %d", allocated[0]);
-			for (i = 0; i < set_of_node[allocated[0]].data.size(); i++)
-			{
-				LOG_F(INFO, "%d", set_of_node[allocated[0]].data[i]);
-			}
+						
+			/* I do that in my_scheduler.cpp now */
+			//~ /* I add into the global struct of node the data loaded with this new task. */
+			//~ /* TODO-Maxime : deal with eviction ? */
+			//~ LOG_F(INFO, "Intervalset from job");
+			//~ for (i = 0; i < job->data.size(); i++)
+			//~ {
+				//~ LOG_F(INFO, "%d", job->data[i]);
+			//~ }
+			//~ LOG_F(INFO, "Allocated node in fit is %d", allocated[0]);
+			//~ set_of_node[allocated[0]].data += job->data;
+			//~ LOG_F(INFO, "Intervalset from node %d", allocated[0]);
+			//~ for (i = 0; i < set_of_node[allocated[0]].data.size(); i++)
+			//~ {
+				//~ LOG_F(INFO, "%d", set_of_node[allocated[0]].data[i]);
+			//~ }
 		}
 		else /* Cas multi node géré par défaut. */
 		{
