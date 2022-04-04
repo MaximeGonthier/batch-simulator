@@ -14,6 +14,7 @@
 \newcommand{\flow}[1]{\ensuremath{\mathit{flow}_{#1}}\xspace}
 \newcommand{\inputs}{\ensuremath{\mathcal{F}}\xspace}
 \newcommand{\memory}{\ensuremath{\mathcal{M}}\xspace}
+\newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
 \newcommand{\bandwidth}{\mathit{BW}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
@@ -129,6 +130,10 @@ To resolve these issues, Mammoth~\cite{Mammoth} was created. It optimize memory 
 Our approach is different because we are not dealing with MapReduce or memory allocation.
 Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would like to maintain
 equity among users  while optimizing I/O.
+In addition, HDFS is particularly efficient when the input data used are identical over time.
+In our case, one user will submit a lot of different jobs using the same data, but between users,
+the inputs are not the same. So HDFS would be less efficient.
+
 
 \section{Problem Modeling}
 
@@ -143,19 +148,10 @@ expected duration time $\duration(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
 
 \todo[inline]{Maxime: Does all nodes have the same number of cores ? $\rightarrow$ No, 
-some nodes will be quiped with 16 cores and other 20.}
+some nodes will be equipped with 16 cores and other 20.}
 
 \todo[inline]{Can we have situation where a job is requesting more cores than some nodes have ? Like 18 for example ? $\rightarrow$
  ?}
-
-Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
-The memory size can be different among all nodes.
-
-\todo[inline]{We would have 2 kind of data ? The first one is an heavy file that need to be copied on 
-a local disk (the memory of the node). The second one are small data, using the network file system. This second
-type of data do not takes space on the memory of the node ?}
-\todo[inline]{About memory map. We could represent that with two layers of memory ?
-One that represent memory map and the other one the rest of the memory.}
 
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
@@ -164,22 +160,26 @@ We do not consider the data output of jobs.
 Each of the $m$ jobs must be processed on some of the $K$ nodes. 
 We consider that all jobs are single nodes.
 
-%~ Our goal is to determine how to distribute the job set to
-%~ the nodes in order to minimize the total makespan.
-%~ Our objective is also to come up with a schedule with
-%~ few data movement, as they largely impact the overall processing
-%~ time as mentioned earlier. 
-
 The file sharing system initially contains all of $\fileset$.
 Each node is connected to the file sharing system with a limited bandwidth.
 Each node has the same bandwidth noted $\bandwidth$.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
+\todo[inline]{We would have 2 kind of data ? The first one is an heavy file that need to be copied on 
+a local disk (the memory of the node). The second one are small data, using the network file system. This second
+type of data do not takes space on the memory of the node ?}
 
+\todo[inline]{Here how I can represent memory map in our model: 
+"Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
+The memory size can be different among all nodes.
 There is locality both across one node and connected with one worker thread:
 indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
 So if a job is co-existing with other jobs using the same file, the memory space taken is smaller.
-\todo[inline]{Maxime: Should we add a new layer of locality with for example: $\mathcal{M}(W_i)$, with $W_i$ one worker thread ?}
+Thus memory map is used in our cluster. 
+Thus a part of $\memory(\Node{i})$ can be used as memory mapping.
+The size of this sub-part is $\memorymap(\Node{i})$.}
+\todo[inline]{Does these two parts of memory overlap like I wrote ?}
+\todo[inline]{Can our input files fit in memory map ? Do only jobs with small input data use memory map ?}
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
@@ -192,7 +192,7 @@ On $\Node{k}$, the schedule is made of a
 succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
 following stages (in this order):
 \begin{enumerate}
-\item Eviction of files if the memory is saturated; \todo[inline]{Maxime: Can we control the eviction policy of files ? In simulation I can, in real can I ?}
+\item Eviction of files if the memory is saturated (we can use flags to force a file to stay in memory. In the same way, we can add a "won't use" flag on a file in order to evict it);
 \item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
 \item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\duration(J_i)$.
 \end{enumerate}
@@ -273,11 +273,9 @@ $$
 			%~ \textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
 		%~ $$
 A secondary objective is to minimize the amount of file loaded in MB.
+Indeed, loading files has a huge impact on the total makespan and thus on the maximum \flow{}.
 
 \section{Other measurements}
-
-%~ As mentioned before, the main measure will be the total makespan of a set of jobs as well as the amount of loads.
-%~ Other measures are also important:
 
 Each job has a start time $\start(J_i)$, the actual time at which the job was executed.
 We also want to measure the average queue time of a job in order
@@ -285,14 +283,12 @@ to evaluate our scheduler in terms of fairness. We can do:
 $$
 	Average\_queue\_time = \frac{\sum^{m}_{i = 0} \start(J_i) - \submissiontime(J_i)}{m}
 $$
-\todo[inline]{Maxime: Should this be in the objectives above ? Or the max queue time ?}
 
 We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
 With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
 $$
 	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\bandwidth}
 $$
-\todo[inline]{Maxime: Should min $\#Corehours$ be a goal ?}
 
 \section{The use of simulation}
 
