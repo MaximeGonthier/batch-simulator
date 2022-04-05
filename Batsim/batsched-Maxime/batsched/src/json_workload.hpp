@@ -20,6 +20,7 @@ struct Job
     double completion_time = -1;
     mutable std::map<Rational, JobAlloc*> allocations;
     IntervalSet data; /* Maxime */
+    //~ int data_load_delay; /* Maxime */
 };
 
 struct JobAlloc

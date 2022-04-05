@@ -119,9 +119,16 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 			}
 			allocated = index_max_data_share;
 			PPK_ASSERT_ERROR(allocated.size() == (unsigned int)job->nb_requested_resources);
-						
-			/* I do that in my_scheduler.cpp now */
-			//~ /* I add into the global struct of node the data loaded with this new task. */
+			
+			/* If a data load is needed */
+			//~ job->data_load_delay = (job->data - set_of_node[allocated[0]].data).size();
+			set_of_node[allocated[0]].delay_next_dynamic_job = (job->data - set_of_node[allocated[0]].data).size();
+			
+			//~ submit_delay_job(10.0, date);
+			
+			//~ set_of_node[allocated[0]].id_current_job = job->id.c_str();
+					
+			/* I add into the global struct of node the data loaded with this new task. */
 			//~ /* TODO-Maxime : deal with eviction ? */
 			//~ LOG_F(INFO, "Intervalset from job");
 			//~ for (i = 0; i < job->data.size(); i++)
@@ -129,7 +136,7 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 				//~ LOG_F(INFO, "%d", job->data[i]);
 			//~ }
 			//~ LOG_F(INFO, "Allocated node in fit is %d", allocated[0]);
-			//~ set_of_node[allocated[0]].data += job->data;
+			set_of_node[allocated[0]].data += job->data;
 			//~ LOG_F(INFO, "Intervalset from node %d", allocated[0]);
 			//~ for (i = 0; i < set_of_node[allocated[0]].data.size(); i++)
 			//~ {

@@ -9,17 +9,22 @@
 //~ #include "../json_workload.hpp"
 //~ #include "../locality.hpp"
 //~ #include "../schedule.hpp"
-#include <string>
-using namespace std;
+//~ #include <string>
+//~ using namespace std;
 
 //~ extern struct linked_list *set_of_task;
 extern struct node *set_of_node; /* Tab of struct for the nodes. */
+extern int number_of_node;
+extern int dynamic_finished;
 
 struct node /* Struct showing data on the nodes. It will be a tab of struct because we know before hand the number of nodes. */
 {
     IntervalSet data; /* IntervalSet is the set of data loaded in memory. */
-    string id_next_job; /* The next job to be computed on this node. This is used when we have a data load. We create a dynamic job for the job and the job that was supposed to run will be here. It is tested in job completed in the main. */
+    int delay_next_dynamic_job;
+	//~ std::string *id_current_job;
 };
+
+    //~ string id_next_job; /* The next job to be computed on this node. This is used when we have a data load. We create a dynamic job for the job and the job that was supposed to run will be here. It is tested in job completed in the main. */
 
 
 //~ struct task

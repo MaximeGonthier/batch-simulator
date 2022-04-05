@@ -61,6 +61,7 @@ void Workload::add_job_from_json_object_data_aware(const Value &object, const st
     
     /* Add set of input data */
 	job->data = new_data;
+	//~ job->data_load_delay = new_data.size(); /* TODO : use size of data on initialization instead of number of data */
     
     // Let's apply the RJMS delay on the job
     job->walltime += _rjms_delay;

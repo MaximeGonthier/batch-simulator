@@ -74,6 +74,7 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision &d, Worklo
 
 /* Maxime */
 //~ struct linked_list *set_of_task;
+int dynamic_finished = 0;
 
 int main(int argc, char ** argv)
 {
@@ -423,7 +424,8 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
                 LOG_F(INFO, "Job %s submitted", job_id.c_str());
 				
 				/* Maxime */
-				if(scheduling_variant == "my_scheduler")
+				//~ if(scheduling_variant == "my_scheduler" && job_id != "w0!11")
+				if(scheduling_variant == "my_scheduler" && job_id != "dynamic!11")
                 {
                     string profile_name = event_data["job"]["profile"].GetString();
                     double delay_job_submitted = event_data["profile"]["delay"].GetDouble();
@@ -460,16 +462,22 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
             {
                 string job_id = event_data["job_id"].GetString();
                 
-                LOG_F(INFO, "Job %s completed", job_id.c_str());	
+                //~ if (job_id == "w0!11")
+                if (job_id == "dynamic!11")
+                {
+					dynamic_finished = 1;
+				}
+                
+                LOG_F(INFO, "Job %s completed", job_id.c_str());
                 
                 workload[job_id]->completion_time = current_date;
-                algo->on_job_end(current_date, {job_id});
+                algo->on_job_end(current_date, {job_id});                
             }
             else if (event_type == "RESOURCE_STATE_CHANGED")
-            {
+            { 
                 IntervalSet resources = IntervalSet::from_string_hyphen(event_data["resources"].GetString(), " ");
                 string new_state = event_data["state"].GetString();
-                algo->on_machine_state_changed(current_date, resources, std::stoi(new_state));
+                algo->on_machine_state_changed(current_date, resources, std::stoi(new_state));     
             }
             else if (event_type == "JOB_KILLED")
             {
