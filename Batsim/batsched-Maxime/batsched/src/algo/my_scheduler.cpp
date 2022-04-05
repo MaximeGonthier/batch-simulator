@@ -57,6 +57,7 @@ void My_Scheduler::on_simulation_start(double date, const rapidjson::Value & bat
 		set_of_node[i].data = s;
 		//~ set_of_node[i].id_next_job = "null";
 		set_of_node[i].delay_next_dynamic_job = 0;
+		set_of_node[i].id_next_dynamic_job = -1;
 		//~ set_of_node[i].id_current_job = "null";
 	}
 	
@@ -75,14 +76,25 @@ void My_Scheduler::make_decisions(double date,
                                      SortableJobOrder::UpdateInformation *update_info,
                                      SortableJobOrder::CompareInformation *compare_info)
 {
-	LOG_F(INFO, "Beggining of make_decision.");	
+	    for (int i = 0; i < number_of_node; i++)
+        {
+			if (set_of_node[i].delay_next_dynamic_job == 1 && _schedule.begin()->available_machines.contains(i))
+			{
+				string dynamic_to_execute = "dynamic!" + to_string(set_of_node[i].id_next_dynamic_job);
+				LOG_F(INFO, "Execute dynamic %s on %d in new ressource released", dynamic_to_execute.c_str(), i);
+				_decision->add_execute_job(dynamic_to_execute, i, date);
+				set_of_node[i].delay_next_dynamic_job = 0;
+				set_of_node[i].id_next_dynamic_job = -1;
+			}
+		}
+	//~ LOG_F(INFO, "Beggining of make_decision.");	
 	
     const Job * priority_job_before = _queue->first_job_or_nullptr();
 
     // Let's remove finished jobs from the schedule
     for (const string & ended_job_id : _jobs_ended_recently)
     {
-		LOG_F(INFO, "Remove %s", ended_job_id.c_str());
+		//~ LOG_F(INFO, "Remove %s", ended_job_id.c_str());
 		/* Check if current terminated job has a delay */
         _schedule.remove_job((*_workload)[ended_job_id]);
 	}
@@ -109,23 +121,22 @@ void My_Scheduler::make_decisions(double date,
             recently_queued_jobs.push_back(new_job_id);
         }
     }
+    
+        //~ for (int i = 0; i < number_of_node; i++)
+        //~ {
+			//~ if (set_of_node[i].delay_next_dynamic_job == 1 && _schedule.begin()->available_machines.contains(i))
+			//~ {
+				//~ string dynamic_to_execute = "dynamic!" + to_string(set_of_node[i].id_next_dynamic_job);
+				//~ LOG_F(INFO, "Execute dynamic %s on %d in new ressource released", dynamic_to_execute.c_str(), i);
+				//~ _decision->add_execute_job(dynamic_to_execute, i, date);
+				//~ set_of_node[i].delay_next_dynamic_job = 0;
+				//~ set_of_node[i].id_next_dynamic_job = -1;
+			//~ }
+		//~ }
 
     // Let's update the schedule's present
     _schedule.update_first_slice(date);
     
-	//~ LOG_F(INFO, "Available machines in make_decisions:");
-	//~ for (int i = 0; i < _schedule.begin()->available_machines.size(); i++)
-	//~ {
-		//~ LOG_F(INFO, "%d: delay = %d", _schedule.begin()->available_machines[i], set_of_node[_schedule.begin()->available_machines[i]].delay_next_dynamic_job);
-		//~ if (test == 0 && set_of_node[_schedule.begin()->available_machines[i]].delay_next_dynamic_job != 0)
-		//~ {
-			//~ test = 1;
-			//~ set_of_node[_schedule.begin()->available_machines[i]].delay_next_dynamic_job = 0;
-			//~ submit_delay_job(10.0, date);
-			//~ _decision->add_execute_job(job_id, _schedule.begin()->available_machines[i], date);
-		//~ }
-	//~ }
-
     // Queue sorting by priority
     const Job * priority_job_after = nullptr;
     sort_queue_while_handling_priority_job(priority_job_before, priority_job_after, update_info, compare_info, date);
@@ -134,7 +145,7 @@ void My_Scheduler::make_decisions(double date,
     if (_jobs_ended_recently.empty())
     {
         int nb_available_machines = _schedule.begin()->available_machines.size();
-        LOG_F(INFO, "There are %d available nodes", nb_available_machines);
+        //~ LOG_F(INFO, "There are %d available nodes", nb_available_machines);
 
         for (unsigned int i = 0; i < recently_queued_jobs.size() && nb_available_machines > 0; ++i)
         {
@@ -149,7 +160,23 @@ void My_Scheduler::make_decisions(double date,
                 //~ if ( alloc.started_in_first_slice && new_job_id != "null")
                 if ( alloc.started_in_first_slice)
                 {
-					LOG_F(INFO, "Execute %s backfill", new_job_id.c_str());
+					
+				/* If data load */
+				if(new_job->id[0] == 'w')
+				{
+					if (0 == 0) /* TODO : test here if it needs a data load and how long */
+					{
+						set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
+						set_of_node[alloc.used_machines[0]].id_next_dynamic_job = new_job->unique_number;
+						submit_delay_job(10.0, date, new_job->unique_number + 1);
+					}
+					else /* I don't need a transfer but i still want to increment this to stop dynamic job whe they are equal to normal jobs TODO : use this instead of my static thing that don't work for more jobs. */
+					{
+						number_dynamic_job_submitted++;
+					}
+				}
+					
+					LOG_F(INFO, "Execute %s backfill on node %d", new_job_id.c_str(), alloc.used_machines[0]);
                     _decision->add_execute_job(new_job_id, alloc.used_machines, date);
                     _queue->remove_job(new_job);
                     nb_available_machines -= new_job->nb_requested_resources;
@@ -163,19 +190,21 @@ void My_Scheduler::make_decisions(double date,
     {
         // Some resources have been released, the whole queue should be traversed.
         /* Try to start a job if a dynamic job just finished */
-        for (int i = 0; i < number_of_node; i++)
-        {
-			if (set_of_node[i].delay_next_dynamic_job = 1)
-			{
-				LOG_F(INFO, "Node %d is not null on next", i);
-				_decision->add_execute_job("dynamic!11", i, date);
-				set_of_node[i].delay_next_dynamic_job = 0;
-			}
-		}
+        /* TODO : the delay must match the amount of data to load */
+        //~ for (int i = 0; i < number_of_node; i++)
+        //~ {
+			//~ if (set_of_node[i].delay_next_dynamic_job == 1 && _schedule.begin()->available_machines.contains(i))
+			//~ {
+				//~ string dynamic_to_execute = "dynamic!" + to_string(set_of_node[i].id_next_dynamic_job);
+				//~ LOG_F(INFO, "Execute dynamic %s on %d in new ressource released", dynamic_to_execute.c_str(), i);
+				//~ _decision->add_execute_job(dynamic_to_execute, i, date);
+				//~ set_of_node[i].delay_next_dynamic_job = 0;
+				//~ set_of_node[i].id_next_dynamic_job = -1;
+			//~ }
+		//~ }
         
         auto job_it = _queue->begin();
         int nb_available_machines = _schedule.begin()->available_machines.size();
-		LOG_F(INFO, "There are %d available nodes", nb_available_machines);
         
         // Let's try to backfill all the jobs
         while (job_it != _queue->end() && nb_available_machines > 0)
@@ -191,7 +220,23 @@ void My_Scheduler::make_decisions(double date,
 
                 if (alloc.started_in_first_slice)
                 {
-					LOG_F(INFO, "Execute %s no backfill prio", job->id.c_str());
+					
+				/* If data load */
+				if(job->id[0] == 'w')
+				{
+					if (0 == 0) /* TODO : test here if it needs a data load and how long */
+					{
+						set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
+						set_of_node[alloc.used_machines[0]].id_next_dynamic_job = job->unique_number;
+						submit_delay_job(10.0, date, job->unique_number + 1);
+					}
+					else /* I don't need a transfer but i still want to increment this to stop dynamic job whe they are equal to normal jobs TODO : use this instead of my static thing that don't work for more jobs. */
+					{
+						number_dynamic_job_submitted++;
+					}
+				}
+					
+					LOG_F(INFO, "Execute %s no backfill prio on node %d", job->id.c_str(), alloc.used_machines[0]);
                     _decision->add_execute_job(job->id, alloc.used_machines, date);
                     job_it = _queue->remove_job(job_it); // Updating job_it to remove on traversal
                     priority_job_after = _queue->first_job_or_nullptr();
@@ -205,7 +250,23 @@ void My_Scheduler::make_decisions(double date,
 
                 if (alloc.started_in_first_slice)
                 {
-					LOG_F(INFO, "Execute %s no backfill no prio", job->id.c_str());
+					
+				/* If data load */
+				if(job->id[0] == 'w')
+				{
+					if (0 == 0) /* TODO : test here if it needs a data load and how long */
+					{
+						set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
+						set_of_node[alloc.used_machines[0]].id_next_dynamic_job = job->unique_number;
+						submit_delay_job(10.0, date, job->unique_number + 1);
+					}
+					else /* I don't need a transfer but i still want to increment this to stop dynamic job whe they are equal to normal jobs TODO : use this instead of my static thing that don't work for more jobs. */
+					{
+						number_dynamic_job_submitted++;
+					}
+				}
+					
+					LOG_F(INFO, "Execute %s no backfill no prio on node %d", job->id.c_str(), alloc.used_machines[0]);
                     _decision->add_execute_job(job->id, alloc.used_machines, date);
                     job_it = _queue->remove_job(job_it);
                 }
@@ -267,29 +328,25 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 				//~ {
 				
 					//~ LOG_F(INFO, "Execute %s in queue sort. %d data load needed", priority_job_after->id.c_str(), (priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size());
-					LOG_F(INFO, "Execute %s in queue sort.", priority_job_after->id.c_str());
-					
-				/* If data load */
-				if (test == 0) /* TODO : to delete. I just test here to do it just one time. */
-                {
-					//~ /* TODO : Add dynamic job for data load a mettre avant et une fois terminé mettre le job prévu sur le noeud */
-					//~ if ((priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size() != 0)
-					//~ {
-						//~ LOG_F(INFO, "Need at least one data load! Start dynamic job");
-						//~ /* Next job is the one that was supposed to run. */	
-					//~ set_of_node[alloc.used_machines[0]].id_next_job = priority_job_after->id;
-					set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
-						//~ /* Add delay job and when it's finished execute this one on the node. */
-						//~ submit_delay_job(10.0, date);
-						//~ string job_id = "w0!" + to_string(11); /* TODO : a incrémenter a chaque fois l'id. */
-						//~ _decision->add_execute_job(job_id, alloc.used_machines, date);
-					//~ }
-					submit_delay_job(10.0, date, "1");
-					test = 1; /* I need to increment the number of dynamic job created ? */
-						//~ /* Quand le job dynamique sera terminé, je mettrais sur le noeud, le vrai job qui était prévu. */
-				}
+					LOG_F(INFO, "Execute %s in queue sort on node %d.", priority_job_after->id.c_str(), alloc.used_machines[0]);
 											
 					_decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);
+					
+				/* If data load */
+				if(priority_job_after->id[0] == 'w')
+				{
+					if (0 == 0) /* TODO : test here if it needs a data load and how long */
+					{
+						set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
+						set_of_node[alloc.used_machines[0]].id_next_dynamic_job = priority_job_after->unique_number;
+						submit_delay_job(10.0, date, priority_job_after->unique_number + 1);
+					}
+					else /* I don't need a transfer but i still want to increment this to stop dynamic job whe they are equal to normal jobs TODO : use this instead of my static thing that don't work for more jobs. */
+					{
+						number_dynamic_job_submitted++;
+					}
+				}
+					
 					_queue->remove_job(priority_job_after);
 					priority_job_after = _queue->first_job_or_nullptr();
 					could_run_priority_job = true;
@@ -304,10 +361,8 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 		LOG_F(1, "sort_queue_while_handling_priority_job ending, %s", _schedule.to_string().c_str());
 }
 
-void My_Scheduler::submit_delay_job(double delay, double date, string id)
-{
-	int nb_submitted_jobs = 11; /* TODO a declarer ou incrementer aileurs. Utile ? Ouu pour les noms des jobs */
-	
+void My_Scheduler::submit_delay_job(double delay, double date, int id)
+{	
     string workload_name = "dynamic";
     //~ string workload_name = "w0";
 
@@ -320,7 +375,7 @@ void My_Scheduler::submit_delay_job(double delay, double date, string id)
     int buf_size = 128;
 
     //~ string job_id = to_string(nb_submitted_jobs);
-    string job_id = id;
+    string job_id = to_string(id);
     string unique_job_id = workload_name + "!" + job_id;
 
     char * buf_job = new char[buf_size];
@@ -334,7 +389,13 @@ void My_Scheduler::submit_delay_job(double delay, double date, string id)
             R"foo({"type": "delay", "delay": %g})foo", delay);
     PPK_ASSERT_ERROR(nb_chars < buf_size - 1);
 	
-	_decision->add_submit_profile(workload_name, profile, buf_profile, date);
+	bool already_sent_profile = profiles_already_sent.count(profile) == 1;
+	profiles_already_sent.insert(profile);
+	
+	if (!already_sent_profile)
+	{
+		_decision->add_submit_profile(workload_name, profile, buf_profile, date);
+	}
 	
     _decision->add_submit_job(workload_name, job_id, profile,
                               buf_job, buf_profile, date,

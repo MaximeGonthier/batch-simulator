@@ -16,11 +16,13 @@
 extern struct node *set_of_node; /* Tab of struct for the nodes. */
 extern int number_of_node;
 extern int dynamic_finished;
+extern int number_dynamic_job_submitted;
 
 struct node /* Struct showing data on the nodes. It will be a tab of struct because we know before hand the number of nodes. */
 {
     IntervalSet data; /* IntervalSet is the set of data loaded in memory. */
     int delay_next_dynamic_job;
+    int id_next_dynamic_job;
 	//~ std::string id_next_job;
 };
 

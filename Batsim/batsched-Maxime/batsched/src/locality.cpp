@@ -111,6 +111,7 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 				temp_max_data_share = (set_of_node[available[i]].data & job->data).size();
 				LOG_F(INFO, "Share between node %d and job %s is: %d", available[i], job->id.c_str(), temp_max_data_share);
 				if (max_data_share < temp_max_data_share)
+				//~ if (max_data_share < temp_max_data_share && set_of_node[i].delay_next_dynamic_job == 0)
 				{
 					max_data_share = temp_max_data_share;
 					index_max_data_share = available[i];

@@ -206,21 +206,21 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
 					  * et gérer le total time au dessus quand même. */
 					  
 					/* Alloc 1: data transfers */
-					Schedule::JobAlloc *alloc_DT = new Schedule::JobAlloc;
-					Job *fake_job = new Job;
-					fake_job->walltime = 10;
-					fake_job->has_walltime = true;
-					fake_job->nb_requested_resources = 1;
-					fake_job->id = 'null';
-					Rational beginning = pit->begin;
-                    alloc_DT->begin = beginning;
-                    alloc_DT->end = alloc_DT->begin + fake_job->walltime;
-                    alloc_DT->started_in_first_slice = (pit == _profile.begin()) ? true : false;
-                    alloc_DT->job = fake_job;
-                    job->allocations[beginning] = alloc_DT;
+					//~ Schedule::JobAlloc *alloc_DT = new Schedule::JobAlloc;
+					//~ Job *fake_job = new Job;
+					//~ fake_job->walltime = 10;
+					//~ fake_job->has_walltime = true;
+					//~ fake_job->nb_requested_resources = 1;
+					//~ fake_job->id = 'null';
+					//~ Rational beginning = pit->begin;
+                    //~ alloc_DT->begin = beginning;
+                    //~ alloc_DT->end = alloc_DT->begin + fake_job->walltime;
+                    //~ alloc_DT->started_in_first_slice = (pit == _profile.begin()) ? true : false;
+                    //~ alloc_DT->job = fake_job;
+                    //~ job->allocations[beginning] = alloc_DT;
                     
 					/* Alloc 2: Le Job */
-                    beginning = pit->begin + 10;
+                    Rational beginning = pit->begin;
                     alloc->begin = beginning;
                     alloc->end = alloc->begin + job->walltime;
                     alloc->started_in_first_slice = (pit == _profile.begin()) ? true : false;

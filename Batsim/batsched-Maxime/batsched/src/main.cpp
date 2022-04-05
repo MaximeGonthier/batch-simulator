@@ -75,6 +75,7 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision &d, Worklo
 /* Maxime */
 //~ struct linked_list *set_of_task;
 int dynamic_finished = 0;
+int number_dynamic_job_submitted = 0;
 
 int main(int argc, char ** argv)
 {
@@ -422,14 +423,13 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
                 string job_id = event_data["job_id"].GetString();
                 
                 LOG_F(INFO, "Job %s submitted", job_id.c_str());
-                LOG_F(INFO, "Job %c submitted", job_id[0]);
                 //~ char c = "w";
 					
 				/* Maxime */
 				//~ if(scheduling_variant == "my_scheduler" && job_id != "w0!11")
 				if(scheduling_variant == "my_scheduler")
                 {
-					if (job_id[0] == 'w')
+					if (job_id[0] == 'w') /* Normal job */
 					{
 						string profile_name = event_data["job"]["profile"].GetString();
 						double delay_job_submitted = event_data["profile"]["delay"].GetDouble();
@@ -455,8 +455,9 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
 						/* Sous la forme d'Intervalset. */
 						workload.add_job_from_json_object_data_aware(event_data["job"], job_id, current_date, data);
 					}
-					else
+					else /* Dynamic job */
 					{
+						number_dynamic_job_submitted++;
 						workload.add_job_from_json_object(event_data["job"], job_id, current_date);
 					}
 				}
@@ -471,13 +472,16 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
             {
                 string job_id = event_data["job_id"].GetString();
                 
+                LOG_F(INFO, "Job %s completed", job_id.c_str());
+
                 //~ if (job_id == "w0!11")
-                if (job_id == "dynamic!1")
+                if (job_id == "dynamic!7")
+                //~ if (job_id == "dynamic!8")
                 {
+					LOG_F(INFO, "End of dynamic job!");
 					dynamic_finished = 1;
 				}
                 
-                LOG_F(INFO, "Job %s completed", job_id.c_str());
                 
                 workload[job_id]->completion_time = current_date;
                 algo->on_job_end(current_date, {job_id});                
