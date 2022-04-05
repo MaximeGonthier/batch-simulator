@@ -80,15 +80,6 @@
             "data": [1, 2, 3, 4],
             "subtime": 0,
             "walltime": 30
-        },
-        {
-            "id": 10,
-            "priority": 0,
-            "profile": "delay.A.0",
-            "res": 1,
-            "data": [1, 2, 3, 4],
-            "subtime": 0,
-            "walltime": 30
         }
     ],
     "nb_res": 64,

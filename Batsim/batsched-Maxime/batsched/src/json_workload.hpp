@@ -21,6 +21,7 @@ struct Job
     mutable std::map<Rational, JobAlloc*> allocations;
     IntervalSet data; /* Maxime */
     //~ int data_load_delay; /* Maxime */
+    int node_to_use; /* Maxime */
 };
 
 struct JobAlloc
@@ -32,7 +33,6 @@ struct JobAlloc
   const Job * job;
   IntervalSet used_machines;
 };
-
 
 struct JobComparator
 {

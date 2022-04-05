@@ -122,7 +122,7 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 			
 			/* If a data load is needed */
 			//~ job->data_load_delay = (job->data - set_of_node[allocated[0]].data).size();
-			set_of_node[allocated[0]].delay_next_dynamic_job = (job->data - set_of_node[allocated[0]].data).size();
+			//~ set_of_node[allocated[0]].delay_next_dynamic_job = (job->data - set_of_node[allocated[0]].data).size();
 			
 			//~ submit_delay_job(10.0, date);
 			

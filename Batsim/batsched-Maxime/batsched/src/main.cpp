@@ -422,34 +422,43 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
                 string job_id = event_data["job_id"].GetString();
                 
                 LOG_F(INFO, "Job %s submitted", job_id.c_str());
-				
+                LOG_F(INFO, "Job %c submitted", job_id[0]);
+                //~ char c = "w";
+					
 				/* Maxime */
 				//~ if(scheduling_variant == "my_scheduler" && job_id != "w0!11")
-				if(scheduling_variant == "my_scheduler" && job_id != "dynamic!11")
+				if(scheduling_variant == "my_scheduler")
                 {
-                    string profile_name = event_data["job"]["profile"].GetString();
-                    double delay_job_submitted = event_data["profile"]["delay"].GetDouble();
-                    //~ double checkpoint_cost = event_data["profile"]["checkpoint_cost"].GetDouble();
-                    int res = event_data["job"]["res"].GetInt();
-                    
-					//~ int temp_tab_data[event_data["job"]["data"].Size()];
-					//~ int i = 0;
-					
-					IntervalSet data;
-					
-                    for (rapidjson::GenericValue<rapidjson::UTF8<> >::ConstValueIterator itr = event_data["job"]["data"].Begin(); itr != event_data["job"]["data"].End(); ++itr)
-                    {
-						data.insert(itr->GetInt());
-						//~ temp_tab_data[i] = itr->GetInt(); /* TODO : pas besoin du coup ? */
-						//~ i++;
+					if (job_id[0] == 'w')
+					{
+						string profile_name = event_data["job"]["profile"].GetString();
+						double delay_job_submitted = event_data["profile"]["delay"].GetDouble();
+						//~ double checkpoint_cost = event_data["profile"]["checkpoint_cost"].GetDouble();
+						int res = event_data["job"]["res"].GetInt();
+						
+						//~ int temp_tab_data[event_data["job"]["data"].Size()];
+						//~ int i = 0;
+						
+						IntervalSet data;
+						
+						for (rapidjson::GenericValue<rapidjson::UTF8<> >::ConstValueIterator itr = event_data["job"]["data"].Begin(); itr != event_data["job"]["data"].End(); ++itr)
+						{
+							data.insert(itr->GetInt());
+							//~ temp_tab_data[i] = itr->GetInt(); /* TODO : pas besoin du coup ? */
+							//~ i++;
+						}
+						
+						/* Ajout dans la liste chainée de cette nouvelle tâche. */
+						//~ set_of_task->add_task_set_of_task(temp_tab_data, event_data["job"]["data"].Size(), job_id);
+						
+						/* TODO-Maxime : Je met directement dans la struct job l'ensemble de ces tâches. Est-ce que on a vraiment besoin de la struct globale set_of_task du coup ? */
+						/* Sous la forme d'Intervalset. */
+						workload.add_job_from_json_object_data_aware(event_data["job"], job_id, current_date, data);
 					}
-					
-					/* Ajout dans la liste chainée de cette nouvelle tâche. */
-					//~ set_of_task->add_task_set_of_task(temp_tab_data, event_data["job"]["data"].Size(), job_id);
-					
-					/* TODO-Maxime : Je met directement dans la struct job l'ensemble de ces tâches. Est-ce que on a vraiment besoin de la struct globale set_of_task du coup ? */
-					/* Sous la forme d'Intervalset. */
-					workload.add_job_from_json_object_data_aware(event_data["job"], job_id, current_date, data);
+					else
+					{
+						workload.add_job_from_json_object(event_data["job"], job_id, current_date);
+					}
 				}
 				else
 				{
@@ -463,7 +472,7 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
                 string job_id = event_data["job_id"].GetString();
                 
                 //~ if (job_id == "w0!11")
-                if (job_id == "dynamic!11")
+                if (job_id == "dynamic!1")
                 {
 					dynamic_finished = 1;
 				}

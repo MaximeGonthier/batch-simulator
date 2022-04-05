@@ -146,6 +146,7 @@ void My_Scheduler::make_decisions(double date,
             if (_queue->contains_job(new_job) && new_job != priority_job_after && new_job->nb_requested_resources <= nb_available_machines)
             {
                 Schedule::JobAlloc alloc = _schedule.add_job_first_fit_data_aware(new_job, _selector);
+                //~ if ( alloc.started_in_first_slice && new_job_id != "null")
                 if ( alloc.started_in_first_slice)
                 {
 					LOG_F(INFO, "Execute %s backfill", new_job_id.c_str());
@@ -162,15 +163,15 @@ void My_Scheduler::make_decisions(double date,
     {
         // Some resources have been released, the whole queue should be traversed.
         /* Try to start a job if a dynamic job just finished */
-        //~ for (int i = 0; i < number_of_node; i++)
-        //~ {
-			//~ if (set_of_node[i].id_next_job != "null")
-			//~ {
-				//~ LOG_F(INFO, "Node %d is not null on next, execute %s", i, set_of_node[i].id_next_job.c_str());
-				//~ _decision->add_execute_job(set_of_node[i].id_next_job, i, date);
-				//~ set_of_node[i].id_next_job = "null";
-			//~ }
-		//~ }
+        for (int i = 0; i < number_of_node; i++)
+        {
+			if (set_of_node[i].delay_next_dynamic_job = 1)
+			{
+				LOG_F(INFO, "Node %d is not null on next", i);
+				_decision->add_execute_job("dynamic!11", i, date);
+				set_of_node[i].delay_next_dynamic_job = 0;
+			}
+		}
         
         auto job_it = _queue->begin();
         int nb_available_machines = _schedule.begin()->available_machines.size();
@@ -257,11 +258,17 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
             could_run_priority_job = false;
 
             // Let's add the priority job into the schedule
-            //~ Schedule::JobAlloc alloc = _schedule.add_job_first_fit(priority_job_after, _selector);
             Schedule::JobAlloc alloc = _schedule.add_job_first_fit_data_aware(priority_job_after, _selector);
 
             if (alloc.started_in_first_slice)
             {
+
+				//~ else
+				//~ {
+				
+					//~ LOG_F(INFO, "Execute %s in queue sort. %d data load needed", priority_job_after->id.c_str(), (priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size());
+					LOG_F(INFO, "Execute %s in queue sort.", priority_job_after->id.c_str());
+					
 				/* If data load */
 				if (test == 0) /* TODO : to delete. I just test here to do it just one time. */
                 {
@@ -270,42 +277,24 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 					//~ {
 						//~ LOG_F(INFO, "Need at least one data load! Start dynamic job");
 						//~ /* Next job is the one that was supposed to run. */	
-						//~ set_of_node[alloc.used_machines[0]].id_next_job = priority_job_after->id;
+					//~ set_of_node[alloc.used_machines[0]].id_next_job = priority_job_after->id;
+					set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
 						//~ /* Add delay job and when it's finished execute this one on the node. */
 						//~ submit_delay_job(10.0, date);
 						//~ string job_id = "w0!" + to_string(11); /* TODO : a incrémenter a chaque fois l'id. */
 						//~ _decision->add_execute_job(job_id, alloc.used_machines, date);
 					//~ }
-					submit_delay_job(10.0, date);
+					submit_delay_job(10.0, date, "1");
 					test = 1; /* I need to increment the number of dynamic job created ? */
-						
 						//~ /* Quand le job dynamique sera terminé, je mettrais sur le noeud, le vrai job qui était prévu. */
 				}
-				//~ else
-				//~ {
-				
-					//~ LOG_F(INFO, "Execute %s in queue sort. %d data load needed", priority_job_after->id.c_str(), (priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size());
-					LOG_F(INFO, "Execute %s in queue sort.", priority_job_after->id.c_str());
-
-					/* I add into the global struct of node the data loaded with this new task. */
-					/* TODO-Maxime : deal with eviction ? */
-					//~ LOG_F(INFO, "Intervalset from job");
-					//~ for (int i = 0; i < priority_job_after->data.size(); i++)
-					//~ {
-						//~ LOG_F(INFO, "%d", priority_job_after->data[i]);
-					//~ }
-					//~ LOG_F(INFO, "Allocated node in fit is %d", alloc.used_machines[0]);
-					//~ set_of_node[alloc.used_machines[0]].data += priority_job_after->data;
-					//~ LOG_F(INFO, "Intervalset from node %d after adding new data", alloc.used_machines[0]);
-					//~ for (int i = 0; i < set_of_node[alloc.used_machines[0]].data.size(); i++)
-					//~ {
-						//~ LOG_F(INFO, "%d", set_of_node[alloc.used_machines[0]].data[i]);
-					//~ }
 											
 					_decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);
 					_queue->remove_job(priority_job_after);
 					priority_job_after = _queue->first_job_or_nullptr();
 					could_run_priority_job = true;
+					
+
 				//~ }
             }
         }
@@ -315,7 +304,7 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 		LOG_F(1, "sort_queue_while_handling_priority_job ending, %s", _schedule.to_string().c_str());
 }
 
-void My_Scheduler::submit_delay_job(double delay, double date)
+void My_Scheduler::submit_delay_job(double delay, double date, string id)
 {
 	int nb_submitted_jobs = 11; /* TODO a declarer ou incrementer aileurs. Utile ? Ouu pour les noms des jobs */
 	
@@ -330,7 +319,8 @@ void My_Scheduler::submit_delay_job(double delay, double date)
 
     int buf_size = 128;
 
-    string job_id = to_string(nb_submitted_jobs);
+    //~ string job_id = to_string(nb_submitted_jobs);
+    string job_id = id;
     string unique_job_id = workload_name + "!" + job_id;
 
     char * buf_job = new char[buf_size];

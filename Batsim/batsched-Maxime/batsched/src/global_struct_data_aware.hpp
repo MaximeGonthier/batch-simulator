@@ -21,7 +21,7 @@ struct node /* Struct showing data on the nodes. It will be a tab of struct beca
 {
     IntervalSet data; /* IntervalSet is the set of data loaded in memory. */
     int delay_next_dynamic_job;
-	//~ std::string *id_current_job;
+	//~ std::string id_next_job;
 };
 
     //~ string id_next_job; /* The next job to be computed on this node. This is used when we have a data load. We create a dynamic job for the job and the job that was supposed to run will be here. It is tested in job completed in the main. */

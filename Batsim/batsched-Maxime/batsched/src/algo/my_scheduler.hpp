@@ -36,5 +36,5 @@ public:
 protected:
     Schedule _schedule;
     bool _debug = false;
-    void submit_delay_job(double delay, double date);
+    void submit_delay_job(double delay, double date, string id);
 };
