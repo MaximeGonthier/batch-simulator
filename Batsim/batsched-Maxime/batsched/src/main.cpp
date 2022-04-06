@@ -366,6 +366,8 @@ int main(int argc, char ** argv)
     return 0;
 }
 
+int test2 = 0;
+
 void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workload & workload, string scheduling_variant, bool call_make_decisions_on_single_nop)
 {
     bool simulation_finished = false;
@@ -471,15 +473,32 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
             else if (event_type == "JOB_COMPLETED") /* Un job est terminé */
             {
                 string job_id = event_data["job_id"].GetString();
-                
                 LOG_F(INFO, "Job %s completed", job_id.c_str());
-
+				
+				//~ if (test2 == 0)
+				//~ {
+					//~ test2 = 1;
+					for (int i = 0; i < 8; i++)
+					{
+						if (set_of_node[i].is_computing_dynamic_job == true && set_of_node[i].dynamic_job_to_execute == job_id.c_str())
+						{
+							LOG_F(INFO, "dynamic %s was done on %d", job_id.c_str(), i);
+							set_of_node[i].is_computing_dynamic_job == false;
+							break;
+						}
+					}
+				//~ }				
                 //~ if (job_id == "w0!11")
-                if (job_id == "dynamic!7")
+                //~ if (job_id == "dynamic!1") /* TODO */
+                if (number_dynamic_job_submitted >= 8)
                 //~ if (job_id == "dynamic!8")
                 {
 					LOG_F(INFO, "End of dynamic job!");
 					dynamic_finished = 1;
+				}
+				else
+				{
+					LOG_F(INFO, "dynamic submitted = %d", number_dynamic_job_submitted);
 				}
                 
                 
@@ -543,6 +562,7 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
                         string job_id = request_object["job_id"].GetString();
                         workload.add_job_from_json_object(request_object["job"], job_id, current_date);
 
+
                         algo->on_query_estimate_waiting_time(current_date, job_id);
                     }
                     else
@@ -590,9 +610,9 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
         // make_decisions is not called if (!call_make_decisions_on_single_nop && single_nop_received)
         if (!(!call_make_decisions_on_single_nop && requested_callback_only))
         {
-            SortableJobOrder::UpdateInformation update_info(current_date);
-            algo->make_decisions(message_date, &update_info, nullptr);
-            algo->clear_recent_data_structures();
+				SortableJobOrder::UpdateInformation update_info(current_date);
+				algo->make_decisions(message_date, &update_info, nullptr);
+				algo->clear_recent_data_structures();
         }
 
         message_date = max(message_date, d.last_date());

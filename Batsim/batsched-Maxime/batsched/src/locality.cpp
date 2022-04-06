@@ -5,6 +5,8 @@
 
 #include "json_workload.hpp"
 #include "pempek_assert.hpp"
+#include <string>
+using namespace std;
 
 
 ResourceSelector::ResourceSelector()
@@ -95,7 +97,7 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 			unsigned int i = 0;
 			int max_data_share = -1;
 			int temp_max_data_share = 0;
-			int index_max_data_share = 0;
+			int index_max_data_share = -1;
 			
 			LOG_F(INFO, "Available node at the beggining of fit");
 			for (i = 0; i < available.size(); i++)
@@ -111,12 +113,17 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 				temp_max_data_share = (set_of_node[available[i]].data & job->data).size();
 				LOG_F(INFO, "Share between node %d and job %s is: %d", available[i], job->id.c_str(), temp_max_data_share);
 				if (max_data_share < temp_max_data_share)
-				//~ if (max_data_share < temp_max_data_share && set_of_node[i].delay_next_dynamic_job == 0)
+				//~ if (max_data_share < temp_max_data_share && set_of_node[i].need_to_execute_dynamic_job == false && set_of_node[i].need_to_submit_dynamic_job == false && set_of_node[i].is_computing_dynamic_job == false)
 				{
 					max_data_share = temp_max_data_share;
 					index_max_data_share = available[i];
 					LOG_F(INFO, "New max data share");
 				}
+			}
+			if (index_max_data_share == -1)
+			{
+				LOG_F(INFO, "Return false");
+				return false;
 			}
 			allocated = index_max_data_share;
 			PPK_ASSERT_ERROR(allocated.size() == (unsigned int)job->nb_requested_resources);
@@ -138,6 +145,14 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 			//~ }
 			//~ LOG_F(INFO, "Allocated node in fit is %d", allocated[0]);
 			set_of_node[allocated[0]].data += job->data;
+			set_of_node[allocated[0]].current_job = job->id.c_str();
+			set_of_node[allocated[0]].id_current_job = job->unique_number + 1;
+			set_of_node[i].need_to_submit_dynamic_job = true;
+			
+			//~ string str = job->id.c_str();
+			//~ str = str.erase(0, 2);
+			//~ set_of_node[i].dynamic_job_to_execute = "dynamic!" + str;
+			
 			//~ LOG_F(INFO, "Intervalset from node %d", allocated[0]);
 			//~ for (i = 0; i < set_of_node[allocated[0]].data.size(); i++)
 			//~ {

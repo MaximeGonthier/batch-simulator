@@ -36,6 +36,6 @@ public:
 protected:
     Schedule _schedule;
     bool _debug = false;
-    void submit_delay_job(double delay, double date, int id);
+    void submit_delay_job(double delay, double date, string id);
     std::set<std::string> profiles_already_sent;
 };

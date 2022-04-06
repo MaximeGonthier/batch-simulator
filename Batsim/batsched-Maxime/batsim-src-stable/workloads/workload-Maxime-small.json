@@ -62,6 +62,24 @@
             "data": [1, 2, 3, 4],
             "subtime": 0,
             "walltime": 30
+        },
+        {
+            "id": 8,
+            "priority": 0,
+            "profile": "delay.A.2",
+            "res": 1,
+            "data": [1, 2, 3, 4],
+            "subtime": 0,
+            "walltime": 30
+        },
+        {
+            "id": 9,
+            "priority": 0,
+            "profile": "delay.A.2",
+            "res": 1,
+            "data": [1, 2, 3, 4],
+            "subtime": 0,
+            "walltime": 30
         }
     ],
     "nb_res": 64,
