@@ -287,6 +287,7 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
     // If the priority job has changed
     if (priority_job_after != priority_job_before)
     {
+    {
         // If there was a priority job before, let it be removed from the schedule
         if (priority_job_before != nullptr)
             _schedule.remove_job_if_exists(priority_job_before);
@@ -302,36 +303,12 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
 
             if (alloc.started_in_first_slice)
             {
-
-				//~ else
-				//~ {
-				
-					//~ LOG_F(INFO, "Execute %s in queue sort. %d data load needed", priority_job_after->id.c_str(), (priority_job_after->data - set_of_node[alloc.used_machines[0]].data).size());
-					LOG_F(INFO, "Execute %s in queue sort on node %d.", priority_job_after->id.c_str(), alloc.used_machines[0]);
+				LOG_F(INFO, "Execute %s in queue sort on node %d.", priority_job_after->id.c_str(), alloc.used_machines[0]);
 											
-					_decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);
-					
-				//~ /* If data load */
-				//~ if(priority_job_after->id[0] == 'w')
-				//~ {
-					//~ if (0 == 0) /* TODO : test here if it needs a data load and how long */
-					//~ {
-						//~ set_of_node[alloc.used_machines[0]].delay_next_dynamic_job = 1;
-						//~ set_of_node[alloc.used_machines[0]].id_next_dynamic_job = priority_job_after->unique_number;
-						//~ submit_delay_job(10.0, date, priority_job_after->unique_number + 1);
-					//~ }
-					//~ else /* I don't need a transfer but i still want to increment this to stop dynamic job whe they are equal to normal jobs TODO : use this instead of my static thing that don't work for more jobs. */
-					//~ {
-						//~ number_dynamic_job_submitted++;
-					//~ }
-				//~ }
-					
-					_queue->remove_job(priority_job_after);
-					priority_job_after = _queue->first_job_or_nullptr();
-					could_run_priority_job = true;
-					
-
-				//~ }
+				_decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);					
+				_queue->remove_job(priority_job_after);
+				priority_job_after = _queue->first_job_or_nullptr();
+				could_run_priority_job = true;
             }
         }
     }
