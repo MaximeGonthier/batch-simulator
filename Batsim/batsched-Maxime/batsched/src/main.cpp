@@ -478,28 +478,28 @@ void run(Network & n, ISchedulingAlgorithm * algo, SchedulingDecision & d, Workl
 				//~ if (test2 == 0)
 				//~ {
 					//~ test2 = 1;
-					for (int i = 0; i < 8; i++)
-					{
-						if (set_of_node[i].is_computing_dynamic_job == true && set_of_node[i].dynamic_job_to_execute == job_id.c_str())
-						{
-							LOG_F(INFO, "dynamic %s was done on %d", job_id.c_str(), i);
-							set_of_node[i].is_computing_dynamic_job == false;
-							break;
-						}
-					}
+					//~ for (int i = 0; i < 8; i++)
+					//~ {
+						//~ if (set_of_node[i].is_computing_dynamic_job == true && set_of_node[i].dynamic_job_to_execute == job_id.c_str())
+						//~ {
+							//~ LOG_F(INFO, "dynamic %s was done on %d", job_id.c_str(), i);
+							//~ set_of_node[i].is_computing_dynamic_job == false;
+							//~ break;
+						//~ }
+					//~ }
 				//~ }				
                 //~ if (job_id == "w0!11")
                 //~ if (job_id == "dynamic!1") /* TODO */
-                if (number_dynamic_job_submitted >= 8)
+                //~ if (number_dynamic_job_submitted >= 8)
                 //~ if (job_id == "dynamic!8")
-                {
-					LOG_F(INFO, "End of dynamic job!");
-					dynamic_finished = 1;
-				}
-				else
-				{
-					LOG_F(INFO, "dynamic submitted = %d", number_dynamic_job_submitted);
-				}
+                //~ {
+					//~ LOG_F(INFO, "End of dynamic job!");
+					//~ dynamic_finished = 1;
+				//~ }
+				//~ else
+				//~ {
+					//~ LOG_F(INFO, "dynamic submitted = %d", number_dynamic_job_submitted);
+				//~ }
                 
                 
                 workload[job_id]->completion_time = current_date;

@@ -106,7 +106,7 @@ void My_Scheduler::make_decisions(double date,
     // Let's remove finished jobs from the schedule
     for (const string & ended_job_id : _jobs_ended_recently)
     {
-		LOG_F(INFO, "%s ended recently", ended_job_id.c_str());
+		//~ LOG_F(INFO, "%s ended recently", ended_job_id.c_str());
 		if (ended_job_id[0] == 'w')
 		{
 					//~ for (int i = 0; i < 8; i++)
@@ -152,7 +152,8 @@ void My_Scheduler::make_decisions(double date,
             LOG_F(INFO, "Date=%g. Rejecting job '%s' as it has no walltime", date, new_job_id.c_str());
             _decision->add_reject_job(new_job_id, date);
         }
-        else if (new_job->id[0] == 'w') /* Add job in queue. */
+        //~ else if (new_job->id[0] == 'w') /* Add job in queue. */
+        else
         {
             _queue->append_job(new_job, update_info);
             recently_queued_jobs.push_back(new_job_id);
@@ -262,7 +263,7 @@ void My_Scheduler::make_decisions(double date,
      * Il faut que je compte le nb de jobs dynamique ou que je sache quand ils sont tous finis pour pouvoir déclencher cela. */
     //~ if (dynamic_finished == 1)
     //~ {
-		LOG_F(INFO, "Call finish dynamic jobs");
+		//~ LOG_F(INFO, "Call finish dynamic jobs");
 		_decision->add_scheduler_finished_submitting_jobs(date);
 	//~ }
 }

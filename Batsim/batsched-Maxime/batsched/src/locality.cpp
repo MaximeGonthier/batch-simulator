@@ -99,11 +99,11 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 			int temp_max_data_share = 0;
 			int index_max_data_share = -1;
 			
-			LOG_F(INFO, "Available node at the beggining of fit");
-			for (i = 0; i < available.size(); i++)
-			{
-				LOG_F(INFO, "%d", available[i]);
-			}
+			//~ LOG_F(INFO, "Available node at the beggining of fit");
+			//~ for (i = 0; i < available.size(); i++)
+			//~ {
+				//~ LOG_F(INFO, "%d", available[i]);
+			//~ }
 			
 			/* We are using IntervalSet! So we can quickly get the number of intersection between 
 			 * the IntervalSet of the nodes and of the jobs! That's cool! */
@@ -111,13 +111,13 @@ bool DataAwareResourceSelector::fit(const Job *job, const IntervalSet &available
 			for (i = 0; i < available.size(); i++)
 			{
 				temp_max_data_share = (set_of_node[available[i]].data & job->data).size();
-				LOG_F(INFO, "Share between node %d and job %s is: %d", available[i], job->id.c_str(), temp_max_data_share);
+				//~ LOG_F(INFO, "Share between node %d and job %s is: %d", available[i], job->id.c_str(), temp_max_data_share);
 				if (max_data_share < temp_max_data_share)
 				//~ if (max_data_share < temp_max_data_share && set_of_node[i].need_to_execute_dynamic_job == false && set_of_node[i].need_to_submit_dynamic_job == false && set_of_node[i].is_computing_dynamic_job == false)
 				{
 					max_data_share = temp_max_data_share;
 					index_max_data_share = available[i];
-					LOG_F(INFO, "New max data share");
+					//~ LOG_F(INFO, "New max data share");
 				}
 			}
 			if (index_max_data_share == -1)

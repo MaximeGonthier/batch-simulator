@@ -205,22 +205,7 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
 					  * Et essayer d'avoir une resa plus longue quand on a besoin d'un transferts 
 					  * et gérer le total time au dessus quand même. */
 					  
-					/* Alloc 1: data transfers */
-					//~ Schedule::JobAlloc *alloc_DT = new Schedule::JobAlloc;
-					//~ Job *fake_job = new Job;
-					//~ fake_job->walltime = 10;
-					//~ fake_job->has_walltime = true;
-					//~ fake_job->nb_requested_resources = 1;
-					//~ fake_job->id = 'null';
-					//~ Rational beginning = pit->begin;
-                    //~ alloc_DT->begin = beginning;
-                    //~ alloc_DT->end = alloc_DT->begin + fake_job->walltime;
-                    //~ alloc_DT->started_in_first_slice = (pit == _profile.begin()) ? true : false;
-                    //~ alloc_DT->job = fake_job;
-                    //~ job->allocations[beginning] = alloc_DT;
-                    
-					/* Alloc 2: Le Job */
-					/* Juste augmùenter le wall time si il manque la donnée. */
+                  	/* Juste augmenter le wall time si il manque la donnée. */
 					//~ job->walltime = job->walltime + 300;
 					if (totalTime < job->walltime + 300)
 					{
@@ -232,7 +217,7 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
 					
                     Rational beginning = pit->begin;
                     alloc->begin = beginning;
-                    alloc->end = alloc->begin + job->walltime;
+                    alloc->end = alloc->begin + job->walltime + 300;
                     alloc->started_in_first_slice = (pit == _profile.begin()) ? true : false;
                     alloc->job = job;
                     job->allocations[beginning] = alloc;
@@ -240,17 +225,23 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                     // Let's split the current time slice if needed
                     TimeSliceIterator first_slice_after_split;
                     TimeSliceIterator second_slice_after_split;
-                    //~ TimeSliceIterator third_slice_after_split;
                     Rational split_date = pit->begin + job->walltime;
-                    //~ Rational split_date = pit->begin + 10;
                     split_slice(pit, split_date, first_slice_after_split, second_slice_after_split);
-                    //~ split_date = pit->begin + 10 + job->walltime;
-                    //~ split_slice(pit, split_date, second_slice_after_split, third_slice_after_split);
+                    
+                    /* Deuxième split apres le walltime du job */
+                    TimeSliceIterator third_slice_after_split;
+                    split_date = pit->begin + job->walltime + 300;
+                    split_slice(pit, split_date, second_slice_after_split, third_slice_after_split);
 						
                     // Let's remove the allocated machines from the available machines of the time slice
                     first_slice_after_split->available_machines.remove(alloc->used_machines);
                     first_slice_after_split->nb_available_machines -= job->nb_requested_resources;
                     first_slice_after_split->allocated_jobs[job] = alloc->used_machines;
+                    
+                    // Enlève les machines aussi sur ce nouveau split
+                    third_slice_after_split->available_machines.remove(alloc->used_machines);
+                    third_slice_after_split->nb_available_machines -= job->nb_requested_resources;
+                    third_slice_after_split->allocated_jobs[job] = alloc->used_machines;
 
                     if (_debug)
                     {
@@ -291,28 +282,11 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                         if (selector->fit(job, availableMachines, alloc->used_machines))
                         {
                             alloc->begin = pit->begin;
-                            alloc->end = alloc->begin + job->walltime;
+                            alloc->end = alloc->begin + job->walltime + 300;
                             alloc->started_in_first_slice = (pit == _profile.begin()) ? true : false;
                             alloc->job = job;
                             job->allocations[alloc->begin] = alloc;
-                            
-                            /* Just printing. */
-							LOG_F(INFO, "Available nodes are");
-							for (unsigned int i = 0; i < availableMachines.size(); i++)
-							{
-								LOG_F(INFO, "%d", availableMachines[i]);
-							}
-							
-							/* Here I can choose a node! */
-							//~ alloc->used_machines = availableMachines.first_element();
-							//~ LOG_F(INFO, "Giving from available nodes %d", availableMachines.first_element());
-							//~ LOG_F(INFO, "Nodes in alloc->used_machine are");
-							//~ for (unsigned int i = 0; i < alloc->used_machines.size(); i++)
-							//~ {
-								//~ LOG_F(INFO, "%d", alloc->used_machines[i]);
-							//~ }
-							
-
+                            							
                             // Let's remove the used machines from the slices before pit2
                             auto pit3 = pit;
                             for (; pit3 != pit2; ++pit3)
@@ -327,12 +301,21 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                             TimeSliceIterator second_slice_after_split;
                             Rational split_date = pit->begin + job->walltime;
                             split_slice(pit2, split_date, first_slice_after_split, second_slice_after_split);
-	
+                            
+                            /* Deuxième split apres le walltime du job */
+							TimeSliceIterator third_slice_after_split;
+							split_date = pit->begin + job->walltime + 300;
+							split_slice(pit, split_date, second_slice_after_split, third_slice_after_split);
+						 
                             // Let's remove the allocated machines from the available machines of the time slice
-                            LOG_F(INFO, "Remove %d from available", alloc->used_machines[0]);
                             first_slice_after_split->available_machines -= alloc->used_machines;
                             first_slice_after_split->nb_available_machines -= job->nb_requested_resources;
                             first_slice_after_split->allocated_jobs[job] = alloc->used_machines;
+
+							// Enlève les machines aussi sur ce nouveau split
+							third_slice_after_split->available_machines.remove(alloc->used_machines);
+							third_slice_after_split->nb_available_machines -= job->nb_requested_resources;
+							third_slice_after_split->allocated_jobs[job] = alloc->used_machines;
 
                             if (_debug)
                             {
