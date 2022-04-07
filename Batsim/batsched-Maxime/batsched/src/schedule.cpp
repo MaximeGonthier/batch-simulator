@@ -239,9 +239,9 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                     first_slice_after_split->allocated_jobs[job] = alloc->used_machines;
                     
                     // Enlève les machines aussi sur ce nouveau split
-                    third_slice_after_split->available_machines.remove(alloc->used_machines);
-                    third_slice_after_split->nb_available_machines -= job->nb_requested_resources;
-                    third_slice_after_split->allocated_jobs[job] = alloc->used_machines;
+                    second_slice_after_split->available_machines.remove(alloc->used_machines);
+                    second_slice_after_split->nb_available_machines -= job->nb_requested_resources;
+                    second_slice_after_split->allocated_jobs[job] = alloc->used_machines;
 
                     if (_debug)
                     {
@@ -269,12 +269,14 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                 {
                     availableMachines &= pit2->available_machines;
                     availableMachinesCount = (int)availableMachines.size();
+                    //~ totalTime += pit2->length;
                     totalTime += pit2->length;
 
                     if (availableMachinesCount < job->nb_requested_resources) // We don't have enough machines to run the job
                         break;
                     else if (totalTime >= job->walltime) // The job fits in the slices [pit, pit2[ (temporarily speaking)
                     {
+						LOG_F(INFO, "Fit in the else");
                         // Let's create the job allocation
                         JobAlloc *alloc = new JobAlloc;
 
@@ -313,9 +315,9 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                             first_slice_after_split->allocated_jobs[job] = alloc->used_machines;
 
 							// Enlève les machines aussi sur ce nouveau split
-							third_slice_after_split->available_machines.remove(alloc->used_machines);
-							third_slice_after_split->nb_available_machines -= job->nb_requested_resources;
-							third_slice_after_split->allocated_jobs[job] = alloc->used_machines;
+							second_slice_after_split->available_machines.remove(alloc->used_machines);
+							second_slice_after_split->nb_available_machines -= job->nb_requested_resources;
+							second_slice_after_split->allocated_jobs[job] = alloc->used_machines;
 
                             if (_debug)
                             {
