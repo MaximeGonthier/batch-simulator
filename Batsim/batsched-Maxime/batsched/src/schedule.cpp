@@ -220,6 +220,16 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                     //~ job->allocations[beginning] = alloc_DT;
                     
 					/* Alloc 2: Le Job */
+					/* Juste augmùenter le wall time si il manque la donnée. */
+					//~ job->walltime = job->walltime + 300;
+					if (totalTime < job->walltime + 300)
+					{
+						//aller dans le else
+						LOG_F(INFO, "Does not fit, totalTime < job->walltime");
+						goto else_goto;
+					}
+						
+					
                     Rational beginning = pit->begin;
                     alloc->begin = beginning;
                     alloc->end = alloc->begin + job->walltime;
@@ -255,6 +265,7 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
             }
             else
             {
+				else_goto: ;
                 // TODO : merge this big else with its if, as the "else" is a more general case of the "if"
                 // The job does not fit in the current time slice (temporarily speaking)
                 auto availableMachines = pit->available_machines;

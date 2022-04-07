@@ -88,21 +88,18 @@ void My_Scheduler::make_decisions(double date,
                                      SortableJobOrder::CompareInformation *compare_info)
 {
 	LOG_F(INFO, "Beggining of make_decision.");	
-	for (int i = 0; i < 8; i++)
-	{
-		if (set_of_node[i].need_to_execute_dynamic_job == true)
-		//~ test3 = 2;
-		{
-			set_of_node[i].need_to_execute_dynamic_job = false;
-			set_of_node[i].is_computing_dynamic_job = true;
-			LOG_F(INFO, "Execute dynamic %s on %d in new ressource released", set_of_node[i].dynamic_job_to_execute.c_str(), i);
-			_decision->add_execute_job(set_of_node[i].dynamic_job_to_execute, i, date);
-			//~ _queue->remove_job(set_of_node[i].dynamic_job_to_execute);
-			set_of_node[i].delay_next_dynamic_job = 0;
-			set_of_node[i].id_current_job = -1;
-			//~ return;
-		}
-	}
+	//~ for (int i = 0; i < 8; i++)
+	//~ {
+		//~ if (set_of_node[i].need_to_execute_dynamic_job == true)
+		//~ {
+			//~ set_of_node[i].need_to_execute_dynamic_job = false;
+			//~ set_of_node[i].is_computing_dynamic_job = true;
+			//~ LOG_F(INFO, "Execute dynamic %s on %d in new ressource released", set_of_node[i].dynamic_job_to_execute.c_str(), i);
+			//~ _decision->add_execute_job(set_of_node[i].dynamic_job_to_execute, i, date);
+			//~ set_of_node[i].delay_next_dynamic_job = 0;
+			//~ set_of_node[i].id_current_job = -1;
+		//~ }
+	//~ }
 	
     const Job * priority_job_before = _queue->first_job_or_nullptr();
 
@@ -112,37 +109,28 @@ void My_Scheduler::make_decisions(double date,
 		LOG_F(INFO, "%s ended recently", ended_job_id.c_str());
 		if (ended_job_id[0] == 'w')
 		{
-				//~ if (test3 == 0)
-				//~ {
-					//~ test3 = 1;
-					//~ dynamic_to_execute = 1;
-					for (int i = 0; i < 8; i++)
-					{
-						if (set_of_node[i].current_job == ended_job_id.c_str())
-						{
-							id_dynamic_to_execute = i;
-							LOG_F(INFO, "%s was done on %d", ended_job_id.c_str(), i);
-							set_of_node[i].need_to_execute_dynamic_job = true;
-							set_of_node[i].need_to_submit_dynamic_job = false;
-							set_of_node[i].current_job = 'null';
-							string str = ended_job_id.c_str();
-							str = str.erase(0, 2);
-							while(str[0] != '!')
-							{
-								str = str.erase(0, 1);
-							}
-							str = str.erase(0, 1);
-							//~ set_of_node[i].dynamic_job_to_execute = "dynamic!" + to_string(set_of_node[i].id_current_job);
-							set_of_node[i].dynamic_job_to_execute = "dynamic!" + str;
-							//~ number_dynamic_job_submitted++;
-							submit_delay_job(10.0, date, str);
-							LOG_F(INFO, "Submit ok of %s", set_of_node[i].dynamic_job_to_execute.c_str());
-							//~ return;
-						}
-					}
-					LOG_F(INFO, "End of for");
-				//~ }	
-
+					//~ for (int i = 0; i < 8; i++)
+					//~ {
+						//~ if (set_of_node[i].current_job == ended_job_id.c_str())
+						//~ {
+							//~ id_dynamic_to_execute = i;
+							//~ LOG_F(INFO, "%s was done on %d", ended_job_id.c_str(), i);
+							//~ set_of_node[i].need_to_execute_dynamic_job = true;
+							//~ set_of_node[i].need_to_submit_dynamic_job = false;
+							//~ set_of_node[i].current_job = 'null';
+							//~ string str = ended_job_id.c_str();
+							//~ str = str.erase(0, 2);
+							//~ while(str[0] != '!')
+							//~ {
+								//~ str = str.erase(0, 1);
+							//~ }
+							//~ str = str.erase(0, 1);
+							//~ set_of_node[i].dynamic_job_to_execute = "dynamic!" + str;
+							//~ submit_delay_job(10.0, date, str);
+							//~ LOG_F(INFO, "Submit ok of %s", set_of_node[i].dynamic_job_to_execute.c_str());
+						//~ }
+					//~ }
+					//~ LOG_F(INFO, "End of for");
 			/* Check if current terminated job has a delay */
 			_schedule.remove_job((*_workload)[ended_job_id]);
 		}
@@ -272,12 +260,11 @@ void My_Scheduler::make_decisions(double date,
     
     /* Pour dire que les jobs dynamiques sont terminées. 
      * Il faut que je compte le nb de jobs dynamique ou que je sache quand ils sont tous finis pour pouvoir déclencher cela. */
-    if (dynamic_finished == 1)
-    //~ if (test == 1)
-    {
+    //~ if (dynamic_finished == 1)
+    //~ {
 		LOG_F(INFO, "Call finish dynamic jobs");
 		_decision->add_scheduler_finished_submitting_jobs(date);
-	}
+	//~ }
 }
 
 
