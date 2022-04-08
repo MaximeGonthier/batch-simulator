@@ -302,18 +302,11 @@ void My_Scheduler::sort_queue_while_handling_priority_job(const Job * priority_j
             if (alloc.started_in_first_slice)
             {
 				LOG_F(INFO, "Execute %s in queue sort on node %d.", priority_job_after->id.c_str(), alloc.used_machines[0]);
-				//~ if (test == 0)
-				//~ {							
-					//~ _decision->add_execute_job("w0!22", alloc.used_machines, (double)update_info->current_date); 
-					//~ test = 1; 
-				//~ }
-				//~ else
-				//~ {					
+				
 				_decision->add_execute_job(priority_job_after->id, alloc.used_machines, (double)update_info->current_date);					
 				_queue->remove_job(priority_job_after);
 				priority_job_after = _queue->first_job_or_nullptr();
 				could_run_priority_job = true;
-				//~ }
             }
         }
     }

@@ -195,7 +195,7 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                 if (selector->fit(job, pit->available_machines, alloc->used_machines))
                 {				
                   	/* On a besoin d'un transfert de durée 30 */
-					int temps_transfert = 10;
+					int temps_transfert = 15;
 					if (totalTime < job->walltime + temps_transfert)
 					{
 						LOG_F(INFO, "Does not fit for %s", job->id.c_str());	
@@ -235,11 +235,17 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                     //~ TimeSliceIterator third_slice_after_split;
                     //~ TimeSliceIterator fourth_slice_after_split;
                     //~ split_date = pit->begin + temps_transfert + job->walltime; 
-                    //~ split_slice(second_slice_after_split, split_date, third_slice_after_split, fourth_slice_after_split);
+                    //~ split_slice(pit, split_date, third_slice_after_split, fourth_slice_after_split);
                     //~ third_slice_after_split->available_machines.remove(alloc->used_machines);
                     //~ third_slice_after_split->nb_available_machines -= job->nb_requested_resources;
                     //~ third_slice_after_split->allocated_jobs[job] = alloc->used_machines; /* Prends le vrai job içi */
                     
+                    //~ LOG_F(INFO, "pit %s", pit->to_string().c_str());
+                    //~ LOG_F(INFO, "first_slice_after_split %s", first_slice_after_split->to_string().c_str());
+                    //~ LOG_F(INFO, "second_slice_after_split %s", second_slice_after_split->to_string().c_str());
+                    //~ LOG_F(INFO, "third_slice_after_split %s", third_slice_after_split->to_string().c_str());
+                    //~ LOG_F(INFO, "fourth_slice_after_split %s", fourth_slice_after_split->to_string().c_str());
+                                                   
                     //bool Schedule::split_slice(Schedule::TimeSliceIterator slice_to_split, Rational date, Schedule::TimeSliceIterator &first_slice_after_split, Schedule::TimeSliceIterator &second_slice_after_split)
 
 					/* Tentative 2 */
@@ -264,20 +270,29 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                     TimeSliceIterator second_slice_after_split;
                     Rational split_date = pit->begin + temps_transfert;
                     split_slice(pit, split_date, first_slice_after_split, second_slice_after_split);
-                    // Let's remove the allocated machines from the available machines of the time slice
-                    first_slice_after_split->available_machines.remove(alloc->used_machines);
-                    first_slice_after_split->nb_available_machines -= job->nb_requested_resources;
-                    first_slice_after_split->allocated_jobs[fake_job] = alloc->used_machines;
                     
                     /* On fais une slice qui va de begin + transfert à begin + transferts + walltime */
                     TimeSliceIterator third_slice_after_split;
                     TimeSliceIterator fourth_slice_after_split;
                     split_date = pit->begin + temps_transfert + job->walltime; 
-                    split_slice(pit, split_date, third_slice_after_split, fourth_slice_after_split);
+                    split_slice(second_slice_after_split, split_date, third_slice_after_split, fourth_slice_after_split);
+                    //~ split_slice(second_slice_after_split, split_date, second_slice_after_split, third_slice_after_split);
+                    
+					// Let's remove the allocated machines from the available machines of the time slice
+                    first_slice_after_split->available_machines.remove(alloc->used_machines);
+                    first_slice_after_split->nb_available_machines -= job->nb_requested_resources;
+                    first_slice_after_split->allocated_jobs[fake_job] = alloc->used_machines;
+
                     third_slice_after_split->available_machines.remove(alloc->used_machines);
                     third_slice_after_split->nb_available_machines -= job->nb_requested_resources;
                     third_slice_after_split->allocated_jobs[job] = alloc->used_machines; /* Prends le vrai job içi */
-                                        
+                    
+                    LOG_F(INFO, "pit %s", pit->to_string().c_str());
+                    LOG_F(INFO, "first_slice_after_split %s", first_slice_after_split->to_string().c_str());
+                    LOG_F(INFO, "second_slice_after_split %s", second_slice_after_split->to_string().c_str());
+                    LOG_F(INFO, "third_slice_after_split %s", third_slice_after_split->to_string().c_str());
+                    LOG_F(INFO, "fourth_slice_after_split %s", fourth_slice_after_split->to_string().c_str());
+                               
                     if (_debug)
                     {
                         LOG_F(1, "Added job '%s' (size=%d, walltime=%g). Output number %d. %s", job->id.c_str(),
