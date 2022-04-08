@@ -107,8 +107,8 @@ void My_Scheduler::make_decisions(double date,
     for (const string & ended_job_id : _jobs_ended_recently)
     {
 		//~ LOG_F(INFO, "%s ended recently", ended_job_id.c_str());
-		if (ended_job_id[0] == 'w')
-		{
+		//~ if (ended_job_id[0] == 'w')
+		//~ {
 					//~ for (int i = 0; i < 8; i++)
 					//~ {
 						//~ if (set_of_node[i].current_job == ended_job_id.c_str())
@@ -133,7 +133,7 @@ void My_Scheduler::make_decisions(double date,
 					//~ LOG_F(INFO, "End of for");
 			/* Check if current terminated job has a delay */
 			_schedule.remove_job((*_workload)[ended_job_id]);
-		}
+		//~ }
 	}
 
     // Let's handle recently released jobs
