@@ -19,6 +19,7 @@
 \newcommand{\bandwidth}{\mathit{BW}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{Subtime}\xspace}
+\newcommand{\walltime}{\mathit{Walltime}\xspace}
 \newcommand{\completiontime}{\mathit{Completiontime}\xspace}
 \newcommand{\start}{\mathit{Starttime}\xspace}
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
@@ -26,6 +27,8 @@
 \newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
 \newcommand{\nbloads}{\ensuremath{\mathit{\mathit{Loads}}}\xspace}
 \newcommand{\live}{\ensuremath{L}\xspace}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 \title{Data Aware Batch Scheduling}
 \author{Maxime GONTHIER - Carl NETTELBLAD - Elisabeth LARSSON \\ Samuel THIBAULT - Loris MARCHAL}
@@ -315,6 +318,54 @@ simulate the use case of Uppsala's University cluster:
 \paragraph{How to simulate data transfers ?}
 We can add dynamic job of duration the time it would take to transfer the file on the node in order
 to simulate file loads.
+
+\section{Algorithm}
+
+When we need to choose a node for job $J_i$ we know the following informations:
+\begin{itemize}
+	\item $\submissiontime(J_i)$
+	\item $\walltime(J_i)$
+	\item $\inputs(J_i)$
+	\item Size of files for the job: $\memory(\inputs(J_i))$
+	\item For each $i$, $\inputs(\Node{i})$
+	\item Size of files already on memory of the node: For each $i$, $\memory(\inputs(\Node{i}))$
+	\item Bandwidth: $\bandwidth$
+	\item Memory that was mapped ?
+\end{itemize}
+
+\paragraph{Intuition} 
+We could estimate the time it will take to transfer all of the input files of job $J_i$ depending on the node:
+$$
+	\mathit{Transfertime\_J_i}(\Node{j}) = \frac{\memory(\inputs(J_i) \notin \inputs(\Node{j}))}{\bandwidth}
+$$
+
+With this information we can do two things:
+\begin{itemize}
+	\item Schedule $J_i$ on an available node $j$ that achieve $min(\mathit{Transfertime\_J_i}(\Node{j}))$
+	\item Schedule $J_i$ on an non-available node $j$ such as $\mathit{Transfertime\_J_i}(\Node{j}) + \walltime(current~job~on~node~j) < min(\mathit{Transfertime\_J_i}(\Node{k})), k \in available~nodes$
+\end{itemize}
+
+\todo[inline]{Maxime: Does it make sense ?}
+
+\begin{algorithm}[htbp]
+	\caption{Data Aware Batch Scheduler (DABS)}\label{algo.dabs}
+\hspace*{\algorithmicindent} \textbf{Input: job $J_i$, set of node} \\
+ %~ \hspace*{\algorithmicindent} \textbf{Output: $\sigma$}
+	\begin{algorithmic}[1]
+		\State  
+		%~ \State For each \GPU{k}, $\mathit{InMem}(k)\gets \emptyset$
+		%~ \While{all tasks have not been allocated}
+		%~ \State  $T_i\gets \mathit{pop}(\taskset)$
+		%~ \State For each \GPU{k}, compute $C_k(T_i)$ using Eq.~\ref{eq.dmda_model}
+		%~ \State Select $k$ such that $C_k(T_i)$ is minimal
+		  %~ \State Allocate $T_i$ on \GPU{k}
+		  %~ \For{each $D_i \in \inputs(T_i)$}
+		  %~ \State Request data prefetch for $D_j$ on \GPU{k}
+		  %~ \State Add $D_i$ to $\mathit{InMem}(k)$
+		  %~ \EndFor
+		  %~ \EndWhile
+	\end{algorithmic}
+\end{algorithm}
 
 \printbibliography
 \end{document}
