@@ -1,0 +1,4 @@
+{ id: 1 memory: 500 bandwidth: 150.0 data: [] }
+{ id: 2 memory: 500 bandwidth: 150.0 data: [] }
+{ id: 3 memory: 500 bandwidth: 150.0 data: [] }
+{ id: 4 memory: 500 bandwidth: 150.0 data: [] }

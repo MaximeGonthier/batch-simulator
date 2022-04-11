@@ -21,13 +21,24 @@
 2021-11-04 23:51:45 jobstate=COMPLETED jobid=22831033 username=maxil account=p2018003 start=1636061959 end=1636066304 submit=1636019669 nodes=r461 procs=2 batch=yes jobname=HC_HGDP00769_Japanese.13 partition=core limit=3-00:00:00
 
 2021-11-04 23:51:51 jobstate=COMPLETED jobid=22839641 username=madeline account=p2018002 start=1636066245 end=1636066311 submit=1636065958 nodes=r241 procs=1 batch=yes jobname=snakejob.af_counts.1691.sh partition=core limit=1-00:00:00
+----------------------------------------------------------------
 
 One tool that has appeared many times is Kraken2 ( https://github.com/DerrickWood/kraken2/tree/master/src ). It can be used with reference DBs of widely different size, from 5 GB to 400 GB. It mmaps that reference file. About a year ago (around April 14 2021), the user name juliette was running 40 or so jobs, accessing the file /sw/data/Kraken2_data/latest_nt/hash.k2d. It was smaller then, around 200 GB. It’s currently 360 GB. A specific job ID from that period was 19414225.
 
- 
-
 A specific set of runs causing trouble in our file system due to the resulting small IO requests to central storage were around September 29 2021, from a user called micdon – all jobs from him with job ids starting in 223 and 224 (22[3]….. as a regexp on the ID string), 119 of them.
 
- 
-
 From September last year, we also had trouble with a tool called hal2maf. A specific set of runs causing trouble in our file system due to the resulting small IO requests to central storage were around September 29 2021, from a user called micdon – all jobs from him with job ids starting in 223 and 224 (22[3]….. as a regexp on the ID string), 119 of them. The file itself is /proj/uppstore2017228/KLT.04.200M/200m_MD/data/new_250_MAMMALS_v2_20201120/HAL/241-mammalian-2020v2.hal, 800GB (!) in size. However, each job was only supposed to access a subregion, and I’m not sure myself to what extent different runs actually accessed the same part of the file. In this sense, the Kraken jobs are a better representative for what we’re looking for.
+----------------------------------------------------------------
+
+module load uppmax
+squeue
+sacct --user=<username>
+
+[maxim@rackham2 ~]$ jobstats -p -r 25756958 or finishedjobinfo -j 25757038 do I have the rights ?
+*** snic2021-5-350 is not one of your projects (jobid 25756958)
+*** 1 total jobs
+*** 1 jobs running, 0 jobs not running
+[maxim@rackham2 ~]$ 
+
+look at the accounting history in files named e.g. /sw/share/slurm/rackham/accounting/2021-04-13, and find out job ids for the jobs involved ?
+How do you get the files used ?

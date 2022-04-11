@@ -2,12 +2,14 @@ batcmd: batsim -p batsim-src-stable/platforms/cluster8.xml -w batsim-src-stable/
   -e expe-out/expe_0
   --forward-profiles-on-submission
   --disable-schedule-tracing
-  --enable-dynamic-jobs
-  --acknowledge-dynamic-jobs
-  --enable-profile-reuse
+  #~ --enable-profile-reuse
+  #~ --enable-dynamic-jobs
+  #~ --acknowledge-dynamic-jobs
 failure-timeout: 5
 output-dir: expe-out/
 ready-timeout: 10
+#~ schedcmd: batsched -v fcfs
+#~ schedcmd: batsched -v fcfs --policy dataaware
 schedcmd: batsched -v my_scheduler --policy dataaware
 #~ schedcmd: batsched -v easy_bf
 simulation-timeout: 604800

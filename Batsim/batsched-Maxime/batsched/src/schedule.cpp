@@ -251,9 +251,11 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
 					/* Tentative 2 */
 					/* On fais une slice qui va de begin à begin + transfert */
                     Rational beginning = pit->begin;
+                    //~ alloc->begin = beginning + temps_transfert;
                     alloc->begin = beginning;
                     alloc->end = alloc->begin + job->walltime + temps_transfert;
                     alloc->started_in_first_slice = (pit == _profile.begin()) ? true : false;
+                    //~ alloc->started_in_first_slice = false;
                    
                     /* Cet slice prend un job vide. */
                     Job * fake_job = new Job;
@@ -276,7 +278,6 @@ Schedule::JobAlloc Schedule::add_job_first_fit_after_time_slice_data_aware(const
                     TimeSliceIterator fourth_slice_after_split;
                     split_date = pit->begin + temps_transfert + job->walltime; 
                     split_slice(second_slice_after_split, split_date, third_slice_after_split, fourth_slice_after_split);
-                    //~ split_slice(second_slice_after_split, split_date, second_slice_after_split, third_slice_after_split);
                     
 					// Let's remove the allocated machines from the available machines of the time slice
                     first_slice_after_split->available_machines.remove(alloc->used_machines);
