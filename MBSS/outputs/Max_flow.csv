@@ -1,1 +1,11 @@
-Number of jobs, Random, Random-Available
+Number of jobs, Random, Random-Available, First-Come-First-Serve
+10,74,53,53
+20,132,99,99
+30,177,130,125
+40,213,171,170
+50,192,192,190
+60,252,229,239
+70,304,268,279
+80,320,267,261
+90,365,305,311
+100,373,325,334

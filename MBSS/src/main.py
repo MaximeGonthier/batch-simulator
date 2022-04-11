@@ -89,56 +89,68 @@ def remove_jobs_from_list(job_to_remove):
 def update_nodes():
 	for n in node_list:
 		if (t == n.available_time):
-			print(t, n.available_time, "add", n)
 			available_node_list.append(n)
 	
 # Schedule jobs on random available nodes
 def random_available_scheduler():
-	print(len(available_node_list), "available node(s)")
 	job_to_remove = []
 	for j in job_list:
-		if (j.subtime == t and len(available_node_list) > 0):
+		if (j.subtime <= t and len(available_node_list) > 0):
 			choosen_node = random.choices(available_node_list)
-			print("Node", choosen_node[0].unique_id, "was choosen for job", j.unique_id)
-			available_node_list.remove(choosen_node[0])
+			# ~ print("Node", choosen_node[0].unique_id, "was choosen for job", j.unique_id, "at time", t)
 			transfer_time = compute_transfer_time(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
 			add_data_in_node(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
 			time_used = min(j.delay, j.walltime) + transfer_time
 			choosen_node[0].available_time = t + time_used
 			job_to_remove.append(j)
 			to_print_job_csv(j, choosen_node[0], t, transfer_time, time_used)
+			available_node_list.remove(choosen_node[0])
+	remove_jobs_from_list(job_to_remove)
+	
+# Schedule jobs on random available nodes
+def firstcomefirstserve_available_scheduler():
+	job_to_remove = []
+	for j in job_list:
+		if (j.subtime <= t and len(available_node_list) > 0):
+			choosen_node = available_node_list
+			# ~ print("Node", choosen_node[0].unique_id, "was choosen for job", j.unique_id, "at time", t)
+			print(available_node_list)
+			transfer_time = compute_transfer_time(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
+			add_data_in_node(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
+			time_used = min(j.delay, j.walltime) + transfer_time
+			choosen_node[0].available_time = t + time_used
+			job_to_remove.append(j)
+			to_print_job_csv(j, choosen_node[0], t, transfer_time, time_used)
+			available_node_list.remove(choosen_node[0])
 	remove_jobs_from_list(job_to_remove)
 	
 # Schedule jobs on random nodes, even if not available
 def random_scheduler():
 	job_to_remove = []
 	for j in job_list:
-		if (j.subtime == t):
+		if (j.subtime <= t):
 			choosen_node = random.choices(node_list)
-			print("Node", choosen_node[0].unique_id, "was choosen for job", j.unique_id)
+			# ~ print("Node", choosen_node[0].unique_id, "was choosen for job", j.unique_id)
 			transfer_time = compute_transfer_time(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
 			add_data_in_node(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
 			time_used = min(j.delay, j.walltime) + transfer_time
-			if (choosen_node[0].available_time > t):
-				print("This node won't be available right now")
 			start_time = max(choosen_node[0].available_time, j.subtime)
 			to_print_job_csv(j, choosen_node[0], start_time, transfer_time, time_used) # Careful, here the available time of the previous job (or the sub time for the start) is the time of start of the current job. That's why I put it before changing
 			choosen_node[0].available_time += time_used
 			job_to_remove.append(j)
 	remove_jobs_from_list(job_to_remove)
 
-# Just compute the time it takes to transfer all data not on node
+# Just compute the time it takes to transfer all data not on node. TODO : deal with eviction ?
 def compute_transfer_time(job_data, node_data, bandwidth, memory):
 	transfer_time = 0
 	for d in job_data:
 		if (d not in node_data):
-			print(d, "is not in the node")
 			transfer_time += data_sizes[d]//bandwidth
 	return transfer_time
 
 # Add data in the node. TODO : deal with eviction
 def add_data_in_node(job_data, node_data, bandwidth, memory):
-	print("Adding...")
+	# ~ print("Adding...")
 	for d in job_data:
 		if (d not in node_data):
 			node_data.append(d)
@@ -185,10 +197,10 @@ with open("inputs/data_sizes.txt") as f:
 f.close
 
 # Printing
-print("List of nodes :\n", node_list)
-print("List of available nodes :\n", available_node_list)
-print("List of jobs :\n", job_list)
-print("Scheduler is: ", scheduler)
+# ~ print("List of nodes :\n", node_list)
+# ~ print("List of available nodes :\n", available_node_list)
+# ~ print("List of jobs :\n", job_list)
+print("Scheduler is:", scheduler)
 
 # Starting a schedule
 while(len(job_list) > 0):
@@ -196,15 +208,17 @@ while(len(job_list) > 0):
 		random_available_scheduler()
 	elif (scheduler == "Random"):
 		random_scheduler()
+	elif (scheduler == "First-Come-First-Serve"):
+		firstcomefirstserve_available_scheduler()
 	else:
 		perror("Wrong scheduler in arguments")
 	# ~ print("List of jobs at time", t, ":\n", job_list)
 	t += 1
 	update_nodes()
 
-print("List of nodes after schedule :\n", node_list)
-print("List of available nodes after schedule :\n", available_node_list)
+# ~ print("List of nodes after schedule :\n", node_list)
+# ~ print("List of available nodes after schedule :\n", available_node_list)
 
 # Pint results in a csv file
-print("Computing and printing results...")
+print("Computing and writing results...")
 print_csv()
