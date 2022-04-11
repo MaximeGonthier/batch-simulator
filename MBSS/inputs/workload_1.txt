@@ -1,3 +1,4 @@
-{ id: 1 priority: 0 delay: 5.0 res: 1 data: [1,2,4] subtime: 0.0 walltime: 20.0 }
-{ id: 2 priority: 0 delay: 5.0 res: 1 data: [1,2,4] subtime: 0.0 walltime: 20.0 }
-{ id: 3 priority: 0 delay: 5.0 res: 1 data: [1,2,4] subtime: 0.0 walltime: 20.0 }
+{ id: 1 priority: 0 delay: 2 res: 1 subtime: 0 walltime: 20 data: [1,2,3] }
+{ id: 2 priority: 0 delay: 2 res: 1 subtime: 0 walltime: 20 data: [1,2,3] }
+{ id: 3 priority: 0 delay: 2 res: 1 subtime: 0 walltime: 20 data: [1,2,3] }
+{ id: 4 priority: 0 delay: 2 res: 1 subtime: 0 walltime: 20 data: [1,2,5] }
