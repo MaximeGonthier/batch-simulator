@@ -1,50 +1,42 @@
 #!/bin/bash
+# bash Experiments.sh NB_TAILLE_TESTE
 start=`date +%s`
 
+# Get arguments
+NB_TAILLE_TESTE=$1
+
 # Generate workload
-python3 src/generate_workload.py 0 25 25 50 0 0 10 10
+python3 src/generate_workload.py 0 25 25 50 0 0 10 $((NB_TAILLE_TESTE))
 
 # Random (R)
 truncate -s 0 outputs/Results_Random.txt
-python3 src/main.py inputs/workloads/workload_1.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_2.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_3.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_4.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_5.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_6.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_7.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_8.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_9.txt inputs/cluster_1.txt Random
-python3 src/main.py inputs/workloads/workload_10.txt inputs/cluster_1.txt Random
+for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
+	do 
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt Random
+done
 
 # Random Available (RA)
 truncate -s 0 outputs/Results_Random-Available.txt
-python3 src/main.py inputs/workloads/workload_1.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_2.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_3.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_4.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_5.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_6.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_7.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_8.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_9.txt inputs/cluster_1.txt Random-Available
-python3 src/main.py inputs/workloads/workload_10.txt inputs/cluster_1.txt Random-Available
+for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
+	do 
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt Random-Available
+done
 
 # First Come First Serve (FCFS)
 truncate -s 0 outputs/Results_First-Come-First-Serve.txt
-python3 src/main.py inputs/workloads/workload_1.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_2.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_3.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_4.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_5.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_6.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_7.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_8.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_9.txt inputs/cluster_1.txt First-Come-First-Serve
-python3 src/main.py inputs/workloads/workload_10.txt inputs/cluster_1.txt First-Come-First-Serve
+for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
+	do 
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt First-Come-First-Serve
+done
+# First Come First Serve Data Aware (FCFS-DA)
+truncate -s 0 outputs/Results_First-Come-First-Serve-Data-Aware.txt
+for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
+	do 
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt First-Come-First-Serve-Data-Aware
+done
 
 # Convert into easily readable file
-python3 src/convert_outputs.py outputs/Results_Random.txt outputs/Results_Random-Available.txt outputs/Results_First-Come-First-Serve.txt
+python3 src/convert_outputs.py outputs/Results_Random.txt outputs/Results_Random-Available.txt outputs/Results_First-Come-First-Serve.txt outputs/Results_First-Come-First-Serve-Data-Aware.txt
 
 # Plots
 echo "Plotting maximum queue time..."

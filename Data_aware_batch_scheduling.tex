@@ -367,5 +367,83 @@ With this information we can do two things:
 	\end{algorithmic}
 \end{algorithm}
 
+\section{Algo}
+
+\subsection{Random-Available-Job-on-Random-Node (RAJ-RN)}
+Schedule a random available job on a random node even if it's not available, it will be schedule for later execution on this node.
+
+\subsection{Random-Available-Job-on-Random-Available-Node (RAJ-RAN)}
+Schedule a random available job on a random available node.
+
+\subsection{First-Come-First-Serve (FCFS)}
+Schedule the job submitted the earliest on the first available node from the node list (So node 1 if it is available, else node 2 and so on...)
+
+\subsection{First-Come-First-Serve-Data-Aware (FCFS-DA)}
+Schedule the job submitted the earliest on the available node from the node list with which it shares the most data. If there is a tie we choose the node with the smallest index.
+
+\section{Experiments}
+
+% Queue times
+\begin{figure}[ht] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Maximum_queue_time.pdf} 
+    \caption{maximum queue time} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Mean_queue_time.pdf} 
+    \caption{Mean queue time} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Total_queue_time.pdf} 
+    \caption{Total queue time} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Makespan.pdf} 
+    \caption{Makespan} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure}
+
+% Flow
+\begin{figure}[ht] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Maximum_flow.pdf} 
+    \caption{Maximum flow} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Mean_flow.pdf} 
+    \caption{Mean flow} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Total_flow.pdf} 
+    \caption{Total flow} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Core_time_used.pdf} 
+    \caption{Core time used} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure}
+
+% Transfer time
+\begin{figure}[ht]\includegraphics[scale=1]{MBSS/plot/Total_transfer_time.pdf}\caption{Transfer time}\end{figure}
+
+
 \printbibliography
 \end{document}
