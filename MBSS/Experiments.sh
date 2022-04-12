@@ -12,27 +12,27 @@ python3 src/generate_workload.py 0 25 25 50 0 0 10 $((NB_TAILLE_TESTE))
 truncate -s 0 outputs/Results_Random.txt
 for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
 	do 
-	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt Random
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt Random 0
 done
 
 # Random Available (RA)
 truncate -s 0 outputs/Results_Random-Available.txt
 for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
 	do 
-	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt Random-Available
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt Random-Available 0
 done
 
 # First Come First Serve (FCFS)
 truncate -s 0 outputs/Results_First-Come-First-Serve.txt
 for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
 	do 
-	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt First-Come-First-Serve
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt First-Come-First-Serve 0
 done
 # First Come First Serve Data Aware (FCFS-DA)
 truncate -s 0 outputs/Results_First-Come-First-Serve-Data-Aware.txt
 for ((i=1 ; i<=(($NB_TAILLE_TESTE)); i++))
 	do 
-	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt First-Come-First-Serve-Data-Aware
+	python3 src/main.py inputs/workloads/workload_${i}.txt inputs/cluster_1.txt First-Come-First-Serve-Data-Aware 0
 done
 
 # Convert into easily readable file

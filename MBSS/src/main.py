@@ -14,6 +14,7 @@ import operator
 input_job_file = sys.argv[1]
 input_node_file = sys.argv[2]
 scheduler = sys.argv[3]
+write_all_jobs = int(sys.argv[4]) # Si on veut faire un gantt chart il faut imprimer tout les jobs et mettre ca à 1
 
 # Global structs and input files
 @dataclass
@@ -50,6 +51,11 @@ t = 0 # Current time start at 0
 def to_print_job_csv(job, node, time, transfer_time, time_used):
 	tp = To_print(job.unique_id, job.subtime, node.unique_id, time, transfer_time, time_used)
 	to_print_list.append(tp)
+	if (write_all_jobs == 1):
+		file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
+		f = open(file_to_open, "a")
+		f.write("%d,%d,delay,%f,1,%f,1,COMPLETED_SCCESSFULLY,%f,%f,%f,%f,%f,%f,%d,%f,\"\"\n" % (job.unique_id, job.unique_id, job.subtime, job.walltime, time, time_used, time + time_used, time - job.subtime, time + time_used, 1, node.unique_id, -1))
+		f.close()
 	
 def print_csv():
 	max_queue_time = 0
