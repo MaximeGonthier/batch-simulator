@@ -8,6 +8,7 @@
 from dataclasses import dataclass
 import random
 import sys
+import operator
 
 # Getting arguments
 input_job_file = sys.argv[1]
@@ -91,18 +92,43 @@ def update_nodes():
 		if (t == n.available_time):
 			available_node_list.append(n)
 
-def available_scheduler_choice(available_node_list):
-	if (scheduler == "Random-Available"):
-		return random.choices(available_node_list)
-	elif (scheduler == "First-Come-First-Serve"):
-		return available_node_list
-	
-# Template available. Means it only choose among available nodes
-def available_scheduler_template():
+# Return the node from the list with which the job shares the most data
+def node_with_most_data_share(job_data, nodes):
+	print("Data of current job:", job_data)
+	max_data_share = -1
+	for n in nodes:
+		print(len(set(job_data).intersection(n.data)), "en commun sur la node", n.unique_id)
+		if (len(set(job_data).intersection(n.data)) > max_data_share):
+			max_data_share = len(set(job_data).intersection(n.data))
+			node_with_max_data_share = n
+	print("Node choosen is", node_with_max_data_share.unique_id)
+	return node_with_max_data_share
+
+# Schedule le job disponible soumis il y a le plus longtemps sur le noeud disponible avec
+# qui il partage le plus de données
+def firstcomefirstservedataaware_available_scheduler():
 	job_to_remove = []
 	for j in job_list:
 		if (j.subtime <= t and len(available_node_list) > 0):
-			choosen_node = available_scheduler_choice(available_node_list)
+			choosen_node = node_with_most_data_share(j.data, available_node_list)
+			print("Submit j", j.unique_id, "of subtime", j.subtime, "and data", j.data, "on node", choosen_node, "with data", choosen_node.data)
+			transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			time_used = min(j.delay, j.walltime) + transfer_time
+			choosen_node.available_time = t + time_used
+			job_to_remove.append(j)
+			to_print_job_csv(j, choosen_node, t, transfer_time, time_used)
+			available_node_list.remove(choosen_node)
+		else:
+			break
+	remove_jobs_from_list(job_to_remove)
+
+# Schedule random available jobs on random available nodes
+def random_available_scheduler():
+	job_to_remove = []
+	for j in job_list:
+		if (j.subtime <= t and len(available_node_list) > 0):
+			choosen_node = random.choices(available_node_list)
 			transfer_time = compute_transfer_time(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
 			add_data_in_node(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
 			time_used = min(j.delay, j.walltime) + transfer_time
@@ -112,7 +138,24 @@ def available_scheduler_template():
 			available_node_list.remove(choosen_node[0])
 	remove_jobs_from_list(job_to_remove)
 	
-# Schedule jobs on random nodes, even if not available
+# Schedule jobs submitted the earliest on the first available node
+def firstcomefirstserve_available_scheduler():
+	job_to_remove = []
+	for j in job_list:
+		if (j.subtime <= t and len(available_node_list) > 0):
+			choosen_node = available_node_list
+			transfer_time = compute_transfer_time(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
+			add_data_in_node(j.data, choosen_node[0].data, choosen_node[0].bandwidth, choosen_node[0].memory)
+			time_used = min(j.delay, j.walltime) + transfer_time
+			choosen_node[0].available_time = t + time_used
+			job_to_remove.append(j)
+			to_print_job_csv(j, choosen_node[0], t, transfer_time, time_used)
+			available_node_list.remove(choosen_node[0])
+		else:
+			break
+	remove_jobs_from_list(job_to_remove)
+	
+# Schedule random available jobs on random nodes, even if not available
 def random_scheduler():
 	job_to_remove = []
 	for j in job_list:
@@ -189,12 +232,24 @@ f.close
 # ~ print("List of jobs :\n", job_list)
 print("Scheduler is:", scheduler)
 
+# Init before Schedule for some schedulers
+if (scheduler == "First-Come-First-Serve" or scheduler == "First-Come-First-Serve-Data-Aware"):
+	job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
+
+print("List of jobs :\n", job_list)
+
 # Starting a schedule
 while(len(job_list) > 0):
-	if (scheduler == "Random-Available" or scheduler == "First-Come-First-Serve"):
-		available_scheduler_template()
+	if (scheduler == "Random-Available"):
+		random.shuffle(job_list) # Shuffle before each iteration so we choose random jobs from the available jobs
+		random_available_scheduler()
 	elif (scheduler == "Random"):
+		random.shuffle(job_list)
 		random_scheduler()
+	elif (scheduler == "First-Come-First-Serve"):
+		firstcomefirstserve_available_scheduler()
+	elif (scheduler == "First-Come-First-Serve-Data-Aware"):
+		firstcomefirstservedataaware_available_scheduler()
 	else:
 		print("Wrong scheduler in arguments")
 		exit
