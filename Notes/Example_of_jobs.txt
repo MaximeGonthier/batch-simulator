@@ -42,3 +42,13 @@ sacct --user=<username>
 
 look at the accounting history in files named e.g. /sw/share/slurm/rackham/accounting/2021-04-13, and find out job ids for the jobs involved ?
 How do you get the files used ?
+
+Get job after certain date of a certain user
+sacct -S start-date -u user-name
+
+[maxim@rackham2 ~]$ perl jobstats_maxime -p 25821517
+Running '/sw/uppmax/bin/finishedjobinfo -M rackham -j 25821517' for more information, please be patient...
+*** Jobid 25821517 not found
+*** 1 total jobs
+*** 0 jobs run, 1 jobs not run
+What am I doing wrong ?

@@ -150,11 +150,7 @@ Each job has a submission time $\submissiontime(J_i)$ and an
 expected duration time $\duration(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
 
-\todo[inline]{Maxime: Does all nodes have the same number of cores ? $\rightarrow$ No, 
-some nodes will be equipped with 16 cores and other 20.}
-
-\todo[inline]{Can we have situation where a job is requesting more cores than some nodes have ? Like 18 for example ? $\rightarrow$
- ?}
+We consider that each node has 20 cores and a job can't request more than 20 cores.
 
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
@@ -168,21 +164,24 @@ Each node is connected to the file sharing system with a limited bandwidth.
 Each node has the same bandwidth noted $\bandwidth$.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
-\todo[inline]{We would have 2 kind of data ? The first one is an heavy file that need to be copied on 
-a local disk (the memory of the node). The second one are small data, using the network file system. This second
-type of data do not takes space on the memory of the node ?}
 
-\todo[inline]{Here how I can represent memory map in our model: 
-"Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
-The memory size can be different among all nodes.
-There is locality both across one node and connected with one worker thread:
-indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
-So if a job is co-existing with other jobs using the same file, the memory space taken is smaller.
-Thus memory map is used in our cluster. 
-Thus a part of $\memory(\Node{i})$ can be used as memory mapping.
-The size of this sub-part is $\memorymap(\Node{i})$.}
-\todo[inline]{Does these two parts of memory overlap like I wrote ?}
-\todo[inline]{Can our input files fit in memory map ? Do only jobs with small input data use memory map ?}
+%~ \todo[inline]{We would have 2 kind of data ? The first one is an heavy file that need to be copied on 
+%~ a local disk (the memory of the node). The second one are small data, using the network file system. This second
+%~ type of data do not takes space on the memory of the node ?}
+
+%~ \todo[inline]{Here how I can represent memory map in our model: 
+%~ "Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
+%~ The memory size can be different among all nodes.
+%~ There is locality both across one node and connected with one worker thread:
+%~ indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
+%~ So if a job is co-existing with other jobs using the same file, the memory space taken is smaller.
+%~ Thus memory map is used in our cluster. 
+%~ Thus a part of $\memory(\Node{i})$ can be used as memory mapping.
+%~ The size of this sub-part is $\memorymap(\Node{i})$.}
+%~ \todo[inline]{Can our input files fit in memory map ? Do only jobs with small input data use memory map ?}
+
+About memory and mmap. In our case we want to model a simple case where the memory of a node
+is used only by physical writing of files.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.

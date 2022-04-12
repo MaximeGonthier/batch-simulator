@@ -3,6 +3,8 @@
 # TODO : Gérer les évictions
 # TODO : Tracer la distirbution des queue times
 # TODO : Faire des workloads avec des % de certains type de tâches
+# TODO : Ne pas faire de division entière pour les temps ?
+# TODO : Est-ce que une éviction prends du temps ?
 
 # Imports
 from dataclasses import dataclass
