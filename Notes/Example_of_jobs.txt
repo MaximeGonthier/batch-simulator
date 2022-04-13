@@ -52,3 +52,41 @@ Running '/sw/uppmax/bin/finishedjobinfo -M rackham -j 25821517' for more informa
 *** 1 total jobs
 *** 0 jobs run, 1 jobs not run
 What am I doing wrong ?
+
+Info sur un job en cours
+scontrol show jobid -dd job_id
+
+Once your job has completed, you can get additional information that was not available during the run. This includes run time, memory used, etc.
+To get statistics on completed jobs by jobID:
+sacct -j <jobid> --format=JobID,JobName,MaxRSS,Elapsed
+
+To view the same information for all jobs of a user:
+sacct -u <username> --format=JobID,JobName,MaxRSS,Elapsed
+
+25775951     msp_0.9_5+       core snic2021-+          5 OUT_OF_ME+    0:125 
+25775951.ba+      batch            snic2021-+          5 OUT_OF_ME+    0:125 
+25775951.ex+     extern            snic2021-+          5  COMPLETED      0:0 
+[maxim@rackham2 ~]$  sacct -j 25775951 --format=JobID,JobName,MaxRSS,Elapsed
+       JobID    JobName     MaxRSS    Elapsed 
+------------ ---------- ---------- ---------- 
+25775951     msp_0.3_5+              00:32:56 
+25775951.ba+      batch  32123913K   00:32:56 
+25775951.ex+     extern       114K   00:32:56 
+[maxim@rackham2 ~]$ 
+
+Pourquoi out of mem alors que ce n'est que 32GB ?
+
+squeue -t PENDING ou COMPLETED
+
+Info subtime etc
+squeue --format="%.18i %.8u %.10M %.9l %.6D %V"  -t COMPLETED > log.txt
+Puis
+<pre>sacct -j 25131821 --format=JobID,JobName,MaxRSS,Elapsed
+pour des infos sur la mémoire utilisé
+
+90% des jobs ont peu de données (entre 60 et 600 KB)
+Le reste peu avoir de 30 BG à plus de 1000 GB. Le temps de ces jobs est alors de 20h ou plus.
+Pb: job de 5 secondes qui mette un walltime de 9h
+
+Logs par date dans
+/sw/share/slurm/rackham/accounting

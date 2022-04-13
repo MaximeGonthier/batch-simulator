@@ -57,6 +57,7 @@ def to_print_job_csv(job, node, time, transfer_time, time_used):
 		file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
 		f = open(file_to_open, "a")
 		f.write("%d,%d,delay,%f,1,%f,1,COMPLETED_SCCESSFULLY,%f,%f,%f,%f,%f,%f,%d,%f,\"\"\n" % (job.unique_id, job.unique_id, job.subtime, job.walltime, time, time_used, time + time_used, time - job.subtime, time + time_used, 1, node.unique_id, -1))
+		# ~ f.write("%d,%d,delay,%f,1,%f,1,COMPLETED_SCCESSFULLY,%f,%f,%f,%f,%f,%f,%d,%f,\"\"\n" % (job.unique_id, job.unique_id, job.subtime, job.walltime, time, min(job.delay, job.walltime) + transfer_time, time + time_used, time - job.subtime, time + time_used, 1, node.unique_id, -1))
 		f.close()
 	
 def print_csv():
@@ -96,8 +97,11 @@ def remove_jobs_from_list(job_to_remove):
 	
 # Update nodes list if they are available at current time
 def update_nodes():
+	# ~ print("here t =", t)
 	for n in node_list:
+		print("here t =", t, "n avail = ", n.available_time)
 		if (t == n.available_time):
+			print("now available", n)
 			available_node_list.append(n)
 
 # Return the node from the list with which the job shares the most data
@@ -128,6 +132,55 @@ def firstcomefirstservedataaware_available_scheduler():
 			break
 	remove_jobs_from_list(job_to_remove)
 
+def job_node_couple_with_most_data_share(jobs, nodes, t):
+	max_share = -1
+	for j in jobs:
+		if (j.subtime <= t):
+			for n in nodes:
+				if (max_share < len(set(j.data).intersection(n.data))):
+					best_node = n
+					best_job = j
+					max_share = len(set(j.data).intersection(n.data))
+	return n, j
+
+def get_available_jobs(job_list):
+	available_jobs = []
+	for j in job_list:
+		if (j.subtime <= t):
+			available_jobs.append(j)
+	return available_jobs
+
+# Takes the available jobs that share the most with a node a schedule it on it
+# If no nodes are available it will put it in the queue of the node with which it shares the most data
+def maximizedatarreuse_scheduler():
+	job_to_remove = []
+	available_jobs = []
+	available_jobs = get_available_jobs(job_list)
+	print(len(available_node_list))
+	while (len(available_jobs) > 0):		
+		if (len(available_node_list) > 0):
+			# Find job-availablenode couple that shares the most data
+			choosen_node, j = job_node_couple_with_most_data_share(available_jobs, available_node_list, t)
+			transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			time_used = min(j.delay, j.walltime) + transfer_time
+			choosen_node.available_time = t + time_used
+			job_to_remove.append(j)
+			to_print_job_csv(j, choosen_node, t, transfer_time, time_used)
+			available_node_list.remove(choosen_node)
+			available_jobs.remove(j)
+		else:
+			choosen_node, j = job_node_couple_with_most_data_share(available_jobs, node_list, t)
+			transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			time_used = min(j.delay, j.walltime) + transfer_time
+			start_time = max(choosen_node.available_time, j.subtime)
+			to_print_job_csv(j, choosen_node, start_time, transfer_time, time_used) # Careful, here the available time of the previous job (or the sub time for the start) is the time of start of the current job. That's why I put it before changing
+			choosen_node.available_time += time_used
+			job_to_remove.append(j)
+			available_jobs.remove(j)
+	remove_jobs_from_list(job_to_remove)
+
 # Schedule random available jobs on random available nodes
 def random_available_scheduler():
 	job_to_remove = []
@@ -152,6 +205,25 @@ def firstcomefirstserve_available_scheduler():
 			transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
 			add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
 			time_used = min(j.delay, j.walltime) + transfer_time
+			choosen_node.available_time = t + time_used
+			job_to_remove.append(j)
+			to_print_job_csv(j, choosen_node, t, transfer_time, time_used)
+			available_node_list.remove(choosen_node)
+		else:
+			break
+	remove_jobs_from_list(job_to_remove)
+	
+# Real FCFS with the scheduling of many jobs in advance
+# Schedule earliest job on the node that will be liberated the earliest in theory
+def firstcomefirstserve_available_scheduler_non_dynamic():
+	job_to_remove = []
+	for j in job_list:
+		if (j.subtime <= t and len(available_node_list) > 0):
+			choosen_node = available_node_list[0]
+			transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+			# ~ time_used = min(j.delay, j.walltime) + transfer_time
+			time_used = j.walltime + transfer_time
 			choosen_node.available_time = t + time_used
 			job_to_remove.append(j)
 			to_print_job_csv(j, choosen_node, t, transfer_time, time_used)
@@ -238,7 +310,7 @@ f.close
 print("Scheduler is:", scheduler)
 
 # Init before Schedule for some schedulers
-if (scheduler == "First-Come-First-Serve" or scheduler == "First-Come-First-Serve-Data-Aware"):
+if (scheduler == "First-Come-First-Serve" or scheduler == "First-Come-First-Serve-Data-Aware" or scheduler == "First-Come-First-Serve-Non-Dynamic"):
 	job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
 
 # ~ print("List of jobs :\n", job_list)
@@ -255,6 +327,10 @@ while(len(job_list) > 0):
 		firstcomefirstserve_available_scheduler()
 	elif (scheduler == "First-Come-First-Serve-Data-Aware"):
 		firstcomefirstservedataaware_available_scheduler()
+	elif (scheduler == "First-Come-First-Serve-Non-Dynamic"):
+		firstcomefirstserve_available_scheduler_non_dynamic()
+	elif (scheduler == "Max-Data-Reuse"):
+		maximizedatarreuse_scheduler()
 	else:
 		print("Wrong scheduler in arguments")
 		exit
@@ -264,6 +340,6 @@ while(len(job_list) > 0):
 # ~ print("List of nodes after schedule :\n", node_list)
 # ~ print("List of available nodes after schedule :\n", available_node_list)
 
-# Pint results in a csv file
+# Print results in a csv file
 print("Computing and writing results...")
 print_csv()

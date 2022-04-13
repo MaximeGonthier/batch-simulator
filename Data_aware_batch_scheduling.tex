@@ -250,6 +250,8 @@ $$
 
 %~ Load balancing/minimizing makespan and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
 
+We are in a Non-Preemptive case, so we can't stop a job and resume it later.
+
 \subsection{Formalization of the objective}
 \textbf{Objective: Minimize the maximum \flow{}}
 		We define the \flow{J_i} of a job as:
@@ -287,17 +289,14 @@ Moreover, Batsim provides clear information about scheduling metrics and job pla
 We will add a scheduler using Batsched~\footnote{\url{https://gitlab.inria.fr/batsim/batsched}}.
 
 \paragraph{Data mining for an accurate simulation}
-A number of informations must be retrieved in order to accurately 
-simulate the use case of Uppsala's University cluster:
+We are matching Uppsala's University cluster Rackham:
 \begin{itemize}
-	\item	.xml files of the cluster containing informations on the nodes.
-	\item	Bandwidth of each node in order to compute the estimated time of a file load with: $\frac{\memory(F_i)}{\mathit{Bandwidth(\Node{i})}}$.
-	\item	Size of input files (20 to 100 GB ?)
-	\item	Duration of jobs
-	\item	Are some files more popular ?
-	\item	Total number of jobs
-	\item	Number of available nodes
-	\item	Size of node's memory (128 GB ?)
+	\item	Bandwidth of each node: Let's stick with 100 MB/s as the BW for writing
+	\item	Size of input files: 800 to 0GB
+	\item	Duration of jobs: from real data
+	\item	Total number of jobs: from real data
+	\item	Number of available nodes: 486 max. We can test with different number ranging from 20 to 486
+	\item	Size of node's memory: 4 of 1TB, 32 of 256GB and the rest has 128GB : A file larger won't be accepted. You need to use the 1TB node if your file is too large.
 \end{itemize}
 
 \paragraph{How to simulate data transfers ?}
@@ -305,6 +304,8 @@ We can add dynamic job of duration the time it would take to transfer the file o
 to simulate file loads.
 
 \section{Algorithm}
+
+In the simple one node per job case, when a job finish earlier, we shift the schedule to the left.
 
 When we need to choose a node for job $J_i$ we know the following informations:
 \begin{itemize}
@@ -434,6 +435,39 @@ How much can we sacrifice before scheduling to a new node ?
     \caption{} 
     \vspace{4ex}
   \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Max-Data-Reuse.png} 
+    \caption{Max data reuse} 
+    \vspace{4ex}
+  \end{minipage}%% 
+\end{figure}
+\begin{figure}[ht] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Non-Dynamic.png} 
+    \caption{} 
+    \vspace{4ex}
+  \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Data-Aware.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Random-Available.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Max-Data-Reuse.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
 \end{figure}
 
 %~ \printbibliography

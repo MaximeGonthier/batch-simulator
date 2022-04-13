@@ -116,3 +116,6 @@ mmap can be pin into physical emory but it can be part of the workset. We can en
 if its not on the memory of the node its on the filesystem.
 Some app need the full file. But for others app that do only partial access.
 So needing the large file to load is our case e want to model. It's simpler to represent.
+
+Exemple de workload sur \url{https://www.cs.huji.ac.il/labs/parallel/workload/} et \url{https://www.cs.huji.ac.il/labs/parallel/workload/l_lpc/index.html}
+Info du cluster sur \url{https://www.uppmax.uu.se/resources/systems/the-rackham-cluster/}
