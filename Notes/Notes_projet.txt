@@ -110,3 +110,9 @@ measure core-hours were used + total time + en option queue time + Quantité de 
 faire dépot git formalisation
 
 1 job 1 noeud ?
+
+kraken 2 is mmap the full size of the file
+mmap can be pin into physical emory but it can be part of the workset. We can enforce that it will be pinned into memory
+if its not on the memory of the node its on the filesystem.
+Some app need the full file. But for others app that do only partial access.
+So needing the large file to load is our case e want to model. It's simpler to represent.

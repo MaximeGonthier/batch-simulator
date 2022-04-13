@@ -180,8 +180,10 @@ we aim at restricting the amount of data movement.
 %~ The size of this sub-part is $\memorymap(\Node{i})$.}
 %~ \todo[inline]{Can our input files fit in memory map ? Do only jobs with small input data use memory map ?}
 
+A data can be shared by multiple users because users are using similar database.
+
 About memory and mmap. In our case we want to model a simple case where the memory of a node
-is used only by physical writing of files.
+is used only by physical writing of files and denoted by $\memory(\Node{i})$.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
@@ -258,22 +260,6 @@ $$
 		$$
 			\textbf{Obj.}: \quad \mathit{minimize}~\mathit{max}(\flow{J_1}, \flow{J_2}, ..., \flow{J_m})
 		$$
-	%~ \item \textbf{Objective 2: Minimize files movement} 
-		%~ The second objective is to limit
-	    %~ the amount of file movement, that is, to minimize the sum of the sizes of
-	    %~ each file loaded from the file sharing system to the memory of the
-	    %~ nodes. We consider that files are not modified. With the
-	    %~ natural assumption that no input for job $J_{\sigma(k,i)}$ is
-	    %~ evicted from $\Node{k}$ right before its processing
-	    %~ ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
-	    %~ amount of loads $\memory$ on $\Node{k}$ can be computed as follows:
-		%~ $$
-			%~ \nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
-		%~ $$
-		%~ Then, our objective is simply to minimize the total number of loads:
-		%~ $$
-			%~ \textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
-		%~ $$
 A secondary objective is to minimize the amount of file loaded in MB.
 Indeed, loading files has a huge impact on the total makespan and thus on the maximum \flow{}.
 
@@ -329,7 +315,6 @@ When we need to choose a node for job $J_i$ we know the following informations:
 	\item For each $i$, $\inputs(\Node{i})$
 	\item Size of files already on memory of the node: For each $i$, $\memory(\inputs(\Node{i}))$
 	\item Bandwidth: $\bandwidth$
-	\item Memory that was mapped ?
 \end{itemize}
 
 \paragraph{Intuition} 
@@ -344,41 +329,26 @@ With this information we can do two things:
 	\item Schedule $J_i$ on an non-available node $j$ such as $\mathit{Transfertime\_J_i}(\Node{j}) + \walltime(current~job~on~node~j) < min(\mathit{Transfertime\_J_i}(\Node{k})), k \in available~nodes$
 \end{itemize}
 
-\todo[inline]{Maxime: Does it make sense ?}
+\section{Algorithm}
 
-\begin{algorithm}[htbp]
-	\caption{Data Aware Batch Scheduler (DABS)}\label{algo.dabs}
-\hspace*{\algorithmicindent} \textbf{Input: job $J_i$, set of node} \\
- %~ \hspace*{\algorithmicindent} \textbf{Output: $\sigma$}
-	\begin{algorithmic}[1]
-		\State  
-		%~ \State For each \GPU{k}, $\mathit{InMem}(k)\gets \emptyset$
-		%~ \While{all tasks have not been allocated}
-		%~ \State  $T_i\gets \mathit{pop}(\taskset)$
-		%~ \State For each \GPU{k}, compute $C_k(T_i)$ using Eq.~\ref{eq.dmda_model}
-		%~ \State Select $k$ such that $C_k(T_i)$ is minimal
-		  %~ \State Allocate $T_i$ on \GPU{k}
-		  %~ \For{each $D_i \in \inputs(T_i)$}
-		  %~ \State Request data prefetch for $D_j$ on \GPU{k}
-		  %~ \State Add $D_i$ to $\mathit{InMem}(k)$
-		  %~ \EndFor
-		  %~ \EndWhile
-	\end{algorithmic}
-\end{algorithm}
-
-\section{Algo}
-
-\subsection{Random-Available-Job-on-Random-Node (RAJ-RN)}
+\subsection{Random}
 Schedule a random available job on a random node even if it's not available, it will be schedule for later execution on this node.
+Does not schedule the full set of available jobs.
 
-\subsection{Random-Available-Job-on-Random-Available-Node (RAJ-RAN)}
+\subsection{Random-Available}
 Schedule a random available job on a random available node.
+Does not schedule the full set of available jobs.
 
 \subsection{First-Come-First-Serve (FCFS)}
 Schedule the job submitted the earliest on the first available node from the node list (So node 1 if it is available, else node 2 and so on...)
+Does not schedule the full set of available jobs.
 
 \subsection{First-Come-First-Serve-Data-Aware (FCFS-DA)}
 Schedule the job submitted the earliest on the available node from the node list with which it shares the most data. If there is a tie we choose the node with the smallest index.
+Does not schedule the full set of available jobs.
+
+\subsection{Ideas}
+How much can we sacrifice before scheduling to a new node ?
 
 \section{Experiments}
 
@@ -466,5 +436,5 @@ Schedule the job submitted the earliest on the available node from the node list
   \end{minipage}%% 
 \end{figure}
 
-\printbibliography
+%~ \printbibliography
 \end{document}
