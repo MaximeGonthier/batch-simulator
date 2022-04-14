@@ -1,0 +1,4 @@
+{ id: 1 memory: 50 bandwidth: 10 }
+{ id: 2 memory: 50 bandwidth: 10 }
+{ id: 3 memory: 50 bandwidth: 10 }
+{ id: 4 memory: 50 bandwidth: 10 }
