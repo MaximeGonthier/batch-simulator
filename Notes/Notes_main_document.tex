@@ -1,0 +1,112 @@
+%~ \paragraph{Intuition} 
+%~ We could estimate the time it will take to transfer all of the input files of job $J_i$ depending on the node:
+%~ $$
+	%~ \mathit{Transfertime\_J_i}(\Node{j}) = \frac{\memory(\inputs(J_i) \notin \inputs(\Node{j}))}{\bandwidth}
+%~ $$
+
+%~ With this information we can do two things:
+%~ \begin{itemize}
+	%~ \item Schedule $J_i$ on an available node $j$ that achieve $min(\mathit{Transfertime\_J_i}(\Node{j}))$
+	%~ \item Schedule $J_i$ on an non-available node $j$ such as $\mathit{Transfertime\_J_i}(\Node{j}) + \walltime(current~job~on~node~j) < min(\mathit{Transfertime\_J_i}(\Node{k})), k \in available~nodes$
+%~ \end{itemize}
+
+%~ \section{Experiments}
+
+%~ % Queue times
+%~ \begin{figure}[ht] 
+  %~ \label{ fig7} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Maximum_queue_time.pdf} 
+    %~ \caption{maximum queue time} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Mean_queue_time.pdf} 
+    %~ \caption{Mean queue time} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Total_queue_time.pdf} 
+    %~ \caption{Total queue time} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Makespan.pdf} 
+    %~ \caption{Makespan} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+%~ \end{figure}
+
+%~ % Flow
+%~ \begin{figure}[ht] 
+  %~ \label{ fig7} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Maximum_flow.pdf} 
+    %~ \caption{Maximum flow} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Mean_flow.pdf} 
+    %~ \caption{Mean flow} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Total_flow.pdf} 
+    %~ \caption{Total flow} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Core_time_used.pdf} 
+    %~ \caption{Core time used} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+%~ \end{figure}
+
+%~ % Transfer time
+%~ \begin{figure}[ht]\includegraphics[scale=1]{MBSS/plot/Total_transfer_time.pdf}\caption{Transfer time}\end{figure}
+
+%~ % gantt charts
+%~ \begin{figure}[ht] 
+  %~ \label{ fig7} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Data-Aware.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Random-Available.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Max-Data-Reuse.png} 
+    %~ \caption{Max data reuse} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+%~ \end{figure}
+%~ \begin{figure}[ht] 
+  %~ \label{ fig7} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Non-Dynamic.png} 
+    %~ \caption{} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+%~ \end{figure}

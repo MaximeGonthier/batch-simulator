@@ -305,8 +305,6 @@ to simulate file loads.
 
 \section{Algorithm}
 
-In the simple one node per job case, when a job finish earlier, we shift the schedule to the left.
-
 When we need to choose a node for job $J_i$ we know the following informations:
 \begin{itemize}
 	\item $\submissiontime(J_i)$
@@ -318,157 +316,26 @@ When we need to choose a node for job $J_i$ we know the following informations:
 	\item Bandwidth: $\bandwidth$
 \end{itemize}
 
-\paragraph{Intuition} 
-We could estimate the time it will take to transfer all of the input files of job $J_i$ depending on the node:
-$$
-	\mathit{Transfertime\_J_i}(\Node{j}) = \frac{\memory(\inputs(J_i) \notin \inputs(\Node{j}))}{\bandwidth}
-$$
-
-With this information we can do two things:
-\begin{itemize}
-	\item Schedule $J_i$ on an available node $j$ that achieve $min(\mathit{Transfertime\_J_i}(\Node{j}))$
-	\item Schedule $J_i$ on an non-available node $j$ such as $\mathit{Transfertime\_J_i}(\Node{j}) + \walltime(current~job~on~node~j) < min(\mathit{Transfertime\_J_i}(\Node{k})), k \in available~nodes$
-\end{itemize}
-
-\section{Algorithm}
-
-\subsection{Random}
-Schedule a random available job on a random node even if it's not available, it will be schedule for later execution on this node.
-Does not schedule the full set of available jobs.
-
-\subsection{Random-Available}
-Schedule a random available job on a random available node.
-Does not schedule the full set of available jobs.
-
-\subsection{First-Come-First-Serve (FCFS)}
-Schedule the job submitted the earliest on the first available node from the node list (So node 1 if it is available, else node 2 and so on...)
-Does not schedule the full set of available jobs.
-
-\subsection{First-Come-First-Serve-Data-Aware (FCFS-DA)}
-Schedule the job submitted the earliest on the available node from the node list with which it shares the most data. If there is a tie we choose the node with the smallest index.
-Does not schedule the full set of available jobs.
-
-\subsection{Ideas}
-How much can we sacrifice before scheduling to a new node ?
-
-\section{Experiments}
-
-% Queue times
-\begin{figure}[ht] 
-  \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Maximum_queue_time.pdf} 
-    \caption{maximum queue time} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Mean_queue_time.pdf} 
-    \caption{Mean queue time} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Total_queue_time.pdf} 
-    \caption{Total queue time} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Makespan.pdf} 
-    \caption{Makespan} 
-    \vspace{4ex}
-  \end{minipage} 
-\end{figure}
-
-% Flow
-\begin{figure}[ht] 
-  \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Maximum_flow.pdf} 
-    \caption{Maximum flow} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Mean_flow.pdf} 
-    \caption{Mean flow} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Total_flow.pdf} 
-    \caption{Total flow} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Core_time_used.pdf} 
-    \caption{Core time used} 
-    \vspace{4ex}
-  \end{minipage} 
-\end{figure}
-
-% Transfer time
-\begin{figure}[ht]\includegraphics[scale=1]{MBSS/plot/Total_transfer_time.pdf}\caption{Transfer time}\end{figure}
-
-% gantt charts
-\begin{figure}[ht] 
-  \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve.png} 
-    \caption{} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Data-Aware.png} 
-    \caption{} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Random-Available.png} 
-    \caption{} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Max-Data-Reuse.png} 
-    \caption{Max data reuse} 
-    \vspace{4ex}
-  \end{minipage}%% 
-\end{figure}
-\begin{figure}[ht] 
-  \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Non-Dynamic.png} 
-    \caption{} 
-    \vspace{4ex}
-  \end{minipage}%%
-  %~ \begin{minipage}[b]{0.5\linewidth}
-    %~ \centering
-    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/First-Come-First-Serve-Data-Aware.png} 
-    %~ \caption{} 
-    %~ \vspace{4ex}
-  %~ \end{minipage} 
-  %~ \begin{minipage}[b]{0.5\linewidth}
-    %~ \centering
-    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Random-Available.png} 
-    %~ \caption{} 
-    %~ \vspace{4ex}
-  %~ \end{minipage}%% 
-  %~ \begin{minipage}[b]{0.5\linewidth}
-    %~ \centering
-    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Max-Data-Reuse.png} 
-    %~ \caption{} 
-    %~ \vspace{4ex}
-  %~ \end{minipage}%% 
-\end{figure}
+\subsection{Maximum use single file}
+\paragraph{Intuition} Find the file shared the most among available jobs.
+Schedule all jobs using this file on the node the less used or on a node already using this file.
+\begin{algorithm}[H]
+%~ \caption{Representation of the order of load, computation and eviction\label{algo.model}}
+\hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$} \\
+%~ \hspace*{\algorithmicindent} \textbf{Output: }
+\begin{algorithmic}[1]
+%~ \For{$j \in \jobset$}
+	\State Delete any $D \in \mathbb{V}(i)$ from $S_{\mathit{in\_mem}}$
+	%~ \ForEach {$J_i \in \jobset$}
+		%~ \State 
+		%~ \If {$D_j \notin S_{\mathit{in\_mem}}$}
+			%~ \State Add $D_j$ to $S_{\mathit{in\_mem}}$
+		%~ \EndIf	
+	%~ \EndFor
+	\State Compute task $T_i$
+%~ \EndFor
+\end{algorithmic}
+\end{algorithm}
 
 %~ \printbibliography
 \end{document}
