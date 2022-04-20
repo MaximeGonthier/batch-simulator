@@ -143,7 +143,7 @@ the inputs are not the same. So HDFS would be less efficient.
 \subsection{Framework}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
-Each node is equipped with 20 cores noted: $\Node{1}(C_1, C_2, ..., C_{20})$
+Each node is equipped with 20 cores noted: $\Node{1}(C_1, C_2, ..., C_{20})$.
 Each node has a limited memory $\memory(\Node{i})$ of size 1TB, 256GB or 128GB.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
 We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. $\inputs(J_i)$ can be empty.
@@ -277,26 +277,96 @@ When we need to choose a node for job $J_i$ we know the following informations:
 	\item Bandwidth: $\bandwidth$
 \end{itemize}
 
+\todo[inline]{If a job uses the full memory of a node but only one core. I cannot schedule anything else on the node before the termination of said job ?}
+
 \subsection{Maximum use single file}
-\paragraph{Intuition} Find the file shared the most among available jobs.
+\paragraph{Intuition}
+Find the file shared the most among available jobs.
 Schedule all jobs using this file on the node the less used or on a node already using this file.
 \begin{algorithm}[H]
-%~ \caption{Representation of the order of load, computation and eviction\label{algo.model}}
-\hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$} \\
-%~ \hspace*{\algorithmicindent} \textbf{Output: }
+\caption{Maximum use single file}
+\hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$ at time $t$} \\
+\hspace*{\algorithmicindent} \textbf{Output: Schedule for each job}
 \begin{algorithmic}[1]
-%~ \For{$j \in \jobset$}
-	%~ \State Find $
-	%~ \ForEach {$J_i \in \jobset$}
-		%~ \State 
-		%~ \If {$D_j \notin S_{\mathit{in\_mem}}$}
-			%~ \State Add $D_j$ to $S_{\mathit{in\_mem}}$
-		%~ \EndIf	
-	%~ \EndFor
-	\State Compute task $T_i$
-%~ \EndFor
+\While{$\jobset != \emptyset$}
+	\State Find file $F_j$ used by the most jobs in $\jobset$
+	\State $\Node{selected} \gets$ node with most available cores such as $F_j \in \inputs(\Node{i})$ and $\memory(F_j) <= \memory(\Node{i})$
+	\If{$\Node{selected} = \emptyset$}
+		\State $\Node{selected} \gets$ node with most available cores such as $\memory(F_j) <= \memory(\Node{i})$
+	\EndIf
+	\ForEach {$J_i \in \jobset$ such as $F_j \in \inputs(J_i)$}
+		\State Schedule $J_i$ on $\Node{i}$ on the earliest available core(s)
+		\State Remove $J_i$ from $\jobset$
+	\EndFor
+\EndWhile
 \end{algorithmic}
 \end{algorithm}
+
+\section{Stats on workloads for Rackham}
+
+% Cores
+\begin{figure}[ht] 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_cores.pdf} 
+    \caption{Cores - January} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_cores.pdf} 
+    \caption{Cores - February} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_cores.pdf} 
+    \caption{Cores - Mars} 
+    \vspace{4ex}
+  \end{minipage}%% 
+\end{figure}
+% Delay
+\begin{figure}[ht] 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_delay.pdf} 
+    \caption{delay - January} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_delay.pdf} 
+    \caption{delay - February} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_delay.pdf} 
+    \caption{delay - Mars} 
+    \vspace{4ex}
+  \end{minipage}%% 
+\end{figure}
+% Walltime
+\begin{figure}[ht] 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_walltime.pdf} 
+    \caption{walltime - January} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_walltime.pdf} 
+    \caption{walltime - February} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_walltime.pdf} 
+    \caption{walltime - Mars} 
+    \vspace{4ex}
+  \end{minipage}%% 
+\end{figure}
 
 %~ \printbibliography
 \end{document}
