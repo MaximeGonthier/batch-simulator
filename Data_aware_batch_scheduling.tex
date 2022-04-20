@@ -143,14 +143,23 @@ the inputs are not the same. So HDFS would be less efficient.
 \subsection{Framework}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
+Each node is equipped with 20 cores noted: $\Node{1}(C_1, C_2, ..., C_{20})$
+Each node has a limited memory $\memory(\Node{i})$ of size 1TB, 256GB or 128GB.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
 We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. $\inputs(J_i)$ can be empty.
-Each file has a size in MB noted $\memory(F_i)$.
-Each job has a submission time $\submissiontime(J_i)$ and an 
-expected duration time $\duration(J_i)$.
-Each job request a certain number of cores $\core(J_i)$. 
+Each file has a size in MB noted $\memory(F_i)$. 
 
-We consider that each node has 20 cores and a job can't request more than 20 cores.
+We consider that if $\memory(\inputs(J_i)) > \memory(\Node{i})$,
+$J_i$ can't be computed on $\Node{i}$.
+
+If at time $t$, $\memory(\inputs(J_i) \notin \inputs(\Node{i}) + \inputs(\Node{i})) > \memory(\Node{i})$
+$J_i$ can't be computed on $\Node{i}$ at time $t$.
+
+For each $i$, $\memory(\inputs(J_i)) \leq 1TB$.
+Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
+Each job request a certain number of cores $\core(J_i)$. 
+A job can request between 1 and 20 cores.
+Each job using input files, at least one file is an unique file and one file is a shared file.
 
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
@@ -165,25 +174,13 @@ Each node has the same bandwidth noted $\bandwidth$.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
 
-%~ \todo[inline]{We would have 2 kind of data ? The first one is an heavy file that need to be copied on 
-%~ a local disk (the memory of the node). The second one are small data, using the network file system. This second
-%~ type of data do not takes space on the memory of the node ?}
-
-%~ \todo[inline]{Here how I can represent memory map in our model: 
-%~ "Each of the $K$ nodes is equipped with a memory of limited size $\memory(\Node{i})$ (in MB).
-%~ The memory size can be different among all nodes.
-%~ There is locality both across one node and connected with one worker thread:
-%~ indeed some jobs use memory map. An other job on the same node can read from this without writing himself beforehand. 
-%~ So if a job is co-existing with other jobs using the same file, the memory space taken is smaller.
-%~ Thus memory map is used in our cluster. 
-%~ Thus a part of $\memory(\Node{i})$ can be used as memory mapping.
-%~ The size of this sub-part is $\memorymap(\Node{i})$.}
-%~ \todo[inline]{Can our input files fit in memory map ? Do only jobs with small input data use memory map ?}
-
-A data can be shared by multiple users because users are using similar database.
-
-About memory and mmap. In our case we want to model a simple case where the memory of a node
-is used only by physical writing of files and denoted by $\memory(\Node{i})$.
+The memory of a node is used only by physical writing of files and denoted by $\memory(\Node{i})$.
+A file can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
+\begin{itemize}
+	\item $J_i$ and $J_j$ are computed in parallel on the same node.
+	\item $J_i$ and $J_j$ are computed on the same node and all the jobs computed on this node between the execution of $J_i$ and $J_j$ do not require input files.
+\end{itemize}
+Otherwise we consider that memory operations will cause the files to be evicted.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
@@ -196,61 +193,25 @@ On $\Node{k}$, the schedule is made of a
 succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
 following stages (in this order):
 \begin{enumerate}
-\item Eviction of files if the memory is saturated (we can use flags to force a file to stay in memory. In the same way, we can add a "won't use" flag on a file in order to evict it);
+%~ \item Eviction of files if the memory is saturated (we can use flags to force a file to stay in memory. In the same way, we can add a "won't use" flag on a file in order to evict it);
 \item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
-\item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\duration(J_i)$.
+\item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
 \end{enumerate}
 It is important to note that the file transfers are done before the computation and can not be overlapped.
 
-We define the \emph{live data} $\live(k,i)$
-as the files in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
-can be defined recursively:
-$$
-\live(k,i)=
-\begin{cases}
-  \inputs(J_{\sigma(k,1)}) & \text{if~}i=1\\
-\Big(\live(k,i-1) \backslash \evict(k,i)\Big) \cup \inputs(J_{\sigma(k,i)})
-& \text{otherwise}
-\end{cases}
-$$
+%~ We define the \emph{live data} $\live(k,i)$
+%~ as the files in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
+%~ can be defined recursively:
+%~ $$
+%~ \live(k,i)=
+%~ \begin{cases}
+  %~ \inputs(J_{\sigma(k,1)}) & \text{if~}i=1\\
+%~ \Big(\live(k,i-1) \backslash \evict(k,i)\Big) \cup \inputs(J_{\sigma(k,i)})
+%~ & \text{otherwise}
+%~ \end{cases}
+%~ $$
 
-%~ Let's denote $\mathit{Makespan}$, the time it took to execute all of $\jobset$ on a set of $K$ nodes.
-
-%~ Our objective is double:
-%~ \begin{itemize}
-	%~ \item \textbf{Objective 1: Minimize makespan}
-		%~ $$
-			%~ \textbf{Obj. 1}: \quad \mathit{minimize}~\mathit{Makespan}
-		%~ $$
-	%~ \item \textbf{Objective 2: Minimize files movement} 
-		%~ The second objective is to limit
-	    %~ the amount of file movement, that is, to minimize the sum of the sizes of
-	    %~ each file loaded from the file sharing system to the memory of the
-	    %~ nodes. We consider that files are not modified. With the
-	    %~ natural assumption that no input for job $J_{\sigma(k,i)}$ is
-	    %~ evicted from $\Node{k}$ right before its processing
-	    %~ ($\evict(k,i) \cap \inputs(J_{\sigma(k,i)}) = \emptyset$), the
-	    %~ amount of loads $\memory$ on $\Node{k}$ can be computed as follows:
-		%~ $$
-			%~ \nbloads_k =\sum_i \memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1))
-		%~ $$
-		%~ Then, our objective is simply to minimize the total number of loads:
-		%~ $$
-			%~ \textbf{Obj. 2}: \quad  \mathit{minimize} \sum_k \nbloads_k
-		%~ $$
-%~ \end{itemize}
-
-%~ \begin{definition}[Bi-Obj-Batch-Scheduling]
-  %~ Given a number $K$ of nodes, $m$ jobs sharing their inputs files
-  % according to a bipartite graph $G$, 
-  %~ and two bounds $W$ and $C$, is there a
-  %~ schedule $\sigma$ % and an eviction policy $\evict$
-  %~ such that $\mathit{Makespan} \leq W$ and $\sum_k \nbloads_k \leq C$?
-%~ \end{definition}
-
-%~ Load balancing/minimizing makespan and file re-use can be two opposing goals, so we would like to measure the impact on the performance depending on the strategy (Focus on load balancing or focus on file re-use or both for example) ?
-
-We are in a Non-Preemptive case, so we can't stop a job and resume it later.
+We are in a Non-Preemptive case, so we cannot stop a job and resume it later.
 
 \subsection{Formalization of the objective}
 \textbf{Objective: Minimize the maximum \flow{}}
@@ -274,11 +235,11 @@ $$
 	Average\_queue\_time = \frac{\sum^{m}_{i = 0} \start(J_i) - \submissiontime(J_i)}{m}
 $$
 
-We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
-With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
-$$
-	\#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\bandwidth}
-$$
+%~ We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
+%~ With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
+%~ $$
+	%~ \#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\bandwidth}
+%~ $$
 
 \section{The use of simulation}
 
@@ -325,7 +286,7 @@ Schedule all jobs using this file on the node the less used or on a node already
 %~ \hspace*{\algorithmicindent} \textbf{Output: }
 \begin{algorithmic}[1]
 %~ \For{$j \in \jobset$}
-	\State Delete any $D \in \mathbb{V}(i)$ from $S_{\mathit{in\_mem}}$
+	%~ \State Find $
 	%~ \ForEach {$J_i \in \jobset$}
 		%~ \State 
 		%~ \If {$D_j \notin S_{\mathit{in\_mem}}$}
