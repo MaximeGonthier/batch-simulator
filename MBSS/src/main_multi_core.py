@@ -54,3 +54,29 @@ print("Available node list:", available_node_list)
 # Read workload
 job_list = read_workload(input_job_file, job_list)
 print("Job list:", job_list)
+
+# Init before Schedule for some schedulers
+if (scheduler == "FCFS"):
+	job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
+
+# Starting simulation
+# ~ while(len(job_list) > 0):
+	# ~ if (scheduler == "Random-Available"):
+		# ~ random.shuffle(job_list) # Shuffle before each iteration so we choose random jobs from the available jobs
+		# ~ random_available_scheduler()
+	# ~ elif (scheduler == "Random"):
+		# ~ random.shuffle(job_list)
+		# ~ random_scheduler()
+	# ~ elif (scheduler == "First-Come-First-Serve"):
+		# ~ firstcomefirstserve_available_scheduler()
+	# ~ elif (scheduler == "First-Come-First-Serve-Data-Aware"):
+		# ~ firstcomefirstservedataaware_available_scheduler()
+	# ~ elif (scheduler == "First-Come-First-Serve-Non-Dynamic"):
+		# ~ firstcomefirstserve_available_scheduler_non_dynamic()
+	# ~ elif (scheduler == "Max-Data-Reuse"):
+		# ~ maximizedatarreuse_scheduler()
+	# ~ else:
+		# ~ print("Wrong scheduler in arguments")
+		# ~ exit
+	# ~ t += 1
+	# ~ update_nodes()

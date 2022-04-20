@@ -11,7 +11,7 @@ WORKLOAD=$1
 
 # Random (R)
 truncate -s 0 outputs/Results_Random.txt
-python3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD inputs/clusters/cluster_1.txt Random
+python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Random
 
 #~ # Random Available (RA)
 #~ truncate -s 0 outputs/Results_Random-Available.txt

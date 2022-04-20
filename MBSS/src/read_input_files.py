@@ -38,26 +38,23 @@ def read_workload(input_job_file, job_list):
 			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), list(), list())
 			# Adding data in the list of data of the job
 			i = 1
-			print(line)
+			# ~ print(line)
 			while (i < len(str(r13))):
 				c = ""
 				while (str(r13)[i] != "," and str(r13)[i] != "]"):
 					c += str(r13)[i]
 					i += 1
 				i += 1
-				print("c = ", c)
 				if (c != ""):
 					j.data.append(int(c))
 			# Adding data sizes
 			i = 1
-			print(line)
 			while (i < len(str(r15))):
 				c = ""
 				while (str(r15)[i] != "," and str(r15)[i] != "]"):
 					c += str(r15)[i]
 					i += 1
 				i += 1
-				print("c = ", c)
 				if (c != ""):
 					j.data_sizes.append(int(c))
 			job_list.append(j)
