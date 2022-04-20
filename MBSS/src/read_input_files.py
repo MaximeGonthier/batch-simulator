@@ -15,15 +15,25 @@ class Node:
     unique_id: int
     memory: int
     bandwidth: int
-    available_time: int # Time t at which the node will be available
     data: list
+    cores: list
+@dataclass
+class Core:
+    unique_id: int
+    predicted_available_time: list # Time t at which each core will be available in theory
+    real_available_time: list # Time t at which each core will be available in real with knowledge on delay and transfer time
+    job_queue: list
 
 def read_cluster(input_node_file, node_list, available_node_list):
 	with open(input_node_file) as f:
 		line = f.readline()
 		while line:
 			r1, r2, r3, r4, r5, r6, r7, r8 = line.split()
-			n = Node(int(r3), int(r5), int(r7), 0, list())
+			core_list = []
+			for i in range (0, 20):
+				c = Core(i, [0 for i in range(20)], [0 for i in range(20)], list())
+				core_list.append(c)
+			n = Node(int(r3), int(r5), int(r7), list(), core_list)
 			node_list.append(n)
 			available_node_list.append(n)
 			line = f.readline()
@@ -38,7 +48,6 @@ def read_workload(input_job_file, job_list):
 			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), list(), list())
 			# Adding data in the list of data of the job
 			i = 1
-			# ~ print(line)
 			while (i < len(str(r13))):
 				c = ""
 				while (str(r13)[i] != "," and str(r13)[i] != "]"):

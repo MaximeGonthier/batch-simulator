@@ -58,4 +58,4 @@ python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Rand
 
 end=`date +%s` 
 runtime=$((end-start))
-echo "Execution complete! it lasted" $((runtime/60))" minute(s) and "$((runtime%60))" second(s)."
+echo "Execution complete! It lasted" $((runtime/60))" minute(s) and "$((runtime%60))" second(s)."
