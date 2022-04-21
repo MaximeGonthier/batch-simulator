@@ -1,6 +1,5 @@
 # Imports
 from dataclasses import dataclass
-
 @dataclass
 class Job:
     unique_id: int
@@ -10,6 +9,9 @@ class Job:
     cores: int
     data: list
     data_sizes: list
+    start_time: int
+    end_time: int
+    end_before_walltime: bool
 @dataclass
 class Node:
     unique_id: int
@@ -20,9 +22,8 @@ class Node:
 @dataclass
 class Core:
     unique_id: int
-    predicted_available_time: list # Time t at which each core will be available in theory
-    real_available_time: list # Time t at which each core will be available in real with knowledge on delay and transfer time
     job_queue: list
+    available_time: int
 
 def read_cluster(input_node_file, node_list, available_node_list):
 	with open(input_node_file) as f:
@@ -30,8 +31,9 @@ def read_cluster(input_node_file, node_list, available_node_list):
 		while line:
 			r1, r2, r3, r4, r5, r6, r7, r8 = line.split()
 			core_list = []
-			for i in range (0, 20):
-				c = Core(i, [0 for i in range(20)], [0 for i in range(20)], list())
+			# ~ for i in range (0, 20):
+			for i in range (0, 2):
+				c = Core(i, list(), 0)
 				core_list.append(c)
 			n = Node(int(r3), int(r5), int(r7), list(), core_list)
 			node_list.append(n)
@@ -45,7 +47,7 @@ def read_workload(input_job_file, job_list):
 		line = f.readline()
 		while line:
 			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16 = line.split() # split it by whitespace
-			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), list(), list())
+			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), list(), list(), 0, 0, False)
 			# Adding data in the list of data of the job
 			i = 1
 			while (i < len(str(r13))):
