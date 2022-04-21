@@ -13,8 +13,8 @@
 { id: 13 subtime: 1 delay: 7974 walltime: 21600 cores: 1 data: [0,8,] data_sizes: [797,1718,] }
 { id: 14 subtime: 1 delay: 7639 walltime: 21600 cores: 1 data: [0,5,] data_sizes: [763,1988,] }
 { id: 15 subtime: 1 delay: 9303 walltime: 21600 cores: 1 data: [] data_sizes: [] }
-{ id: 16 subtime: 1 delay: 10962 walltime: 21600 cores: 1 data: [0,8,] data_sizes: [1096,1718,] }
-{ id: 17 subtime: 3 delay: 10650 walltime: 21600 cores: 1 data: [0,3,] data_sizes: [1065,1722,] }
+{ id: 16 subtime: 1 delay: 10962 walltime: 21600 cores: 2 data: [0,8,] data_sizes: [1096,1718,] }
+{ id: 17 subtime: 3 delay: 10650 walltime: 21600 cores: 2 data: [0,3,] data_sizes: [1065,1722,] }
 { id: 18 subtime: 3 delay: 8664 walltime: 21600 cores: 1 data: [0,1,] data_sizes: [866,970,] }
 { id: 19 subtime: 5 delay: 9350 walltime: 21600 cores: 1 data: [] data_sizes: [] }
 { id: 20 subtime: 6 delay: 31147 walltime: 259200 cores: 1 data: [] data_sizes: [] }

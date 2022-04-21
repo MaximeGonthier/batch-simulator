@@ -282,7 +282,7 @@ When we need to choose a node for job $J_i$ we know the following informations:
 \subsection{Maximum use single file}
 \paragraph{Intuition}
 Find the file shared the most among available jobs.
-Schedule all jobs using this file on the node the less used or on a node already using this file.
+Schedule all jobs using this file on a node using this file with most available cores.
 \begin{algorithm}[H]
 \caption{Maximum use single file}
 \hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$ at time $t$} \\
@@ -295,40 +295,47 @@ Schedule all jobs using this file on the node the less used or on a node already
 		\State $\Node{selected} \gets$ node with most available cores such as $\memory(F_j) <= \memory(\Node{i})$
 	\EndIf
 	\ForEach {$J_i \in \jobset$ such as $F_j \in \inputs(J_i)$}
-		\State Schedule $J_i$ on $\Node{i}$ on the earliest available core(s)
+		\State Schedule $J_i$ on $\Node{selected}$ on the earliest available core(s)
 		\State Remove $J_i$ from $\jobset$
 	\EndFor
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
 
-%~ \subsection{FCFS-}
-%~ \paragraph{Intuition}
-%~ Find the file shared the most among available jobs.
-%~ Schedule all jobs using this file on the node the less used or on a node already using this file.
-%~ \begin{algorithm}[H]
-%~ \caption{Maximum use single file}
-%~ \hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$ at time $t$} \\
-%~ \hspace*{\algorithmicindent} \textbf{Output: Schedule for each job}
-%~ \begin{algorithmic}[1]
-%~ \While{$\jobset != \emptyset$}
-	%~ \State Find file $F_j$ used by the most jobs in $\jobset$
-	%~ \State $\Node{selected} \gets$ node with most available cores such as $F_j \in \inputs(\Node{i})$ and $\memory(F_j) <= \memory(\Node{i})$
-	%~ \If{$\Node{selected} = \emptyset$}
-		%~ \State $\Node{selected} \gets$ node with most available cores such as $\memory(F_j) <= \memory(\Node{i})$
-	%~ \EndIf
-	%~ \ForEach {$J_i \in \jobset$ such as $F_j \in \inputs(J_i)$}
-		%~ \State Schedule $J_i$ on $\Node{i}$ on the earliest available core(s)
-		%~ \State Remove $J_i$ from $\jobset$
-	%~ \EndFor
-%~ \EndWhile
-%~ \end{algorithmic}
-%~ \end{algorithm}
+\subsection{Distribute files}
+\paragraph{Intuition}
+The goal is to distribute files on a certain number of nodes in order to equilibrate the load
+and have multiple choices when choosing a node.
+
+Let's say we have 50 nodes.
+
+Compute the number of copy of each file among each nodes.
+
+If a file is already loaded on 10 or more nodes, jobs using this 
+file can only be scheduled on the first available cores among those nodes.
+
+If a file is loaded on less than 10 nodes, jobs using this file are scheduled on nodes 
+that are not using this file and that have the most memory available left,
+until there are 10 nodes using this file. After that, jobs are schedule on nodes using this file.
+
+\subsection{FCFS with a score}
+\paragraph{Intuition}
+Choose the job j submitted the earliest.
+
+For each node, A = compute the earliest available time to host job j.
+
+For each node, B = compute the time it will take to load all the files from j not yet in memory.
+
+For each node, C = compute the amount of data that will need to be evicted to load all the files from j not yet in memory. These files will need to be re loaded for other jobs.
+
+Each node get a score combining these three values: Score = A + B + (C/BW)
+
+Schedule j on the node with the best score.
 
 \section{Stats on workloads for Rackham}
 
 % Cores
-\begin{figure}[ht] 
+\begin{figure}[H] 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_cores.pdf} 
@@ -349,7 +356,7 @@ Schedule all jobs using this file on the node the less used or on a node already
   \end{minipage}%% 
 \end{figure}
 % Delay
-\begin{figure}[ht] 
+\begin{figure}[H] 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_delay.pdf} 
@@ -370,7 +377,7 @@ Schedule all jobs using this file on the node the less used or on a node already
   \end{minipage}%% 
 \end{figure}
 % Walltime
-\begin{figure}[ht] 
+\begin{figure}[H] 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_walltime.pdf} 
@@ -389,6 +396,17 @@ Schedule all jobs using this file on the node the less used or on a node already
     \caption{walltime - Mars} 
     \vspace{4ex}
   \end{minipage}%% 
+\end{figure}
+
+\section{Gantt charts}
+% Cores
+\begin{figure}[H] 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/Random.png} 
+    \caption{Random} 
+    \vspace{4ex}
+  \end{minipage}%%
 \end{figure}
 
 %~ \printbibliography
