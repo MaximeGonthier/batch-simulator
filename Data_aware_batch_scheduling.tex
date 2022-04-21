@@ -155,6 +155,8 @@ $J_i$ can't be computed on $\Node{i}$.
 If at time $t$, $\memory(\inputs(J_i) \notin \inputs(\Node{i}) + \inputs(\Node{i})) > \memory(\Node{i})$
 $J_i$ can't be computed on $\Node{i}$ at time $t$.
 
+\todo[inline]{If a job uses the full memory of a node but only one core. I cannot schedule anything else on the node before the termination of said job ?}
+
 For each $i$, $\memory(\inputs(J_i)) \leq 1TB$.
 Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
@@ -176,6 +178,7 @@ we aim at restricting the amount of data movement.
 
 The memory of a node is used only by physical writing of files and denoted by $\memory(\Node{i})$.
 A file can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
+\todo[inline]{Should we use this model ?}
 \begin{itemize}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node and all the jobs computed on this node between the execution of $J_i$ and $J_j$ do not require input files.
@@ -276,8 +279,6 @@ When we need to choose a node for job $J_i$ we know the following informations:
 	\item Size of files already on memory of the node: For each $i$, $\memory(\inputs(\Node{i}))$
 	\item Bandwidth: $\bandwidth$
 \end{itemize}
-
-\todo[inline]{If a job uses the full memory of a node but only one core. I cannot schedule anything else on the node before the termination of said job ?}
 
 \subsection{Maximum use single file}
 \paragraph{Intuition}
