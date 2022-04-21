@@ -147,7 +147,9 @@ Each node is equipped with 20 cores noted: $\Node{1}(C_1, C_2, ..., C_{20})$.
 Each node has a limited memory $\memory(\Node{i})$ of size 1TB, 256GB or 128GB.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
 We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. $\inputs(J_i)$ can be empty.
-Each file has a size in MB noted $\memory(F_i)$. 
+Each file has a size in GB noted $\memory(F_i)$. 
+
+
 
 We consider that if $\memory(\inputs(J_i)) > \memory(\Node{i})$,
 $J_i$ can't be computed on $\Node{i}$.
@@ -161,7 +163,7 @@ For each $i$, $\memory(\inputs(J_i)) \leq 1TB$.
 Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
 A job can request between 1 and 20 cores.
-Each job using input files, at least one file is an unique file and one file is a shared file.
+Each job using input files is using a shared file.
 
 Initially, all input files are stored in the main shared file system.
 During the processing of a job $J_i$ on $\Node{k}$, all its inputs
@@ -178,10 +180,9 @@ we aim at restricting the amount of data movement.
 
 The memory of a node is used only by physical writing of files and denoted by $\memory(\Node{i})$.
 A file can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
-\todo[inline]{Should we use this model ?}
 \begin{itemize}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
-	\item $J_i$ and $J_j$ are computed on the same node and all the jobs computed on this node between the execution of $J_i$ and $J_j$ do not require input files.
+	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{itemize}
 Otherwise we consider that memory operations will cause the files to be evicted.
 
@@ -340,63 +341,81 @@ Schedule j on the node with the best score.
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_cores.pdf} 
-    \caption{Cores - January} 
+    \caption{Cores - January 2022} 
     \vspace{4ex}
   \end{minipage}%%
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_cores.pdf} 
-    \caption{Cores - February} 
+    \caption{Cores - February 2022} 
     \vspace{4ex}
   \end{minipage} 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_cores.pdf} 
-    \caption{Cores - Mars} 
+    \caption{Cores - Mars 2022} 
     \vspace{4ex}
-  \end{minipage}%% 
+  \end{minipage}%% *
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_cores.pdf} 
+    \caption{Cores - December 2021} 
+    \vspace{4ex}
+  \end{minipage}%%
 \end{figure}
 % Delay
 \begin{figure}[H] 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_delay.pdf} 
-    \caption{delay - January} 
+    \caption{delay - January 2022} 
     \vspace{4ex}
   \end{minipage}%%
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_delay.pdf} 
-    \caption{delay - February} 
+    \caption{delay - February 2022} 
     \vspace{4ex}
   \end{minipage} 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_delay.pdf} 
-    \caption{delay - Mars} 
+    \caption{delay - Mars 2022} 
     \vspace{4ex}
   \end{minipage}%% 
+    \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_delay.pdf} 
+    \caption{delay - December 2021} 
+    \vspace{4ex}
+  \end{minipage}%%
 \end{figure}
 % Walltime
 \begin{figure}[H] 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_walltime.pdf} 
-    \caption{walltime - January} 
+    \caption{walltime - January 2022} 
     \vspace{4ex}
   \end{minipage}%%
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_walltime.pdf} 
-    \caption{walltime - February} 
+    \caption{walltime - February 2022} 
     \vspace{4ex}
   \end{minipage} 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_walltime.pdf} 
-    \caption{walltime - Mars} 
+    \caption{walltime - Mars 2022} 
     \vspace{4ex}
   \end{minipage}%% 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_walltime.pdf} 
+    \caption{walltime - Decembre 2021} 
+    \vspace{4ex}
+  \end{minipage}%%
 \end{figure}
 
 \section{Gantt charts}

@@ -6,7 +6,6 @@ MOIS=$1
 ANNEE=$2
 
 # Get job history
-#~ echo "Downloading job history of" $1 "..."
 if [ $MOIS == "Janvier" ]
 	then
 	id_mois="01"
@@ -56,8 +55,8 @@ if [ $MOIS == "Décembre" ]
 	id_mois="12"
 fi
 echo "$MOIS"
-#~ if [ $MOIS == "Janvier" ] || [ $MOIS == "Mars" ] || [ $MOIS == "Mai" ] || [ $MOIS == "Juillet" ] || [ $MOIS == "Aout" ] || [ $MOIS == "Octobre" ] || [ $MOIS == "Décembre" ]
-if [[ "$MOIS" == "Mars" ]]
+#~ if [ $MOIS=="Janvier" ] || [ $MOIS == "Mars" ] || [ $MOIS == "Mai" ] || [ $MOIS == "Juillet" ] || [ $MOIS == "Aout" ] || [ $MOIS == "Octobre" ] || [ $MOIS == "Décembre" ]
+if [ $MOIS=="Mars" ] || [ $MOIS=="Décembre" ] # Décembre a que 30 jours en fait personne travaille le 31
 	then
 	echo "31"
 	for ((i = 1 ; i <= 9 ; i++))
@@ -111,6 +110,6 @@ echo ${string}
 scp maxim@rackham.uppmax.uu.se:../../../sw/share/slurm/rackham/accounting/\{${string}\} /home/gonthier/data-aware-batch-scheduling/MBSS/inputs/workloads/raw/
 
 python3 src/convert_stats_workload.py ${id_mois} ${ANNEE} ${last_day}
-python3 src/plot_stats_workload.py ${ANNEE}_${id_mois}_cores
-python3 src/plot_stats_workload.py ${ANNEE}_${id_mois}_walltime
-python3 src/plot_stats_workload.py ${ANNEE}_${id_mois}_delay
+python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} cores
+python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} walltime
+python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} delay
