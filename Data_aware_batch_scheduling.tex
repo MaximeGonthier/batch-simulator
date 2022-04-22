@@ -146,22 +146,27 @@ denoted by $\Node{1},\ldots, \Node{K}$.
 Each node is equipped with 20 cores noted: $\Node{1}(C_1, C_2, ..., C_{20})$.
 Each node has a limited memory $\memory(\Node{i})$ of size 1TB, 256GB or 128GB.
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
-We denote by $\inputs(J_i)$ the set of input files required by job $J_i$. $\inputs(J_i)$ can be empty.
+We denote by $\inputs(J_i)$ the input file required by job $J_i$. $\inputs(J_i)$ can be empty.
 Each file has a size in GB noted $\memory(F_i)$. 
-
-
-
-We consider that if $\memory(\inputs(J_i)) > \memory(\Node{i})$,
-$J_i$ can't be computed on $\Node{i}$.
-
-If at time $t$, $\memory(\inputs(J_i) \notin \inputs(\Node{i}) + \inputs(\Node{i})) > \memory(\Node{i})$
-$J_i$ can't be computed on $\Node{i}$ at time $t$.
-
-\todo[inline]{If a job uses the full memory of a node but only one core. I cannot schedule anything else on the node before the termination of said job ?}
-
-For each $i$, $\memory(\inputs(J_i)) \leq 1TB$.
-Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
+
+
+Only jobs using 5 cores or more have input files.
+If multiple jobs are submitted by the same user on a short period of time (less than 30 seconds between each job),
+then those jobs will share the same input file.
+The size of an input file is proportional to the number of cores required.
+Each job has a certain probability of requiring cores of sizes 128GB, 256GB or 1024GB.
+Thus, the size of a file can be:
+\begin{itemize}
+	\item $6.4GB \times \core(J_i)$, requiring either the 128GB, 256GB or 1024GB node.
+	\item $12.8GB \times \core(J_i)$, requiring either the 256GB or 1024GB node.
+	\item $51.2GB \times \core(J_i)$, requiring exclusively 1024GB node.
+\end{itemize}
+With this model, a job cannot have a file larger than 1024GB.
+Also with this model there cannot be any situation in which the memory is fully used
+but the cores are not. Because these two values are related to each other. 
+
+Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 A job can request between 1 and 20 cores.
 Each job using input files is using a shared file.
 
