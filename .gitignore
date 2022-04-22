@@ -1,3 +1,5 @@
 Data_aware_batch_scheduling.pdf
 /Batsim/batsched-Maxime/expe-out/
 MBSS/inputs/workloads/raw
+MBSS/outputs/.~lock.Results_all_jobs_Random.csv#
+MBSS/src/__pycache__

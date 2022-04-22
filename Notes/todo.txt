@@ -1,3 +1,0 @@
-Data mine
-Compte sur SUPR
-Eviction qui doivent mettre à jour la struct des nodes

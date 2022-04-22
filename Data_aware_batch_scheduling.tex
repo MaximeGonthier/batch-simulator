@@ -158,13 +158,22 @@ The size of an input file is proportional to the number of cores required.
 Each job has a certain probability of requiring cores of sizes 128GB, 256GB or 1024GB.
 Thus, the size of a file can be:
 \begin{itemize}
-	\item $6.4GB \times \core(J_i)$, requiring either the 128GB, 256GB or 1024GB node.
-	\item $12.8GB \times \core(J_i)$, requiring either the 256GB or 1024GB node.
-	\item $51.2GB \times \core(J_i)$, requiring exclusively 1024GB node.
+	\item If $\core(J_i) < 5$:
+	\begin{itemize}
+		\item $0GB \times \core(J_i)$, requiring either the 128GB, 256GB or 1024GB node.
+	\end{itemize}
+	\item If $\core(J_i) \ge 5$:
+	\begin{itemize}
+		\item $6.4GB \times \core(J_i)$, requiring either the 128GB, 256GB or 1024GB node.
+		\item $12.8GB \times \core(J_i)$, requiring either the 256GB or 1024GB node.
+		\item $51.2GB \times \core(J_i)$, requiring exclusively 1024GB node.
+	\end{itemize}
 \end{itemize}
 With this model, a job cannot have a file larger than 1024GB.
 Also with this model there cannot be any situation in which the memory is fully used
 but the cores are not. Because these two values are related to each other. 
+However we can have situation where the memory is not fully used but the cores are,
+for example if a 20 core job using 128GB memory is schedule on the 1024GB node.
 
 Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 A job can request between 1 and 20 cores.
@@ -179,7 +188,7 @@ We consider that all jobs are single nodes.
 
 The file sharing system initially contains all of $\fileset$.
 Each node is connected to the file sharing system with a limited bandwidth.
-Each node has the same bandwidth noted $\bandwidth$.
+Each node has the same bandwidth noted $\bandwidth$ which is equal to 0.1 GB/s.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
 

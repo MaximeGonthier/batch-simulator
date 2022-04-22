@@ -25,8 +25,8 @@ class Job:
     delay: int
     walltime: int
     cores: int
-    data: list
-    data_sizes: list
+    data: int
+    data_size: int
     start_time: int
     end_time: int
     end_before_walltime: bool
@@ -35,7 +35,7 @@ class Job:
 class Node:
     unique_id: int
     memory: int
-    bandwidth: int
+    bandwidth: float
     data: list
     cores: list
 @dataclass
@@ -92,18 +92,21 @@ def to_print_job_csv(job, node_id, core_ids, time):
 		file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
 		f = open(file_to_open, "a")
 		f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time, time_used, job.end_time, job.start_time, job.end_time, 1))
-		
-		print(core_ids)
-		
+				
 		if (len(core_ids) > 1):
 			core_ids.sort()
-			for i in core_ids:
+			for i in range (0, len(core_ids)):
+			# ~ for i in core_ids:
 				if (i == len(core_ids) - 1):
-					f.write("%d" % (node_id*2 + core_ids[i]))
+					f.write("%d" % (node_id*20 + core_ids[i]))
 				else:
-					f.write("%d-" % (node_id*2 + core_ids[i]))
+					# ~ print(node_id)
+					# ~ print(len(core_ids))
+					# ~ print(i)
+					# ~ f.write("%d-" % (node_id*20 + core_ids[i]))
+					f.write("%d " % (node_id*20 + core_ids[i]))
 		else:
-			f.write("%d" % (node_id*2 + core_ids[0]))
+			f.write("%d" % (node_id*20 + core_ids[0]))
 		f.write(",-1,\"\"\n")
 		
 		f.close()
@@ -116,9 +119,9 @@ print("Node list:", node_list, "\n")
 job_list = read_workload(input_job_file, job_list)
 print("Job list:", job_list, "\n")
 
-# Init before Schedule for some schedulers
-if (scheduler == "FCFS"):
-	job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
+# Init before Schedule for some schedulers. Ils sont déjà triées par subtime
+# ~ if (scheduler == "FCFS"):
+	# ~ job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
 
 finished_jobs = 0
 total_number_jobs = len(job_list)
@@ -126,10 +129,12 @@ total_number_jobs = len(job_list)
 # Starting simulation
 while(total_number_jobs != finished_jobs):
 	# ~ print ("t =", t, "et il y a", finished_jobs, "finished jobs")
+	job_to_remove = []
 	for j in job_list:
 		if (j.subtime <= t):
 			available_job_list.append(j)
-			job_list.remove(j)
+			job_to_remove.append(j)	
+	remove_jobs_from_list(job_list, job_to_remove)
 			
 	while(len(available_job_list) > 0):
 		print("t =", t, "et il y a", len(available_job_list), "available jobs")
@@ -139,10 +144,6 @@ while(total_number_jobs != finished_jobs):
 		else:
 			print("Wrong scheduler in arguments")
 			exit
-		# ~ print("Node List")
-		# ~ print(node_list)
-		# ~ print("Available Node List")
-		# ~ print(available_node_list)
 		
 	t += 1
 	# ~ update_nodes()

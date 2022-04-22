@@ -9,14 +9,12 @@
     # ~ time_used: int
     
 # Just compute the time it takes to transfer all data not on node. TODO : deal with eviction ?
-def compute_transfer_time(job_data, node_data, bandwidth, memory, job_data_sizes):
+def compute_transfer_time(job_data, node_data, bandwidth, memory, job_data_size):
 	transfer_time = 0
-	i = 0
-	for d in job_data:
-		if (d not in node_data or d == 0):
-			transfer_time += job_data_sizes[i]//bandwidth
-		i += 1
-	# ~ print("Transfer time:", transfer_time)
+	if (job_data not in node_data and job_data != 0):
+		# ~ transfer_time += job_data_size//bandwidth
+		transfer_time += job_data_size/bandwidth
+	print("Transfer time:", transfer_time)
 	return transfer_time
 
 # Remove jobs rom the main job list. I do it outside the loop because I need to go through the list before deleting
@@ -28,9 +26,8 @@ def remove_jobs_from_list(available_job_list, job_to_remove): # TODO: simplifier
 
 # Add data in the node. TODO : deal with eviction when a job is not currently running on it
 def add_data_in_node(job_data, node_data, bandwidth, memory):
-	for d in job_data:
-		if (d not in node_data):
-			node_data.append(d)
+	if (job_data not in node_data):
+		node_data.append(job_data)
 
 # Update nodes list if they are available at current time
 # ~ def update_nodes():

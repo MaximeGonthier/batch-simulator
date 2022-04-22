@@ -119,3 +119,12 @@ So needing the large file to load is our case e want to model. It's simpler to r
 
 Exemple de workload sur \url{https://www.cs.huji.ac.il/labs/parallel/workload/} et \url{https://www.cs.huji.ac.il/labs/parallel/workload/l_lpc/index.html}
 Info du cluster sur \url{https://www.uppmax.uu.se/resources/systems/the-rackham-cluster/}
+
+We want real workload and we take clusters of jobs and give them jobs. Dependant on number of cores asked. 
+From 5 cores and up it can be more than 32 GB files and very large files.
+Else it's dependant on the number of cores asked.
+File size dependant on number of cores.
+Even for jobs with 20 cores and 200GB you use the full node of size 256GB and the 20 cores.
+Stats sur le workload: Faut-il ignorer les jobs trop longs ? Ou avec trop de cores ou de walltime ? Non
+
+Se comparer a la strat de base du fichier workload raw car on connais les noeuds utilisées ?

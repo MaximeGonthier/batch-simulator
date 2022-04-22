@@ -10,8 +10,8 @@ class Job:
     delay: int
     walltime: int
     cores: int
-    data: list
-    data_sizes: list
+    data: int
+    data_size: int
     start_time: int
     end_time: int
     end_before_walltime: bool
@@ -23,12 +23,12 @@ def random_scheduler(available_job_list, node_list, t, available_node_list):
 		choosen_node = random.choices(node_list)[0]
 		# ~ print(choosen_node)
 		# ~ cores_not_selected_yet = choosen_node.cores
-		print("required cores:", j.cores)
+		# ~ print("required cores:", j.cores)
 		choosen_core = random.sample(choosen_node.cores, j.cores)
 		# ~ cores_not_selected_yet.remove(choosen_core)
 		# ~ print(choosen_core)
 		
-		transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory, j.data_sizes)	
+		transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory, j.data_size)	
 			
 		if (j.delay + transfer_time < j.walltime):
 			end_before_walltime = True
@@ -58,7 +58,12 @@ def random_scheduler(available_job_list, node_list, t, available_node_list):
 						
 		add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
 			
-		print("Job", j.unique_id, "will be computed on node", choosen_node.unique_id, "core(s)", choosen_core, "start at time", j.start_time, "and finish at time", j.end_time)
+		# Just fro printing in terminal. Can be removed.
+		core_ids = []
+		for i in range (0, len(choosen_core)):
+			core_ids.append(choosen_core[i].unique_id)
+		core_ids.sort()
+		print("Job", j.unique_id, "will be computed on node", choosen_node.unique_id, "core(s)", core_ids, "start at time", j.start_time, "and finish at time", j.end_time)
 
 		# Remove from available cores TODO : deal with multicore
 		# ~ remove_from_available(available_node_list, choosen_node, choosen_core)
