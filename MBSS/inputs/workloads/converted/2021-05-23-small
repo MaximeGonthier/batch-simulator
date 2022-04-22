@@ -23,3 +23,4 @@
 { id: 23 subtime: 84256 delay: 58798 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
 { id: 24 subtime: 84256 delay: 76691 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
 { id: 25 subtime: 84256 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
+{ id: 26 subtime: 84256 delay: 97013 walltime: 259200 cores: 1 user: ama51 data: 0 data_size: 0 }

@@ -14,7 +14,7 @@ echo "job_id,workload_name,profile,submission_time,requested_number_of_resources
 
 # Random (R)
 truncate -s 0 outputs/Results_Random.txt
-python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Random 1
+python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Random ShiftLeft 1
 
 #~ # Random Available (RA)
 #~ truncate -s 0 outputs/Results_Random-Available.txt

@@ -15,6 +15,7 @@ class Job:
     start_time: int
     end_time: int
     end_before_walltime: bool
+    cores_used: list
     
 # Schedule random available jobs on random nodes and cores, even if not available
 def random_scheduler(available_job_list, node_list, t, available_node_list):
@@ -48,7 +49,8 @@ def random_scheduler(available_job_list, node_list, t, available_node_list):
 		
 		for c in choosen_core:
 			c.available_time = start_time + j.walltime
-			
+		
+		j.cores_used = choosen_core
 		j.start_time = start_time
 		j.end_time = end_time
 		j.end_before_walltime = end_before_walltime

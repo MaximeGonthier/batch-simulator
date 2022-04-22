@@ -12,6 +12,7 @@ class Job:
     start_time: int
     end_time: int
     end_before_walltime: bool
+    cores_used: list
 @dataclass
 class Node:
     unique_id: int
@@ -46,7 +47,7 @@ def read_workload(input_job_file, job_list):
 		line = f.readline()
 		while line:
 			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18 = line.split() # split it by whitespace
-			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), int(r17), 0, 0, False)
+			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), int(r17), 0, 0, False, list())
 			# Adding data in the list of data of the job
 			# ~ i = 1
 			# ~ while (i < len(str(r13))):

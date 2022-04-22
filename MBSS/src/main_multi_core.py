@@ -10,12 +10,14 @@ import operator
 from read_input_files import *
 from basic_functions import *
 from scheduler import *
+from filling_strategy import *
 
 # Getting arguments
 input_job_file = sys.argv[1]
 input_node_file = sys.argv[2]
 scheduler = sys.argv[3]
-write_all_jobs = int(sys.argv[4]) # Si on veut faire un gantt chart il faut imprimer tout les jobs et mettre ca à 1
+filling_strategy = sys.argv[4]
+write_all_jobs = int(sys.argv[5]) # Si on veut faire un gantt chart il faut imprimer tout les jobs et mettre ca à 1
 
 # Global structs and input files
 @dataclass
@@ -30,6 +32,7 @@ class Job:
     start_time: int
     end_time: int
     end_before_walltime: bool
+    cores_used: list
 @dataclass
 @dataclass
 class Node:
@@ -64,22 +67,31 @@ def update_jobs(node_list, t, job_list, finished_jobs):
 	for n in node_list:
 		for c in n.cores:
 			for j in c.job_queue:
-				if (j.end_time == t): # TODO : gérér multi core et remove les jobs des queue des cores
+				if (j.end_time == t):
 					finished_jobs += 1
 					print(j.unique_id, "finished at time", t)
 					core_ids = []
+					cores_used = []
 					if (j.cores > 1):
 						for c2 in n.cores:
 							if (j in c2.job_queue):
 								core_ids.append(c2.unique_id)
 								c2.job_queue.remove(j)
+								cores_used.append(c2)
 						to_print_job_csv(j, n.unique_id, core_ids, t)
 					else:
 						core_ids.append(c.unique_id)
 						to_print_job_csv(j, n.unique_id, core_ids, t)
 						c.job_queue.remove(j)
-					
-					# ~ if (c.job_queue[i].end_before_walltime == True) # TODO : Il faut tout shift vers la gauche
+						cores_used.append(c)
+					if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy
+						if (filling_strategy == "ShiftLeft"):
+							ShiftLeft(cores_used, j, job_list)
+						elif (filling_strategy == "BackFill"):
+							BackFill(cores_used, j, node_list)
+						elif (filling_strategy != "NoFilling"):
+							print("Wrong Filling Strategy in arguments.")
+							exit
 	return finished_jobs
 
 # Print in a csv file the results of this job allocation
