@@ -15,6 +15,7 @@ class Job:
     start_time: int
     end_time: int
     end_before_walltime: bool
+    node_used: None
     cores_used: list
     
 # Schedule random available jobs on random nodes and cores, even if not available
@@ -25,11 +26,11 @@ def random_scheduler(available_job_list, node_list, t, available_node_list):
 		choosen_node = random.choices(node_list)[0]
 		choosen_core = random.sample(choosen_node.cores, j.cores)
 		
-		transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory, j.data_size)				
-		if (j.delay + transfer_time < j.walltime):
-			end_before_walltime = True
-		else:
-			end_before_walltime = False
+		# ~ transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory, j.data_size)				
+		# ~ if (j.delay + transfer_time < j.walltime):
+			# ~ end_before_walltime = True
+		# ~ else:
+			# ~ end_before_walltime = False
 
 		# Get start time
 		start_time = t
@@ -40,27 +41,28 @@ def random_scheduler(available_job_list, node_list, t, available_node_list):
 						start_time = c.available_time
 				break
 				
-		end_time = start_time + min(j.delay + transfer_time, j.walltime)
+		# ~ end_time = start_time + min(j.delay + transfer_time, j.walltime)
 		
 		for c in choosen_core:
 			c.available_time = start_time + j.walltime
 		
+		j.node_used = choosen_node
 		j.cores_used = choosen_core
 		j.start_time = start_time
-		j.end_time = end_time
-		j.end_before_walltime = end_before_walltime
+		j.end_time = start_time + j.walltime
+		# ~ j.end_before_walltime = end_before_walltime
 			
 		for c in choosen_core:
 			c.job_queue.append(j)
 						
-		add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
+		# ~ add_data_in_node(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory)
 			
 		# Just for printing in terminal. Can be removed.
 		core_ids = []
 		for i in range (0, len(choosen_core)):
 			core_ids.append(choosen_core[i].unique_id)
 		core_ids.sort()
-		print("Job", j.unique_id, "will be computed on node", choosen_node.unique_id, "core(s)", core_ids, "start at time", j.start_time, "and finish at time", j.end_time)
+		# ~ print("Job", j.unique_id, "will be computed on node", choosen_node.unique_id, "core(s)", core_ids, "start at time", j.start_time, "and is predicted to finish at time", j.end_time)
 
 		# Remove from available cores TODO : deal with multicore
 		# ~ remove_from_available(available_node_list, choosen_node, choosen_core)

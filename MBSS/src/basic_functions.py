@@ -14,7 +14,7 @@ def compute_transfer_time(job_data, node_data, bandwidth, memory, job_data_size)
 	if (job_data not in node_data and job_data != 0):
 		# ~ transfer_time += job_data_size//bandwidth
 		transfer_time += job_data_size/bandwidth
-	print("Transfer time:", transfer_time)
+	# ~ print("Transfer time:", transfer_time)
 	return transfer_time
 
 # Remove jobs rom the main job list. I do it outside the loop because I need to go through the list before deleting
