@@ -65,7 +65,6 @@ available_node_list = [] # Contient aussi les coeurs disponibles
 to_print_list = []
 t = 0 # Current time start at 0
 
-# TODO gérer strat to the left et filling ici
 def update_jobs(node_list, t, job_list, finished_jobs):
 	need_to_fill = False
 	for n in node_list:
@@ -94,13 +93,6 @@ def update_jobs(node_list, t, job_list, finished_jobs):
 						# ~ cores_used.append(c)
 					if (j.end_before_walltime == True and need_to_fill == False): # Need to backfill or shiftleft depending on the strategy
 						need_to_fill = True
-						# ~ if (filling_strategy == "ShiftLeft"):
-							# ~ ShiftLeft(cores_used, j, job_list, t)
-						# ~ elif (filling_strategy == "BackFill"):
-							# ~ BackFill(cores_used, j, node_list)
-						# ~ elif (filling_strategy != "NoFilling"):
-							# ~ print("Wrong Filling Strategy in arguments.")
-							# ~ exit
 	return finished_jobs, need_to_fill
 
 # Print in a csv file the results of this job allocation
@@ -149,7 +141,6 @@ total_number_jobs = len(job_list)
 
 # Starting simulation
 while(total_number_jobs != finished_jobs):
-	# ~ print ("t =", t, "et il y a", finished_jobs, "finished jobs")
 	job_to_remove = []
 	for j in job_list:
 		if (j.subtime <= t):
@@ -166,15 +157,15 @@ while(total_number_jobs != finished_jobs):
 			print("Wrong scheduler in arguments")
 			exit
 	
-	print(node_list[0].data)
-	print(node_list[1].data)
+	# ~ print(node_list[0].data)
+	# ~ print(node_list[1].data)
 	
 	t += 1
-	# ~ update_nodes()
-	# TODO backfill strategy
+	# ~ update_nodes() # TODO : do this for available nodes ?
 	finished_jobs, need_to_fill = update_jobs(node_list, t, job_list, finished_jobs)
-	
-	if need_to_fill == True:
+
+	# TODO backfill strategy
+	if need_to_fill == True: # At least one job has ended before it's walltime
 		# Filling
 		if (filling_strategy == "ShiftLeft"):
 			ShiftLeft(node_list, t)
