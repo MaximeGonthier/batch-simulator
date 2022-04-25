@@ -28,7 +28,8 @@ class Job:
     walltime: int
     cores: int
     data: int
-    data_size: int
+    data_size: float
+    index_node_list: int
     start_time: int
     end_time: int
     end_before_walltime: bool
@@ -46,10 +47,6 @@ class Core:
     unique_id: int
     job_queue: list
     available_time: int
-# ~ @dataclass
-# ~ class DataLoaded:
-    # ~ unique_id: int
-    # ~ end_time: int
 @dataclass
 class To_print: # Struct used to know what to print later in csv
     job_unique_id: int
@@ -62,12 +59,18 @@ class To_print: # Struct used to know what to print later in csv
 job_list = []
 available_job_list = []
 scheduled_job_list = []
-node_list = []
-available_node_list = [] # Contient aussi les coeurs disponibles
-to_print_list = []
+# ~ node_list = []
+# ~ available_node_list = [] # Contient aussi les coeurs disponibles
+
+# Ce sont des listes de listes
+# ~ sub_list = []
+node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
+available_node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
+
+to_print_list = [] # TODO : utilisé ?
 t = 0 # Current time start at 0
 
-def update_jobs2(node_list, t, scheduled_job_list, finished_jobs):
+def start_jobs(t, scheduled_job_list, finished_jobs):
 	# ~ if (
 	for j in scheduled_job_list:
 		if (j.start_time == t):
@@ -78,30 +81,10 @@ def update_jobs2(node_list, t, scheduled_job_list, finished_jobs):
 			add_data_in_node(j.data, j.node_used.data, j.node_used.bandwidth, j.node_used.memory)
 			print("Job", j.unique_id, "is starting at time", j.start_time, "and will end at time", j.end_time, "with a walltime ending at", j.walltime + j.start_time)
 			
-def update_jobs(node_list, t, scheduled_job_list, finished_jobs):
-	# ~ print("Update jobs t =", t, "list =", len(scheduled_job_list))
-	need_to_fill = False
+def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 	jobs_to_remove = []
-	# ~ if (t == 36000 or t == 35999):
-		# ~ print(scheduled_job_list[0].unique_id, scheduled_job_list[0].end_time)
-		# ~ print(scheduled_job_list[1].unique_id, scheduled_job_list[0].end_time)
-		# ~ print(scheduled_job_list[2].unique_id, scheduled_job_list[0].end_time)
-		# ~ print(scheduled_job_list[3].unique_id, scheduled_job_list[0].end_time)
-		# ~ print(scheduled_job_list[4].unique_id, scheduled_job_list[0].end_time)
-		# ~ print(scheduled_job_list[5].unique_id, scheduled_job_list[0].end_time)
 	for j in scheduled_job_list:
-		# ~ if (j.start_time == t):
-			# ~ transfer_time = compute_transfer_time(j.data, j.node_used.data, j.node_used.bandwidth, j.node_used.memory, j.data_size)
-			# ~ j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime)
-			# ~ if (j.delay + transfer_time < j.walltime):
-				# ~ j.end_before_walltime = True
-			# ~ add_data_in_node(j.data, j.node_used.data, j.node_used.bandwidth, j.node_used.memory)
-			# ~ print("Job", j.unique_id, "is starting at time", j.start_time, "and will end at time", j.end_time, "with a walltime ending at", j.walltime + j.start_time)
-		# ~ elif (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
-			# ~ if (j.data != 0): # TODO a corriger
-				# ~ print("want to remove", j.data, "from node", j.node_used.unique_id)
-				# ~ j.node_used.data.remove(j.data)
 			finished_jobs += 1
 			print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
 			core_ids = []
@@ -112,61 +95,12 @@ def update_jobs(node_list, t, scheduled_job_list, finished_jobs):
 				core_ids.append(j.cores_used[i].unique_id)
 			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
 
-			# ~ if (j.cores > 1):
-				# ~ for c2 in n.cores:
-					# ~ if (j in c2.job_queue):
-								# ~ core_ids.append(c2.unique_id)
-								# ~ c2.job_queue.remove(j)
-								# ~ c2.available_time = t
-						# ~ to_print_job_csv(j, n.unique_id, j.cores_used, t)
-					# ~ else:
-						# ~ core_ids.append(c.unique_id)
-						# ~ to_print_job_csv(j, n.unique_id, j.cores_used, t)
-						# ~ c.job_queue.remove(j)
-						# ~ c.available_time = t
-			if (j.end_before_walltime == True and need_to_fill == False): # Need to backfill or shiftleft depending on the strategy OLD
-				need_to_fill = True
+			if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy OLD
+				affected_node_list.append(j.node_used)
 			jobs_to_remove.append(j)
 	remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
 						
-	# ~ for n in node_list:
-		# ~ for c in n.cores:
-			# ~ if (len(c.job_queue) > 0):
-				# ~ transfer_time = 0
-				# ~ if (c.job_queue[0].start_time == t): # A job has started, let's compute the amount of transfers needed
-					# ~ transfer_time = compute_transfer_time(c.job_queue[0].data, n.data, n.bandwidth, n.memory, c.job_queue[0].data_size)
-					# ~ c.job_queue[0].end_time = c.job_queue[0].start_time + min(c.job_queue[0].delay + transfer_time, c.job_queue[0].walltime)
-					# ~ if (c.job_queue[0].delay + transfer_time < c.job_queue[0].walltime):
-						# ~ c.job_queue[0].end_before_walltime = True
-					# ~ add_data_in_node(c.job_queue[0].data, n.data, n.bandwidth, n.memory)
-					# ~ print("Job", c.job_queue[0].unique_id, "is starting at time", c.job_queue[0].start_time, "and will end at time", c.job_queue[0].end_time, "with a walltime ending at", c.job_queue[0].walltime + c.job_queue[0].start_time)
-					# ~ # Let's remove it from the cores
-					# ~ cores_to_removes = []
-					# ~ for i in range (0, len(c.job_queue[0].cores_used)):
-						# ~ print("Removed from core", c.job_queue[0].cores_used[i].unique_id)
-						# ~ n.cores[c.job_queue[0].cores_used[i].unique_id].job_queue.remove(c.job_queue[0])
-				
-	# ~ elif (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
-					# ~ if (j.data != 0):
-						# ~ n.data.remove(j.data)
-					# ~ finished_jobs += 1
-					# ~ print(j.unique_id, "finished at time", t)
-					#core_ids = []
-					# ~ if (j.cores > 1):
-						# ~ for c2 in n.cores:
-							# ~ if (j in c2.job_queue):
-								# ~ core_ids.append(c2.unique_id)
-								# ~ c2.job_queue.remove(j)
-								# ~ c2.available_time = t
-						# ~ to_print_job_csv(j, n.unique_id, j.cores_used, t)
-					# ~ else:
-						# ~ core_ids.append(c.unique_id)
-						# ~ to_print_job_csv(j, n.unique_id, j.cores_used, t)
-						# ~ c.job_queue.remove(j)
-						# ~ c.available_time = t
-					# ~ if (j.end_before_walltime == True and need_to_fill == False): # Need to backfill or shiftleft depending on the strategy OLD
-						# ~ need_to_fill = True
-	return finished_jobs, need_to_fill
+	return finished_jobs, affected_node_list
 
 # Print in a csv file the results of this job allocation
 def to_print_job_csv(job, node_id, core_ids, time):
@@ -199,11 +133,10 @@ def to_print_job_csv(job, node_id, core_ids, time):
 
 # Read cluster
 node_list, available_node_list = read_cluster(input_node_file, node_list, available_node_list)
-print("Node list:", node_list, "\n")
 
 # Read workload
 job_list = read_workload(input_job_file, job_list)
-print("Job list:", job_list, "\n")
+# ~ print("Job list:", job_list, "\n")
 
 # Init before Schedule for some schedulers. Ils sont déjà triées par subtime
 # ~ if (scheduler == "FCFS"):
@@ -229,29 +162,31 @@ while(total_number_jobs != finished_jobs):
 		print("t =", t, "et il y a", len(available_job_list), "available jobs")
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
-			random_scheduler(available_job_list, node_list, t, available_node_list)
+			random_scheduler(available_job_list, node_list, t)
 		else:
 			print("Wrong scheduler in arguments")
 			exit
 	
-	# Get started and ended job. Inform if a fiiling is needed. Compute file transfers needed.		
-	finished_jobs, need_to_fill = update_jobs(node_list, t, scheduled_job_list, finished_jobs)
+	# Get ended job. Inform if a fiiling is needed. Compute file transfers needed.	
+	affected_node_list = []	
+	finished_jobs, affected_node_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
 	
 	# ~ update_nodes() # TODO : do this for available nodes ?
 
 	# TODO backfill strategy
-	if (need_to_fill == True and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
+	if (len(affected_node_list) and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 		# Filling
 		if (filling_strategy == "ShiftLeft"):
-			ShiftLeft(node_list, t)
+			ShiftLeft(affected_node_list, t)
 		elif (filling_strategy == "BackFill"):
-			BackFill(cores_used, j, node_list)
+			BackFill(affected_node_list, t)
 		elif (filling_strategy != "NoFilling"):
 			print("No filling.")
 		else:
 			exit
-			
-	update_jobs2(node_list, t, scheduled_job_list, finished_jobs)
+	
+	# Get started jobs	
+	start_jobs(t, scheduled_job_list, finished_jobs)
 	
 	# Time is advancing
 	t += 1

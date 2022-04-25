@@ -22,5 +22,5 @@
 { id: 22 subtime: 84256 delay: 43005 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
 { id: 23 subtime: 84256 delay: 58798 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
 { id: 24 subtime: 84256 delay: 76691 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
-{ id: 25 subtime: 84256 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
-{ id: 26 subtime: 84256 delay: 97013 walltime: 259200 cores: 1 user: ama51 data: 0 data_size: 0 }
+{ id: 25 subtime: 84256 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 2 data_size: 1024 }
+{ id: 26 subtime: 84256 delay: 97013 walltime: 259200 cores: 1 user: ama51 data: 3 data_size: 12.8 }

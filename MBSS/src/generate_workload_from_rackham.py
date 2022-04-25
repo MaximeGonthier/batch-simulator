@@ -17,7 +17,7 @@ class Job:
     cores: int
     user: str
     data: int
-    data_size: int
+    data_size: float
     
 # Args
 FILENAME = sys.argv[1]
@@ -73,7 +73,7 @@ if (workload[0].cores >= 5):
 		size = 51.2
 	workload[0].data_size = size*workload[0].cores
 # ~ f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: " % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data))
-f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size))
+f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size))
 last_data = workload[0].data
 last_size = workload[0].data_size
 last_user = workload[0].user
@@ -107,7 +107,7 @@ for i in range (1, id_count - 1):
 			last_user = workload[i].user
 			last_subtime = workload[i].subtime
 			last_core = workload[i].cores
-	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size))
+	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size))
 f_output.close()
 
 # ~ f_input.seek(0, 0) # Reset le fichier au début

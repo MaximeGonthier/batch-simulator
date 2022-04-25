@@ -1,7 +1,7 @@
 # Shift every job on the first available time slot on the same cores
-def ShiftLeft(node_list, t):
+def ShiftLeft(affected_node_list, t):
 	print("Shifting...")
-	for n in node_list:
+	for n in affected_node_list:
 		for c in n.cores:
 			for j in c.job_queue:
 				if j.start_time > c.available_time: # Mean we can shift left
@@ -23,5 +23,5 @@ def ShiftLeft(node_list, t):
 					for c3 in j.cores_used:
 						c3.available_time = j.start_time + j.walltime	
 							
-def BackFill(cores, job, node_list):
+def BackFill(affected_node_list, t):
 	print("BackFilling...")

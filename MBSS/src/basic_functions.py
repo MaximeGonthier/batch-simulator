@@ -1,12 +1,4 @@
-# ~ from dataclasses import dataclass
-# ~ @dataclass
-# ~ class To_print: # Struct used to know what to print later in csv
-    # ~ job_unique_id: int
-    # ~ job_subtime: int
-    # ~ node_unique_id: int
-    # ~ core_unique_id: int
-    # ~ time: int
-    # ~ time_used: int
+
     
 # Just compute the time it takes to transfer all data not on node. TODO : deal with eviction ?
 def compute_transfer_time(job_data, node_data, bandwidth, memory, job_data_size):

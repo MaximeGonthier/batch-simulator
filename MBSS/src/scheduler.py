@@ -11,7 +11,8 @@ class Job:
     walltime: int
     cores: int
     data: int
-    data_size: int
+    data_size: float
+    index_node_list: int
     start_time: int
     end_time: int
     end_before_walltime: bool
@@ -19,18 +20,18 @@ class Job:
     cores_used: list
     
 # Schedule random available jobs on random nodes and cores, even if not available
-def random_scheduler(available_job_list, node_list, t, available_node_list):
+def random_scheduler(available_job_list, node_list, t):
 	job_to_remove = []
 	for j in available_job_list:
-		# Randomly choose a node and a set of cores
-		choosen_node = random.choices(node_list)[0]
+
+		if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+			choosen_node = random.choice(node_list[0] + node_list[1] + node_list[2])
+		elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+			choosen_node = random.choice(node_list[1] + node_list[2])
+		elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+			choosen_node = random.choice(node_list[2])
+
 		choosen_core = random.sample(choosen_node.cores, j.cores)
-		
-		# ~ transfer_time = compute_transfer_time(j.data, choosen_node.data, choosen_node.bandwidth, choosen_node.memory, j.data_size)				
-		# ~ if (j.delay + transfer_time < j.walltime):
-			# ~ end_before_walltime = True
-		# ~ else:
-			# ~ end_before_walltime = False
 
 		# Get start time
 		start_time = t
