@@ -194,11 +194,15 @@ we aim at restricting the amount of data movement.
 
 The memory of a node is used only by physical writing of files and denoted by $\memory(\Node{i})$.
 A file can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
-\begin{itemize}
+\begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
-\end{itemize}
+	\item $J_i$ and $J_j$ are computed on the same node and between the end of $J_i$ and the beggining of $J_j$, no other job is being computed.
+\end{enumerate}
 Otherwise we consider that memory operations will cause the files to be evicted.
+When a node is idling however, we consider that we can enforce a policy that will
+pin unoccupied address space containing the last input file that was used.
+This input file will be "free" to use for the next job schedule on the node. It correspond to point number 3.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
