@@ -34,7 +34,6 @@ class Job:
     end_before_walltime: bool
     cores_used: list
 @dataclass
-@dataclass
 class Node:
     unique_id: int
     memory: int
@@ -46,6 +45,10 @@ class Core:
     unique_id: int
     job_queue: list
     available_time: int
+# ~ @dataclass
+# ~ class DataLoaded:
+    # ~ unique_id: int
+    # ~ end_time: int
 @dataclass
 class To_print: # Struct used to know what to print later in csv
     job_unique_id: int
@@ -64,35 +67,41 @@ t = 0 # Current time start at 0
 
 # TODO gérer strat to the left et filling ici
 def update_jobs(node_list, t, job_list, finished_jobs):
+	need_to_fill = False
 	for n in node_list:
 		for c in n.cores:
 			for j in c.job_queue:
 				if (j.end_time == t):
+					if (j.data != 0):
+						n.data.remove(j.data)
 					finished_jobs += 1
 					print(j.unique_id, "finished at time", t)
 					core_ids = []
-					cores_used = []
+					# ~ cores_used = []
 					if (j.cores > 1):
 						for c2 in n.cores:
 							if (j in c2.job_queue):
 								core_ids.append(c2.unique_id)
 								c2.job_queue.remove(j)
-								cores_used.append(c2)
+								c2.available_time = t
+								# ~ cores_used.append(c2)
 						to_print_job_csv(j, n.unique_id, core_ids, t)
 					else:
 						core_ids.append(c.unique_id)
 						to_print_job_csv(j, n.unique_id, core_ids, t)
 						c.job_queue.remove(j)
-						cores_used.append(c)
-					if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy
-						if (filling_strategy == "ShiftLeft"):
-							ShiftLeft(cores_used, j, job_list)
-						elif (filling_strategy == "BackFill"):
-							BackFill(cores_used, j, node_list)
-						elif (filling_strategy != "NoFilling"):
-							print("Wrong Filling Strategy in arguments.")
-							exit
-	return finished_jobs
+						c.available_time = t
+						# ~ cores_used.append(c)
+					if (j.end_before_walltime == True and need_to_fill == False): # Need to backfill or shiftleft depending on the strategy
+						need_to_fill = True
+						# ~ if (filling_strategy == "ShiftLeft"):
+							# ~ ShiftLeft(cores_used, j, job_list, t)
+						# ~ elif (filling_strategy == "BackFill"):
+							# ~ BackFill(cores_used, j, node_list)
+						# ~ elif (filling_strategy != "NoFilling"):
+							# ~ print("Wrong Filling Strategy in arguments.")
+							# ~ exit
+	return finished_jobs, need_to_fill
 
 # Print in a csv file the results of this job allocation
 def to_print_job_csv(job, node_id, core_ids, time):
@@ -156,12 +165,27 @@ while(total_number_jobs != finished_jobs):
 		else:
 			print("Wrong scheduler in arguments")
 			exit
-		
+	
+	print(node_list[0].data)
+	print(node_list[1].data)
+	
 	t += 1
 	# ~ update_nodes()
 	# TODO backfill strategy
-	finished_jobs = update_jobs(node_list, t, job_list, finished_jobs)
+	finished_jobs, need_to_fill = update_jobs(node_list, t, job_list, finished_jobs)
+	
+	if need_to_fill == True:
+		# Filling
+		if (filling_strategy == "ShiftLeft"):
+			ShiftLeft(node_list, t)
+		elif (filling_strategy == "BackFill"):
+			BackFill(cores_used, j, node_list)
+		elif (filling_strategy != "NoFilling"):
+			print("Wrong Filling Strategy in arguments.")
+		exit
 
 # Print results in a csv file
 print("Computing and writing results...")
+print(node_list[0].data)
+print(node_list[1].data)
 # ~ print_csv()

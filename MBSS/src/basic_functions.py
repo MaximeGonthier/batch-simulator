@@ -26,7 +26,8 @@ def remove_jobs_from_list(available_job_list, job_to_remove): # TODO: simplifier
 
 # Add data in the node. TODO : deal with eviction when a job is not currently running on it
 def add_data_in_node(job_data, node_data, bandwidth, memory):
-	if (job_data not in node_data):
+	# ~ if (job_data not in node_data):
+	if (job_data != 0):
 		node_data.append(job_data)
 
 # Update nodes list if they are available at current time
