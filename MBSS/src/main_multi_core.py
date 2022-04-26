@@ -155,8 +155,8 @@ job_list = read_workload(input_job_file, job_list)
 # ~ print("Job list:", job_list, "\n")
 
 # Init before Schedule for some schedulers. Ils sont déjà triées par subtime
-# ~ if (scheduler == "FCFS"):
-	# ~ job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
+if (scheduler == "Fcfs_with_a_score"):
+	job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
 
 finished_jobs = 0
 total_number_jobs = len(job_list)
@@ -175,10 +175,11 @@ while(total_number_jobs != finished_jobs):
 	
 	# Schedule all those jobs
 	while(len(available_job_list) > 0):
-		# ~ print("t =", t, "et il y a", len(available_job_list), "available jobs")
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
+		elif (scheduler == "Fcfs_with_a_score"):
+			fcfs_with_a_score_scheduler(available_job_list, node_list, t)
 		else:
 			print("Wrong scheduler in arguments")
 			exit

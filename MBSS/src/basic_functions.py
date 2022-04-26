@@ -126,3 +126,30 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 		c.available_time = start_time + walltime
 	
 	return start_time
+
+def print_decision_in_scheduler(choosen_core, j, choosen_node):
+	core_ids = []
+	for i in range (0, len(choosen_core)):
+		core_ids.append(choosen_core[i].unique_id)
+	core_ids.sort()
+	print("Job", j.unique_id, "will be computed on node", choosen_node.unique_id, "core(s)", core_ids, "start at time", j.start_time, "and is predicted to finish at time", j.end_time)
+
+# Return set of files that will be on node at a given time
+def files_on_node_at_certain_time(time, node):
+	file_on_node = []
+	for c in node.cores:
+		for j in c.job_queue:
+			if j.start_time + j.transfer_time <= time and j.walltime >= time: # Data will be loaded at this time
+				if j.data not in file_on_node:
+					file_on_node.append(j.data)
+				break # Break because no other possibility on this core ?
+	return file_on_node
+
+def size_files_ended_at_certain_time(time, cores, current_data):
+	size_file_ended = 0
+	for c in cores:
+		for j in c.job_queue:
+			if j.walltime == time and j.data != current_data: # Data will end at this time
+				size_file_ended += j.data_size
+				break
+	return size_file_ended
