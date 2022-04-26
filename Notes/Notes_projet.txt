@@ -128,3 +128,59 @@ Even for jobs with 20 cores and 200GB you use the full node of size 256GB and th
 Stats sur le workload: Faut-il ignorer les jobs trop longs ? Ou avec trop de cores ou de walltime ? Non
 
 Se comparer a la strat de base du fichier workload raw car on connais les noeuds utilisées ?
+
+File Sharing
+ 
+Let's say we have jobs A and A_bis using file "a". And job B using file "b".
+
+
+1.)
+
+A is running on Node 1 Core 1 from time 0 to 10.
+
+B is running on Node 1 Core 2 from time 5 to 15.
+
+At time 11, is file "a" still in memory of Node 1 ? Or has it been removed because B is still running ?
+A bit hard to tell, maybe we should choose "no". There are arguments for why it would be "yes, but", though.
+
+ 
+
+2.)
+
+A is running on Node 1 Core 1 from time 0 to 10.
+
+B is running on Node 1 Core 1 from time 10 to 20.
+
+A_bis is running on Node 1 Core 2 from time 10 to 20.
+
+Does A_bis have to load file "a" in this situation ?
+No. A slightly more complex answer would involve the NUMA domains, but even with those (i.e. separate physical memory preference for core 11-20) it should not be needed.
+
+ 
+
+3.)
+
+A is running on Node 1 Core 1 and 2 from time 0 to 10.
+
+B is running on Node 1 Core 1 from time 10 to 20.
+
+A_bis is running on Node 1 Core 1 and 2 from time 20 to 30.
+
+Does A_bis have to load file "a" in this situation ?
+In practice, this is the same question as #1, assuming that all other cores are free. Both interpretations are reasonable.
+ 
+
+4.)
+
+A is running on Node 1 Core 1 from time 0 to 10.
+
+A_bis is running on Node 1 Core 2 from time 0 to 10.
+
+Does both A and A_bis have to load the file ?
+
+Now let's say the file load takes 2 units of time.
+
+If a new job using "a" start at time 1, does it have to load the full file ? Can it just load half of it and start computing at time 2 because A already started to load file "a" at time 0 ?
+It should not be necessary to load it two times. The load will complete at time 2, and a job scheduled to start at time 1 would only have to wait one time unit.
+
+The essence is that a core does not known a very specific set of physical pages, but an equivalent amount of physical address space. That causes the answers to questions #1 and #3. However, the kernel might choose to devote unoccupied memory (not reserved to any job) to additional cache space etc for other files, and thus evicting all or parts of file a. That can happen even if the node is just idling, unless we assume that we enforce a policy to actively keep files pinned in "unoccupied" address space. That's a fully feasible assumption to make.
