@@ -66,6 +66,7 @@ class To_print: # Struct used to know what to print later in csv
 job_list = []
 available_job_list = []
 scheduled_job_list = []
+to_print_list = []
 # ~ node_list = []
 # ~ available_node_list = [] # Contient aussi les coeurs disponibles
 
@@ -214,4 +215,4 @@ while(total_number_jobs != finished_jobs):
 
 # Print results in a csv file
 print("Computing and writing results...")
-print_csv()
+print_csv(to_print_list, scheduler)

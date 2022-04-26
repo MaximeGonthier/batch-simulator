@@ -85,7 +85,7 @@ def remove_data_from_node(finished_job_list):
 	# ~ available_node_list[choosen_node.unique_id].cores.remove(choosen_node.cores[choosen_core])
 	# ~ available_node_list.remove(choosen_node)
 	
-def print_csv():
+def print_csv(to_print_list, scheduler):
 	max_queue_time = 0
 	mean_queue_time = 0
 	total_queue_time = 0
@@ -112,3 +112,17 @@ def print_csv():
 	f = open(file_to_open, "a")
 	f.write("%s %s %s %s %s %s %s %s %s %s\n" % (str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
 	f.close()
+
+def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
+	start_time = t
+	for c in choosen_core:
+		if (c.available_time > t): # Look for max available time
+			for c in choosen_core:
+				if (c.available_time > start_time):
+					start_time = c.available_time
+			break
+					
+	for c in choosen_core:
+		c.available_time = start_time + walltime
+	
+	return start_time
