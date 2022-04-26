@@ -18,6 +18,7 @@ class Job:
     end_before_walltime: bool
     node_used: None
     cores_used: list
+    transfer_time: int
     
 # Schedule random available jobs on random nodes and cores, even if not available
 def random_scheduler(available_job_list, node_list, t):

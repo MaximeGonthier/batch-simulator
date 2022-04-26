@@ -1,13 +1,10 @@
-
-    
-# Just compute the time it takes to transfer all data not on node. TODO : deal with eviction ?
-def compute_transfer_time(job_data, node_data, bandwidth, memory, job_data_size):
-	transfer_time = 0
-	if (job_data not in node_data and job_data != 0):
-		# ~ transfer_time += job_data_size//bandwidth
-		transfer_time += job_data_size/bandwidth
-	# ~ print("Transfer time:", transfer_time)
-	return transfer_time
+# Imports
+from dataclasses import dataclass
+@dataclass
+class Data:
+    unique_id: int
+    start_time: int
+    nb_task_using_it: int
 
 # Remove jobs rom the main job list. I do it outside the loop because I need to go through the list before deleting
 def remove_jobs_from_list(available_job_list, job_to_remove): # TODO: simplifier en 1 seule boucle ?
@@ -17,11 +14,62 @@ def remove_jobs_from_list(available_job_list, job_to_remove): # TODO: simplifier
 				available_job_list.remove(j2)
 
 # Add data in the node. TODO : deal with eviction when a job is not currently running on it
-def add_data_in_node(job_data, node_data, bandwidth, memory):
-	# ~ if (job_data not in node_data):
-	if (job_data != 0):
-		node_data.append(job_data)
+def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
+	# ~ print("Adding", data_unique_id)
+	
+	data_is_on_node = False
+	
+	# Let's try to find it in the node
+	for d in node_used.data:
+		if (data_unique_id == d.unique_id): # It is already on node
+			if (d.nb_task_using_it > 0): # And is still valid!
+				# ~ if (d.end_time < t + walltime): # New end time for the data cause current job will hold it for longer
+					# ~ d.end_time = t + walltime
+					
+				if (d.start_time > t): # The job will have to wait for the data to be loaded by another job before starting
+					transfer_time = d.start_time - t
+				else:
+					transfer_time = 0 # No need to wait to start the job, data is already fully loaded
+			else: # Need to reload it
+				print("Data", data_unique_id, "is not on node anymore need to reload it")
+				transfer_time = data_size/node_used.bandwidth
+				d.start_time = t + transfer_time
+			data_is_on_node = True
+			d.nb_task_using_it += 1
+			break
+	
+	if (data_is_on_node == False): # Need to load it
+		transfer_time = data_size/node_used.bandwidth
+		# Create a class Data for this node
+		d = Data(data_unique_id, t + transfer_time, 1)
+		node_used.data.append(d)
+	
+	print("Adding", data_unique_id, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
+	return transfer_time
 
+def remove_data_from_node(finished_job_list):
+	for j in finished_job_list:
+		for d in j.node_used.data:
+			if (j.data == d.unique_id):
+				d.nb_task_using_it -= 1
+				break
+	
+	# ~ if (job_data not in node_used.data):
+		# ~ job_data.end_time = time_last_used
+		# ~ node_used.data.append(job_data)
+		# ~ print("New data", job_data.unique_id, "in node", node_used.unique_id, "will end at time", job_data.end_time)
+	# ~ else:
+		# ~ for d in node_used.data:
+			# ~ if (d.unique_id == job_data.unique_id):
+				# ~ if (time_last_used > d.end_time):
+					# ~ d.end_time = time_last_used
+				# ~ break
+		# ~ # just printing a supprimer
+		# ~ for d in node_used.data:
+			# ~ if (d.unique_id == job_data.unique_id):
+				# ~ print("End of data", job_data.unique_id, "on node", node_used.unique_id, "is", d.end_time)
+				# ~ break
+	
 # Update nodes list if they are available at current time
 # ~ def update_nodes():
 	# ~ print("here t =", t)
@@ -37,30 +85,30 @@ def add_data_in_node(job_data, node_data, bandwidth, memory):
 	# ~ available_node_list[choosen_node.unique_id].cores.remove(choosen_node.cores[choosen_core])
 	# ~ available_node_list.remove(choosen_node)
 	
-# ~ def print_csv():
-	# ~ max_queue_time = 0
-	# ~ mean_queue_time = 0
-	# ~ total_queue_time = 0
-	# ~ max_flow = 0
-	# ~ mean_flow = 0
-	# ~ total_flow = 0
-	# ~ total_transfer_time = 0
-	# ~ makespan = 0
-	# ~ core_time_used = 0
-	# ~ for tp in to_print_list:
-		# ~ core_time_used += tp.time_used
-		# ~ total_queue_time += tp.time - tp.job_subtime
-		# ~ if (max_queue_time < tp.time - tp.job_subtime):
-			# ~ max_queue_time = tp.time - tp.job_subtime
-		# ~ total_flow += tp.time - tp.job_subtime + tp.time_used
-		# ~ if (max_flow < tp.time - tp.job_subtime + tp.time_used):
-			# ~ max_flow = tp.time - tp.job_subtime + tp.time_used
-		# ~ total_transfer_time += tp.transfer_time
-		# ~ if (makespan < tp.time + tp.time_used):
-			# ~ makespan = tp.time + tp.time_used
-	# ~ mean_queue_time = total_queue_time/len(to_print_list)
-	# ~ mean_flow = total_flow/len(to_print_list)
-	# ~ file_to_open = "outputs/Results_" + scheduler + ".txt"
-	# ~ f = open(file_to_open, "a")
-	# ~ f.write("%s %s %s %s %s %s %s %s %s %s\n" % (str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
-	# ~ f.close()
+def print_csv():
+	max_queue_time = 0
+	mean_queue_time = 0
+	total_queue_time = 0
+	max_flow = 0
+	mean_flow = 0
+	total_flow = 0
+	total_transfer_time = 0
+	makespan = 0
+	core_time_used = 0
+	for tp in to_print_list:
+		core_time_used += tp.time_used
+		total_queue_time += tp.time - tp.job_subtime
+		if (max_queue_time < tp.time - tp.job_subtime):
+			max_queue_time = tp.time - tp.job_subtime
+		total_flow += tp.time - tp.job_subtime + tp.time_used
+		if (max_flow < tp.time - tp.job_subtime + tp.time_used):
+			max_flow = tp.time - tp.job_subtime + tp.time_used
+		total_transfer_time += tp.transfer_time
+		if (makespan < tp.time + tp.time_used):
+			makespan = tp.time + tp.time_used
+	mean_queue_time = total_queue_time/len(to_print_list)
+	mean_flow = total_flow/len(to_print_list)
+	file_to_open = "outputs/Results_" + scheduler + ".txt"
+	f = open(file_to_open, "a")
+	f.write("%s %s %s %s %s %s %s %s %s %s\n" % (str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
+	f.close()

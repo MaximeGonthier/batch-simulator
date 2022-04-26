@@ -15,6 +15,7 @@ class Job:
     end_before_walltime: bool
     node_used: None
     cores_used: list
+    transfer_time: int
 @dataclass
 class Node:
     unique_id: int
@@ -74,8 +75,8 @@ def read_workload(input_job_file, job_list):
 			else:
 				print("Error, wrong input job data size", float(r17)/int(r11))
 				exit
-							
-			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list())
+			
+			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0)
 			job_list.append(j)
 			line = f.readline()	
 		f.close
