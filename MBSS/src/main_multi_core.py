@@ -90,7 +90,7 @@ def start_jobs(t, scheduled_job_list, finished_jobs):
 			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime)
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
-			print("Job", j.unique_id, "is starting at time", j.start_time, "and will end at time", j.end_time, "with a walltime ending at", j.walltime + j.start_time)
+			# ~ print("Job", j.unique_id, "is starting at time", j.start_time, "and will end at time", j.end_time, "with a walltime ending at", j.walltime + j.start_time)
 	# ~ # Just printing
 	# ~ if (node_list[0][0].data != None):
 		# ~ print("End of data", node_list[0][0].data[0].unique_id, "on node", node_list[0][0].unique_id, "is", node_list[0][0].data[0].end_time)
@@ -100,7 +100,8 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 	for j in scheduled_job_list:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
 			finished_jobs += 1
-			print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
+			print(finished_jobs, "/", total_number_jobs, "T =", t)
+			# ~ print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
 			
 			finished_job_list.append(j)
 			

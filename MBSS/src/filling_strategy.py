@@ -1,11 +1,11 @@
 # Shift every job on the first available time slot on the same cores
 def ShiftLeft(affected_node_list, t):
-	print("Shifting...")
+	# ~ print("Shifting...")
 	for n in affected_node_list:
 		for c in n.cores:
 			for j in c.job_queue:
 				if j.start_time > c.available_time: # Mean we can shift left
-					print("Start time", j.start_time, "of", j.unique_id, "is superior to avail time", c.available_time, "of core", c.unique_id, "node", n.unique_id)
+					# ~ print("Start time", j.start_time, "of", j.unique_id, "is superior to avail time", c.available_time, "of core", c.unique_id, "node", n.unique_id)
 					can_shift = True
 					max_avail = -1
 					for c2 in j.cores_used:
@@ -19,7 +19,7 @@ def ShiftLeft(affected_node_list, t):
 						# ~ j.end_time = j.end_time - j.start_time + max_avail
 						j.end_time = j.end_time - (j.start_time - max_avail)
 						j.start_time = max_avail
-						print ("Job", j.unique_id, "will now start at time", j.start_time, "and end at time", j.end_time)
+						# ~ print ("Job", j.unique_id, "will now start at time", j.start_time, "and end at time", j.end_time)
 					for c3 in j.cores_used:
 						c3.available_time = j.start_time + j.walltime	
 							

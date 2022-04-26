@@ -1,25 +1,26 @@
 #!/bin/bash
-# bash Experiments_multi_core.sh workload
+# bash Experiments_multi_core.sh workload cluster
 start=`date +%s`
 
 # Get arguments
 WORKLOAD=$1
+CLUSTER=$2
 
 # Generate workload
 #~ bash Generate_workload_from_rackham.sh $WORKLOAD
 # OR $1 is already an existing workload
 
-#~ # Random (Random)
-#~ SCHEDULER="Random"
-#~ echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
-#~ truncate -s 0 outputs/Results_Random.txt
-#~ python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Random ShiftLeft 1
-
-# Fcfs_with_a_score (FCFS-Score)
-SCHEDULER="Fcfs_with_a_score"
+# Random (Random)
+SCHEDULER="Random"
 echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
-truncate -s 0 outputs/Results_Fcfs_with_a_score.txt
-python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Fcfs_with_a_score ShiftLeft 1
+truncate -s 0 outputs/Results_Random.txt
+python3 src/main_multi_core.py $WORKLOAD $CLUSTER Random ShiftLeft 1
+
+#~ # Fcfs_with_a_score (FCFS-Score)
+#~ SCHEDULER="Fcfs_with_a_score"
+#~ echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
+#~ truncate -s 0 outputs/Results_Fcfs_with_a_score.txt
+#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER Fcfs_with_a_score ShiftLeft 1
 
 
 
@@ -65,7 +66,10 @@ python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Fcfs
 #~ echo "Plotting core time used..."
 #~ python3 src/plot.py outputs/Core_time_used.csv Core_time_used_${WORKLOAD}
 
-python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+
+echo "Results:"
+head outputs/Results_${SCHEDULER}.txt
 
 end=`date +%s` 
 runtime=$((end-start))

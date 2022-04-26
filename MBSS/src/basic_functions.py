@@ -31,7 +31,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 				else:
 					transfer_time = 0 # No need to wait to start the job, data is already fully loaded
 			else: # Need to reload it
-				print("Data", data_unique_id, "is not on node anymore need to reload it")
+				# ~ print("Data", data_unique_id, "is not on node anymore need to reload it")
 				transfer_time = data_size/node_used.bandwidth
 				d.start_time = t + transfer_time
 			data_is_on_node = True
@@ -44,7 +44,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 		d = Data(data_unique_id, t + transfer_time, 1)
 		node_used.data.append(d)
 	
-	print("Adding", data_unique_id, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
+	# ~ print("Adding", data_unique_id, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
 	return transfer_time
 
 def remove_data_from_node(finished_job_list):
