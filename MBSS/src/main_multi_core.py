@@ -8,6 +8,7 @@ import random
 import sys
 import operator
 from read_input_files import *
+from print_functions import *
 from basic_functions import *
 from scheduler import *
 from filling_strategy import *
@@ -105,7 +106,15 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			
 			core_ids = []
 			for i in range (0, len(j.cores_used)):
-				j.node_used.cores[j.cores_used[i].unique_id].job_queue.remove(j)
+				
+				# OLD
+				# ~ print("Try to remove from core", j.node_used.cores[j.cores_used[i].unique_id].unique_id, "node", j.node_used.unique_id)
+				# ~ j.node_used.cores[j.cores_used[i].unique_id].job_queue.remove(j)
+				
+				# NEW
+				j.cores_used[i].job_queue.remove(j)
+				# ~ print_job_queue_in_cores_specific_node(node_list[0][0])
+				
 				if (j.end_before_walltime == True):
 					j.node_used.cores[j.cores_used[i].unique_id].available_time = t
 				core_ids.append(j.cores_used[i].unique_id)

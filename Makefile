@@ -1,4 +1,4 @@
-all: Data_aware_batch_scheduling
+all: Data_aware_batch_scheduling todo
 
 Data_aware_batch_scheduling:
 	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
@@ -6,6 +6,11 @@ Data_aware_batch_scheduling:
 	bibtex Data_aware_batch_scheduling
 	pdflatex Data_aware_batch_scheduling.tex
 	pdflatex Data_aware_batch_scheduling.tex
+	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
+	
+todo:
+	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
+	pdflatex todo.tex
 	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
 	
 clean:

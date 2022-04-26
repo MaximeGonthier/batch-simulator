@@ -65,7 +65,7 @@ python3 src/main_multi_core.py $WORKLOAD inputs/clusters/rackham_4nodes.txt Fcfs
 #~ echo "Plotting core time used..."
 #~ python3 src/plot.py outputs/Core_time_used.csv Core_time_used_${WORKLOAD}
 
-#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
 
 end=`date +%s` 
 runtime=$((end-start))

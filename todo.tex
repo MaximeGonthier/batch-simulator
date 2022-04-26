@@ -1,0 +1,153 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{diagbox}
+\usepackage{colortbl}
+\usepackage{pdfpages}
+\usepackage{todonotes}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{xspace}
+\usepackage{xcolor,pifont}
+\usepackage{fullpage}
+\usepackage{algorithm, algpseudocode}
+\usepackage[hidelinks]{hyperref}
+\usepackage[english]{babel}
+%~ \usepackage[backend=bibtex]{biblatex}
+%~ \bibliography{ref_cadre}
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newtheorem{Problem}{Problem}
+\newtheorem{Theorem}{Theorem}
+\newtheorem{Lemma}{Lemma}
+\newtheorem{Hypothesis}{Hypothesis}
+\providecommand{\keywords}[1]{\textbf{\textit{Key-words:}} #1}
+\newcommand{\LM}[1]{\textcolor{red}{LM:~{#1}}}
+\newcommand{\ST}[1]{\textcolor{orange}{ST:~{#1}}}
+\newcommand{\TODO}[1]{\textcolor{olive}{TODO:~{#1}}}
+\newcommand{\Q}[1]{\textcolor{blue}{Q:~{#1}}}
+\setlength{\parskip}{0.2 cm}
+\title{Notes articles}
+\author{Maxime GONTHIER Samuel THIBAULT Loris MARCHAL}
+
+\newcommand{\card}[1]{\ensuremath{\left|{#1}\right|}\xspace}
+\newcommand{\live}{\ensuremath{L}\xspace}
+\newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\dataset}{\ensuremath{\mathbb{D}}\xspace}
+\newcommand{\taskset}{\ensuremath{\mathbb{T}}\xspace}
+\newcommand{\packageset}{\ensuremath{\mathbb{P}}\xspace}
+\newcommand{\inputs}{\ensuremath{\mathcal{D}}\xspace}
+\newcommand{\optpb}{\textsc{Min\-Loads\-For\-Tasks\-Sharing\-Data}\xspace}
+\newcommand{\nbloads}{\ensuremath{\mathit{\mathit{\#Loads}}}\xspace}
+\newcommand{\MIN}{\ensuremath{\mathit{MIN}}\xspace}
+\newcommand{\starpu}{\textsc{StarPU}\xspace}
+\newcommand{\nbPU}{\ensuremath{\vert PU \vert}\xspace}
+
+\usepackage{tikz}
+\usetikzlibrary{fit, shapes.geometric, patterns}
+
+\makeatletter\tikzset{hatch distance/.store in=\hatchdistance,hatch distance=5pt,hatch thickness/.store in=\hatchthickness,hatch thickness=5pt}\pgfdeclarepatternformonly[\hatchdistance,\hatchthickness]{north east hatch}{\pgfqpoint{-1pt}{-1pt}}{\pgfqpoint{\hatchdistance}{\hatchdistance}}{\pgfpoint{\hatchdistance-1pt}{\hatchdistance-1pt}}{\pgfsetcolor{\tikz@pattern@color}\pgfsetlinewidth{\hatchthickness}\pgfpathmoveto{\pgfqpoint{0pt}{0pt}}\pgfpathlineto{\pgfqpoint{\hatchdistance}{\hatchdistance}}\pgfusepath{stroke}}\makeatother\usetikzlibrary{calc,shadings,patterns,tikzmark}\newcommand\HatchedCell[5][0pt]{\begin{tikzpicture}[overlay,remember picture]\path ($(pic cs:#2)!0.5!(pic cs:#3)$)coordinate(aux1)(pic cs:#4)coordinate(aux2);\fill[#5]($(aux1)+(-0.23*0.075\textwidth,1.9ex)$)rectangle($(aux1 |- aux2)+(0.23*0.075\textwidth,-#1*\baselineskip-.8ex)$);\end{tikzpicture}}
+
+\newcounter{nodemarkers}
+\newcommand\circletext[1]{%
+    \tikz[overlay,remember picture] 
+        \node (marker-\arabic{nodemarkers}-a) at (0,1.5ex) {};%
+    #1%
+    \tikz[overlay,remember picture]
+        \node (marker-\arabic{nodemarkers}-b) at (0,0){};%
+    \tikz[overlay,remember picture,inner sep=2pt]
+        \node[draw,ellipse,fit=(marker-\arabic{nodemarkers}-a.center) (marker-\arabic{nodemarkers}-b.center)] {};%
+    \stepcounter{nodemarkers}%
+}
+
+% Pour les checkmark
+\newcommand*\colourcheck[1]{%
+  \expandafter\newcommand\csname #1check\endcsname{\textcolor{#1}{\ding{52}}}
+}
+\colourcheck{green}
+\newcommand{\ok}[1]{\textcolor{ForestGreen}{OK \greencheck}}
+\newcommand{\oktext}[1]{\textcolor{ForestGreen}{OK \greencheck}~\textcolor{ForestGreen}{#1}}
+
+\begin{document}
+
+%~ \tableofcontents
+\newpage
+
+\section{What's new since last meeting ?}
+
+	\begin{enumerate}
+		\item Log scale on stats from Rackham
+		\item Converting Rackham workloads to readable files + adding data for jobs with more than 5 cores. A job with more than 5 cores has x\% chance of using the 256 or 1TB nodes. No share between users for now.
+		\item Describing possible sizes for data in the model
+		\item Code: Better way of updating jobs and nodes
+		\item Code: Compute transfers just before execution
+		\item Code: Deal with different data sizes
+		\item Code: Deal with data load simultaneous
+		\item Code: Deal with data load partially overlapped
+		\item Code: Share file when parallel or consecutive
+		\item Code: FCFS-Score
+		\item Few Gantt charts
+	\end{enumerate}
+	
+\section{Questions for next meeting}
+
+	\begin{enumerate}
+		\item Code: I don't deal with idling node file that can stay in memory. Should I do it ? How ? It's a bit tricky to code
+		\item Code: Add a few file share between users ?
+	\end{enumerate}
+
+\section{Todo}
+	\subsection{General}
+		\begin{enumerate}
+			\item Regarder ce que SLURM fais déjà.
+			\item Se comparer à HEFT, EAGER, RANDOM.
+			\item TODO du code: backfill, available node list qui contient les cores available aussi
+			\item gerer eviction quand data plus utilisé et tailles de mémoires qui peuvent etre trop petites
+			\item Coder simulateur
+			\item Coder les algos
+			\item Tester les algo
+			\item Gérer les evictions
+			\item contrainte de la localié sur la taille de la données
+			\item contrainte sur les coeurs
+			\item contrainte sur les partage de données
+			\item prendre le point de vu des jobs dans le pseudocode dans l'ordre dans lequel ils sont soumis
+			\item strat qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?
+			\item Batsim a pas la granularité au sein d'un noeud
+			\item faire des stats sur le workload et faire des stats sur les durées rélles et les walltime et le nb de coeurs proposées pour essayer de virer les jobs trop gros ou trop petits ? Faire ca sur plusieurs fichiers différents
+			\item Les gros jobs ont focément 1 données ?
+			\item Que les jobs majoritaire ont des données partagées pour la cohérence ?
+			\item Gérer les evictions ? Cela ne prends pas de temps ?
+			\item faire cluster avec different nombres de noeuds (ranging from 20 to 486) mais BW 100 MB/s et mémoire de taille : 4 of 1TB, 32 of 256GB and the rest has 128GB
+			\item Simulateur qui prend en compte les cores
+			\item Lors d'une exec imprimer sur le terminal et dans le fichier de résultats les stats sur le workload et le cluster
+			\item Prendre en compte le fait que un fichier d'entrée trop large ne peut rentrer que sur certains neouds
+			\item Un scheduler peut prevoir tout les jobs disponible au temps t sur un noeud avec le walltime ? I can do both. It get interesting when we take into consideration jobs asking certain amount of cores. 
+			\item Corriger les algos existant pour qu'ils fassent à l'avance le schedule ou non, avoir les 2
+			\item Ajouter des jobs sans fichier d'entrée
+			\item Faire algo qui compute the number of copy of a file on the nodes.
+			\item lire article bf : Utilization, Predictability, Workloads
+			\item Faire plusieurs test et mettre une barre d'erreur
+			\item Afficher temps de transferts sur les Gantt charts
+			\item Afficher les coeurs sur le gantt chart
+			\item Tracer la distribution des queue times sur un workload fixe
+			\item réclamation valise
+			\item Slides IPDPS
+		\end{enumerate}
+	\subsection{Batsim}
+		\begin{enumerate}
+			\item Gérer n nodes
+			\item Gérer n jobs
+			\item Faire un delay aussi long que la somme du poids des données manquantes
+			\item faire la maj des données du node partout, sois Dans le scheduler sois dans fit mais faut le faire!
+			\item Gérér à la main les évictions
+		\end{enumerate}
+
+\end{document}

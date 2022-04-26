@@ -1,5 +1,6 @@
 # Imports
 from basic_functions import *
+from print_functions import *
 import random
 from dataclasses import dataclass
 import operator
@@ -85,7 +86,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 			
 		for n in nodes_to_choose_from:
 									
-			# 2.2. Sort by available times
+			# 2.2. Sort cores by available times
 			n.cores.sort(key = operator.attrgetter("available_time"))
 				
 			# 2.3. Get the earliest available time from the number of cores required by the job and add it to the score
@@ -138,9 +139,8 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 		# Just for printing in terminal. Can be removed.
 		print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
-		# ~ # 6. Add job in list to remove
+		# 6. Add job in list to remove
 		job_to_remove.append(j)
 		
 	# 7. Remove jobs from list
 	remove_jobs_from_list(available_job_list, job_to_remove)
-	exit(1)

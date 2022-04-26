@@ -127,13 +127,6 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 	
 	return start_time
 
-def print_decision_in_scheduler(choosen_core, j, choosen_node):
-	core_ids = []
-	for i in range (0, len(choosen_core)):
-		core_ids.append(choosen_core[i].unique_id)
-	core_ids.sort()
-	print("Job", j.unique_id, "will be computed on node", choosen_node.unique_id, "core(s)", core_ids, "start at time", j.start_time, "and is predicted to finish at time", j.end_time)
-
 # Return set of files that will be on node at a given time
 def files_on_node_at_certain_time(time, node):
 	file_on_node = []
