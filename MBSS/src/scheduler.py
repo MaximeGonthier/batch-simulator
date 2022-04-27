@@ -91,7 +91,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 				
 			# 2.3. Get the earliest available time from the number of cores required by the job and add it to the score
 			earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0
-			print("Earliest time for node", n.unique_id, "is", earliest_available_time)
+			# ~ print("Earliest time for node", n.unique_id, "is", earliest_available_time)
 				
 			# 2.4. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node
 			if j.data == 0:
@@ -102,15 +102,15 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 					time_to_load_file = 0
 				else:
 					time_to_load_file = j.data_size/n.bandwidth
-				print("Time to load is", time_to_load_file)
+				# ~ print("Time to load is", time_to_load_file)
 				
 			# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
 			size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
 			time_to_reload_evicted_files = size_files_ended/n.bandwidth
-			print("Time to reload", time_to_reload_evicted_files)
+			# ~ print("Time to reload", time_to_reload_evicted_files)
 				
 			score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files
-			print("Score of node is", score)
+			# ~ print("Score of node is", score)
 			
 			# 2.6. Get minimum score
 			if min_score == -1:
@@ -120,7 +120,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 				min_score = score
 				choosen_node = n
 					
-		print("Min score for job", j.unique_id, "is", min_score, "with node", choosen_node.unique_id)
+		# ~ print("Min score for job", j.unique_id, "is", min_score, "with node", choosen_node.unique_id)
 								
 		# 3. Choose a core
 		choosen_core = choosen_node.cores[0:j.cores]
@@ -137,7 +137,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 			c.job_queue.append(j)
 									
 		# Just for printing in terminal. Can be removed.
-		print_decision_in_scheduler(choosen_core, j, choosen_node)
+		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		job_to_remove.append(j)

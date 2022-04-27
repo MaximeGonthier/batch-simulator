@@ -108,9 +108,10 @@ def print_csv(to_print_list, scheduler):
 			makespan = tp.time + tp.time_used
 	mean_queue_time = total_queue_time/len(to_print_list)
 	mean_flow = total_flow/len(to_print_list)
-	file_to_open = "outputs/Results_" + scheduler + ".txt"
+	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
-	f.write("%s %s %s %s %s %s %s %s %s %s\n" % (str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
+	# ~ f.write("%s %s %s %s %s %s %s %s %s %s %s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
+	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
 	f.close()
 
 def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):

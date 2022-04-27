@@ -100,7 +100,10 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 	for j in scheduled_job_list:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
 			finished_jobs += 1
-			print(finished_jobs, "/", total_number_jobs, "T =", t)
+			
+			# Just printing, can remove
+			if (finished_jobs%100 == 0):
+				print(finished_jobs, "/", total_number_jobs, "T =", t)
 			# ~ print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
 			
 			finished_job_list.append(j)
@@ -121,7 +124,8 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 				core_ids.append(j.cores_used[i].unique_id)
 			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
 
-			if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy OLD
+			# ~ if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy OLD
+			if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
 				affected_node_list.append(j.node_used)
 			jobs_to_remove.append(j)
 	remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
@@ -162,7 +166,6 @@ node_list, available_node_list = read_cluster(input_node_file, node_list, availa
 
 # Read workload
 job_list = read_workload(input_job_file, job_list)
-# ~ print("Job list:", job_list, "\n")
 
 finished_jobs = 0
 total_number_jobs = len(job_list)
@@ -184,7 +187,7 @@ while(total_number_jobs != finished_jobs):
 	
 	# Schedule all those jobs
 	while(len(available_job_list) > 0):
-		print(len(available_job_list), "available")
+		# ~ print("Schedule... T =", t, "len =", len(available_job_list))
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
@@ -197,11 +200,13 @@ while(total_number_jobs != finished_jobs):
 	# Get ended job. Inform if a fiiling is needed. Compute file transfers needed.	
 	affected_node_list = []	
 	finished_job_list = []	
+	# ~ print("End jobs...")
 	finished_jobs, affected_node_list, finished_job_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
 	
 	# TODO backfill strategy
 	if (len(affected_node_list) and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 		# Filling
+		# ~ print("Filling...")
 		if (filling_strategy == "ShiftLeft"):
 			ShiftLeft(affected_node_list, t)
 		elif (filling_strategy == "BackFill"):
@@ -212,9 +217,11 @@ while(total_number_jobs != finished_jobs):
 			exit
 	
 	# Get started jobs	
+	# ~ print("Start jobs...")
 	start_jobs(t, scheduled_job_list, finished_jobs)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+	# ~ print("Remove data from nodes...")
 	remove_data_from_node(finished_job_list)
 	
 	# To update datas in nodes
@@ -224,5 +231,5 @@ while(total_number_jobs != finished_jobs):
 	t += 1
 
 # Print results in a csv file
-print("Computing and writing results...")
+# ~ print("Computing and writing results...")
 print_csv(to_print_list, scheduler)
