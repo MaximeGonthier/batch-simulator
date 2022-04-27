@@ -143,7 +143,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 		job_to_remove.append(j)
 		
 	# 7. Remove jobs from list
-	remove_jobs_from_list(available_job_list, job_to_remove) # TODO : simplifier en available job list = []
+	remove_jobs_from_list(available_job_list, job_to_remove) # TODO : simplifier en available_job_list.clear()
 
 # Find the file shared the most among available jobs. Schedule all jobs using this file on a node using this file with most available cores.
 # Then repeat until the list of available jobs is empty.
@@ -169,8 +169,8 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 	if (most_shared_file == 0):
 		print("Most shared file is 0, zut...")
 		for j in available_job_list:
-			schedule_job_on_earliest_available_cores(j, node_list)
-		available_job_list = []
+			schedule_job_on_earliest_available_cores(j, node_list, t)
+		available_job_list.clear()
 		return
 				
 	# 2. Choose a node
@@ -246,4 +246,4 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 		
 	# 7. Remove jobs from list
 	remove_jobs_from_list(available_job_list, job_to_remove)
-	exit(1)
+	# ~ exit(1)

@@ -1,4 +1,6 @@
 # Imports
+import operator
+from print_functions import *
 from dataclasses import dataclass
 @dataclass
 class Data:
@@ -149,7 +151,7 @@ def size_files_ended_at_certain_time(time, cores, current_data):
 	return size_file_ended
 	
 # Return earliest available node as well as it's starting time
-def schedule_job_on_earliest_available_cores(j, node_list):
+def schedule_job_on_earliest_available_cores(j, node_list, t):
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
 		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
 	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
