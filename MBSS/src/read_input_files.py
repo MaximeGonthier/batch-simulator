@@ -64,16 +64,16 @@ def read_workload(input_job_file, job_list):
 			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18 = line.split() # split it by whitespace
 			
 			# Getting index of node_list depending on size
-			if (float(r17)/int(r11) == 0.0):
+			if ((float(r17)*10)/(float(r11)*10) == 0.0):
 				index_node = 0
-			elif (float(r17)/int(r11) == 6.4):
+			elif ((float(r17)*10)/(float(r11)*10) == 6.4):
 				index_node = 0
-			elif (float(r17)/int(r11) == 12.8):
+			elif ((float(r17)*10)/(float(r11)*10) == 12.8):
 				index_node = 1
-			elif (float(r17)/int(r11) == 51.2):
+			elif ((float(r17)*10)/(float(r11)*10) == 51.2):
 				index_node = 2
 			else:
-				print("Error, wrong input job data size", float(r17)/int(r11))
+				print("Error", (float(r17)*10)/(float(r11)*10), "is a wrong input job data size. Line is:", line)
 				exit
 			
 			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0)

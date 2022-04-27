@@ -4,9 +4,9 @@
 { id: 4 subtime: 0 delay: 854101 walltime: 36000 cores: 1 user: torsteng data: 4 data_size: 6.4 }
 { id: 5 subtime: 0 delay: 859696 walltime: 36000 cores: 4 user: torsteng data: 0 data_size: 0 }
 { id: 6 subtime: 0 delay: 863178 walltime: 36000 cores: 4 user: torsteng data: 0 data_size: 0 }
-{ id: 7 subtime: 5 delay: 830996 walltime: 36000 cores: 1 user: torsteng data: 4 data_size: 6.4 }
+{ id: 7 subtime: 1 delay: 830996 walltime: 36000 cores: 1 user: torsteng data: 4 data_size: 6.4 }
 { id: 8 subtime: 1 delay: 833852 walltime: 36000 cores: 4 user: torsteng data: 0 data_size: 0 }
-{ id: 9 subtime: 1 delay: 848885 walltime: 36000 cores: 4 user: torsteng data: 0 data_size: 0 }
+{ id: 9 subtime: 5 delay: 848885 walltime: 36000 cores: 4 user: torsteng data: 0 data_size: 0 }
 { id: 10 subtime: 84250 delay: 63112 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
 { id: 11 subtime: 84251 delay: 31147 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
 { id: 12 subtime: 84251 delay: 45104 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }

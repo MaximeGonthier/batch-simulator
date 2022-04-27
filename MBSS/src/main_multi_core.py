@@ -164,10 +164,6 @@ node_list, available_node_list = read_cluster(input_node_file, node_list, availa
 job_list = read_workload(input_job_file, job_list)
 # ~ print("Job list:", job_list, "\n")
 
-# Init before Schedule for some schedulers. Ils sont déjà triées par subtime
-if (scheduler == "Fcfs_with_a_score"):
-	job_list.sort(key = operator.attrgetter("subtime")) # Pour trier la liste selon le subtime et choisir toujours en premier le job soumis il y a le plus longtemps
-
 finished_jobs = 0
 total_number_jobs = len(job_list)
 
@@ -176,15 +172,19 @@ while(total_number_jobs != finished_jobs):
 	job_to_remove = []
 	
 	# Get the set of available jobs at time t
+	# Jobs are already sorted by subtime so I can simply stop wit ha break
 	for j in job_list:
-		if (j.subtime <= t):
+		if (j.subtime == t):
 			available_job_list.append(j)
 			scheduled_job_list.append(j) # Because we know they will all be scheduled anyway
 			job_to_remove.append(j)	
+		elif (j.subtime > t):
+			break
 	remove_jobs_from_list(job_list, job_to_remove)
 	
 	# Schedule all those jobs
 	while(len(available_job_list) > 0):
+		print(len(available_job_list), "available")
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
@@ -199,7 +199,6 @@ while(total_number_jobs != finished_jobs):
 	finished_job_list = []	
 	finished_jobs, affected_node_list, finished_job_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
 	
-
 	# TODO backfill strategy
 	if (len(affected_node_list) and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 		# Filling
