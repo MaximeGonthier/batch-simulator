@@ -149,21 +149,31 @@ def size_files_ended_at_certain_time(time, cores, current_data):
 	return size_file_ended
 	
 # Return earliest available node as well as it's starting time
-def get_earliest_available_node_and_time(set_of_node, cores_asked)
-	min_earliest_available_time = -1
-	choosen_node = None
-	for n in set_of_node:
-		# 1. sSort cores by available times
+def schedule_job_on_earliest_available_cores(j, node_list):
+	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
+	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+		nodes_to_choose_from = node_list[1] + node_list[2]
+	elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+		nodes_to_choose_from = node_list[2]
+					
+	min_time = -1	
+	for n in nodes_to_choose_from:
 		n.cores.sort(key = operator.attrgetter("available_time"))
-				
-		# 2. Get the earliest available time from the number of cores required by the job
-		earliest_available_time = n.cores[cores_asked - 1].available_time # -1 because tab start at 0
-						
-		# 3. Compute the min
-		if min_earliest_available_time == -1:
-			min_earliest_available_time = earliest_available_time
+		earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0							
+		if min_time == -1:
+			min_time = earliest_available_time
 			choosen_node = n
-		elif min_earliest_available_time > earliest_available_time:
-			min_earliest_available_time = earliest_available_time
+		elif min_time > earliest_available_time:
+			min_time = earliest_available_time
 			choosen_node = n
-	return choosen_node, earliest_available_time
+													
+		choosen_core = choosen_node.cores[0:j.cores]
+		start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+		j.node_used = choosen_node
+		j.cores_used = choosen_core
+		j.start_time = start_time
+		j.end_time = start_time + j.walltime			
+		for c in choosen_core:
+			c.job_queue.append(j)
+		print_decision_in_scheduler(choosen_core, j, choosen_node)

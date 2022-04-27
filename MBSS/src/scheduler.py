@@ -143,7 +143,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 		job_to_remove.append(j)
 		
 	# 7. Remove jobs from list
-	remove_jobs_from_list(available_job_list, job_to_remove)
+	remove_jobs_from_list(available_job_list, job_to_remove) # TODO : simplifier en available job list = []
 
 # Find the file shared the most among available jobs. Schedule all jobs using this file on a node using this file with most available cores.
 # Then repeat until the list of available jobs is empty.
@@ -152,6 +152,7 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 	
 	# 1. Find the file shared the most among available jobs
 	file_distribution = []
+	job_to_remove = []
 	for j in available_job_list:
 		file_distribution.append(j.data)
 	counter = 0
@@ -162,22 +163,25 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 			counter = curr_frequency
 			most_shared_file = i
 			j_example = j
-	# ~ if (most_shared_file != 0): # TODO : faire quelquechose
 	print("Most shared file is", most_shared_file)
-		
+
+	# If no file is shared, I just schedule all available jobs on eariest available times
+	if (most_shared_file == 0):
+		print("Most shared file is 0, zut...")
+		for j in available_job_list:
+			schedule_job_on_earliest_available_cores(j, node_list)
+		available_job_list = []
+		return
+				
 	# 2. Choose a node
 	if (j_example.index_node_list == 0): # Je peux choisir dans la liste entière
-		nodes_to_choose_from = random.choice(node_list[0] + node_list[1] + node_list[2])
+		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
 	elif (j_example.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-		nodes_to_choose_from = random.choice(node_list[1] + node_list[2])
+		nodes_to_choose_from = node_list[1] + node_list[2]
 	elif (j_example.index_node_list == 2): # Je peux choisir que dans la 2
-		nodes_to_choose_from = random.choice(node_list[2])
-	
-	if (most_shared_file == 0):
-		choosen_node, earliest_available_time = get_earliest_available_node_and_time(nodes_to_choose_from, cores_asked)
-		goto
+		nodes_to_choose_from = node_list[2]
 		
-	# 2.1. Find the set of node using this file at the predicted earliest start time of the node. TODO : option to choose only earliest node ?
+	# 2.1. Find the set of node using this file at the predicted earliest start time of the node.
 	min_earliest_available_time = -1
 	choosen_node = None
 	for n in nodes_to_choose_from:
@@ -191,86 +195,55 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 		# 2.4. Look if the file choosen will be available at earliest available time
 		files_on_node = files_on_node_at_certain_time(earliest_available_time, n)
 		
-		# 2.5 If not remove this node from possible nodes. Else look for the earliest available one
-		if most_shared_file not in files_on_node:
-			nodes_to_choose_from.remove(n)
-		else:
+		# 2.5 Look for node with earliest time and file loaded
+		if most_shared_file in files_on_node:
 			if min_earliest_available_time == -1:
 				min_earliest_available_time = earliest_available_time
 				choosen_node = n
 			elif min_earliest_available_time > earliest_available_time:
 				min_earliest_available_time = earliest_available_time
 				choosen_node = n
-	
-	# TODO gerer cas ou c'est vide
+		
+	# Means that the file is not in any node. So schedule all jobs using file on earliest available node only.
 	if (choosen_node == None):
-		if (j_example.index_node_list == 0): # Je peux choisir dans la liste entière
-			nodes_to_choose_from = random.choice(node_list[0] + node_list[1] + node_list[2])
-		elif (j_example.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-			nodes_to_choose_from = random.choice(node_list[1] + node_list[2])
-		elif (j_example.index_node_list == 2): # Je peux choisir que dans la 2
-			nodes_to_choose_from = random.choice(node_list[2])
-		choosen_node, earliest_available_time = get_earliest_available_node_and_time(nodes_to_choose_from, cores_asked)
-		goto
-		
-		# 3. Choose a core for each job using this data
-		choosen_core = choosen_node.cores[0:j_example.cores]
+		print("Choosen node is None :/ The file is not anywhere at time t")
+		min_earliest_available_time = -1
+		for n in nodes_to_choose_from:
+			n.cores.sort(key = operator.attrgetter("available_time"))
+			earliest_available_time = n.cores[j_example.cores - 1].available_time # -1 because tab start at 0
+			if min_earliest_available_time == -1:
+				min_earliest_available_time = earliest_available_time
+				choosen_node = n
+			elif min_earliest_available_time > earliest_available_time:
+				min_earliest_available_time = earliest_available_time
+				choosen_node = n
+		print("Choosen node after that is", choosen_node.unique_id)
+	
+	# Schedule all jobs using file on choosen node
+	for j in available_job_list:
+		if j.data == most_shared_file: # We need to schedule it
+			
+			# 3. Choose a core for each job using this data
+			choosen_node.cores.sort(key = operator.attrgetter("available_time"))
+			choosen_core = choosen_node.cores[0:j_example.cores]
 
-		# 4. Get start time and update available times of the cores
-		start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+			# 4. Get start time and update available times of the cores
+			start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
 		
-		# 5. Update jobs info and add job in choosen cores
-		j.node_used = choosen_node
-		j.cores_used = choosen_core
-		j.start_time = start_time
-		j.end_time = start_time + j.walltime			
-		for c in choosen_core:
-			c.job_queue.append(j)
+			# 5. Update jobs info and add job in choosen cores
+			j.node_used = choosen_node
+			j.cores_used = choosen_core
+			j.start_time = start_time
+			j.end_time = start_time + j.walltime			
+			for c in choosen_core:
+				c.job_queue.append(j)
 									
-		# Just for printing in terminal. Can be removed.
-		print_decision_in_scheduler(choosen_core, j, choosen_node)
+			# Just for printing in terminal. Can be removed.
+			print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
-		# 6. Add job in list to remove
-		job_to_remove.append(j)
+			# 6. Add job in list to remove
+			job_to_remove.append(j)
 		
 	# 7. Remove jobs from list
 	remove_jobs_from_list(available_job_list, job_to_remove)
-		
-	
 	exit(1)
-	# ~ job_to_remove = []
-	# ~ for j in available_job_list:
-		
-		# ~ # 2. Choose a node
-		# ~ # 2.1. Different list depending on file size
-		# ~ if (j.index_node_list == 0): # Je peux choisir dans la liste entière
-			# ~ nodes_to_choose_from = random.choice(node_list[0] + node_list[1] + node_list[2])
-		# ~ elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-			# ~ nodes_to_choose_from = random.choice(node_list[1] + node_list[2])
-		# ~ elif (j.index_node_list == 2): # Je peux choisir que dans la 2
-			# ~ nodes_to_choose_from = random.choice(node_list[2])
-		
-		# ~ # 2.2. 
-		
-		# ~ # 3. Choose a core
-		# ~ choosen_core = random.sample(choosen_node.cores, j.cores)
-
-		# ~ # 4. Get start time and update available times of the cores
-		# ~ start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
-		
-		# ~ # 5. Update jobs info and add job in choosen cores
-		# ~ j.node_used = choosen_node
-		# ~ j.cores_used = choosen_core
-		# ~ j.start_time = start_time
-		# ~ j.end_time = start_time + j.walltime			
-		# ~ for c in choosen_core:
-			# ~ c.job_queue.append(j)
-									
-		# ~ # Just for printing in terminal. Can be removed.
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
-		
-		# ~ # 6. Add job in list to remove
-		# ~ job_to_remove.append(j)
-	
-	# ~ # 7. Remove jobs from list
-	# ~ remove_jobs_from_list(available_job_list, job_to_remove)
