@@ -97,14 +97,19 @@
 		\item Code: FCFS-Score
 		\item Few Gantt charts
 		\item Plots with 2 scheduler and real workload and real cluster
+		\item Regarder ce que SLURM fais déjà: FCFS + EASY Backfill en mode FCFS. J'ai trouvé un article qui décrit cela et les différentes variantes et pourquoi EASY FCFS FCFS est utkilisé. Exemple ajouté dans le document.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
+		\item From what I understand EASY BF is done at each time t ? To look if something new is available ?
+		\item Implement EASY FCFS FCFS ?
+		\item All my scheduler schedule everything and then ShiftLeft. ShouldI be more dynamic and schedule only until all cores are used and then wait for a core to be liberated ?
 		\item Mail Europar
 		\item Mail IPDPS
-		\item I don't Backfill, I just Shiftleft, should I backfill instead ?
+		\item Meme slide pour vidéo et vrai pres et pres séminaire ?
+		\item I don't Backfill, I just Shiftleft, should I backfill instead for my current algorithms ?
 		\item Code: I don't deal with idling node file that can stay in memory. Should I do it ? How ? It's a bit tricky to code
 		\item Code: Add a few file share between users ?
 		\item How to compare different strategy with multiple workloads ? Because all workloads are different
@@ -113,24 +118,17 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item Regarder ce que SLURM fais déjà.
+			\item slides IPDPS avant le 10 mai
+			\item vidéo IPDPS avant le 15 mai
+			\item Code maximum use single files
 			\item Se comparer à HEFT, EAGER, RANDOM.
 			\item TODO du code: backfill, available node list qui contient les cores available aussi
 			\item gerer eviction quand data plus utilisé et tailles de mémoires qui peuvent etre trop petites
-			\item Coder simulateur
-			\item Coder les algos
+			\item Coder algo 1 et 2
 			\item Tester les algo
-			\item Gérer les evictions
-			\item contrainte de la localié sur la taille de la données
-			\item contrainte sur les coeurs
-			\item contrainte sur les partage de données
-			\item prendre le point de vu des jobs dans le pseudocode dans l'ordre dans lequel ils sont soumis
+			\item contrainte de la localié sur la taille de la données, contrainte sur les coeurs, contrainte sur les partage de données
 			\item strat qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?
-			\item Batsim a pas la granularité au sein d'un noeud
 			\item faire des stats sur le workload et faire des stats sur les durées rélles et les walltime et le nb de coeurs proposées pour essayer de virer les jobs trop gros ou trop petits ? Faire ca sur plusieurs fichiers différents
-			\item Les gros jobs ont focément 1 données ?
-			\item Que les jobs majoritaire ont des données partagées pour la cohérence ?
-			\item Gérer les evictions ? Cela ne prends pas de temps ?
 			\item Simulateur qui prend en compte les cores
 			\item Lors d'une exec imprimer sur le terminal et dans le fichier de résultats les stats sur le workload et le cluster
 			\item Prendre en compte le fait que un fichier d'entrée trop large ne peut rentrer que sur certains neouds
@@ -142,11 +140,11 @@
 			\item Afficher temps de transferts sur les Gantt charts
 			\item Afficher les coeurs sur le gantt chart
 			\item Tracer la distribution des queue times sur un workload fixe
-			\item réclamation valise
-			\item Slides IPDPS
+			\item Réclamation valise
 		\end{enumerate}
 	\subsection{Batsim}
 		\begin{enumerate}
+			\item Batsim a pas la granularité au sein d'un noeud
 			\item Gérer n nodes
 			\item Gérer n jobs
 			\item Faire un delay aussi long que la somme du poids des données manquantes

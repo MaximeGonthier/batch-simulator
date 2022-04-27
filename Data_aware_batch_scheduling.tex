@@ -286,7 +286,7 @@ We are matching Uppsala's University cluster Rackham:
 We can add dynamic job of duration the time it would take to transfer the file on the node in order
 to simulate file loads.
 
-\section{Algorithm}
+\section{Algorithms}
 
 When we need to choose a node for job $J_i$ we know the following informations:
 \begin{itemize}
@@ -352,8 +352,35 @@ Each node get a score combining these three values: Score = A + B + (C/BW)
 
 Schedule j on the node with the best score and on the cores available the earliest.
 
-\section{Stats on workloads for Rackham}
+\subsection{EASY-FCFS-FCFS}
+Small adaptation from the paper: \url{https://hal.archives-ouvertes.fr/hal-01522459/document}.
+\paragraph{Intuition}
+FCFS Scheduling and FCFS Backfilling.
+In EASY backfilling, the scheduler may backfill later jobs even if that delays the expected start time of other jobs, as long as the first job's expected start time isn't delayed. 
+\todo[inline]{The following pseudocode is then executed at each time $t$ ?}
+\begin{algorithm}[H]
+\caption{EASY-FCFS-FCFS}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. So all available jobs except running jobs.} \\
+\hspace*{\algorithmicindent} \textbf{Output: None}
+\begin{algorithmic}[1]
+\State Sort $\jobset$ by submitting time
+\State Pop j from $\jobset$
+\If {$j$ can start immediately}
+	\State Start $j$ on available cores
+\Else
+	\State Schedule $j$ on earliest available cores \Comment{It can stay on already scheduled cores}
+	\State $\mathbb{B} \gets \jobset$
+	\State Sort $\mathbb{B}$ by submitting time \Comment{No need to do it again here. It's in case we have another strategy for backfilling}
+	\For {$j' \in \mathbb{B}$}
+		\If {$j'$ can be started immediately without delaying the reservation of $j$} \Comment{It can delay other reservations!}
+			\State Start $j'$
+		\EndIf
+	\EndFor
+\EndIf		
+\end{algorithmic}
+\end{algorithm}
 
+\section{Stats on workloads for Rackham}
 % Cores
 \begin{figure}[H] 
   \begin{minipage}[b]{0.5\linewidth}

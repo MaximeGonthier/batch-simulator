@@ -18,7 +18,10 @@ PRINT_GANTT_CHART=$4
 # OR $1 is already an existing workload
 
 # Random (Random)
+if [ $4 == 1 ]; then
 echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
+fi
+
 truncate -s 0 outputs/Results_${SCHEDULER}.txt
 python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER ShiftLeft $4
 

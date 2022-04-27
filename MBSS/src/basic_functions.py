@@ -147,3 +147,23 @@ def size_files_ended_at_certain_time(time, cores, current_data):
 				size_file_ended += j.data_size
 				break
 	return size_file_ended
+	
+# Return earliest available node as well as it's starting time
+def get_earliest_available_node_and_time(set_of_node, cores_asked)
+	min_earliest_available_time = -1
+	choosen_node = None
+	for n in set_of_node:
+		# 1. sSort cores by available times
+		n.cores.sort(key = operator.attrgetter("available_time"))
+				
+		# 2. Get the earliest available time from the number of cores required by the job
+		earliest_available_time = n.cores[cores_asked - 1].available_time # -1 because tab start at 0
+						
+		# 3. Compute the min
+		if min_earliest_available_time == -1:
+			min_earliest_available_time = earliest_available_time
+			choosen_node = n
+		elif min_earliest_available_time > earliest_available_time:
+			min_earliest_available_time = earliest_available_time
+			choosen_node = n
+	return choosen_node, earliest_available_time
