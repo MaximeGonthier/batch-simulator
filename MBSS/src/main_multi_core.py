@@ -193,6 +193,8 @@ while(total_number_jobs != finished_jobs):
 			random_scheduler(available_job_list, node_list, t)
 		elif (scheduler == "Fcfs_with_a_score"):
 			fcfs_with_a_score_scheduler(available_job_list, node_list, t)
+		elif (scheduler == "Maximum_use_single_file"):
+			maximum_use_single_file_scheduler(available_job_list, node_list, t)
 		else:
 			print("Wrong scheduler in arguments")
 			exit

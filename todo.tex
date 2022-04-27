@@ -86,6 +86,7 @@
 	\begin{enumerate}
 		\item Log scale on stats from Rackham
 		\item Converting Rackham workloads to readable files + adding data for jobs with more than 5 cores. A job with more than 5 cores has x\% chance of using the 256 or 1TB nodes. No share between users for now.
+		\item Cluster with 3 different memory sizes
 		\item Describing possible sizes for data in the model
 		\item Code: Better way of updating jobs and nodes
 		\item Code: Compute transfers just before execution
@@ -95,11 +96,15 @@
 		\item Code: Share file when parallel or consecutive
 		\item Code: FCFS-Score
 		\item Few Gantt charts
+		\item Plots with 2 scheduler and real workload and real cluster
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
+		\item Mail Europar
+		\item Mail IPDPS
+		\item I don't Backfill, I just Shiftleft, should I backfill instead ?
 		\item Code: I don't deal with idling node file that can stay in memory. Should I do it ? How ? It's a bit tricky to code
 		\item Code: Add a few file share between users ?
 		\item How to compare different strategy with multiple workloads ? Because all workloads are different
@@ -126,13 +131,11 @@
 			\item Les gros jobs ont focément 1 données ?
 			\item Que les jobs majoritaire ont des données partagées pour la cohérence ?
 			\item Gérer les evictions ? Cela ne prends pas de temps ?
-			\item faire cluster avec different nombres de noeuds (ranging from 20 to 486) mais BW 100 MB/s et mémoire de taille : 4 of 1TB, 32 of 256GB and the rest has 128GB
 			\item Simulateur qui prend en compte les cores
 			\item Lors d'une exec imprimer sur le terminal et dans le fichier de résultats les stats sur le workload et le cluster
 			\item Prendre en compte le fait que un fichier d'entrée trop large ne peut rentrer que sur certains neouds
 			\item Un scheduler peut prevoir tout les jobs disponible au temps t sur un noeud avec le walltime ? I can do both. It get interesting when we take into consideration jobs asking certain amount of cores. 
 			\item Corriger les algos existant pour qu'ils fassent à l'avance le schedule ou non, avoir les 2
-			\item Ajouter des jobs sans fichier d'entrée
 			\item Faire algo qui compute the number of copy of a file on the nodes.
 			\item lire article bf : Utilization, Predictability, Workloads
 			\item Faire plusieurs test et mettre une barre d'erreur
