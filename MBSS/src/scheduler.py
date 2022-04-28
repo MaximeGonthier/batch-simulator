@@ -27,7 +27,7 @@ class Job:
 def random_scheduler(available_job_list, node_list, t):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
-	job_to_remove = []
+	# ~ job_to_remove = []
 	for j in available_job_list:
 
 		# 2. Choose a node, different list depending on file size
@@ -56,10 +56,11 @@ def random_scheduler(available_job_list, node_list, t):
 		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
-		job_to_remove.append(j)
+		# ~ job_to_remove.append(j)
 	
 	# 7. Remove jobs from list
-	remove_jobs_from_list(available_job_list, job_to_remove)
+	# ~ remove_jobs_from_list(available_job_list, job_to_remove)
+	available_job_list.clear()
 	
 # Compute a score for each node.
 # For each node, A = compute the earliest available time to host job j.
@@ -70,7 +71,7 @@ def random_scheduler(available_job_list, node_list, t):
 def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
-	job_to_remove = []
+	# ~ job_to_remove = []
 	for j in available_job_list:
 				
 		# 2. Choose a node
@@ -141,10 +142,11 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
-		job_to_remove.append(j)
+		# ~ job_to_remove.append(j)
 		
 	# 7. Remove jobs from list
-	remove_jobs_from_list(available_job_list, job_to_remove) # TODO : simplifier en available_job_list.clear()
+	# ~ remove_jobs_from_list(available_job_list, job_to_remove)
+	available_job_list.clear()
 
 # Find the file shared the most among available jobs. Schedule all jobs using this file on a node using this file with most available cores.
 # Then repeat until the list of available jobs is empty.
@@ -154,7 +156,6 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 	# 1. Find the file shared the most among available jobs
 	# ~ print_job_info_from_list(available_job_list, t)
 	file_distribution = []
-	job_to_remove = []
 	for j in available_job_list:
 		file_distribution.append(j.data)
 	counter = 0
@@ -228,6 +229,8 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 		# ~ print("Choosen node after None is", choosen_node.unique_id)
 	# ~ else:
 		# ~ print("Choosen node is", choosen_node.unique_id, "it uses the choosen file!")
+	
+	job_to_remove = [] # Here I need it because I don't always schedule everything in one call of maximum_use_single_file_scheduler
 	
 	# Schedule all jobs using file on choosen node
 	for j in available_job_list:
