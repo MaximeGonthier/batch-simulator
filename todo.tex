@@ -97,13 +97,15 @@
 		\item Code: FCFS-Score
 		\item Code: Maximum use single file
 		\item Few Gantt charts
-		\item Plots with 2 scheduler and real workload and real cluster
+		\item Plots with 3 schedulers and real workload and real cluster
 		\item Regarder ce que SLURM fais déjà: FCFS + EASY Backfill en mode FCFS. J'ai trouvé un article qui décrit cela et les différentes variantes et pourquoi EASY FCFS FCFS est utkilisé. Exemple ajouté dans le document.
+		\item Distribution of queue times in log scale
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
+		\item To compare ourselves, HEFT would be FCFS that take into consideration transfer time for the earliest available cores ?
 		\item From what I understand EASY BF is done at each time t ? To look if something new is available ?
 		\item Implement EASY FCFS FCFS ?
 		\item All my scheduler schedule everything and then ShiftLeft. ShouldI be more dynamic and schedule only until all cores are used and then wait for a core to be liberated ?
@@ -119,29 +121,25 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item Finir code algo maximum use single file
+			\item Code algo 2
 			\item slides IPDPS avant le 10 mai
 			\item vidéo IPDPS avant le 15 mai
-			\item Code maximum use single files
-			\item Se comparer à HEFT, EAGER, RANDOM.
+			\item Se comparer à HEFT, EAGER.
 			\item TODO du code: backfill, available node list qui contient les cores available aussi
-			\item gerer eviction quand data plus utilisé et tailles de mémoires qui peuvent etre trop petites
-			\item Coder algo 1 et 2
-			\item Tester les algo
 			\item contrainte de la localié sur la taille de la données, contrainte sur les coeurs, contrainte sur les partage de données
-			\item strat qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?
-			\item faire des stats sur le workload et faire des stats sur les durées rélles et les walltime et le nb de coeurs proposées pour essayer de virer les jobs trop gros ou trop petits ? Faire ca sur plusieurs fichiers différents
+			\item stratégie qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?
 			\item Simulateur qui prend en compte les cores
 			\item Lors d'une exec imprimer sur le terminal et dans le fichier de résultats les stats sur le workload et le cluster
 			\item Prendre en compte le fait que un fichier d'entrée trop large ne peut rentrer que sur certains neouds
 			\item Un scheduler peut prevoir tout les jobs disponible au temps t sur un noeud avec le walltime ? I can do both. It get interesting when we take into consideration jobs asking certain amount of cores. 
 			\item Corriger les algos existant pour qu'ils fassent à l'avance le schedule ou non, avoir les 2
-			\item Faire algo qui compute the number of copy of a file on the nodes.
 			\item lire article bf : Utilization, Predictability, Workloads
 			\item Faire plusieurs test et mettre une barre d'erreur
 			\item Afficher temps de transferts sur les Gantt charts
 			\item Afficher les coeurs sur le gantt chart
-			\item Tracer la distribution des queue times sur un workload fixe
+		\end{enumerate}
+	\subsection{Others}
+		\begin{enumerate}
 			\item Réclamation valise
 		\end{enumerate}
 	\subsection{Batsim}

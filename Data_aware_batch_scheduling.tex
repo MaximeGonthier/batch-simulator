@@ -488,7 +488,7 @@ In EASY backfilling, the scheduler may backfill later jobs even if that delays t
 
 \section{Experiments}
 % Queue times
-\begin{figure}[ht] 
+\begin{figure}[H] 
   \label{ fig7} 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
@@ -517,7 +517,7 @@ In EASY backfilling, the scheduler may backfill later jobs even if that delays t
   \caption{Workload 2021-05-23 - April 28}
 \end{figure}
 % Flow
-\begin{figure}[ht] 
+\begin{figure}[H] 
   \label{ fig7} 
   \begin{minipage}[b]{0.5\linewidth}
     \centering
@@ -547,6 +547,23 @@ In EASY backfilling, the scheduler may backfill later jobs even if that delays t
 \end{figure}
 % Transfer time
 \begin{figure}[ht]\includegraphics[scale=1]{MBSS/plot/2021-05-23_Total_transfer_time.pdf}\caption{Transfer time - Workload 2021-05-23 - April 28}\end{figure}
+
+\section{Distribution of queue times}
+\begin{figure}[H] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/Queue_Times/Fcfs_with_a_score_2021-05-23.pdf}
+    \caption{FCFS with a score} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/Queue_Times/Maximum_use_single_file_2021-05-23.pdf}
+    \caption{Maximum use single file} 
+    \vspace{4ex}
+  \end{minipage} 
+\end{figure}
 
 %~ \printbibliography
 \end{document}

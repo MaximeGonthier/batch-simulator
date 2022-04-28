@@ -67,16 +67,20 @@ def print_csv(to_print_list, scheduler):
 	makespan = 0
 	core_time_used = 0
 	for tp in to_print_list:
-		core_time_used += tp.time_used
-		total_queue_time += tp.time - tp.job_subtime
-		if (max_queue_time < tp.time - tp.job_subtime):
-			max_queue_time = tp.time - tp.job_subtime
-		total_flow += tp.time - tp.job_subtime + tp.time_used
-		if (max_flow < tp.time - tp.job_subtime + tp.time_used):
-			max_flow = tp.time - tp.job_subtime + tp.time_used
+		core_time_used += tp.time_used*tp.job_cores
+		# ~ total_queue_time += tp.time - tp.job_subtime
+		total_queue_time += tp.job_start_time - tp.job_subtime
+		if (max_queue_time < tp.job_start_time - tp.job_subtime):
+			max_queue_time = tp.job_start_time - tp.job_subtime
+		# ~ total_flow += tp.time - tp.job_subtime + tp.time_used
+		total_flow += tp.job_end_time - tp.job_subtime
+		if (max_flow < tp.job_end_time - tp.job_subtime):
+			max_flow = tp.job_end_time - tp.job_subtime
 		total_transfer_time += tp.transfer_time
-		if (makespan < tp.time + tp.time_used):
-			makespan = tp.time + tp.time_used
+		# ~ if (makespan < tp.time + tp.time_used):
+		if (makespan < tp.job_end_time):
+			# ~ makespan = tp.time + tp.time_used
+			makespan = tp.job_end_time
 	mean_queue_time = total_queue_time/len(to_print_list)
 	mean_flow = total_flow/len(to_print_list)
 	file_to_open = "outputs/Results_" + scheduler + ".csv"

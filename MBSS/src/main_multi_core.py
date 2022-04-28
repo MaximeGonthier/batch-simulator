@@ -63,6 +63,9 @@ class To_print: # Struct used to know what to print later in csv
     time: int
     time_used: int
     transfer_time: int
+    job_start_time: int
+    job_end_time: int
+    job_cores: int
     
 job_list = []
 available_job_list = []
@@ -102,7 +105,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			finished_jobs += 1
 			
 			# Just printing, can remove
-			if (finished_jobs%100 == 0):
+			if (finished_jobs%200 == 0):
 				print(finished_jobs, "/", total_number_jobs, "T =", t)
 			# ~ print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
 			
@@ -135,10 +138,10 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 # Print in a csv file the results of this job allocation
 def to_print_job_csv(job, node_used, core_ids, time):
 	time_used = job.end_time - job.start_time
-	tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time)
+	tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores)
 	to_print_list.append(tp)
 		
-	if (write_all_jobs == 1):
+	if (write_all_jobs == 1): # For gantt charts
 		file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
 		f = open(file_to_open, "a")
 		f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time, time_used, job.end_time, job.start_time, job.end_time, 1))
@@ -158,7 +161,11 @@ def to_print_job_csv(job, node_used, core_ids, time):
 		else:
 			f.write("%d" % (node_used*20 + core_ids[0]))
 		f.write(",-1,\"\"\n")
-		
+		f.close()
+	elif (write_all_jobs == 2): # For distribution of queue times
+		file_to_open = "outputs/Distribution_queue_times_" + scheduler + ".txt"
+		f = open(file_to_open, "a")
+		f.write("%d\n" % (job.start_time - job.subtime))
 		f.close()
 
 # Read cluster
