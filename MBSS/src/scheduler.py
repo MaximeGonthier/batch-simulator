@@ -91,6 +91,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 				
 			# 2.3. Get the earliest available time from the number of cores required by the job and add it to the score
 			earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0
+			earliest_available_time = max(t, earliest_available_time)
 			# ~ print("Earliest time for node", n.unique_id, "is", earliest_available_time)
 				
 			# 2.4. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node
@@ -151,6 +152,7 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 	
 	# 1. Find the file shared the most among available jobs
+	print_job_info_from_list(available_job_list, t)
 	file_distribution = []
 	job_to_remove = []
 	for j in available_job_list:
@@ -169,6 +171,7 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 	if (most_shared_file == 0):
 		print("Most shared file is 0, zut...")
 		for j in available_job_list:
+			# ~ print("For", j.unique_id)
 			schedule_job_on_earliest_available_cores(j, node_list, t)
 		available_job_list.clear()
 		return
@@ -191,6 +194,7 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 				
 		# 2.3. Get the earliest available time from the number of cores required by the job
 		earliest_available_time = n.cores[j_example.cores - 1].available_time # -1 because tab start at 0
+		earliest_available_time = max(t, earliest_available_time)
 				
 		# 2.4. Look if the file choosen will be available at earliest available time
 		files_on_node = files_on_node_at_certain_time(earliest_available_time, n)
@@ -211,13 +215,16 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 		for n in nodes_to_choose_from:
 			n.cores.sort(key = operator.attrgetter("available_time"))
 			earliest_available_time = n.cores[j_example.cores - 1].available_time # -1 because tab start at 0
+			earliest_available_time = max(t, earliest_available_time)
 			if min_earliest_available_time == -1:
 				min_earliest_available_time = earliest_available_time
 				choosen_node = n
 			elif min_earliest_available_time > earliest_available_time:
 				min_earliest_available_time = earliest_available_time
 				choosen_node = n
-		print("Choosen node after that is", choosen_node.unique_id)
+		print("Choosen node after None is", choosen_node.unique_id)
+	else:
+		print("Choosen node is", choosen_node.unique_id, "it uses the choosen file!")
 	
 	# Schedule all jobs using file on choosen node
 	for j in available_job_list:

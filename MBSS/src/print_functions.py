@@ -12,3 +12,9 @@ def print_job_queue_in_cores_specific_node(node):
 		for j in c.job_queue:
 			print(j.unique_id, " ", end = "")
 	print("")
+
+def print_job_info_from_list(job_list, t):
+	print("Jobs in the list at time", t, "are")
+	for j in job_list:
+		print("Job", j.unique_id, "Data", j.data, "Ncores", j.cores, "Subtime", j.subtime)
+	print("------------------------------------------")
