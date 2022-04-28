@@ -101,12 +101,15 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 
 # Return set of files that will be on node at a given time
 def files_on_node_at_certain_time(time, node):
+	# ~ print("files_on_node_at_certain_time at time", time)
 	file_on_node = []
 	for c in node.cores:
 		for j in c.job_queue:
-			if j.start_time + j.transfer_time <= time and j.walltime >= time: # Data will be loaded at this time
+			# ~ print("For job", j.unique_id, "transfer done at", j.start_time + j.transfer_time, "end at", j.start_time + j.walltime)
+			if j.start_time + j.transfer_time <= time and j.start_time + j.walltime >= time: # Data will be loaded at this time
 				if j.data not in file_on_node:
 					file_on_node.append(j.data)
+					# ~ print(j.data , "is on node of", node.unique_id)
 				break # Break because no other possibility on this core ?
 	return file_on_node
 
@@ -148,4 +151,4 @@ def schedule_job_on_earliest_available_cores(j, node_list, t):
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
 		c.job_queue.append(j)
-	print_decision_in_scheduler(choosen_core, j, choosen_node)
+	# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)

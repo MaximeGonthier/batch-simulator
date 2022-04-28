@@ -45,7 +45,7 @@ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
   
 # Plot the data using bar() method
-plt.bar(X, Y, color=["red", "blue"])
+plt.bar(X, Y, color=["red", "green", "blue"])
 plt.title(plot_title)
 plt.xlabel("Scheduler")
 plt.ylabel("Seconds")

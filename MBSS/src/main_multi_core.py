@@ -87,7 +87,7 @@ def start_jobs(t, scheduled_job_list, finished_jobs):
 				# Let's look if a data transfer is needed
 				transfer_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.walltime)
 			j.transfer_time = transfer_time
-			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime)
+			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
 			# ~ print("Job", j.unique_id, "is starting at time", j.start_time, "and will end at time", j.end_time, "with a walltime ending at", j.walltime + j.start_time)

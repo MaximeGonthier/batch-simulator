@@ -17,12 +17,14 @@ CLUSTER=$2
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Total transfer and wait time,Makespan,Core time used" > outputs/Results_${WORKLOAD}.csv
 
-for ((i=0; i<2; i++))
+for ((i=0; i<3; i++))
 do
 	if [ $((i)) == 0 ]; then SCHEDULER="Random" 
 	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs_with_a_score" 
+	elif [ $((i)) == 2 ]; then SCHEDULER="Maximum_use_single_file" 
 	fi
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
+	echo "${SCHEDULER}"
 	python3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER ShiftLeft 0
 	echo "Results ${SCHEDULER}:"
 	head outputs/Results_${SCHEDULER}.csv
