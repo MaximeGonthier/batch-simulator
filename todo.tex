@@ -84,43 +84,31 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Log scale on stats from Rackham
-		\item Converting Rackham workloads to readable files + adding data for jobs with more than 5 cores. A job with more than 5 cores has x\% chance of using the 256 or 1TB nodes. No share between users for now.
-		\item Cluster with 3 different memory sizes
-		\item Describing possible sizes for data in the model
-		\item Code: Better way of updating jobs and nodes
-		\item Code: Compute transfers just before execution
-		\item Code: Deal with different data sizes
-		\item Code: Deal with data load simultaneous
-		\item Code: Deal with data load partially overlapped
-		\item Code: Share file when parallel or consecutive
-		\item Code: FCFS-Score
-		\item Code: Maximum use single file
-		\item Few Gantt charts
-		\item Plots with 3 schedulers and real workload and real cluster
-		\item Regarder ce que SLURM fais déjà: FCFS + EASY Backfill en mode FCFS. J'ai trouvé un article qui décrit cela et les différentes variantes et pourquoi EASY FCFS FCFS est utkilisé. Exemple ajouté dans le document.
-		\item Distribution of queue times in log scale
+		\item 
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item To compare ourselves, HEFT would be FCFS that take into consideration transfer time for the earliest available cores ?
-		\item From what I understand EASY BF is done at each time t ? To look if something new is available ?
-		\item Implement EASY FCFS FCFS ?
-		\item All my scheduler schedule everything and then ShiftLeft. ShouldI be more dynamic and schedule only until all cores are used and then wait for a core to be liberated ?
 		\item Mail Europar
 		\item Mail IPDPS
-		\item Meme slide pour vidéo et vrai pres et pres séminaire ?
-		\item I don't Backfill, I just Shiftleft, should I backfill instead for my current algorithms ?
-		\item Code: I don't deal with idling node file that can stay in memory. Should I do it ? How ? It's a bit tricky to code
-		\item Code: Add a few file share between users ?
-		\item How to compare different strategy with multiple workloads ? Because all workloads are different
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Compare algo with different workloads. Use queue time of each job compared to a baseline. Compare queue time of each job between 2 heuristics by saying who won on each queue time.
+			\item Meme slide pour vidéo et vrai pres et pres séminaire ? Oui mais avec des slides bonus
+			\item Ajouter backfill quand un job se termine ou un nouveau job est available a tous les algos
+			\item Ajouter algos completements dynamiques
+			\item Ajouter algos qui reschedule de temps en temps
+			\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores
+			\item Look into weird FCFS with a score results
+			\item Code Classic FCFS
+			\item Code EASY BF FCFS FCFS. L'update se fais a chaque nouveau core libéré ou nouveau job available
+			\item Use same X scale for distributions of queue times
+			\item Use same X scale workloads stats
+			\item Use same X scale for some gantt charts when I want to compare them
 			\item Code algo 2
 			\item slides IPDPS avant le 10 mai
 			\item vidéo IPDPS avant le 15 mai

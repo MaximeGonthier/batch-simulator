@@ -184,3 +184,6 @@ If a new job using "a" start at time 1, does it have to load the full file ? Can
 It should not be necessary to load it two times. The load will complete at time 2, and a job scheduled to start at time 1 would only have to wait one time unit.
 
 The essence is that a core does not known a very specific set of physical pages, but an equivalent amount of physical address space. That causes the answers to questions #1 and #3. However, the kernel might choose to devote unoccupied memory (not reserved to any job) to additional cache space etc for other files, and thus evicting all or parts of file a. That can happen even if the node is just idling, unless we assume that we enforce a policy to actively keep files pinned in "unoccupied" address space. That's a fully feasible assumption to make.
+
+Code: I don't deal with idling node file that can stay in memory. Should I do it ? How ? It's a bit tricky to code. No
+Code: Add a few file share between users ? No
