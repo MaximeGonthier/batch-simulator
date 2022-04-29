@@ -16,6 +16,7 @@ class Job:
     node_used: None
     cores_used: list
     transfer_time: int
+    waiting_for_a_load_time: int
 @dataclass
 class Node:
     unique_id: int
@@ -23,6 +24,7 @@ class Node:
     bandwidth: float
     data: list
     cores: list
+    n_available_cores: int
 @dataclass
 class Core:
     unique_id: int
@@ -38,7 +40,7 @@ def read_cluster(input_node_file, node_list, available_node_list):
 			for i in range (0, int(r9)):
 				c = Core(i, list(), 0)
 				core_list.append(c)
-			n = Node(int(r3), int(r5), float(r7), list(), core_list)
+			n = Node(int(r3), int(r5), float(r7), list(), core_list, len(core_list))
 			# ~ node_list.append(n)
 			# ~ available_node_list.append(n)
 			if (int(r5) == 128):
@@ -76,7 +78,7 @@ def read_workload(input_job_file, job_list):
 				print("Error", (float(r17)*10)/(float(r11)*10), "is a wrong input job data size. Line is:", line)
 				exit
 			
-			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0)
+			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0, 0)
 			job_list.append(j)
 			line = f.readline()	
 		f.close

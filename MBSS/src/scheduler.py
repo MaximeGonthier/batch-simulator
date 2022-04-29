@@ -21,6 +21,7 @@ class Job:
     node_used: None
     cores_used: list
     transfer_time: int
+    waiting_for_a_load_time: int
     
 # Schedule random available jobs on random nodes and cores, even if not available
 # The numbers here indicate the minimum you must do in a scheduler. In other scheduler there are more steps but they are optional.
@@ -272,6 +273,9 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t, schedule
 	return scheduled_job_list
 
 def fcfs(available_job_list, node_list, t, scheduled_job_list):
-	
-	exit(1)
+	for j in available_job_list:
+		scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
+	available_job_list.clear()
 	return scheduled_job_list
+
+# ~ def easy_bf_fcfs_fcfs():

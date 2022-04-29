@@ -515,7 +515,7 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
     \caption{Makespan} 
     \vspace{4ex}
   \end{minipage} 
-  \caption{Workload 2021-05-23 - April 28}
+  \caption{Workload 2021-05-23 - April 30}
 \end{figure}
 % Flow
 \begin{figure}[H] 
@@ -544,10 +544,32 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
     \caption{Core time used} 
     \vspace{4ex}
   \end{minipage}
-  \caption{Workload 2021-05-23 - April 28}
+  \caption{Workload 2021-05-23 - April 30}
 \end{figure}
 % Transfer time
-\begin{figure}[ht]\includegraphics[scale=1]{MBSS/plot/2021-05-23_Total_transfer_time.pdf}\caption{Transfer time - Workload 2021-05-23 - April 28}\end{figure}
+\begin{figure}[H] 
+  \label{ fig7} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/2021-05-23_Total_transfer_time.pdf} 
+    \caption{Transfer time} 
+    \vspace{4ex}
+  \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/2021-05-23_Total_waiting_for_a_load_time.pdf} 
+    \caption{Waiting for a load} 
+    \vspace{4ex}
+  \end{minipage} 
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/2021-05-23_Total_waiting_for_a_load_time_and_transfer_time.pdf} 
+    \caption{Waiting for a load + Transfer time} 
+    \vspace{4ex}
+  \end{minipage}%% 
+  \caption{Workload 2021-05-23 - April 30}
+\end{figure}
+%~ \begin{figure}[ht]\includegraphics[scale=1]{MBSS/plot/2021-05-23_Total_transfer_time.pdf}\caption{Transfer time - Workload 2021-05-23 - April 28}\end{figure}
 
 \section{Distribution of queue times}
 \begin{figure}[H] 

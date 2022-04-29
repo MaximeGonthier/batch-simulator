@@ -22,6 +22,3 @@ def ShiftLeft(affected_node_list, t):
 						# ~ print ("Job", j.unique_id, "will now start at time", j.start_time, "and end at time", j.end_time)
 					for c3 in j.cores_used:
 						c3.available_time = j.start_time + j.walltime
-							
-def BackFill(affected_node_list, t):
-	print("BackFilling...")

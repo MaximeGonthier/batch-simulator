@@ -18,3 +18,5 @@ def print_job_info_from_list(job_list, t):
 	for j in job_list:
 		print("Job", j.unique_id, "Data", j.data, "Ncores", j.cores, "Subtime", j.subtime)
 	print("------------------------------------------")
+
+# ~ def print

@@ -12,6 +12,7 @@ WORKLOAD=$1
 CLUSTER=$2
 SCHEDULER=$3
 PRINT=$4
+#~ BACKFILL=$5 # ShiftLeft or FCFS or NoFilling
 DATE=${WORKLOAD:27:30}
 
 # Generate workload
@@ -27,7 +28,7 @@ if [ $PRINT == 2 ]; then
 fi
 
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
-python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER ShiftLeft $PRINT
+python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT
 
 if [ $PRINT == 1 ]; then
 	python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}

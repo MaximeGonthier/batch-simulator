@@ -20,7 +20,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 	# ~ print("Adding", data_unique_id)
 	
 	data_is_on_node = False
-	
+	waiting_for_a_load_time = 0
 	# Let's try to find it in the node
 	for d in node_used.data:
 		if (data_unique_id == d.unique_id): # It is already on node
@@ -30,6 +30,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 					
 				if (d.start_time > t): # The job will have to wait for the data to be loaded by another job before starting
 					transfer_time = d.start_time - t
+					waiting_for_a_load_time = d.start_time - t
 				else:
 					transfer_time = 0 # No need to wait to start the job, data is already fully loaded
 			else: # Need to reload it
@@ -47,7 +48,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 		node_used.data.append(d)
 	
 	# ~ print("Adding", data_unique_id, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
-	return transfer_time
+	return transfer_time, waiting_for_a_load_time
 
 def remove_data_from_node(finished_job_list):
 	for j in finished_job_list:
@@ -64,9 +65,12 @@ def print_csv(to_print_list, scheduler):
 	mean_flow = 0
 	total_flow = 0
 	total_transfer_time = 0
+	total_waiting_for_a_load_time = 0
+	total_waiting_for_a_load_time_and_transfer_time = 0
 	makespan = 0
 	core_time_used = 0
 	for tp in to_print_list:
+		# ~ print("print")
 		core_time_used += tp.time_used*tp.job_cores
 		# ~ total_queue_time += tp.time - tp.job_subtime
 		total_queue_time += tp.job_start_time - tp.job_subtime
@@ -76,7 +80,9 @@ def print_csv(to_print_list, scheduler):
 		total_flow += tp.job_end_time - tp.job_subtime
 		if (max_flow < tp.job_end_time - tp.job_subtime):
 			max_flow = tp.job_end_time - tp.job_subtime
-		total_transfer_time += tp.transfer_time
+		total_transfer_time += tp.transfer_time - tp.waiting_for_a_load_time
+		total_waiting_for_a_load_time += tp.waiting_for_a_load_time
+		total_waiting_for_a_load_time_and_transfer_time += tp.transfer_time
 		# ~ if (makespan < tp.time + tp.time_used):
 		if (makespan < tp.job_end_time):
 			# ~ makespan = tp.time + tp.time_used
@@ -86,7 +92,7 @@ def print_csv(to_print_list, scheduler):
 	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
 	# ~ f.write("%s %s %s %s %s %s %s %s %s %s %s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
-	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
+	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time)))
 	f.close()
 
 def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
@@ -127,6 +133,7 @@ def size_files_ended_at_certain_time(time, cores, current_data):
 	return size_file_ended
 	
 # Return earliest available node as well as it's starting time
+# ~ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):
 def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
 		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
@@ -154,8 +161,16 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 	j.start_time = start_time
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
+		
+		# ~ if (j.unique_id == 19848 or j.unique_id == 20143 or j.unique_id == 21407):
+			# ~ print("In scheduele early at time", t, "Added on node", choosen_node.unique_id, "core", c.unique_id)
+		
 		c.job_queue.append(j)
 	
+	# ~ if (choosen_node.unique_id == 482):
+		# ~ print("Add in 482")	
+	
 	scheduled_job_list.append(j)
-	return scheduled_job_list
 	# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+	return scheduled_job_list
+

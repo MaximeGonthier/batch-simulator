@@ -34,7 +34,13 @@ elif (comparaison == "Makespan"):
 	plot_title = "Makespan"
 elif (comparaison == "Core_time_used"):
 	Y_index = 10
+	plot_title = "Total waiting for a load time"
+elif (comparaison == "Total_waiting_for_a_load_time"):
+	Y_index = 11
 	plot_title = "Core Time Used"
+elif (comparaison == "Total_waiting_for_a_load_time_and_transfer_time"):
+	Y_index = 12
+	plot_title = "Total waiting for a load time and transfer time"
 else:
 	print("Wrong comparison")
 	exit(1)
@@ -45,7 +51,7 @@ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
   
 # Plot the data using bar() method
-plt.bar(X, Y, color=["red", "green", "blue"])
+plt.bar(X, Y, color=["red", "green", "blue", "yellow"])
 plt.title(plot_title)
 plt.xlabel("Scheduler")
 plt.ylabel("Seconds")
