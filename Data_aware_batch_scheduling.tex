@@ -352,12 +352,13 @@ Each node get a score combining these three values: Score = A + B + (C/BW)
 
 Schedule j on the node with the best score and on the cores available the earliest.
 
-\subsection{EASY-FCFS-FCFS}
+\subsection{EASYBF-FCFS-FCFS}
 Small adaptation from the paper: \url{https://hal.archives-ouvertes.fr/hal-01522459/document}.
 \paragraph{Intuition}
 FCFS Scheduling and FCFS Backfilling.
 In EASY backfilling, the scheduler may backfill later jobs even if that delays the expected start time of other jobs, as long as the first job's expected start time isn't delayed. 
-\todo[inline]{The following pseudocode is then executed at each time $t$ ?}
+If new job are available -> Backfill
+If new cores are available -> Reschedule Queued Jobs + Backfill
 \begin{algorithm}[H]
 \caption{EASY-FCFS-FCFS}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. So all available jobs except running jobs.} \\

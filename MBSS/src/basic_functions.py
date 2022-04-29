@@ -127,7 +127,7 @@ def size_files_ended_at_certain_time(time, cores, current_data):
 	return size_file_ended
 	
 # Return earliest available node as well as it's starting time
-def schedule_job_on_earliest_available_cores(j, node_list, t):
+def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
 		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
 	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
@@ -155,4 +155,7 @@ def schedule_job_on_earliest_available_cores(j, node_list, t):
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
 		c.job_queue.append(j)
+	
+	scheduled_job_list.append(j)
+	return scheduled_job_list
 	# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)

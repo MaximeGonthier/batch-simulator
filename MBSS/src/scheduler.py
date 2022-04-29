@@ -24,7 +24,7 @@ class Job:
     
 # Schedule random available jobs on random nodes and cores, even if not available
 # The numbers here indicate the minimum you must do in a scheduler. In other scheduler there are more steps but they are optional.
-def random_scheduler(available_job_list, node_list, t):
+def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
 	# ~ job_to_remove = []
@@ -57,10 +57,13 @@ def random_scheduler(available_job_list, node_list, t):
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
+		
+		scheduled_job_list.append(j)
 	
 	# 7. Remove jobs from list
 	# ~ remove_jobs_from_list(available_job_list, job_to_remove)
 	available_job_list.clear()
+	return scheduled_job_list
 	
 # Compute a score for each node.
 # For each node, A = compute the earliest available time to host job j.
@@ -68,7 +71,7 @@ def random_scheduler(available_job_list, node_list, t):
 # For each node, C = compute the amount of data that will need to be evicted to load all the files from j not yet in memory. These files will need to be re loaded for other jobs.
 # Score = A + B + (C/BW)
 # Schedule j on the node with the lowest score and on the cores available the earliest.
-def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
+def fcfs_with_a_score_scheduler(available_job_list, node_list, t, scheduled_job_list):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
 	# ~ job_to_remove = []
@@ -144,14 +147,17 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t):
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
 		
+		scheduled_job_list.append(j)
+		
 	# 7. Remove jobs from list
 	# ~ remove_jobs_from_list(available_job_list, job_to_remove)
 	available_job_list.clear()
+	return scheduled_job_list
 
 # Find the file shared the most among available jobs. Schedule all jobs using this file on a node using this file with most available cores.
 # Then repeat until the list of available jobs is empty.
 # For jobs with no file they will be schedule after on the earlieast available node
-def maximum_use_single_file_scheduler(available_job_list, node_list, t):
+def maximum_use_single_file_scheduler(available_job_list, node_list, t, scheduled_job_list):
 	
 	# 1. Find the file shared the most among available jobs
 	# ~ print_job_info_from_list(available_job_list, t)
@@ -177,9 +183,9 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 	if (most_shared_file == 0):
 		# ~ print("Most shared file is 0, zut...")
 		for j in available_job_list:
-			schedule_job_on_earliest_available_cores(j, node_list, t)
+			scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
 		available_job_list.clear()
-		return
+		return scheduled_job_list
 				
 	# 2. Choose a node
 	if (j_example.index_node_list == 0): # Je peux choisir dans la liste entière
@@ -257,7 +263,15 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t):
 		
 			# 6. Add job in list to remove
 			job_to_remove.append(j)
+			
+			scheduled_job_list.append(j)
 		
 	# 7. Remove jobs from list
 	remove_jobs_from_list(available_job_list, job_to_remove)
 	# ~ exit(1)
+	return scheduled_job_list
+
+def fcfs(available_job_list, node_list, t, scheduled_job_list):
+	
+	exit(1)
+	return scheduled_job_list

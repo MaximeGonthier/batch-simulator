@@ -186,39 +186,47 @@ while(total_number_jobs != finished_jobs):
 	for j in job_list:
 		if (j.subtime == t):
 			available_job_list.append(j)
-			scheduled_job_list.append(j) # Because we know they will all be scheduled anyway
 			job_to_remove.append(j)	
 		elif (j.subtime > t):
 			break
 	remove_jobs_from_list(job_list, job_to_remove)
 	
-	# Schedule all those jobs
-	while(len(available_job_list) > 0):
-		# ~ print("Schedule... T =", t, "len =", len(available_job_list))
+	# New jobs are available!
+	if (len(available_job_list) > 0):
 		if (scheduler == "Random"):
+			# ~ scheduled_job_list = available_job_list # Because we know they will all be scheduled anyway
 			random.shuffle(available_job_list)
-			random_scheduler(available_job_list, node_list, t)
+			scheduled_job_list = random_scheduler(available_job_list, node_list, t, scheduled_job_list)
 		elif (scheduler == "Fcfs_with_a_score"):
-			fcfs_with_a_score_scheduler(available_job_list, node_list, t)
+			# ~ scheduled_job_list = available_job_list # Because we know they will all be scheduled anyway
+			scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, scheduled_job_list)
 		elif (scheduler == "Maximum_use_single_file"):
-			maximum_use_single_file_scheduler(available_job_list, node_list, t)
+			while(len(available_job_list) > 0):
+				scheduled_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t, scheduled_job_list)
+		elif (scheduler == "Easy_bf_fcfs_fcfs"):
+			if (len(scheduled_job_list) == 0): # Queue of jobs empty just need to FCFS
+				print("Schedule FCFS")
+				scheduled_job_list = fcfs(available_job_list, node_list, t, scheduled_job_list)
+			else:
+				print("Backfill FCFS")
+			# Backfill
 		else:
 			print("Wrong scheduler in arguments")
 			exit
 	
-	# Get ended job. Inform if a fiiling is needed. Compute file transfers needed.	
+	# Get ended job. Inform if a filing is needed. Compute file transfers needed.	
 	affected_node_list = []	
 	finished_job_list = []	
-	# ~ print("End jobs...")
 	finished_jobs, affected_node_list, finished_job_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
 	
 	# TODO backfill strategy
-	if (len(affected_node_list) and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
+	if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 		# Filling
 		# ~ print("Filling...")
 		if (filling_strategy == "ShiftLeft"):
 			ShiftLeft(affected_node_list, t)
 		elif (filling_strategy == "BackFill"):
+			# Schedule FCFS et backfill
 			BackFill(affected_node_list, t)
 		elif (filling_strategy != "NoFilling"):
 			print("No filling.")
