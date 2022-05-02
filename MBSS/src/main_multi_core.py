@@ -88,10 +88,12 @@ t = 0 # Current time start at 0
 def start_jobs_single_job(t, j):
 	if (j.start_time == t):
 		transfer_time = 0
+		waiting_for_a_load_time = 0
 		if (j.data != 0):
 			# Let's look if a data transfer is needed
 			transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.walltime)
 		j.transfer_time = transfer_time
+		j.waiting_for_a_load_time = waiting_for_a_load_time
 		j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 		if (j.delay + transfer_time < j.walltime):
 			j.end_before_walltime = True
@@ -106,19 +108,18 @@ def start_jobs(t, scheduled_job_list):
 	for j in scheduled_job_list:
 		if (j.start_time == t):
 			transfer_time = 0
+			waiting_for_a_load_time = 0
 			if (j.data != 0):
 				# Let's look if a data transfer is needed
 				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.walltime)
 			j.transfer_time = transfer_time
+			j.waiting_for_a_load_time = waiting_for_a_load_time
 			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
 			# Remove from available cores used cores
 			j.node_used.n_available_cores -= j.cores
 
-# TODO a suppr
-# ~ aaa = 0
-# ~ aaa = 0
 def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 	jobs_to_remove = []
 	for j in scheduled_job_list:

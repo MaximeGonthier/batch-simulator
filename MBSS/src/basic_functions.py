@@ -15,10 +15,9 @@ def remove_jobs_from_list(available_job_list, job_to_remove): # TODO: simplifier
 			if (j1.unique_id == j2.unique_id):
 				available_job_list.remove(j2)
 
-# Add data in the node. TODO : deal with eviction when a job is not currently running on it
+# Add data in the node
 def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 	# ~ print("Adding", data_unique_id)
-	
 	data_is_on_node = False
 	waiting_for_a_load_time = 0
 	# Let's try to find it in the node
@@ -31,6 +30,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 				if (d.start_time > t): # The job will have to wait for the data to be loaded by another job before starting
 					transfer_time = d.start_time - t
 					waiting_for_a_load_time = d.start_time - t
+					# ~ print("In add data:", waiting_for_a_load_time)
 				else:
 					transfer_time = 0 # No need to wait to start the job, data is already fully loaded
 			else: # Need to reload it

@@ -34,10 +34,10 @@ elif (comparaison == "Makespan"):
 	plot_title = "Makespan"
 elif (comparaison == "Core_time_used"):
 	Y_index = 10
-	plot_title = "Total waiting for a load time"
+	plot_title = "Core time used"
 elif (comparaison == "Total_waiting_for_a_load_time"):
 	Y_index = 11
-	plot_title = "Core Time Used"
+	plot_title = "Total waiting for a load time"
 elif (comparaison == "Total_waiting_for_a_load_time_and_transfer_time"):
 	Y_index = 12
 	plot_title = "Total waiting for a load time and transfer time"
