@@ -101,9 +101,8 @@ def start_jobs_single_job(t, j):
 		j.node_used.n_available_cores -= j.cores
 	else:
 		print("Error start job single job, time is", t, "and start time is", j.start_time)
-		# ~ print_csv(to_print_list, scheduler)
 		exit(1)
-# ~ aaa = 0		
+
 def start_jobs(t, scheduled_job_list):
 	for j in scheduled_job_list:
 		if (j.start_time == t):
@@ -125,29 +124,23 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 	for j in scheduled_job_list:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
 			finished_jobs += 1
-			# ~ f = open("aaaa.txt", "a")
-			# ~ f.write("%d\n" % j.unique_id)
-			# ~ f.close()
-			# ~ print("Before erasing job", j.unique_id)
-			# ~ print_job_queue_in_cores_specific_node(j.node_used)
+
 			# Just printing, can remove
-			# ~ aaa = 0
-			if (finished_jobs%10 == 0):
-				bbb = finished_jobs%7 + 1
+			if (finished_jobs%100 == 0):
 				print(finished_jobs, "/", total_number_jobs, "T =", t, end = "")
-				if (bbb == 1):
+				if (finished_jobs%70 == 1):
 					print("  ~~~~ \\(°.°)/ ~~~~")
-				elif (bbb == 2):
+				elif (finished_jobs%60 == 1):
 					print("  ~~~~ \\(°-°)/ ~~~~")
-				elif (bbb == 3):
+				elif (finished_jobs%50 == 1):
 					print("  ~~~~ \\(°o°)/ ~~~~")
-				elif (bbb == 4):
+				elif (finished_jobs%40 == 1):
 					print("  #### \\(°O°)/ ####")
-				elif (bbb == 5):
+				elif (finished_jobs%30 == 1):
 					print("  ~~~~ /(°o°)\\ ~~~~")
-				elif (bbb == 6):
+				elif (finished_jobs%20 == 1):
 					print("  ~~~~ /(°-°)\\ ~~~~")
-				elif (bbb == 7):
+				elif (finished_jobs%10 == 1):
 					print("  ~~~~ /(°.°)\\ ~~~~")
 					
 			# ~ print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
@@ -163,11 +156,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 
 				# NEW
 				j.cores_used[i].job_queue.remove(j)
-				# ~ print_job_queue_in_cores_specific_node(node_list[0][0])
-				
-				# ~ if (j.node_used.unique_id == 482):
-					# ~ print("T = ", t, "end on node", j.node_used.unique_id, j.end_before_walltime, len(j.cores_used[i].job_queue))
-				
+								
 				if (j.end_before_walltime == True):
 					# OLD
 					# ~ j.node_used.cores[j.cores_used[i].unique_id].available_time = t
@@ -175,9 +164,12 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 					# NEW
 					j.cores_used[i].available_time = t
 					
+					
 				core_ids.append(j.cores_used[i].unique_id)
+			
+			print("Cores of job", j.unique_id, "get", t)
+			
 			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
-
 
 			# ~ if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy OLD
 			if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
@@ -185,15 +177,17 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			jobs_to_remove.append(j)
 			# Add cores
 			j.node_used.n_available_cores += j.cores
-	remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
+	scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
 						
 	return finished_jobs, affected_node_list, finished_job_list
 
 # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
 def easy_backfill(first_job_in_queue, t, node_list, available_job_list, scheduled_job_list):
-	# ~ print("Easy BackFilling...")
+	# ~ print("Début de Easy BackFilling...")
+	job_to_remove = []
+	# ~ print_job_info_from_list(available_job_list, t)
 	for j in available_job_list:
-		# ~ print("Try to backfill", j.unique_id)
+		# ~ print("Try to backfill", j.unique_id, "at time", t, "first job is", first_job_in_queue.unique_id)
 		# ~ choosen_node = None
 		# ~ nb_possible_cores = 0
 		# ~ choosen_core = []
@@ -236,10 +230,7 @@ def easy_backfill(first_job_in_queue, t, node_list, available_job_list, schedule
 					choosen_node.cores.sort(key = operator.attrgetter("available_time"))
 					choosen_core = choosen_node.cores[0:j.cores]
 					for c in choosen_core:
-						
-						# ~ if (j.unique_id == 19848 or j.unique_id == 20143 or j.unique_id == 21407):
-							# ~ print("In bf free node at time", t, "Added on node", choosen_node.unique_id, "core", c.unique_id, "first job is", first_job_in_queue.unique_id, "and start at ", first_job_in_queue.start_time, "where my job", j.unique_id, "last", j.walltime)
-						
+												
 						c.job_queue.append(j)
 						
 						# Fix en carton
@@ -251,14 +242,14 @@ def easy_backfill(first_job_in_queue, t, node_list, available_job_list, schedule
 					j.cores_used = choosen_core
 					j.start_time = start_time
 					j.end_time = start_time + j.walltime							
-					available_job_list.remove(j)
+					# ~ available_job_list.remove(j)
+					job_to_remove.append(j)
 					scheduled_job_list.append(j)
 					# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
-					# ~ if (choosen_node.unique_id == 482):
-						# ~ print("Start from backfill, start time is", j.start_time, "choosen node is", choosen_node.unique_id)
-						# ~ print_job_queue_in_cores_specific_node(choosen_node)
 					start_jobs_single_job(t, j)
+					# ~ print_job_info_from_list(available_job_list, t)
 					break
+	available_job_list = remove_jobs_from_list(available_job_list, job_to_remove)
 	# ~ print("Fin de Easy BackFilling...")
 	return scheduled_job_list
 
@@ -307,8 +298,7 @@ new_job = False
 new_core = False
 
 # Starting simulation TODO simplifier en 1 seule fonction
-if (scheduler == "Easy_bf_fcfs_fcfs"):
-	# ~ aaa = 0
+if (scheduler == "Easy_bf_fcfs_fcfs" or scheduler == "Fcfs_with_a_score_easy_bf"):
 	first_job_in_queue = None
 	while(total_number_jobs != finished_jobs):
 		job_to_remove = []
@@ -321,21 +311,22 @@ if (scheduler == "Easy_bf_fcfs_fcfs"):
 				job_to_remove.append(j)	
 			elif (j.subtime > t):
 				break
-		remove_jobs_from_list(job_list, job_to_remove)
+		job_list = remove_jobs_from_list(job_list, job_to_remove)
 		
 		if (new_job == True):
-			# Easy Backfill
+			# Easy Backfill and Schedule if first job does not exist yet.
 			if (first_job_in_queue == None):
-				# ~ print("First job")
 				first_job_in_queue = available_job_list[0]
-				scheduled_job_list = schedule_job_on_earliest_available_cores(first_job_in_queue, node_list, t, scheduled_job_list)
+				if (scheduler == "Easy_bf_fcfs_fcfs"):
+					scheduled_job_list = schedule_job_on_earliest_available_cores(first_job_in_queue, node_list, t, scheduled_job_list)
+				elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+					scheduled_job_list = single_job_fcfs_with_a_score_scheduler(first_job_in_queue, node_list, t, scheduled_job_list)
+				else:
+					print("Error scheduler")
+					exit(1)
 				available_job_list.remove(first_job_in_queue)
-				# ~ start_jobs_single_job(t, first_job_in_queue)
 			scheduled_job_list = easy_backfill(first_job_in_queue, t, node_list, available_job_list, scheduled_job_list)
-		
-		# ~ print("T = ", t)
-		# ~ print_job_queue_in_cores_specific_node(node_list[2][0])
-			
+					
 		# Get ended job. Inform if a filing is needed. Compute file transfers needed.	
 		affected_node_list = []	
 		finished_job_list = []	
@@ -344,64 +335,63 @@ if (scheduler == "Easy_bf_fcfs_fcfs"):
 		
 		finished_jobs, affected_node_list, finished_job_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
 		
-		if (finished_jobs > old_finished_jobs): # A core has been liberated
-			# FCFS only the fist job on the queue
-			# ~ if (first_job_in_queue != None):
-				# ~ if (len(available_job_list) == 0):
-					# ~ first_job_in_queue = None
-					
-					
-			if (first_job_in_queue.start_time <= t):
+		if (finished_jobs > old_finished_jobs): # A core has been liberated so go schedule					
+			if (first_job_in_queue.start_time <= t): # First job is running
 				# ~ print("first_job_in_queue is running or finished at time", t)
 				if (len(available_job_list) != 0):
 					# ~ print("first_job_in_queue is running or finished at time", t)
 					first_job_in_queue = available_job_list[0]
-					scheduled_job_list = schedule_job_on_earliest_available_cores(first_job_in_queue, node_list, t, scheduled_job_list)
+					if (scheduler == "Easy_bf_fcfs_fcfs"):
+						scheduled_job_list = schedule_job_on_earliest_available_cores(first_job_in_queue, node_list, t, scheduled_job_list)
+					elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+						scheduled_job_list = single_job_fcfs_with_a_score_scheduler(first_job_in_queue, node_list, t, scheduled_job_list)
+					else:
+						print("Error scheduler")
+						exit(1)
 					available_job_list.remove(first_job_in_queue)
-					# ~ start_jobs_single_job(t, first_job_in_queue)
-			else:
-				
-				# ~ print("Try to reschedule first_job_in_queue finished", first_job_in_queue.unique_id)
+			else: # Else try to reschedule it earlier
 				scheduled_job_list.remove(first_job_in_queue)
-				for i in range (0, len(first_job_in_queue.cores_used)):
+				for i in range (0, len(first_job_in_queue.cores_used)): # Delete what was reserved first
 					first_job_in_queue.cores_used[i].job_queue.remove(first_job_in_queue)
 					if (len(first_job_in_queue.cores_used[i].job_queue) > 0):
 						first_job_in_queue.cores_used[i].available_time = first_job_in_queue.cores_used[i].job_queue[0].start_time + first_job_in_queue.cores_used[i].job_queue[0].walltime
 					else:
 						first_job_in_queue.cores_used[i].available_time = t
-				# ~ print("Try to reschedule first_job_in_queue finished", first_job_in_queue.unique_id)
-				scheduled_job_list = schedule_job_on_earliest_available_cores(first_job_in_queue, node_list, t, scheduled_job_list)
-				
+				# ~ print("Try to reschedule first_job_in_queue", first_job_in_queue.unique_id)
+				if (scheduler == "Easy_bf_fcfs_fcfs"):
+					scheduled_job_list = schedule_job_on_earliest_available_cores(first_job_in_queue, node_list, t, scheduled_job_list)
+				elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+					scheduled_job_list = single_job_fcfs_with_a_score_scheduler(first_job_in_queue, node_list, t, scheduled_job_list)
+				else:
+					print("Error scheduler")
+					exit(1)				
 				# ~ if (first_job_in_queue.start_time == t):
 					# ~ start_jobs_single_job(t, first_job_in_queue)
+					
 			if (len(available_job_list) > 0):
 				scheduled_job_list = easy_backfill(first_job_in_queue, t, node_list, available_job_list, scheduled_job_list)
 		
 		if (first_job_in_queue != None):
 			if (first_job_in_queue.start_time == t):
-				# ~ print("Start for first job in queue")
+				# ~ print("Start for first job", first_job_in_queue.unique_id, "at t =", t)
 				start_jobs_single_job(t, first_job_in_queue)
-				
-		# Get started jobs	
-		# ~ start_jobs(t, scheduled_job_list)
-		
+						
 		# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 		remove_data_from_node(finished_job_list)
-		# ~ print("t++", t)		
 		t += 1 # Tic, Tac ...
 else:
 	while(total_number_jobs != finished_jobs):
-		job_to_remove = []
+		# ~ job_to_remove = []
 		
 		# Get the set of available jobs at time t
 		# Jobs are already sorted by subtime so I can simply stop wit ha break
 		for j in job_list:
 			if (j.subtime == t):
 				available_job_list.append(j)
-				job_to_remove.append(j)	
+				# ~ job_to_remove.append(j)	
 			elif (j.subtime > t):
 				break
-		remove_jobs_from_list(job_list, job_to_remove)
+		# ~ job_list = remove_jobs_from_list(job_list, job_to_remove)
 		
 		# New jobs are available!
 		if (len(available_job_list) > 0):
@@ -413,13 +403,6 @@ else:
 			elif (scheduler == "Maximum_use_single_file"):
 				while(len(available_job_list) > 0):
 					scheduled_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t, scheduled_job_list)
-			elif (scheduler == "Easy_bf_fcfs_fcfs"):
-				if (len(scheduled_job_list) == 0): # Queue of jobs empty just need to FCFS
-					print("Schedule available jobs because scheduled_job_list empty")
-					scheduled_job_list = fcfs(available_job_list, node_list, t, scheduled_job_list)
-				else:
-					print("Backfill FCFS")
-				# Backfill
 			else:
 				print("Wrong scheduler in arguments")
 				exit
@@ -432,27 +415,16 @@ else:
 		# TODO backfill strategy
 		if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 			# Filling
-			# ~ print("Filling...")
-			# ~ if (filling_strategy == "ShiftLeft"):
 			ShiftLeft(affected_node_list, t)
-			# ~ elif (filling_strategy == "FCFS"):
-				# Schedule FCFS et backfill
-				# ~ fcfs_backfill(affected_node_list, t)
-			# ~ elif (filling_strategy != "NoFilling"):
-				# ~ print("No filling.")
-			# ~ else:
-				# ~ exit
 		
 		# Get started jobs	
-		# ~ print("Start jobs...")
 		start_jobs(t, scheduled_job_list)
 		
 		# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
-		# ~ print("Remove data from nodes...")
 		remove_data_from_node(finished_job_list)
 		
 		# To update datas in nodes
-		# ~ update_nodes() # TODO : do this for available nodes ?
+		# update_nodes() # TODO : do this for available nodes ?
 		
 		# Time is advancing
 		t += 1

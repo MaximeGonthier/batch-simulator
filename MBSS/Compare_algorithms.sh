@@ -17,12 +17,13 @@ CLUSTER=$2
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Total transfer and wait time,Makespan,Core time used, Total waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_${WORKLOAD}.csv
 
-for ((i=0; i<4; i++))
+for ((i=0; i<5; i++))
 do
 	if [ $((i)) == 0 ]; then SCHEDULER="Random" 
 	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs_with_a_score" 
 	elif [ $((i)) == 2 ]; then SCHEDULER="Maximum_use_single_file" 
 	elif [ $((i)) == 3 ]; then SCHEDULER="Easy_bf_fcfs_fcfs" 
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easy_bf" 
 	fi
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"

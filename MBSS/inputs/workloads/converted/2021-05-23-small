@@ -31,3 +31,7 @@
 { id: 31 subtime: 84256 delay: 97013 walltime: 259200 cores: 10 user: ama51 data: 3 data_size: 128 }
 { id: 32 subtime: 84256 delay: 97013 walltime: 259200 cores: 10 user: ama51 data: 3 data_size: 128 }
 { id: 33 subtime: 84256 delay: 97013 walltime: 259200 cores: 10 user: ama51 data: 3 data_size: 128 }
+{ id: 34 subtime: 400000 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }
+{ id: 35 subtime: 400000 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 2 data_size: 128 }
+{ id: 36 subtime: 400000 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 2 data_size: 128 }
+{ id: 37 subtime: 400000 delay: 97013 walltime: 259200 cores: 20 user: ama51 data: 1 data_size: 128 }

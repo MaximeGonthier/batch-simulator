@@ -9,11 +9,12 @@ class Data:
     nb_task_using_it: int
 
 # Remove jobs rom the main job list. I do it outside the loop because I need to go through the list before deleting
-def remove_jobs_from_list(available_job_list, job_to_remove): # TODO: simplifier en 1 seule boucle ?
+def remove_jobs_from_list(list_to_update, job_to_remove): # TODO: simplifier en 1 seule boucle ?
 	for j1 in job_to_remove:
-		for j2 in available_job_list:
+		for j2 in list_to_update:
 			if (j1.unique_id == j2.unique_id):
-				available_job_list.remove(j2)
+				list_to_update.remove(j2)
+	return list_to_update
 
 # Add data in the node
 def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
@@ -132,8 +133,7 @@ def size_files_ended_at_certain_time(time, cores, current_data):
 				break
 	return size_file_ended
 	
-# Return earliest available node as well as it's starting time
-# ~ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):
+# Schedule a job earliest available node and write start time and add job in queues
 def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
 		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
