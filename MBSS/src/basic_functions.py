@@ -98,13 +98,18 @@ def print_csv(to_print_list, scheduler):
 
 def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 	start_time = t
+	# OLD
+	# ~ for c in choosen_core:
+		# ~ if (c.available_time > t): # Look for max available time
+			# ~ for c in choosen_core:
+				# ~ if (c.available_time > start_time):
+					# ~ start_time = c.available_time
+			# ~ break
+	# NEW
 	for c in choosen_core:
-		if (c.available_time > t): # Look for max available time
-			for c in choosen_core:
-				if (c.available_time > start_time):
-					start_time = c.available_time
-			break
-					
+		if (c.available_time > start_time):
+			start_time = c.available_time
+	print("avail start time is", start_time)			
 	for c in choosen_core:
 		c.available_time = start_time + walltime
 	

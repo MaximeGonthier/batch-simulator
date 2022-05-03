@@ -116,6 +116,7 @@ def start_jobs(t, scheduled_job_list):
 			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
+			print("Job", j.unique_id, "start at", t, "and will end at", j.end_time, j.end_before_walltime)
 			# Remove from available cores used cores
 			j.node_used.n_available_cores -= j.cores
 
@@ -143,7 +144,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 				elif (finished_jobs%10 == 1):
 					print("  ~~~~ /(°.°)\\ ~~~~")
 					
-			# ~ print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
+			print("Job", j.unique_id, "finished at time", t, finished_jobs, "finished jobs")
 			
 			finished_job_list.append(j)
 			
@@ -162,12 +163,13 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 					# ~ j.node_used.cores[j.cores_used[i].unique_id].available_time = t
 					
 					# NEW
+					# ~ print("r")
 					j.cores_used[i].available_time = t
 					
 					
 				core_ids.append(j.cores_used[i].unique_id)
 			
-			print("Cores of job", j.unique_id, "get", t)
+			# ~ print("Cores of job", j.unique_id, "get", t)
 			
 			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
 
@@ -415,7 +417,8 @@ else:
 		# TODO backfill strategy
 		if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 			# Filling
-			ShiftLeft(affected_node_list, t)
+			# ~ ShiftLeft(affected_node_list, t)
+			ShiftLeft2(affected_node_list, t)
 		
 		# Get started jobs	
 		start_jobs(t, scheduled_job_list)

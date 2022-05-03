@@ -44,7 +44,7 @@ def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
 
 		# 4. Get start time and update available times of the cores
 		start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
-		
+		print(choosen_core[0].available_time)
 		# 5. Update jobs info and add job in choosen cores
 		j.node_used = choosen_node
 		j.cores_used = choosen_core
@@ -54,7 +54,9 @@ def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
 			c.job_queue.append(j)
 									
 		# Just for printing in terminal. Can be removed.
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+		# ~ print(choosen_core[0].job_queue[0].unique_id)
+		# ~ print(choosen_core[0].job_queue[0].end_time)
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
