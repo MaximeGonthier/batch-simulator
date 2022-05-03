@@ -83,7 +83,7 @@
  
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
     %%\usebeamerfont{date in head/foot}\insertshortdate{}\hspace*{2em}
-    \usebeamerfont{date in head/foot}{36th IEEE IPDPS}\hspace*{5em}
+    \usebeamerfont{date in head/foot}{36th IEEE IPDPS - 01/06/22}\hspace*{3em}
     \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
   \end{beamercolorbox}}%
   \vskip0pt%

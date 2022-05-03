@@ -59,8 +59,9 @@
     \normalsize{\email{maxime.gonthier@ens-lyon.fr}}
     \newline
     % Department Name
-    \department{LIP - ROMA - LaBRI - STORM - Inria}
+    \department{LIP - ROMA - LaBRI - STORM}
     \newline
+    \includegraphics[scale=0.05]{Images/solahris+inria.png}%
     % university name
     %~ \univ
 }
@@ -68,9 +69,9 @@
 
 % date of the presentation
 % \date{\today}
-\usepackage{datetime}
-\newdate{date}{01}{06}{2022}
-\date{\displaydate{date}}
+%~ \usepackage{datetime}
+%~ \newdate{date}{01}{06}{2022}
+%~ \date{\displaydate{date}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,7 +96,8 @@
 %% ---------------------------------------------------------------------------
 \section{Motivation and formalization}
 \begin{frame}{Motivation: Extract peak performances from GPUs}
-	\vspace{0.5cm} % vertical space
+	\vspace{-0.8cm}
+	\hspace{-0.9cm}
 	\begin{figure}[tb]
 		\definecolor{green}{RGB}{70, 220, 70}
 		\definecolor{orangegray}{RGB}{245, 191, 169}
@@ -345,14 +347,12 @@
 %% ---------------------------------------------------------------------------
 \subsection{Problem modeling}
 \begin{frame}{Problem modeling}
-% \example{$\sigma(k,i)$: $i^\text{th}$ task processed on $\GPU{k}$}\\
-% \example{$\evict(k,i)$: set of data to be evicted from $\GPU{k}$ before the processing of the $i^\text{th}$ task}\\
-\begin{block}{Steps before processing each task}
+\begin{block}{$\GPU{k}$ wants to process task $T$}
 	\begin{enumerate}
-		\item $\GPU{k}$ wants to process task $T$
-		\item Some data are evicted from the memory of $\GPU{k}$
-		\item Data in $T$ that are not yet in memory are loaded in the memory of $\GPU{k}$
-		\item Task $T$ is processed on $\GPU{k}$
+		\item \emph{Evict} data from the memory of $\GPU{k}$
+		\item \emph{Load} data in $T$ that are not yet in memory
+		%~ \item Data in $T$ that are not yet in memory are loaded in the memory of $\GPU{k}$
+		\item \emph{Process} $T$ on $\GPU{k}$
 	\end{enumerate}
 \end{block}
 \begin{block}{Hypothesis}
@@ -442,7 +442,7 @@ $$
 
 %% ---------------------------------------------------------------------------
 \subsection{Using (hyper-)graph partitioning}
-\begin{frame}{Using (hyper-)graph partitioning: hMETIS}
+	\begin{frame}{Using (hyper-)graph partitioning: hMETIS}
 \begin{columns}{}
 \begin{column}{0.4\textwidth}
 \begin{figure}[tb]
@@ -477,9 +477,9 @@ $$
 \begin{column}{0.6\textwidth}
           \justify
 % Without a hypergraph, the same data is counted multiple times.\\
-Hypergraph $\rightarrow$ Represent data $D$ being used by different tasks \\
-One hyperedge for each data $D$ $\rightarrow$ Includes all the vertices corresponding to tasks using $D$ $\rightarrow$
-Better represent data re-use
+Hypergraph $\rightarrow$ Represent a data being used by different tasks \\
+%~ One hyperedge for each data $D$ $\rightarrow$ Includes all the vertices corresponding to tasks using $D$ $\rightarrow$
+Better represent data shares
 \end{column}
 \end{columns}
 	\setbeamercolor{block title}{bg=pink,fg=black}
@@ -494,7 +494,7 @@ Better represent data re-use
 \end{frame}
 
 %~ %% ---------------------------------------------------------------------------
-%~ \subsection{Data-Aware Reactive Task Scheduling: DARTS}
+\subsection{Data-Aware Reactive Task Scheduling: DARTS}
 %~ \begin{frame}{Data-Aware Reactive Task Scheduling: DARTS}
 	%~ \begin{itemize}
 		%~ \item \emph{Consider data movement before task allocation}
@@ -568,7 +568,11 @@ Better represent data re-use
 %~ \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}{Flow of task distribution}
+\begin{frame}{DARTS: Task flow}
+%~ \begin{frame}{DARTS}
+%~ \plannedTasks{k}: Task reserved for later allocation
+%~ \pulledTasks{k}: Task popped from \plannedTasks{k} for execution on \GPU{k}
+
 \begin{figure}[tb]
 		\scalebox{0.79}{
 		\begin{tikzpicture}[thick]
@@ -584,7 +588,13 @@ Better represent data re-use
 			\draw[color=black, fill=green!50] (3*\x, 3.3*\y) rectangle (8*\x, 1.3*\y)  node[midway] {$\pulledTasks{2}$}; 
 			\draw[color=black, fill=green!30] (3*\x, 5.5*\y) rectangle (8*\x, 3.5*\y)  node[midway] {$\plannedTasks{2}$}; 
 						
-			\node[draw] at (3,-2.5) {$\starpu$};
+			\node[draw, rotate=90] at (3, 3) {\LARGE $\starpu$};
+			
+			%~ \onslide<1-1> { \node[draw] at (0.6*\x, 5.7*\y) {$\plannedTasks{k}$: Task reserved for later allocation}; }
+			%~ \onslide<1-1> { \node[draw] at (3.6*\x, 5.7*\y) {$\pulledTasks{k}$: Task popped for execution on $\GPU{k}$}; }
+			
+			\onslide<2-4> { \node[draw] at (2.6*\x, 5.7*\y) {If $\plannedTasks{k} = \emptyset \rightarrow$ DARTS fill $\plannedTasks{k}$}; }
+			\onslide<5-6> { \node[draw] at (2.6*\x, 5.7*\y) {If $\pulledTasks{k} = \emptyset \rightarrow \GPU{k}$ will pop $\plannedTasks{k}$}; }
 			
 			\onslide<1-8> { \draw[color=black, fill=red!10] (-3*\x, 0.4*\y) rectangle (2*\x, -0.2*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
 			\onslide<9-12> { \draw[color=black, fill=green!10] (3*\x, 0.4*\y) rectangle (8*\x, -0.2*\y)  node[midway] {$\GPU{2}$ is asking for a task!}; }
@@ -594,11 +604,7 @@ Better represent data re-use
 			\onslide<3-> { \draw[color=black, fill=blue!40] (-2.9*\x, 3.9*\y) rectangle (1.9*\x, 3.8*\y)  node[midway] (2) {}; }
 			\onslide<4-6> { \draw[color=black, fill=blue!40] (-2.9*\x, 4.1*\y) rectangle (1.9*\x, 4.0*\y)  node[midway] (3) {}; }
 			\onslide<5-5> { \draw[color=black, fill=blue!40] (-2.9*\x, 4.3*\y) rectangle (1.9*\x, 4.2*\y)  node[midway] (4) {}; } 
-			 
-			%~ \draw [-stealth](0,0) -- (1,0);
-			%~ \path[every node/.style={font=\sffamily\small}]
-			%~ (1) edge[bend right=90] node [left] {} (2); 
-			 
+			 			 
 			\onslide<6-12> { \draw[color=black, fill=blue!40] (-2.9*\x, 1.5*\y) rectangle (1.9*\x, 1.4*\y)  node[midway] (5) {}; }
 			
 			\onslide<5-6> { \path[every node/.style={font=\sffamily\small}] (4) edge[bend right=90] node [left] {} (5); }
@@ -622,48 +628,51 @@ Better represent data re-use
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}{Settings and buffers of task}
-	\begin{alertblock}{Initialization}
-		\begin{itemize}
-			\item Each GPU has a randomized data set: \Dtouse{k} (which initially contains all data)
-			\item Task set is randomized
-		\end{itemize}
+%~ \begin{frame}{Settings and buffers of task}
+	%~ \begin{alertblock}{Initialization}
+		%~ \begin{itemize}
+			%~ \item Each GPU has a randomized data set: \Dtouse{k} (which initially contains all data)
+			%~ \item Task set is randomized
+		%~ \end{itemize}
+	%~ \end{alertblock}
+	%~ \begin{alertblock}{Each GPU has 2 buffers of task:}
+		%~ \begin{enumerate}
+			%~ \item \plannedTasks{k}: Task that have been reserved for a later allocation
+			%~ \item \pulledTasks{k}: Task popped from \plannedTasks{k} for execution on \GPU{k}. Cannot be changed any more
+		%~ \end{enumerate}
+		%~ When \pulledTasks{k} is empty \GPU{k} will pop a task from \plannedTasks{k}.\\
+		%~ When \plannedTasks{k} is empty, \GPU{k} call our algorithm to fill \plannedTasks{k}.
+	%~ \end{alertblock}
+%~ \end{frame}
+
+%% ---------------------------------------------------------------------------
+\begin{frame}{DARTS: Strategy}
+	\begin{alertblock}{Intuition: consider data locality before task allocation}
+		Perform as many tasks as possible with the data at hand
 	\end{alertblock}
-	\begin{alertblock}{Each GPU has 2 buffers of  task:}
-		\begin{enumerate}
-			\item \plannedTasks{k}: Task that have been reserved for a later allocation
-			\item \pulledTasks{k}: Task popped from \plannedTasks{k} for execution on \GPU{k}. Cannot be changed any more
-		\end{enumerate}
-		When \pulledTasks{k} is empty \GPU{k} will pop a task from \plannedTasks{k}.\\
-		When \plannedTasks{k} is empty, \GPU{k} call our algorithm to fill \plannedTasks{k}.
+	\begin{alertblock}{}
+		%~ Everything is distributed. The scheduling is done by \GPU{k} when it needs new tasks.
+		\begin{itemize}
+			\item Find $D_{optimal}$ such that the number of tasks depending on $D_{optimal}$ and on other data already in memory is maximum
+			%~ (if there is a tie: choose data with most total unprocessed task)
+			\item $\plannedTasks{k} \gets$ set of unprocessed tasks depending only on $D_{optimal}$ and on other data already in memory 
+			%~ \item Remove $\Dopt$ from \Dtouse{k}
+			%~ \item If \Dopt does not allow to process at least one "free" task  -> Select a random unprocessed task \Treturned
+		\end{itemize}
 	\end{alertblock}
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}{Strategy}
-	\begin{alertblock}{Filling $\plannedTasks{k}$}
-		Everything is distributed. The scheduling is done by \GPU{k} when it needs new tasks.
-		\begin{itemize}
-			\item Find $D_{opt}\in\Dtouse{k}$ such that the number of tasks depending on \Dopt and on other data already in memory is maximum
-			(if there is a tie: choose data with most total unprocessed task)
-			\item $\plannedTasks{k} \gets $ set of unprocessed tasks depending only on $\Dopt$ and on other data already in memory 
-			\item Remove $\Dopt$ from \Dtouse{k}
-			\item If \Dopt does not allow to process at least one "free" task  -> Select a random unprocessed task \Treturned
-		\end{itemize}
-	\end{alertblock}
-\end{frame}
-
-%% ---------------------------------------------------------------------------
-\begin{frame}{Eviction and optimizations}
+\begin{frame}{DARTS: Eviction and optimizations}
 	\begin{alertblock}{Our eviction policy: LUF (Least Used in the Future)}
 		% \begin{itemize}
 			% \item Tasks in \plannedTasks{k} that have been reserved for a later allocation
 			% \item Tasks in \pulledTasks{k}, that have been popped from \plannedTasks{k} for execution on \GPU{k}, and thus whose GPU placement cannot be changed any more
 		% \end{itemize}
 		\begin{enumerate}
-			\item If possible, try to evict data not useful for any task in \pulledTasks{k} and used by a minimal number of tasks in $\plannedTasks{k}$
+			\item If possible, evict data not useful for any task in $\pulledTasks{k}$ and used by a minimal number of tasks in $\plannedTasks{k}$
 			\item Else, apply Belady's rule on tasks already allocated
-			\item Then, update $\plannedTasks{k}$
+			\item Update $\plannedTasks{k}$
 		\end{enumerate}
 	\end{alertblock}
 	% \begin{alertblock}{Optimizations and improvements}
@@ -697,7 +706,7 @@ Better represent data re-use
 				\item GPU memory limited to $500\,MB$ $\rightarrow$ To better distinguish performance on small datasets
 			\end{itemize}
 		\end{block}
-			\begin{block}{}
+			\begin{block}{Applications}
 			\begin{itemize}
 				\item Dense and sparse outer product 
 				\item Tiled GeMM
@@ -710,7 +719,7 @@ Better represent data re-use
 
 %% ---------------------------------------------------------------------------
 \subsection{Dense outer product}
-\begin{frame}{Dense outer product with 2 Tesla V100 GPUs}
+\begin{frame}{Dense outer product with 2 real Tesla V100 GPUs}
     \begin{columns}{}
         \begin{column}{0.5\textwidth}
 	\begin{figure}
@@ -741,7 +750,7 @@ Better represent data re-use
 	\begin{itemize}
 		\item EAGER, hMETIS \& DARTS: Pathological matrix size after the red line
 		\item DMDAR: Conflict between prefetch and eviction
-		 \item DARTS outperform DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
+		 \item DARTS+LUF outperform DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
 		overlapping communications and computations}
 	\end{itemize}
 \end{frame}
@@ -764,7 +773,7 @@ Better represent data re-use
 
 %% ---------------------------------------------------------------------------
 \subsection{Cholesky decomposition}
-\begin{frame}{Cholesky decomposition with 4 Tesla V100 GPUs}
+\begin{frame}{Cholesky decomposition with 4 real Tesla V100 GPUs}
     \begin{columns}{}
 		\begin{column}{0.7\textwidth}
 		\begin{figure}
@@ -785,15 +794,17 @@ Better represent data re-use
 \begin{frame}{Conclusion and future work}
 \begin{block}{Limiting data movements is crucial to extract the best performance out of GPUs}
 	Our contribution \MVRightarrow{}
-	\emph{New strategy: DARTS, focused on data locality}
+	\emph{DARTS+LUF, focused on data locality}
 \end{block}
-\begin{exampleblock}{Conclusion on the experiments}
+\begin{exampleblock}{DARTS achieves very good performance because:}
 	%~ \example{Tested on 2D, 3D, sparse matrix multiplication and Cholesky decomposition}
 	%~ \MVRightarrow{}
-	\emph{DARTS achieves very good performance when:}
+	%~ \emph{DARTS achieves very good performance because:}
 		\begin{itemize}
-			\item Memory is not limited
-			\item Memory is a scarce resource
+			\item It limits data transfers
+			\item It overlaps communication and computation
+			\item It can be adapted to different workloads
+			\item It can be used with a reduced complexity
 		\end{itemize}
 \end{exampleblock}
 	%~ \begin{block}{DARTS's limitations}
@@ -828,7 +839,7 @@ Better represent data re-use
 \begin{frame}[noframenumbering]{Outer product with 4 Tesla V100 GPUs in real}
     \begin{figure}
         \centering
-        \includegraphics[scale=0.3]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
+        \includegraphics[scale=0.45]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
     \end{figure}
 \end{frame}
 
@@ -836,7 +847,7 @@ Better represent data re-use
 \begin{frame}[noframenumbering]{Tiled GeMM with 4 Tesla V100 GPUs in simulation}
     \begin{figure}
         \centering
-        \includegraphics[scale=0.3]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}
+        \includegraphics[scale=0.45]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}
     \end{figure}
 \end{frame}
 
