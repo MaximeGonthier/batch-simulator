@@ -358,151 +358,182 @@ $$
 	\end{exampleblock}
 \end{frame}
 
-%% ---------------------------------------------------------------------------
-\subsection{Using (hyper-)graph partitioning}
-\begin{frame}{Using (hyper-)graph partitioning: hMETIS}
-\begin{columns}{}
-\begin{column}{0.4\textwidth}
-\begin{figure}[tb]
-  \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
-\definecolor{red}{RGB}{175, 49, 39} % AF3127
-\definecolor{green}{RGB}{104, 174, 89} 
-\definecolor{yellow}{RGB}{250, 199, 70} % FAC764
-  \scalebox{0.75}{
-  \begin{tikzpicture}[
-    semithick,
-    ]
-    \tikzstyle{every state}=[ draw = black, thick, fill = white, minimum size = 8mm ]
-    \draw[fill=red,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,0.5)    rectangle (3.2,-0.5);
-    \draw[fill=green,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,-0.82)    rectangle (3.2,-1.82);
-    \draw[fill=blue,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,-2.16)    rectangle (3.2,-3.16);
-    \draw[fill=yellow,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,0.5)    rectangle (0.5,-3.2);
-    \draw[fill=cyan,draw=none,rounded corners=10pt, fill opacity = 0.6] (0.85,0.5)    rectangle (1.85,-3.2);
-    \draw[fill=magenta,draw=none,rounded corners=10pt, fill opacity = 0.6] (2.17,0.5)    rectangle (3.17,-3.2);
-    \node[state, fill=lightgray] (T1) at (0,0){$T_1$};
-    \node[state, fill=lightgray] (T2) [right=0.5cm of T1] {$T_2$}; 
-    \node[state] (T3) [right=0.5cm of T2] {$T_3$}; 
-    \node[state, fill=lightgray] (T4) [below=0.5cm of T1] {$T_4$};
-    \node[state, fill=lightgray] (T5) [right=0.5cm of T4] {$T_5$}; 
-    \node[state] (T6) [right=0.5cm of T5] {$T_6$}; 
-    \node[state] (T7) [below=0.5cm of T4] {$T_7$};
-    \node[state] (T8) [right=0.5cm of T7] {$T_8$}; 
-    \node[state] (T9) [right=0.5cm of T8] {$T_9$}; 
-  \end{tikzpicture}%
-}
-\end{figure}
-\end{column}
-\begin{column}{0.6\textwidth}
-          \justify
-% Without a hypergraph, the same data is counted multiple times.\\
-Hypergraph $\rightarrow$ Represent data $D$ being used by different tasks \\
-One hyperedge for each data $D$ $\rightarrow$ Includes all the vertices corresponding to tasks using $D$ $\rightarrow$
-Better represent data re-use
-\end{column}
-\end{columns}
-	\setbeamercolor{block title}{bg=pink,fg=black}
-	\begin{block}{Strategy}
-	\begin{enumerate}
-		\item Decompose the set of tasks into several subsets of similar size while minimizing the number of common data among subsets
-		\item Each subset is allocated to a GPU
-		\item Use the \emph{Ready} strategy
-		\item Implement dynamic load balancing using task stealing
-	\end{enumerate}
-	\end{block}
-\end{frame}
+%~ %% ---------------------------------------------------------------------------
+%~ \subsection{Using (hyper-)graph partitioning}
+%~ \begin{frame}{Using (hyper-)graph partitioning: hMETIS}
+%~ \begin{columns}{}
+%~ \begin{column}{0.4\textwidth}
+%~ \begin{figure}[tb]
+  %~ \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
+%~ \definecolor{red}{RGB}{175, 49, 39} % AF3127
+%~ \definecolor{green}{RGB}{104, 174, 89} 
+%~ \definecolor{yellow}{RGB}{250, 199, 70} % FAC764
+  %~ \scalebox{0.75}{
+  %~ \begin{tikzpicture}[
+    %~ semithick,
+    %~ ]
+    %~ \tikzstyle{every state}=[ draw = black, thick, fill = white, minimum size = 8mm ]
+    %~ \draw[fill=red,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,0.5)    rectangle (3.2,-0.5);
+    %~ \draw[fill=green,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,-0.82)    rectangle (3.2,-1.82);
+    %~ \draw[fill=blue,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,-2.16)    rectangle (3.2,-3.16);
+    %~ \draw[fill=yellow,draw=none,rounded corners=10pt, fill opacity = 0.6] (-0.5,0.5)    rectangle (0.5,-3.2);
+    %~ \draw[fill=cyan,draw=none,rounded corners=10pt, fill opacity = 0.6] (0.85,0.5)    rectangle (1.85,-3.2);
+    %~ \draw[fill=magenta,draw=none,rounded corners=10pt, fill opacity = 0.6] (2.17,0.5)    rectangle (3.17,-3.2);
+    %~ \node[state, fill=lightgray] (T1) at (0,0){$T_1$};
+    %~ \node[state, fill=lightgray] (T2) [right=0.5cm of T1] {$T_2$}; 
+    %~ \node[state] (T3) [right=0.5cm of T2] {$T_3$}; 
+    %~ \node[state, fill=lightgray] (T4) [below=0.5cm of T1] {$T_4$};
+    %~ \node[state, fill=lightgray] (T5) [right=0.5cm of T4] {$T_5$}; 
+    %~ \node[state] (T6) [right=0.5cm of T5] {$T_6$}; 
+    %~ \node[state] (T7) [below=0.5cm of T4] {$T_7$};
+    %~ \node[state] (T8) [right=0.5cm of T7] {$T_8$}; 
+    %~ \node[state] (T9) [right=0.5cm of T8] {$T_9$}; 
+  %~ \end{tikzpicture}%
+%~ }
+%~ \end{figure}
+%~ \end{column}
+%~ \begin{column}{0.6\textwidth}
+          %~ \justify
+%~ % Without a hypergraph, the same data is counted multiple times.\\
+%~ Hypergraph $\rightarrow$ Represent data $D$ being used by different tasks \\
+%~ One hyperedge for each data $D$ $\rightarrow$ Includes all the vertices corresponding to tasks using $D$ $\rightarrow$
+%~ Better represent data re-use
+%~ \end{column}
+%~ \end{columns}
+	%~ \setbeamercolor{block title}{bg=pink,fg=black}
+	%~ \begin{block}{Strategy}
+	%~ \begin{enumerate}
+		%~ \item Decompose the set of tasks into several subsets of similar size while minimizing the number of common data among subsets
+		%~ \item Each subset is allocated to a GPU
+		%~ \item Use the \emph{Ready} strategy
+		%~ \item Implement dynamic load balancing using task stealing
+	%~ \end{enumerate}
+	%~ \end{block}
+%~ \end{frame}
 
-%% ---------------------------------------------------------------------------
-\subsection{Data-Aware Reactive Task Scheduling: DARTS}
-\begin{frame}{Data-Aware Reactive Task Scheduling: DARTS}
-	\begin{itemize}
-		\item \emph{Consider data movement before task allocation}
-		\item \example{Perform as many tasks as possible with
-	the data at hand} 
-	\end{itemize}
-\begin{figure}[tb]
-\definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
-\definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
-\definecolor{red}{RGB}{175, 49, 39} % AF3127
-\definecolor{lightred}{RGB}{220, 100, 100} % AF3127
-\definecolor{otherred}{RGB}{171,78,78}
-\definecolor{orange}{RGB}{237, 126, 75} 
-\definecolor{green}{RGB}{104, 174, 89} 
-\definecolor{palegreen}{RGB}{197, 184, 104} 
+%~ %% ---------------------------------------------------------------------------
+%~ \subsection{Data-Aware Reactive Task Scheduling: DARTS}
+%~ \begin{frame}{Data-Aware Reactive Task Scheduling: DARTS}
+	%~ \begin{itemize}
+		%~ \item \emph{Consider data movement before task allocation}
+		%~ \item \example{Perform as many tasks as possible with
+	%~ the data at hand} 
+	%~ \end{itemize}
+%~ \begin{figure}[tb]
+%~ \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
+%~ \definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
+%~ \definecolor{red}{RGB}{175, 49, 39} % AF3127
+%~ \definecolor{lightred}{RGB}{220, 100, 100} % AF3127
+%~ \definecolor{otherred}{RGB}{171,78,78}
+%~ \definecolor{orange}{RGB}{237, 126, 75} 
+%~ \definecolor{green}{RGB}{104, 174, 89} 
+%~ \definecolor{palegreen}{RGB}{197, 184, 104} 
 
-\definecolor{yellow}{RGB}{250, 199, 70} % FAC764
-\definecolor{brokenwhite}{RGB}{218, 192, 166} % DAC0A6
-\definecolor{brokengrey}{rgb}{0.77, 0.76, 0.82} % {196,194,209}, C4C2D1
+%~ \definecolor{yellow}{RGB}{250, 199, 70} % FAC764
+%~ \definecolor{brokenwhite}{RGB}{218, 192, 166} % DAC0A6
+%~ \definecolor{brokengrey}{rgb}{0.77, 0.76, 0.82} % {196,194,209}, C4C2D1
 
-  \scalebox{0.672}{
-  \begin{tikzpicture}[
-    semithick,
-    ]
-    \tikzstyle{every state}=[ draw = black, thick, fill = white, minimum size = 8mm ]
+  %~ \scalebox{0.672}{
+  %~ \begin{tikzpicture}[
+    %~ semithick,
+    %~ ]
+    %~ \tikzstyle{every state}=[ draw = black, thick, fill = white, minimum size = 8mm ]
 	
 
-	\node[state] (1) at (0, 0){};
-	\onslide<1> { \node[state] (2) [right=0.5cm of 1] {}; }
-	\node[state] (3) [right=0.5cm of 2] {};
-	\onslide<1-5> { \node[state] (4) [right=0.5cm of 3] {}; }
-	\onslide<1-3> { \node[state] (5) at (0, -1){}; }
-	\node[state] (6) [right=0.5cm of 5] {};
-	\onslide<1-7> { \node[state] (7) [right=0.5cm of 6] {}; }
-	\node[state] (8) [right=0.5cm of 7] {};
-	\node[state] (9) at (0, -2){};
-	\onslide<1-2> { \node[state] (10) [right=0.5cm of 9] {}; }
-	\node[state] (11) [right=0.5cm of 10] {};
-	\onslide<1-6> { \node[state] (12) [right=0.5cm of 11] {}; }
-	\onslide<1-4> { \node[state] (13) at (0, -3){}; }
-	\node[state] (14) [right=0.5cm of 13] {};
-	\onslide<1-8> { \node[state] (15) [right=0.5cm of 14] {}; }
-	\node[state] (16) [right=0.5cm of 15] {};
+	%~ \node[state] (1) at (0, 0){};
+	%~ \onslide<1> { \node[state] (2) [right=0.5cm of 1] {}; }
+	%~ \node[state] (3) [right=0.5cm of 2] {};
+	%~ \onslide<1-5> { \node[state] (4) [right=0.5cm of 3] {}; }
+	%~ \onslide<1-3> { \node[state] (5) at (0, -1){}; }
+	%~ \node[state] (6) [right=0.5cm of 5] {};
+	%~ \onslide<1-7> { \node[state] (7) [right=0.5cm of 6] {}; }
+	%~ \node[state] (8) [right=0.5cm of 7] {};
+	%~ \node[state] (9) at (0, -2){};
+	%~ \onslide<1-2> { \node[state] (10) [right=0.5cm of 9] {}; }
+	%~ \node[state] (11) [right=0.5cm of 10] {};
+	%~ \onslide<1-6> { \node[state] (12) [right=0.5cm of 11] {}; }
+	%~ \onslide<1-4> { \node[state] (13) at (0, -3){}; }
+	%~ \node[state] (14) [right=0.5cm of 13] {};
+	%~ \onslide<1-8> { \node[state] (15) [right=0.5cm of 14] {}; }
+	%~ \node[state] (16) [right=0.5cm of 15] {};
 	
-	\onslide<2-3> { \node[state, fill = red!50] (16) [left=4cm of 1] {GPU asking for a task}; }
-	\onslide<4-5> { \node[state, fill = green!50] (16) [left=4cm of 1] {GPU asking for a task}; }
-	\onslide<6-7> { \node[state, fill = red!50] (16) [left=4cm of 1] {GPU asking for a task}; }
-	\onslide<8-9> { \node[state, fill = green!50] (16) [left=4cm of 1] {GPU asking for a task}; }
+	%~ \onslide<2-3> { \node[state, fill = red!50] (16) [left=4cm of 1] {GPU asking for a task}; }
+	%~ \onslide<4-5> { \node[state, fill = green!50] (16) [left=4cm of 1] {GPU asking for a task}; }
+	%~ \onslide<6-7> { \node[state, fill = red!50] (16) [left=4cm of 1] {GPU asking for a task}; }
+	%~ \onslide<8-9> { \node[state, fill = green!50] (16) [left=4cm of 1] {GPU asking for a task}; }
 		
-	\node[state] (D1) [above=0.9cm of 1] {$D_1$}; 
-    \onslide<1> { \node[state] (D2) [above=0.9cm of 2] {$D_2$}; }
-    \node[state] (D3) [above=0.9cm of 3] {$D_3$}; 
-    \node[state] (D4) [above=0.9cm of 4] {$D_4$}; 
-    \onslide<1> { \node[state] (D5) [left=0.9cm of 1] {$D_5$}; }
-    \node[state] (D6) [left=0.9cm of 5] {$D_6$}; 
-    \onslide<1-2> { \node[state] (D7) [left=0.9cm of 9] {$D_7$}; }
-    \node[state] (D8) [left=0.9cm of 13] {$D_8$}; 
+	%~ \node[state] (D1) [above=0.9cm of 1] {$D_1$}; 
+    %~ \onslide<1> { \node[state] (D2) [above=0.9cm of 2] {$D_2$}; }
+    %~ \node[state] (D3) [above=0.9cm of 3] {$D_3$}; 
+    %~ \node[state] (D4) [above=0.9cm of 4] {$D_4$}; 
+    %~ \onslide<1> { \node[state] (D5) [left=0.9cm of 1] {$D_5$}; }
+    %~ \node[state] (D6) [left=0.9cm of 5] {$D_6$}; 
+    %~ \onslide<1-2> { \node[state] (D7) [left=0.9cm of 9] {$D_7$}; }
+    %~ \node[state] (D8) [left=0.9cm of 13] {$D_8$}; 
     
-    \onslide<2-> { \node[state, fill = red!50] (2) [right=0.5cm of 1] {$1$}; \node[state, fill = red!50] (D2) [above=0.9cm of 2] {$D_2$}; \node[state, fill = red!50] (D5) [left=0.9cm of 1] {$D_5$}; }
-    \onslide<3-> { \node[state, fill = red!50] (10) [right=0.5cm of 9] {$2$}; \node[state, fill = red!50] (D7) [left=0.9cm of 9] {$D_7$}; }
-    \onslide<4-> { \node[state, fill = green!50] (5) at (0, -1) {$1$}; \node[state, fill = green!50] (D1) [above=0.9cm of 1] {$D_1$}; \node[state, fill = green!50] (D6) [left=0.9cm of 5] {$D_6$};  }
-    \onslide<5-> { \node[state, fill = green!50] (13) at (0, -3){$2$}; \node[state, fill = green!50] (D8) [left=0.9cm of 13] {$D_8$}; }
-    \onslide<6-> { \node[state, fill = red!50] (4) [right=0.5cm of 3] {$3$}; \node[state, fill = red!50] (D4) [above=0.9cm of 4] {$D_4$};  }
-    \onslide<7-> { \node[state, fill=red!50] (12) [right=0.5cm of 11] {$4$}; }
-    \onslide<8-> { \node[state, fill = green!50] (7) [right=0.5cm of 6] {$3$};  \node[state, fill = green!50] (D3) [above=0.9cm of 3] {$D_3$}; }
-    \onslide<9-> { \node[state, fill = green!50] (15) [right=0.5cm of 14] {$4$}; }
+    %~ \onslide<2-> { \node[state, fill = red!50] (2) [right=0.5cm of 1] {$1$}; \node[state, fill = red!50] (D2) [above=0.9cm of 2] {$D_2$}; \node[state, fill = red!50] (D5) [left=0.9cm of 1] {$D_5$}; }
+    %~ \onslide<3-> { \node[state, fill = red!50] (10) [right=0.5cm of 9] {$2$}; \node[state, fill = red!50] (D7) [left=0.9cm of 9] {$D_7$}; }
+    %~ \onslide<4-> { \node[state, fill = green!50] (5) at (0, -1) {$1$}; \node[state, fill = green!50] (D1) [above=0.9cm of 1] {$D_1$}; \node[state, fill = green!50] (D6) [left=0.9cm of 5] {$D_6$};  }
+    %~ \onslide<5-> { \node[state, fill = green!50] (13) at (0, -3){$2$}; \node[state, fill = green!50] (D8) [left=0.9cm of 13] {$D_8$}; }
+    %~ \onslide<6-> { \node[state, fill = red!50] (4) [right=0.5cm of 3] {$3$}; \node[state, fill = red!50] (D4) [above=0.9cm of 4] {$D_4$};  }
+    %~ \onslide<7-> { \node[state, fill=red!50] (12) [right=0.5cm of 11] {$4$}; }
+    %~ \onslide<8-> { \node[state, fill = green!50] (7) [right=0.5cm of 6] {$3$};  \node[state, fill = green!50] (D3) [above=0.9cm of 3] {$D_3$}; }
+    %~ \onslide<9-> { \node[state, fill = green!50] (15) [right=0.5cm of 14] {$4$}; }
 
-\end{tikzpicture}%
-}
-\end{figure}
-\end{frame}
+%~ \end{tikzpicture}%
+%~ }
+%~ \end{figure}
+%~ \end{frame}
 
 %% ---------------------------------------------------------------------------
 \begin{frame}{Flow of task distribution}
 \begin{figure}[tb]
 		\scalebox{0.79}{
+		%~ \begin{tikzpicture}[thick]
+			%~ \definecolor{orangegray}{RGB}{245, 191, 169}
+			%~ \def\x{1.2}
+			%~ \def\y{1.5}
+			%~ \draw[color=black, fill=red!50] (-3*\x, 2*\y) rectangle (2*\x, 3*\y)  node[midway] {$\GPU{1}$}; 
+			%~ \draw[color=black, fill=orange!80] (-3*\x, 1.5*\y) rectangle (-0.6*\x, -1*\y)  node[midway] {$\pulledTasks{1}$}; 
+			%~ \draw[color=black, fill=orange!40] (-0.4*\x, 1.5*\y) rectangle (2*\x, -1*\y)  node[midway] {$\plannedTasks{1}$}; 
+			%~ \draw[color=black, fill=green!50] (3*\x, 2*\y) rectangle (8*\x, 3*\y)  node[midway] {$\GPU{2}$}; 
+			%~ \draw[color=black, fill=lime!80] (3*\x, 1.5*\y) rectangle (5.4*\x, -1*\y)  node[midway] {$\pulledTasks{2}$}; 
+			%~ \draw[color=black, fill=lime!40] (5.6*\x, 1.5*\y) rectangle (8*\x, -1*\y)  node[midway] {$\plannedTasks{2}$}; 
+			
+			%~ \onslide<1-8> { \draw[color=black, fill=red!50] (-3*\x, 4*\y) rectangle (2*\x, 3.5*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
+			%~ \onslide<9-12> { \draw[color=black, fill=green!50] (3*\x, 4*\y) rectangle (8*\x, 3.5*\y)  node[midway] {$\GPU{2}$ is asking for a task!}; }
+			%~ \onslide<12-12> { \draw[color=black, fill=red!50] (-3*\x, 4*\y) rectangle (2*\x, 3.5*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
+			%~ \onslide<2-> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.8*\y) rectangle (1.8*\x, -0.9*\y)  node[midway] {}; }
+			%~ \onslide<3-> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.6*\y) rectangle (1.8*\x, -0.7*\y)  node[midway] {}; }
+			%~ \onslide<4-6> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.4*\y) rectangle (1.8*\x, -0.5*\y)  node[midway] {}; }
+			%~ \onslide<5-5> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.2*\y) rectangle (1.8*\x, -0.3*\y)  node[midway] {}; } 
+			%~ \onslide<6-12> { \draw[color=black, fill=blue!40] (-2.8*\x, -0.8*\y) rectangle (-0.8*\x, -0.9*\y)  node[midway] {}; }
+			%~ \onslide<7-7> { \draw[color=black, fill=blue!40] (-2.8*\x, -0.6*\y) rectangle (-0.8*\x, -0.7*\y)  node[midway] {}; }
+			%~ \onslide<8-10> { \draw[color=black, fill=blue!40] (-1.5*\x, 2.2*\y) rectangle (0.5*\x, 2.1*\y)  node[midway] {}; }
+			%~ \onslide<13-> { \draw[color=black, fill=blue!40] (-1.5*\x, 2.2*\y) rectangle (0.5*\x, 2.1*\y)  node[midway] {}; }
+			%~ \onslide<10-> { \draw[color=black, fill=blue!40] (5.8*\x, -0.8*\y) rectangle (7.8*\x, -0.9*\y)  node[midway] {}; }
+			%~ \onslide<11-11> { \draw[color=black, fill=blue!40] (5.8*\x, -0.6*\y) rectangle (7.8*\x, -0.7*\y)  node[midway] {}; }
+			%~ \onslide<12-12> { \draw[color=black, fill=blue!40] (3.2*\x, -0.8*\y) rectangle (5.2*\x, -0.9*\y)  node[midway] {}; }
+			%~ \onslide<13-> { \draw[color=black, fill=blue!40] (4.5*\x, 2.2*\y) rectangle (6.5*\x, 2.1*\y)  node[midway] {}; }
+		%~ \end{tikzpicture}
 		\begin{tikzpicture}[thick]
 			\definecolor{orangegray}{RGB}{245, 191, 169}
 			\def\x{1.2}
 			\def\y{1.5}
-			\draw[color=black, fill=red!50] (-3*\x, 2*\y) rectangle (2*\x, 3*\y)  node[midway] {$\GPU{1}$}; 
-			\draw[color=black, fill=orange!80] (-3*\x, 1.5*\y) rectangle (-0.6*\x, -1*\y)  node[midway] {$\pulledTasks{1}$}; 
-			\draw[color=black, fill=orange!40] (-0.4*\x, 1.5*\y) rectangle (2*\x, -1*\y)  node[midway] {$\plannedTasks{1}$}; 
-			\draw[color=black, fill=green!50] (3*\x, 2*\y) rectangle (8*\x, 3*\y)  node[midway] {$\GPU{2}$}; 
-			\draw[color=black, fill=lime!80] (3*\x, 1.5*\y) rectangle (5.4*\x, -1*\y)  node[midway] {$\pulledTasks{2}$}; 
-			\draw[color=black, fill=lime!40] (5.6*\x, 1.5*\y) rectangle (8*\x, -1*\y)  node[midway] {$\plannedTasks{2}$}; 
+			\draw[color=black, fill=gray!40] (-3.2*\x, 1.4*\y) rectangle (8.2*\x, -1.5*\y)  node[midway] {}; 
+			\draw[color=black, fill=red!70] (-3*\x, -0.8*\y) rectangle (2*\x, -1.4*\y)  node[midway] {$\GPU{1}$}; 
+			\draw[color=black, fill=red!50] (-3*\x, 1.3*\y) rectangle (2*\x, -0.7*\y)  node[midway] {$\pulledTasks{1}$}; 
+			\draw[color=black, fill=red!30] (-3*\x, 3.5*\y) rectangle (2*\x, 1.5*\y)  node[midway] {$\plannedTasks{1}$}; 
 			
-			\onslide<1-8> { \draw[color=black, fill=red!50] (-3*\x, 4*\y) rectangle (2*\x, 3.5*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
-			\onslide<9-12> { \draw[color=black, fill=green!50] (3*\x, 4*\y) rectangle (8*\x, 3.5*\y)  node[midway] {$\GPU{2}$ is asking for a task!}; }
-			\onslide<12-12> { \draw[color=black, fill=red!50] (-3*\x, 4*\y) rectangle (2*\x, 3.5*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
+			\draw[color=black, fill=green!70] (3*\x, -0.8*\y) rectangle (8*\x, -1.4*\y)  node[midway] {$\GPU{1}$}; 
+			\draw[color=black, fill=green!50] (3*\x, 1.3*\y) rectangle (8*\x, -0.7*\y)  node[midway] {$\pulledTasks{1}$}; 
+			\draw[color=black, fill=green!30] (3*\x, 3.5*\y) rectangle (8*\x, 1.5*\y)  node[midway] {$\plannedTasks{1}$}; 
+						
+			\node[draw] at (3,-2.5) {$\starpu$};
+			
+			\onslide<1-8> { \draw[color=black, fill=red!10] (-3*\x, 4.2*\y) rectangle (2*\x, 3.6*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
+			\onslide<9-12> { \draw[color=black, fill=green!10] (3*\x, 4*\y) rectangle (8*\x, 3.5*\y)  node[midway] {$\GPU{2}$ is asking for a task!}; }
+			\onslide<12-12> { \draw[color=black, fill=red!10] (-3*\x, 4*\y) rectangle (2*\x, 3.5*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
 			\onslide<2-> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.8*\y) rectangle (1.8*\x, -0.9*\y)  node[midway] {}; }
 			\onslide<3-> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.6*\y) rectangle (1.8*\x, -0.7*\y)  node[midway] {}; }
 			\onslide<4-6> { \draw[color=black, fill=blue!40] (-0.2*\x, -0.4*\y) rectangle (1.8*\x, -0.5*\y)  node[midway] {}; }
@@ -511,31 +542,10 @@ Better represent data re-use
 			\onslide<7-7> { \draw[color=black, fill=blue!40] (-2.8*\x, -0.6*\y) rectangle (-0.8*\x, -0.7*\y)  node[midway] {}; }
 			\onslide<8-10> { \draw[color=black, fill=blue!40] (-1.5*\x, 2.2*\y) rectangle (0.5*\x, 2.1*\y)  node[midway] {}; }
 			\onslide<13-> { \draw[color=black, fill=blue!40] (-1.5*\x, 2.2*\y) rectangle (0.5*\x, 2.1*\y)  node[midway] {}; }
-			
 			\onslide<10-> { \draw[color=black, fill=blue!40] (5.8*\x, -0.8*\y) rectangle (7.8*\x, -0.9*\y)  node[midway] {}; }
 			\onslide<11-11> { \draw[color=black, fill=blue!40] (5.8*\x, -0.6*\y) rectangle (7.8*\x, -0.7*\y)  node[midway] {}; }
 			\onslide<12-12> { \draw[color=black, fill=blue!40] (3.2*\x, -0.8*\y) rectangle (5.2*\x, -0.9*\y)  node[midway] {}; }
 			\onslide<13-> { \draw[color=black, fill=blue!40] (4.5*\x, 2.2*\y) rectangle (6.5*\x, 2.1*\y)  node[midway] {}; }
-			
-			% \draw[color=black, fill=green] (0*\x, 0*\y) rectangle (11*\x, 1*\y) node[midway] {CPU memory of infinite size}; 
-			% \path[ultra thick] (5.5*\x,1*\y) edge (5.5*\x,1.4*\y); 
-			% \path[ultra thick] (1*\x,1.4*\y) edge node[midway, above] {PCI Express bus} (10*\x,1.4*\y); 
-			% \path[ultra thick] (1*\x,1.4*\y) edge (1*\x,2*\y); 
-			% \path[ultra thick] (4*\x,1.4*\y) edge (4*\x,2*\y);
-			% \path[ultra thick] (7*\x,1.4*\y) edge (7*\x,2*\y); 
-			% \path[ultra thick] (10*\x,1.4*\y) edge (10*\x,2*\y); 
-			% % Arrow 1
-			% \node at (-0.4, 0.5) (n1){};
-			% \node(n2)[above=3.5cm of n1]{};
-			% % this path will place/draw a node call (text)
-			% \path (n1) -- node[sloped] (text) {Loading data} (n2);
-			% % Now draw arrows. This way it will be like you want.
-			% \draw[ultra thick][->] (n1)--(text)--(n2);
-			% % Arrow 2
-			% \node at (13.6, 0.5) (n1){};
-			% \node(n2)[above=3.5cm of n1]{};
-			% \path (n1) -- node[sloped] (text) {Evicting data} (n2);
-			% \draw[ultra thick][->] (n2)--(text)--(n1);
 		\end{tikzpicture}
 		}
 \end{figure}
@@ -600,7 +610,7 @@ Better represent data re-use
 %~ {\nologo
 %~ {
 %~ \usebackgroundtemplate{}
-\section{Experimental Evaluation}
+\section{Experimental evaluation}
 \subsection{Experimental settings}
 \begin{frame}{Experimental settings}
     \begin{columns}{}
@@ -622,8 +632,8 @@ Better represent data re-use
 		\end{block}
 			\begin{block}{}
 			\begin{itemize}
-				\item Dense and sparse outer product
-				\item General Matrix Multiply (GeMM)
+				\item Dense and sparse outer product (A $\times$ B)
+				\item General Matrix Multiply (GeMM) (A $\times$ B $\times$ C)
 				\item Cholesky decomposition (without dependencies)
 			\end{itemize}
 			\end{block}
@@ -632,32 +642,43 @@ Better represent data re-use
 \end{frame}
 %~ }
 
-%~ %% ---------------------------------------------------------------------------
-%~ \subsection{Dense outer product}
-%~ \begin{frame}{Dense outer product with 2 Tesla V100 GPUs}
-	%~ \begin{figure}
-		%~ \center\includegraphics[scale = 0.45]{../Starpu/R/Courbes/PlaFRIM-Grid5k/Matrice_ligne/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_2GPU.pdf}
-	%~ \end{figure}
+%% ---------------------------------------------------------------------------
+\subsection{Dense outer product}
+\begin{frame}{Dense outer product with 2 Tesla V100 GPUs}
+    \begin{columns}{}
+        \begin{column}{0.5\textwidth}
+	\begin{figure}
+		\center\includegraphics[scale = 0.3]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_2GPU.pdf}
+	\end{figure}
+	\end{column}
 	%~ \begin{itemize}
 		%~ \item EAGER, hMETIS \& DARTS: Pathological matrix size after the red line
 		%~ \item DMDAR: Conflict between prefetch and eviction
 	%~ \end{itemize}
 %~ \end{frame}
 
-%~ %% ---------------------------------------------------------------------------
-%~ {
-%~ \usebackgroundtemplate{}
+%% ---------------------------------------------------------------------------
 %~ \begin{frame}{Amount of data transfers on the dense outer product with 2 Tesla V100 GPUs}
-	%~ \begin{figure}
-		%~ \center\includegraphics[scale = 0.45]{../Starpu/R/Courbes/PlaFRIM-Grid5k/Matrice_ligne/DT_dynamic_data_aware_no_hfp_gemini-2-ipdps_2GPU.pdf}
-		%~ % \caption{Amount of data transfers on the 2D matrix multiplication in real with 2 Tesla V100 GPUs.}
+    %~ \begin{columns}{}
+        \begin{column}{0.5\textwidth}
+	\begin{figure}
+		%~ \center\includegraphics[scale = 0.25]{Images/DT_dynamic_data_aware_no_hfp_gemini-2-ipdps_2GPU.pdf}
+		\includegraphics[scale = 0.3]{Images/DT_dynamic_data_aware_no_hfp_gemini-2-ipdps_2GPU.pdf}
+		% \caption{Amount of data transfers on the 2D matrix multiplication in real with 2 Tesla V100 GPUs.}
 	%~ \begin{itemize}
 		%~ \item DARTS outperform DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
 		%~ overlapping communications and computations}
 	%~ \end{itemize}
-	%~ \end{figure}
-%~ \end{frame}
-%~ }
+	\end{figure}
+		\end{column}
+		\end{columns}
+	\begin{itemize}
+		\item EAGER, hMETIS \& DARTS: Pathological matrix size after the red line
+		\item DMDAR: Conflict between prefetch and eviction
+		 \item DARTS outperform DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
+		overlapping communications and computations}
+	\end{itemize}
+\end{frame}
 
 %~ %% ---------------------------------------------------------------------------
 %~ {
@@ -675,101 +696,114 @@ Better represent data re-use
 %~ \end{frame}
 %~ }
 
-%~ %% ---------------------------------------------------------------------------
-%~ {
-%~ \usebackgroundtemplate{}
-%~ \subsection{Cholesky decomposition}
-%~ % \begin{frame}{Tasks from the Cholesky decomposition with 4 Tesla V100 GPUs}
-%~ \begin{frame}{Tasks from the Cholesky decomposition with 4 GPUs}
-	%~ \begin{figure}
-		%~ \center\includegraphics[scale = 0.45]{../Starpu/R/Courbes/PlaFRIM-Grid5k/Cholesky/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU.pdf}
-		%~ % \caption{Performance on tasks coming from the Cholesky decomposition in real with 4 Tesla V100 GPUs.}
-	%~ \begin{itemize}
-		%~ \item \OPTI reduce scheduling time which improve performance
-		%~ \item DMDAR suffer from a large scheduling time
-	%~ \end{itemize}
-	%~ \end{figure}
-%~ \end{frame}
-%~ }
+%% ---------------------------------------------------------------------------
+\subsection{Cholesky decomposition}
+\begin{frame}{Cholesky decomposition with 4 Tesla V100 GPUs}
+    \begin{columns}{}
+		\begin{column}{0.7\textwidth}
+		\begin{figure}
+			\center\includegraphics[scale = 0.45]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU.pdf}
+		\end{figure}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+		\begin{itemize}
+			\item \OPTI reduce scheduling time which improve performance
+			\item DMDAR suffer from a large scheduling time
+		\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
 
-%~ %% ---------------------------------------------------------------------------
-%~ {
-%~ \usebackgroundtemplate{}
-%~ \subsection{Sparse 2D matrix multiplication}
-%~ \begin{frame}{Sparse 2D matrix multiplication without memory limitation (32GB by GPU) with 4 Tesla V100 GPUs}
-%~ % \begin{frame}{Sparse 2D matrix without memory limitation with 4 GPUs}
-	%~ \begin{figure}
-		%~ \center\includegraphics[scale = 0.4]{../Starpu/R/Courbes/PlaFRIM-Grid5k/Sparse_mem_infinite/GF_dynamic_data_aware_no_hfp_sparse_matrix_infinie_gemini-1-fgcs_4GPU.pdf}
-		%~ % \caption{Performance on the sparse 2D matrix multiplication without memory limitation (32GB by GPU) in real with 4 Tesla V100 GPUs.}
-	%~ \begin{itemize}
-		%~ \item No memory constraint
-		%~ \item DARTS produces a \emph{processing order that best distributes transfers over time} 
-		%~ \item hMETIS suffers from an important partitioning cost
-	%~ \end{itemize}
-	%~ \end{figure}
-%~ \end{frame}
-%~ }
-%~ }
+%% ---------------------------------------------------------------------------
+\subsection{Sparse outer product}
+\begin{frame}{Sparse outer product without memory limitation (32GB by GPU) with 4 Tesla V100 GPUs}
+    \begin{columns}{}
+		\begin{column}{0.7\textwidth}
+		\begin{figure}
+			\center\includegraphics[scale = 0.45]{Images/GF_dynamic_data_aware_no_hfp_sparse_matrix_infinie_gemini-1-fgcs_4GPU.pdf}
+		\end{figure}
+		\end{column}
+		\begin{column}{0.3\textwidth}
+		\begin{itemize}
+			\item DARTS produces a \emph{processing order that best distributes transfers over time} 
+			\item hMETIS suffers from an important partitioning cost
+		\end{itemize}
+		\end{column}
+	\end{columns}
+\end{frame}
 
-%~ %% ---------------------------------------------------------------------------
-%~ \section{Conclusion and Future Work}
-%~ \begin{frame}{Conclusion}
-%~ \begin{block}{Limiting data movements is crucial}
-	%~ \MVRightarrow{}
-	%~ \emph{New strategy: DARTS}\\
-	%~ \emph{Focused on data movement}
-%~ \end{block}
-%~ \begin{exampleblock}{Conclusion on the experiments}
+%% ---------------------------------------------------------------------------
+\section{Conclusion and future work}
+\begin{frame}{Conclusion}
+\begin{block}{Limiting data movements is crucial}
+	Our contribution \MVRightarrow{}
+	\emph{New strategy: DARTS}
+	\emph{Focused on data movement}
+\end{block}
+\begin{exampleblock}{Conclusion on the experiments}
 	%~ \example{Tested on 2D, 3D, sparse matrix multiplication and Cholesky decomposition}
 	%~ \MVRightarrow{}
-	%~ \emph{DARTS achieves very good performance when:}
-		%~ \begin{itemize}
-			%~ \item Memory is not limited
-			%~ \item Memory is a scarce resource
-		%~ \end{itemize}
-%~ \end{exampleblock}
-%~ \end{frame}
+	\emph{DARTS achieves very good performance when:}
+		\begin{itemize}
+			\item Memory is not limited
+			\item Memory is a scarce resource
+		\end{itemize}
+\end{exampleblock}
+\end{frame}
 
-%~ \begin{frame}{Future works}
+\begin{frame}{Future works}
 	%~ \begin{block}{DARTS's limitations}
 		%~ \begin{itemize}
-		%~ % \item Only manage a single node with several GPUs
+		% \item Only manage a single node with several GPUs
 		%~ \item Only manage a single MPI node
-		%~ % \item Does not consider tasks with dependencies
+		% \item Does not consider tasks with dependencies
 		%~ \item No dependencies
 		%~ \end{itemize}
 	%~ \end{block}
 		
-	%~ \begin{exampleblock}{Areas for improvement}
-		%~ \begin{itemize}
-		%~ \item Improve computational complexity
-		%~ \item Take inter-GPU communications into account
-		%~ \item Consider tasks with dependencies
-		%~ \end{itemize}
-	%~ \end{exampleblock}
-%~ \end{frame}
-
-%~ %% ---------------------------------------------------------------------------
-%~ % Final frame
-%~ \begin{frame}{}
-    %~ \centering
-    %~ \huge{\textbf{\example{Thank you for your attention!}}}
+	\begin{exampleblock}{Areas for improvement}
+		\begin{itemize}
+		\item Manage multiple MPI nodes
+		\item Improve computational complexity
+		\item Take inter-GPU communications into account
+		\item Consider tasks with dependencies
+		\end{itemize}
+	\end{exampleblock}
+	\pause
+    \centering
+    \huge{\textbf{\example{Thank you for your attention!}}}
     
-    %~ \vspace{1cm}
+    \vspace{1cm}
     
-    %~ \Large{\textbf{Contact:}}
-    %~ \newline
-    %~ \vspace*{0.5cm}
-    %~ \large{\email{maxime.gonthier@ens-lyon.fr}}
-%~ \end{frame}
+    \large{\textbf{Contact:}}
+    \newline
+    \vspace*{0.5cm}
+    \large{\email{maxime.gonthier@ens-lyon.fr}}\\
+    \large{\email{Inria Bordeaux, 200 Av. de la Vieille Tour, 33405 Talence, France}}
 
-%~ %% ---------------------------------------------------------------------------
-%~ \begin{frame}{Joker slide}
-    %~ \begin{figure}
-        %~ \centering
-        %~ \includegraphics[scale=0.3]{../Images/dynamic_outer_example.png}
-        %~ \source{Analysis of Dynamic Scheduling Strategies for Matrix Multiplication on Heterogeneous Platforms - Marchal - Beaumont}
-    %~ \end{figure}
-%~ \end{frame}
+\end{frame}
+
+%% ---------------------------------------------------------------------------
+\begin{frame}[noframenumbering]{Joker slide 1}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.3]{Images/dynamic_outer_example.png}
+        \source{Analysis of Dynamic Scheduling Strategies for Matrix Multiplication on Heterogeneous Platforms - Marchal - Beaumont}
+    \end{figure}
+\end{frame}
+\begin{frame}[noframenumbering]{Joker slide 2}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.3]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
+        \source{Performance on the outer product with 4 Tesla V100 GPUs in real.}
+    \end{figure}
+\end{frame}
+\begin{frame}[noframenumbering]{Joker slide 3}
+    \begin{figure}
+        \centering
+        \includegraphics[scale=0.3]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}
+        \source{Performance on GeMM with 4 Tesla V100 GPUs in simulation.}
+    \end{figure}
+\end{frame}
 
 \end{document}
