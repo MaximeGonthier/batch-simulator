@@ -792,19 +792,19 @@ Better represent data shares
 %% ---------------------------------------------------------------------------
 \section{Conclusion and future work}
 \begin{frame}{Conclusion and future work}
-\begin{block}{Limiting data movements is crucial to extract the best performance out of GPUs}
+\begin{block}{Limiting data movements is crucial to extract the most out of GPUs}
 	Our contribution \MVRightarrow{}
 	\emph{DARTS+LUF, focused on data locality}
 \end{block}
-\begin{exampleblock}{DARTS achieves very good performance because:}
+\begin{exampleblock}{DARTS achieves very good performance because it:}
 	%~ \example{Tested on 2D, 3D, sparse matrix multiplication and Cholesky decomposition}
 	%~ \MVRightarrow{}
 	%~ \emph{DARTS achieves very good performance because:}
 		\begin{itemize}
-			\item It limits data transfers
-			\item It overlaps communication and computation
-			\item It can be adapted to different workloads
-			\item It can be used with a reduced complexity
+			\item \textbf{Limits data transfers} thanks to the finding of an optimal data and the adapted eviction policy 
+			\item \textbf{Overlaps} communication and computation by distributing transfers over time
+			\item Can be adapted to applications with \textbf{different number of inputs}
+			\item Can be used with a \textbf{reduced complexity}
 		\end{itemize}
 \end{exampleblock}
 	%~ \begin{block}{DARTS's limitations}
