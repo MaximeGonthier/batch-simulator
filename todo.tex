@@ -85,21 +85,22 @@
 
 	\begin{enumerate}
 		\item Code EASYBF-FCFS-FCFS that reschedule at each liberated core and backfill at each new job or liberated core
+		\item Diapos
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
 		%~ \item Hard to see a difference between EASYBF-FCFS-FCFS and the same one with a score because easy takes over the fcfs. Maybe lock more that one job ? Or use conservative backfilling.
-		\item Algo: For EASYBF-FCFS-FCFS, and same one wuth with fcfs with a score, the schedule is re-done completly at each new available core. Is it really realistic ?
-		\item logo anr et inria et cnrs sur la slide 1 en bas a droite
-		\item conclusion, parler eviction, recouvrement, temps de schedule, et pk darts est bon dans ce problème ?
+		\item Plénière: Prix inscription et présentation
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item Diapos
+			\item Se ré inscrire à l'ENS avant le 15 Juin
+		
+			\item tester fcfsscoreeasybf
 			\item Refelchir a maximum use en mieux
 			\item Pas besoin de bf pour le moment pour les autres, juste corriger le shiftleft
 			\item Corriger le shift left
@@ -107,10 +108,10 @@
 			\item Utiliser pipy3
 			\item faire des boxplots
 			
+			\item Voir thèses de Herman
 			\item Talk to Hans Karlsson
 			\item Talk to David Black-Schaffer
 			\item Ajouter back fill a mes algos
-			\item Se ré-inscrire
 			\item Lire articles Emanuel Rubensson \url{https://webmail.ens-lyon.fr/?_task=mail&_caps=pdf%3D1%2Cflash%3D0%2Ctif%3D0&_uid=4630&_mbox=INBOX&_action=show}
 			\item Compare algo with different workloads. Use queue time of each job compared to a baseline. Compare queue time of each job between 2 heuristics by saying who won on each queue time.
 			\item Meme slide pour vidéo et vrai pres et pres séminaire ? Oui mais avec des slides bonus
@@ -118,14 +119,11 @@
 			\item Ajouter algos completements dynamiques
 			\item Ajouter algos qui reschedule de temps en temps
 			\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores
-			\item Look into weird FCFS with a score results
 			\item Code Classic FCFS
-			\item Code EASY BF FCFS FCFS. L'update se fais a chaque nouveau core libéré ou nouveau job available
 			\item Use same X scale for distributions of queue times
 			\item Use same X scale workloads stats
 			\item Use same X scale for some gantt charts when I want to compare them
 			\item Code algo 2
-			\item slides IPDPS avant le 10 mai
 			\item vidéo IPDPS avant le 15 mai
 			\item Se comparer à HEFT, EAGER.
 			\item TODO du code: backfill, available node list qui contient les cores available aussi
@@ -139,11 +137,6 @@
 			\item lire article bf : Utilization, Predictability, Workloads
 			\item Faire plusieurs test et mettre une barre d'erreur
 			\item Afficher temps de transferts sur les Gantt charts
-			\item Afficher les coeurs sur le gantt chart
-		\end{enumerate}
-	\subsection{Others}
-		\begin{enumerate}
-			\item Réclamation valise
 		\end{enumerate}
 	\subsection{Batsim}
 		\begin{enumerate}

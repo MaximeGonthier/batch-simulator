@@ -381,6 +381,29 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
 \end{algorithmic}
 \end{algorithm}
 
+%~ \subsection{Maximum use single file}
+%~ \paragraph{Intuition}
+%~ Find the file shared the most among available jobs.
+%~ Schedule all jobs using this file on a node using this file with most available cores.
+%~ \begin{algorithm}[H]
+%~ \caption{Maximum use single file}
+%~ \hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$ at time $t$} \\
+%~ \hspace*{\algorithmicindent} \textbf{Output: Schedule for each job}
+%~ \begin{algorithmic}[1]
+%~ \While{$\jobset != \emptyset$}
+	%~ \State Find file $F_j$ used by the most jobs in $\jobset$
+	%~ \State $\Node{selected} \gets$ node with most available cores such as $F_j \in \inputs(\Node{i})$ and $\memory(F_j) <= \memory(\Node{i})$
+	%~ \If{$\Node{selected} = \emptyset$}
+		%~ \State $\Node{selected} \gets$ node with most available cores such as $\memory(F_j) <= \memory(\Node{i})$
+	%~ \EndIf
+	%~ \ForEach {$J_i \in \jobset$ such as $F_j \in \inputs(J_i)$}
+		%~ \State Schedule $J_i$ on $\Node{selected}$ on the earliest available core(s)
+		%~ \State Remove $J_i$ from $\jobset$
+	%~ \EndFor
+%~ \EndWhile
+%~ \end{algorithmic}
+%~ \end{algorithm}
+
 \section{Stats on workloads for Rackham}
 % Cores
 \begin{figure}[H] 
