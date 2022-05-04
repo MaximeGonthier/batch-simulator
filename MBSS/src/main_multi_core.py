@@ -150,30 +150,15 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			
 			core_ids = []
 			for i in range (0, len(j.cores_used)):
-				
-				# OLD
-				# ~ print("Try to remove from core", j.node_used.cores[j.cores_used[i].unique_id].unique_id, "node", j.node_used.unique_id)
-				# ~ j.node_used.cores[j.cores_used[i].unique_id].job_queue.remove(j)
-
-				# NEW
 				j.cores_used[i].job_queue.remove(j)
 								
-				if (j.end_before_walltime == True):
-					# OLD
-					# ~ j.node_used.cores[j.cores_used[i].unique_id].available_time = t
-					
-					# NEW
-					# ~ print("r")
-					j.cores_used[i].available_time = t
-					
+				# ~ if (j.end_before_walltime == True):
+					# ~ j.cores_used[i].available_time = t
 					
 				core_ids.append(j.cores_used[i].unique_id)
-			
-			# ~ print("Cores of job", j.unique_id, "get", t)
-			
+						
 			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
 
-			# ~ if (j.end_before_walltime == True): # Need to backfill or shiftleft depending on the strategy OLD
 			if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
 				affected_node_list.append(j.node_used)
 			jobs_to_remove.append(j)
@@ -417,8 +402,8 @@ else:
 		# TODO backfill strategy
 		if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 			# Filling
-			# ~ ShiftLeft(affected_node_list, t)
-			ShiftLeft2(affected_node_list, t)
+			ShiftLeft(affected_node_list, t)
+			# ~ ShiftLeft2(affected_node_list, t)
 		
 		# Get started jobs	
 		start_jobs(t, scheduled_job_list)
