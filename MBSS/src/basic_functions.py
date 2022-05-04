@@ -109,7 +109,7 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 	for c in choosen_core:
 		if (c.available_time > start_time):
 			start_time = c.available_time
-	print("avail start time is", start_time)			
+	# ~ print("avail start time is", start_time)			
 	for c in choosen_core:
 		c.available_time = start_time + walltime
 	
@@ -178,4 +178,56 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 	scheduled_job_list.append(j)
 	# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 	return scheduled_job_list
+	
+# Schedule a job earliest available node and write start time and add job in queues
+def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
+	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
+	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+		nodes_to_choose_from = node_list[1] + node_list[2]
+	elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+		nodes_to_choose_from = node_list[2]
+					
+	min_time = -1	
+	for n in nodes_to_choose_from:
+		n.cores.sort(key = operator.attrgetter("available_time"))
+		earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0	
+		earliest_available_time = max(t, earliest_available_time) # A core can't be available before t. This happens when a node is idling						
+		if min_time == -1:
+			min_time = earliest_available_time
+			choosen_node = n
+		elif min_time > earliest_available_time:
+			min_time = earliest_available_time
+			choosen_node = n
+													
+	choosen_core = choosen_node.cores[0:j.cores]
+	start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	j.node_used = choosen_node
+	j.cores_used = choosen_core
+	j.start_time = start_time
+	j.end_time = start_time + j.walltime			
+	for c in choosen_core:
+		
+		# ~ if (j.unique_id == 19848 or j.unique_id == 20143 or j.unique_id == 21407):
+			# ~ print("In scheduele early at time", t, "Added on node", choosen_node.unique_id, "core", c.unique_id)
+		
+		c.job_queue.append(j)
+	
+	# ~ if (choosen_node.unique_id == 482):
+		# ~ print("Add in 482")	
+	
+	# ~ scheduled_job_list.append(j)
+	print_decision_in_scheduler(choosen_core, j, choosen_node)
+	# ~ return scheduled_job_list
 
+def reset_cores(node_list, t):
+	for n in node_list:
+		for c in n.cores:
+			c.job_queue.clear()
+			if c.running_job != None:
+				print("Running on node", n.unique_id)
+				c.available_time = c.running_job.start_time + c.running_job.walltime
+				c.job_queue.append(c.running_job)
+			else:
+				c.available_time = t
+			

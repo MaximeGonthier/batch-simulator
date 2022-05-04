@@ -97,19 +97,21 @@ def start_jobs_single_job(t, j):
 		j.waiting_for_a_load_time = waiting_for_a_load_time
 		j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 		
-		for c in j.cores_used:
-			c.job_queue.remove(j)
-			c.running_job = j
-		
 		if (j.delay + transfer_time < j.walltime):
 			j.end_before_walltime = True
 		# Remove from available cores used cores
 		j.node_used.n_available_cores -= j.cores
+		
+		for c in j.cores_used:
+			# ~ c.job_queue.remove(j)
+			c.running_job = j
+		
 	else:
 		print("Error start job single job, time is", t, "and start time is", j.start_time)
 		exit(1)
 
-def start_jobs(t, scheduled_job_list):
+def start_jobs(t, scheduled_job_list, running_jobs):
+	jobs_to_remove = []
 	for j in scheduled_job_list:
 		if (j.start_time == t):
 			transfer_time = 0
@@ -125,10 +127,18 @@ def start_jobs(t, scheduled_job_list):
 			print("Job", j.unique_id, "start at", t, "and will end at", j.end_time, j.end_before_walltime)
 			# Remove from available cores used cores
 			j.node_used.n_available_cores -= j.cores
+			
+			for c in j.cores_used:
+				# ~ c.job_queue.remove(j)
+				c.running_job = j
+			jobs_to_remove.append(j)
+			running_jobs.append(j)
+	scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
+	return scheduled_job_list, running_jobs
 
-def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
+def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs): # TODO plus besoin de scheduleed job list
 	jobs_to_remove = []
-	for j in scheduled_job_list:
+	for j in running_jobs:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
 			finished_jobs += 1
 
@@ -156,7 +166,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			
 			core_ids = []
 			for i in range (0, len(j.cores_used)):
-				# ~ j.cores_used[i].job_queue.remove(j)
+				j.cores_used[i].job_queue.remove(j)
 				j.cores_used[i].running_job = None
 								
 				# ~ if (j.end_before_walltime == True):
@@ -171,9 +181,9 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			jobs_to_remove.append(j)
 			# Add cores
 			j.node_used.n_available_cores += j.cores
-	scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
+	running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
 						
-	return finished_jobs, affected_node_list, finished_job_list
+	return finished_jobs, affected_node_list, finished_job_list, running_jobs
 
 # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
 def easy_backfill(first_job_in_queue, t, node_list, available_job_list, scheduled_job_list):
@@ -290,6 +300,9 @@ finished_jobs = 0
 total_number_jobs = len(job_list)
 new_job = False
 new_core = False
+running_jobs = []
+
+# ~ first_time = 1
 
 # Starting simulation TODO simplifier en 1 seule fonction
 if (scheduler == "Easy_bf_fcfs_fcfs" or scheduler == "Fcfs_with_a_score_easy_bf"):
@@ -327,7 +340,7 @@ if (scheduler == "Easy_bf_fcfs_fcfs" or scheduler == "Fcfs_with_a_score_easy_bf"
 		
 		old_finished_jobs = finished_jobs
 		
-		finished_jobs, affected_node_list, finished_job_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
+		finished_jobs, affected_node_list, finished_job_list, running_jobs = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs)
 		
 		if (finished_jobs > old_finished_jobs): # A core has been liberated so go schedule					
 			if (first_job_in_queue.start_time <= t): # First job is running
@@ -378,44 +391,69 @@ if (scheduler == "Easy_bf_fcfs_fcfs" or scheduler == "Fcfs_with_a_score_easy_bf"
 else:
 	while(total_number_jobs != finished_jobs):
 		# ~ job_to_remove = []
-		
 		# Get the set of available jobs at time t
 		# Jobs are already sorted by subtime so I can simply stop wit ha break
 		for j in job_list:
 			if (j.subtime == t):
 				available_job_list.append(j)
-				# ~ job_to_remove.append(j)	
+				scheduled_job_list.append(j) # Cause they will end up here anyway
 			elif (j.subtime > t):
 				break
-		# ~ job_list = remove_jobs_from_list(job_list, job_to_remove)
 		
-		# New jobs are available!
+		# New jobs are available! Schedule them
 		if (len(available_job_list) > 0):
+			print(len(available_job_list), "new jobs at time", t)
 			if (scheduler == "Random"):
 				random.shuffle(available_job_list)
-				scheduled_job_list = random_scheduler(available_job_list, node_list, t, scheduled_job_list)
+				random_scheduler(available_job_list, node_list, t)
 			elif (scheduler == "Fcfs_with_a_score"):
-				scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, scheduled_job_list)
+				fcfs_with_a_score_scheduler(available_job_list, node_list, t)
 			elif (scheduler == "Maximum_use_single_file"):
 				while(len(available_job_list) > 0):
-					scheduled_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t, scheduled_job_list)
+					print(len(available_job_list))
+					available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
 			else:
 				print("Wrong scheduler in arguments")
 				exit
+			available_job_list.clear()
 		
 		# Get ended job. Inform if a filing is needed. Compute file transfers needed.	
 		affected_node_list = []	
 		finished_job_list = []	
-		finished_jobs, affected_node_list, finished_job_list = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list)
+		old_finished_jobs = finished_jobs
+		finished_jobs, affected_node_list, finished_job_list, running_jobs = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs)
 		
-		# TODO backfill strategy
-		if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
-			# Filling
-			ShiftLeft(affected_node_list, t)
-			# ~ ShiftLeft2(affected_node_list, t)
+		if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
+			# Reset all cores and jobs
+			print("Reset...")
+			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+			print("Reschedule...")
+			if (scheduler == "Random"):
+				random.shuffle(scheduled_job_list)
+				random_scheduler(scheduled_job_list, node_list, t)
+			elif (scheduler == "Fcfs_with_a_score"):
+				fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t)
+			elif (scheduler == "Maximum_use_single_file"):
+				temp = []
+				for j in scheduled_job_list:
+					temp.append(j)
+				print(len(scheduled_job_list))
+				print(len(temp))
+				while(len(temp) > 0):
+					temp = maximum_use_single_file_scheduler(temp, node_list, t)
+				print(len(scheduled_job_list))
+				print(len(temp))
+			else:
+				print("Wrong scheduler in arguments")
+				exit
+			print("End of reschedule")
+		
+		# ~ if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
+			# ~ # Filling
+			# ~ ShiftLeft(affected_node_list, t)
 		
 		# Get started jobs	
-		start_jobs(t, scheduled_job_list)
+		scheduled_job_list, running_jobs = start_jobs(t, scheduled_job_list, running_jobs)
 		
 		# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 		remove_data_from_node(finished_job_list)

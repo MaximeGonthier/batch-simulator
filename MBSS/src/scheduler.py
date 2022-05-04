@@ -25,7 +25,7 @@ class Job:
     
 # Schedule random available jobs on random nodes and cores, even if not available
 # The numbers here indicate the minimum you must do in a scheduler. In other scheduler there are more steps but they are optional.
-def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
+def random_scheduler(available_job_list, node_list, t):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
 	# ~ job_to_remove = []
@@ -44,7 +44,7 @@ def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
 
 		# 4. Get start time and update available times of the cores
 		start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
-		print(choosen_core[0].available_time)
+		# ~ print(choosen_core[0].available_time)
 		# 5. Update jobs info and add job in choosen cores
 		j.node_used = choosen_node
 		j.cores_used = choosen_core
@@ -56,16 +56,17 @@ def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
 		# Just for printing in terminal. Can be removed.
 		# ~ print(choosen_core[0].job_queue[0].unique_id)
 		# ~ print(choosen_core[0].job_queue[0].end_time)
+		print("T =", t)
 		print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
 		
-		scheduled_job_list.append(j)
+		# ~ scheduled_job_list.append(j)
 	
 	# 7. Remove jobs from list
-	available_job_list.clear()
-	return scheduled_job_list
+	# ~ available_job_list.clear()
+	# ~ return scheduled_job_list
 	
 # Compute a score for each node.
 # For each node, A = compute the earliest available time to host job j.
@@ -73,10 +74,10 @@ def random_scheduler(available_job_list, node_list, t, scheduled_job_list):
 # For each node, C = compute the amount of data that will need to be evicted to load all the files from j not yet in memory. These files will need to be re loaded for other jobs.
 # Score = A + B + (C/BW)
 # Schedule j on the node with the lowest score and on the cores available the earliest.
-def fcfs_with_a_score_scheduler(available_job_list, node_list, t, scheduled_job_list):
+def fcfs_with_a_score_scheduler(l, node_list, t):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
-	for j in available_job_list:
+	for j in l:
 				
 		# 2. Choose a node
 		# 2.1. Different list depending on file size
@@ -143,16 +144,17 @@ def fcfs_with_a_score_scheduler(available_job_list, node_list, t, scheduled_job_
 			c.job_queue.append(j)
 									
 		# Just for printing in terminal. Can be removed.
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
 		
-		scheduled_job_list.append(j)
+		# ~ scheduled_job_list.append(j)
 		
 	# 7. Remove jobs from list
-	available_job_list.clear()
-	return scheduled_job_list
+	# ~ available_job_list.clear()
+	# ~ return scheduled_job_list
+	# ~ return l
 
 # Only because it's easy to use this with EASY backfill. Won't work obviously with conservative backfilling
 def single_job_fcfs_with_a_score_scheduler(j, node_list, t, scheduled_job_list):
@@ -212,12 +214,12 @@ def single_job_fcfs_with_a_score_scheduler(j, node_list, t, scheduled_job_list):
 # Find the file shared the most among available jobs. Schedule all jobs using this file on a node using this file with most available cores.
 # Then repeat until the list of available jobs is empty.
 # For jobs with no file they will be schedule after on the earlieast available node
-def maximum_use_single_file_scheduler(available_job_list, node_list, t, scheduled_job_list):
+def maximum_use_single_file_scheduler(l, node_list, t):
 	
 	# 1. Find the file shared the most among available jobs
 	# ~ print_job_info_from_list(available_job_list, t)
 	file_distribution = []
-	for j in available_job_list:
+	for j in l:
 		file_distribution.append(j.data)
 	counter = 0
 	most_shared_file = file_distribution[0]
@@ -229,18 +231,20 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t, schedule
 			most_shared_file = i
 	# ~ print("Most shared file is", most_shared_file)
 	# get an example job for cores asked and index
-	for j in available_job_list:
+	for j in l:
 		if (j.data == most_shared_file):
 			j_example = j
 			break
 
 	# If no file is shared, I just schedule all available jobs on eariest available times
 	if (most_shared_file == 0):
-		# ~ print("Most shared file is 0, zut...")
-		for j in available_job_list:
-			scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
-		available_job_list.clear()
-		return scheduled_job_list
+		print("Most shared file  is 0, zut...")
+		for j in l:
+			# ~ scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
+			schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
+		l.clear()
+		# ~ return scheduled_job_list
+		return l
 				
 	# 2. Choose a node
 	if (j_example.index_node_list == 0): # Je peux choisir dans la liste entière
@@ -275,7 +279,7 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t, schedule
 		
 	# Means that the file is not in any node. So schedule all jobs using file on earliest available node only.
 	if (choosen_node == None):
-		# ~ print("Choosen node is None :/ The file is not anywhere at time t")
+		print("Choosen node is None :/ The file is not anywhere at time t")
 		min_earliest_available_time = -1
 		for n in nodes_to_choose_from:
 			n.cores.sort(key = operator.attrgetter("available_time"))
@@ -287,14 +291,14 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t, schedule
 			elif min_earliest_available_time > earliest_available_time:
 				min_earliest_available_time = earliest_available_time
 				choosen_node = n
-		# ~ print("Choosen node after None is", choosen_node.unique_id)
-	# ~ else:
-		# ~ print("Choosen node is", choosen_node.unique_id, "it uses the choosen file!")
+		print("Choosen node after None is", choosen_node.unique_id)
+	else:
+		print("Choosen node is", choosen_node.unique_id, "it uses the choosen file!")
 	
 	job_to_remove = [] # Here I need it because I don't always schedule everything in one call of maximum_use_single_file_scheduler
 	
 	# Schedule all jobs using file on choosen node
-	for j in available_job_list:
+	for j in l:
 		
 		if j.data == most_shared_file: # We need to schedule it
 			
@@ -314,17 +318,18 @@ def maximum_use_single_file_scheduler(available_job_list, node_list, t, schedule
 				c.job_queue.append(j)
 									
 			# Just for printing in terminal. Can be removed.
-			# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+			print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 			# 6. Add job in list to remove
 			job_to_remove.append(j)
 			
-			scheduled_job_list.append(j)
+			# ~ scheduled_job_list.append(j)
 		
 	# 7. Remove jobs from list
-	available_job_list = remove_jobs_from_list(available_job_list, job_to_remove)
+	l = remove_jobs_from_list(l, job_to_remove)
 	# ~ exit(1)
-	return scheduled_job_list
+	# ~ return scheduled_job_list
+	return l
 
 def fcfs(available_job_list, node_list, t, scheduled_job_list):
 	for j in available_job_list:
