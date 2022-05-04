@@ -30,6 +30,7 @@ class Core:
     unique_id: int
     job_queue: list
     available_time: int
+    running_job: None
 
 def read_cluster(input_node_file, node_list, available_node_list):
 	with open(input_node_file) as f:
@@ -38,7 +39,7 @@ def read_cluster(input_node_file, node_list, available_node_list):
 			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 = line.split()
 			core_list = []
 			for i in range (0, int(r9)):
-				c = Core(i, list(), 0)
+				c = Core(i, list(), 0, None)
 				core_list.append(c)
 			n = Node(int(r3), int(r5), float(r7), list(), core_list, len(core_list))
 			# ~ node_list.append(n)

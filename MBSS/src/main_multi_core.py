@@ -56,6 +56,7 @@ class Core:
     unique_id: int
     job_queue: list
     available_time: int
+    running_job: None
 @dataclass
 class To_print: # Struct used to know what to print later in csv
     job_unique_id: int
@@ -95,6 +96,11 @@ def start_jobs_single_job(t, j):
 		j.transfer_time = transfer_time
 		j.waiting_for_a_load_time = waiting_for_a_load_time
 		j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
+		
+		for c in j.cores_used:
+			c.job_queue.remove(j)
+			c.running_job = j
+		
 		if (j.delay + transfer_time < j.walltime):
 			j.end_before_walltime = True
 		# Remove from available cores used cores
@@ -150,7 +156,8 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list):
 			
 			core_ids = []
 			for i in range (0, len(j.cores_used)):
-				j.cores_used[i].job_queue.remove(j)
+				# ~ j.cores_used[i].job_queue.remove(j)
+				j.cores_used[i].running_job = None
 								
 				# ~ if (j.end_before_walltime == True):
 					# ~ j.cores_used[i].available_time = t
@@ -340,8 +347,10 @@ if (scheduler == "Easy_bf_fcfs_fcfs" or scheduler == "Fcfs_with_a_score_easy_bf"
 				scheduled_job_list.remove(first_job_in_queue)
 				for i in range (0, len(first_job_in_queue.cores_used)): # Delete what was reserved first
 					first_job_in_queue.cores_used[i].job_queue.remove(first_job_in_queue)
-					if (len(first_job_in_queue.cores_used[i].job_queue) > 0):
-						first_job_in_queue.cores_used[i].available_time = first_job_in_queue.cores_used[i].job_queue[0].start_time + first_job_in_queue.cores_used[i].job_queue[0].walltime
+					# ~ if (len(first_job_in_queue.cores_used[i].job_queue) > 0):
+						# ~ print("running...")
+					if (first_job_in_queue.cores_used[i].running_job != None):
+						first_job_in_queue.cores_used[i].available_time = first_job_in_queue.cores_used[i].running_job.start_time + first_job_in_queue.cores_used[i].running_job.walltime
 					else:
 						first_job_in_queue.cores_used[i].available_time = t
 				# ~ print("Try to reschedule first_job_in_queue", first_job_in_queue.unique_id)
