@@ -130,7 +130,9 @@ def start_jobs(t, scheduled_job_list, running_jobs):
 			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
-			print("Job", j.unique_id, "start at", t, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime)
+				
+			if __debug__:
+				print("Job", j.unique_id, "start at", t, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime)
 			# Remove from available cores used cores
 			# ~ j.node_used.n_available_cores -= j.cores
 			
@@ -152,8 +154,9 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 			# ~ if (finished_jobs%100 == 0):
 			if (finished_jobs%100 == 0):
 				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
-					
-			print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
+			
+			if __debug__:	
+				print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
 			
 			finished_job_list.append(j)
 			
@@ -252,7 +255,7 @@ def easy_backfill(first_job_in_queue, t, node_list, available_job_list, schedule
 
 # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
 def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
-	print("Début de Easy BackFilling...")
+	# ~ print("Début de Easy BackFilling...")
 	# ~ job_to_remove = []
 	# ~ print_job_info_from_list(available_job_list, t)
 	
@@ -268,7 +271,8 @@ def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
 	
 	for j in l:
 		if j != first_job_in_queue and j.start_time != t:
-			print("Try to backfill", j.unique_id, "at time", t, "first job is", first_job_in_queue.unique_id)
+			if __debug__:
+				print("Try to backfill", j.unique_id, "at time", t, "first job is", first_job_in_queue.unique_id)
 			# ~ choosen_node = None
 			# ~ nb_possible_cores = 0
 			# ~ choosen_core = []
@@ -378,13 +382,14 @@ def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
 						# ~ available_job_list.remove(j)
 						# ~ job_to_remove.append(j)
 						# ~ scheduled_job_list.append(j)
-					print_decision_in_scheduler(choosen_core, j, choosen_node)
+					if __debug__:
+						print_decision_in_scheduler(choosen_core, j, choosen_node)
 						# ~ start_jobs_single_job(t, j)
 						# ~ tab[n.unique_id] -= j.cores
 						# ~ print_job_info_from_list(available_job_list, t)
 					break
 	# ~ available_job_list = remove_jobs_from_list(available_job_list, job_to_remove)
-	print("Fin de Easy BackFilling...")
+	# ~ print("Fin de Easy BackFilling...")
 	# ~ return scheduled_job_list
 
 # Print in a csv file the results of this job allocation
@@ -446,7 +451,8 @@ while(total_number_jobs != finished_jobs):
 	
 	# New jobs are available! Schedule them
 	if (len(available_job_list) > 0):
-		print(len(available_job_list), "new jobs at time", t)
+		if __debug__:	
+			print(len(available_job_list), "new jobs at time", t)
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
@@ -491,9 +497,10 @@ while(total_number_jobs != finished_jobs):
 		# Reset all cores and jobs
 		# ~ print("Reset...")
 		reset_cores(node_list[0] + node_list[1] + node_list[2], t)
-		print("Reschedule...")
+		if __debug__:
+			print("Reschedule...")
 		if (scheduler == "Random"):
-			random.shuffle(scheduled_job_list)
+			# ~ random.shuffle(scheduled_job_list)
 			random_scheduler(scheduled_job_list, node_list, t)
 		elif (scheduler == "Fcfs_with_a_score"):
 			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t)
@@ -513,7 +520,7 @@ while(total_number_jobs != finished_jobs):
 				if len(affected_node_list) > 0:
 					fcfs_scheduler(scheduled_job_list, node_list, t)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-		if (scheduler == "Fcfs_with_a_score_easy_bf"):
+		elif (scheduler == "Fcfs_with_a_score_easy_bf"):
 			if (len(scheduled_job_list) > 0):
 				first_job_in_queue = scheduled_job_list[0]
 				# ~ print("First job is", first_job_in_queue.unique_id)

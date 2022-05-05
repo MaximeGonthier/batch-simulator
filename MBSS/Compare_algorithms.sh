@@ -15,7 +15,7 @@ CLUSTER=$2
 #~ bash Generate_workload_from_rackham.sh $WORKLOAD
 # OR $1 is already an existing workload
 
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Total transfer and wait time,Makespan,Core time used, Total waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_${WORKLOAD}.csv
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_${WORKLOAD}.csv
 
 for ((i=0; i<5; i++))
 do
@@ -29,7 +29,7 @@ do
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
 	#~ python3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER 0
-	../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER 0
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER 0
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv
 	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_${WORKLOAD}.csv
@@ -45,10 +45,10 @@ python3 src/plot_barplot.py ${WORKLOAD} Total_queue_time
 python3 src/plot_barplot.py ${WORKLOAD} Maximum_flow
 python3 src/plot_barplot.py ${WORKLOAD} Mean_flow
 python3 src/plot_barplot.py ${WORKLOAD} Total_flow
-python3 src/plot_barplot.py ${WORKLOAD} Total_transfer_time
+python3 src/plot_barplot.py ${WORKLOAD} Transfer_time
 python3 src/plot_barplot.py ${WORKLOAD} Makespan
 python3 src/plot_barplot.py ${WORKLOAD} Core_time_used
-python3 src/plot_barplot.py ${WORKLOAD} Total_waiting_for_a_load_time
+python3 src/plot_barplot.py ${WORKLOAD} Waiting_for_a_load_time
 python3 src/plot_barplot.py ${WORKLOAD} Total_waiting_for_a_load_time_and_transfer_time
 
 end=`date +%s` 

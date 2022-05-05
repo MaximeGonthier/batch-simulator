@@ -57,7 +57,8 @@ def random_scheduler(available_job_list, node_list, t):
 		# ~ print(choosen_core[0].job_queue[0].unique_id)
 		# ~ print(choosen_core[0].job_queue[0].end_time)
 		# ~ print("T =", t)
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+		if __debug__:
+			print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
@@ -146,8 +147,8 @@ def fcfs_with_a_score_scheduler(l, node_list, t):
 		for c in choosen_core:
 			c.job_queue.append(j)
 									
-		# Just for printing in terminal. Can be removed.
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+		if __debug__:
+			print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
@@ -321,7 +322,8 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 				c.job_queue.append(j)
 									
 			# Just for printing in terminal. Can be removed.
-			# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+			if PRINT:
+				print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 			# 6. Add job in list to remove
 			job_to_remove.append(j)

@@ -75,6 +75,7 @@ def print_csv(to_print_list, scheduler):
 		core_time_used += tp.time_used*tp.job_cores
 		# ~ total_queue_time += tp.time - tp.job_subtime
 		total_queue_time += tp.job_start_time - tp.job_subtime
+		# ~ print("Job", tp.job_unique_id, "waited", tp.job_start_time - tp.job_subtime)
 		if (max_queue_time < tp.job_start_time - tp.job_subtime):
 			max_queue_time = tp.job_start_time - tp.job_subtime
 		# ~ total_flow += tp.time - tp.job_subtime + tp.time_used
@@ -92,7 +93,14 @@ def print_csv(to_print_list, scheduler):
 	mean_flow = total_flow/len(to_print_list)
 	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
-	# ~ f.write("%s %s %s %s %s %s %s %s %s %s %s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used)))
+	
+	if (scheduler == "Fcfs_with_a_score"):
+		scheduler = "Fcfs-Score"
+	elif (scheduler == "Fcfs_easybf"):
+		scheduler = "Fcfs-EasyBf"
+	elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+		scheduler = "Fcfs-Score-EasyBf"
+	
 	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time)))
 	f.close()
 
@@ -179,19 +187,16 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 	j.node_used = choosen_node
 	j.cores_used = choosen_core
 	j.start_time = start_time
-	j.end_time = start_time + j.walltime			
+	j.end_time = start_time + j.walltime	
+			
 	for c in choosen_core:
-		
-		# ~ if (j.unique_id == 19848 or j.unique_id == 20143 or j.unique_id == 21407):
-			# ~ print("In scheduele early at time", t, "Added on node", choosen_node.unique_id, "core", c.unique_id)
-		
 		c.job_queue.append(j)
 	
-	# ~ if (choosen_node.unique_id == 482):
-		# ~ print("Add in 482")	
-	
 	scheduled_job_list.append(j)
-	# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+	
+	if __debug__:
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
+		
 	return scheduled_job_list
 	
 # Schedule a job earliest available node and write start time and add job in queues
@@ -223,8 +228,6 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
 		
-		# ~ if (j.unique_id == 19848 or j.unique_id == 20143 or j.unique_id == 21407):
-			# ~ print("In scheduele early at time", t, "Added on node", choosen_node.unique_id, "core", c.unique_id)
 		
 		c.job_queue.append(j)
 	
@@ -232,7 +235,8 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 		# ~ print("Add in 482")	
 	# ~ choosen_node.n_available_cores -= j.cores
 	# ~ scheduled_job_list.append(j)
-	print_decision_in_scheduler(choosen_core, j, choosen_node)
+	if __debug__:
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
 	# ~ start_jobs_single_job(t, j)
 	# ~ return scheduled_job_list
 

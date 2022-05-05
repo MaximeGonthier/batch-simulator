@@ -26,18 +26,18 @@ elif (comparaison == "Mean_flow"):
 elif (comparaison == "Total_flow"):
 	Y_index = 7
 	plot_title = "Total Flow"
-elif (comparaison == "Total_transfer_time"):
+elif (comparaison == "Transfer_time"):
 	Y_index = 8
-	plot_title = "Total Transfer Time"
+	plot_title = "Transfer Time"
 elif (comparaison == "Makespan"):
 	Y_index = 9
 	plot_title = "Makespan"
 elif (comparaison == "Core_time_used"):
 	Y_index = 10
 	plot_title = "Core time used"
-elif (comparaison == "Total_waiting_for_a_load_time"):
+elif (comparaison == "Waiting_for_a_load_time"):
 	Y_index = 11
-	plot_title = "Total waiting for a load time"
+	plot_title = "Waiting for a load time"
 elif (comparaison == "Total_waiting_for_a_load_time_and_transfer_time"):
 	Y_index = 12
 	plot_title = "Total waiting for a load time and transfer time"
@@ -53,6 +53,7 @@ Y = list(df.iloc[:, Y_index])
 # Plot the data using bar() method
 # ~ plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta"])
 plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan"])
+plt.xticks(rotation=60)
 plt.title(plot_title)
 plt.xlabel("Scheduler")
 plt.ylabel("Seconds")
@@ -62,4 +63,4 @@ plt.ylabel("Seconds")
 
 filename = "plot/" + title + ".pdf"
 # ~ plt.figure.savefig(filename)
-plt.savefig(filename)
+plt.savefig(filename, bbox_inches='tight')
