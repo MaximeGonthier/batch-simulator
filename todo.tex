@@ -84,18 +84,12 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Code EASYBF-FCFS-FCFS that reschedule at each liberated core and backfill at each new job or liberated core
-		\item Code Fcfs with a score + easy bf
 		\item Diapos
-		\item Gantt charts
-		\item Expe full workload and reduce workload and cluster
-		\item Now for each algo the schedule is fully redone at each liberated core. When new job arrive, we just schedule the new jobs.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item Almost no difference on the workload
 		\item Stefanos
 		\item Plénière: Prix inscription et présentation
 	\end{enumerate}
@@ -103,43 +97,37 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Look at maxshare weird results, build small example and traces. Count nb of 0 load and number of 1 load and see if it's compare with FCFS.
+			\item Similar results: look if it's exactly the same or it is because the cluster is mainly empty ? Do they take exactly the same decision ? Does easy back fill really change anything or it just reschedule like FCFS ?
+			\item Elongation: multiply each submission time by a constant
+			\item Test with a smaller cluster but not 4 nodes.
+			\item Idea algo: 6.2 + penalty for fcfs + easybf or conservative bf
+			\item Code something to use a workload with 3 phase. Example: Day 1 2 and 3. Use the same scheduler for all 3 days. Only jobs in day 2 files are taken into consideration in the results.
+			\item Bonus in depth slide about eviction for Stefano
 			\item Se ré inscrire à l'ENS avant le 15 Juin
-		
 			\item Refelchir a maximum use en mieux
-			\item Pas besoin de bf pour le moment pour les autres, juste corriger le shiftleft
-			\item Corriger le shift left
 			\item Agreger plusieurs jours d'affiler et enlever debt et fin pour voir un cas lancé
 			\item faire des boxplots
 			\item faire option easy bf a la place de shceuler en particulier
 			\item surprr code inutile
-			
 			\item Voir papiers Stefanos
 			\item Voir thèses de Herman
 			\item Talk to Hans Karlsson
 			\item Talk to David Black-Schaffer
-			\item Ajouter back fill a mes algos
 			\item Lire articles Emanuel Rubensson \url{https://webmail.ens-lyon.fr/?_task=mail&_caps=pdf%3D1%2Cflash%3D0%2Ctif%3D0&_uid=4630&_mbox=INBOX&_action=show}
 			\item Compare algo with different workloads. Use queue time of each job compared to a baseline. Compare queue time of each job between 2 heuristics by saying who won on each queue time.
-			\item Meme slide pour vidéo et vrai pres et pres séminaire ? Oui mais avec des slides bonus
-			\item Ajouter backfill quand un job se termine ou un nouveau job est available a tous les algos
-			\item Ajouter algos completements dynamiques
 			\item Ajouter algos qui reschedule de temps en temps
 			\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores
-			\item Code Classic FCFS
 			\item Use same X scale for distributions of queue times
 			\item Use same X scale workloads stats
 			\item Use same X scale for some gantt charts when I want to compare them
 			\item Code algo 2
 			\item vidéo IPDPS avant le 15 mai
-			\item Se comparer à HEFT, EAGER.
 			\item TODO du code: backfill, available node list qui contient les cores available aussi
 			\item contrainte de la localié sur la taille de la données, contrainte sur les coeurs, contrainte sur les partage de données
 			\item stratégie qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?
-			\item Simulateur qui prend en compte les cores
 			\item Lors d'une exec imprimer sur le terminal et dans le fichier de résultats les stats sur le workload et le cluster
-			\item Prendre en compte le fait que un fichier d'entrée trop large ne peut rentrer que sur certains neouds
-			\item Un scheduler peut prevoir tout les jobs disponible au temps t sur un noeud avec le walltime ? I can do both. It get interesting when we take into consideration jobs asking certain amount of cores. 
-			\item Corriger les algos existant pour qu'ils fassent à l'avance le schedule ou non, avoir les 2
+			\item Comparer algo qui reschedule tout et algo qui schedule que quand un nouveau core est disponible et ne schedule que 1 seul job a la fois par cores.
 			\item lire article bf : Utilization, Predictability, Workloads
 			\item Faire plusieurs test et mettre une barre d'erreur
 			\item Afficher temps de transferts sur les Gantt charts
