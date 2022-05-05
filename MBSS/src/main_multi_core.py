@@ -75,6 +75,7 @@ job_list = []
 available_job_list = []
 scheduled_job_list = []
 to_print_list = []
+# ~ nstart: int
 # ~ node_list = []
 # ~ available_node_list = [] # Contient aussi les coeurs disponibles
 
@@ -115,11 +116,12 @@ def start_jobs_single_job(t, j):
 		exit(1)
 	
 	# ~ return scheduled_job_list, running_jobs
-
 def start_jobs(t, scheduled_job_list, running_jobs):
 	jobs_to_remove = []
 	for j in scheduled_job_list:
 		if (j.start_time == t):
+			# ~ print(nstart)
+			# ~ nstart +=1
 			transfer_time = 0
 			waiting_for_a_load_time = 0
 			if (j.data != 0):
@@ -132,7 +134,7 @@ def start_jobs(t, scheduled_job_list, running_jobs):
 				j.end_before_walltime = True
 				
 			if __debug__:
-				print("Job", j.unique_id, "start at", t, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime)
+				print("Job", j.unique_id, "start at", t, "on node", j.node_used.unique_id, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime, "transfer time is", transfer_time, "data was", j.data)
 			# Remove from available cores used cores
 			# ~ j.node_used.n_available_cores -= j.cores
 			
@@ -436,6 +438,8 @@ total_number_jobs = len(job_list)
 new_job = False
 new_core = False
 running_jobs = []
+
+# ~ nstart = 0
 
 # Start of simulation
 first_job_in_queue = None

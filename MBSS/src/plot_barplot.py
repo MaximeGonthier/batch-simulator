@@ -6,7 +6,8 @@ import sys
 data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv")
 workload = sys.argv[1]
 comparaison = sys.argv[2]
-title = workload + "_" + comparaison
+cluster = sys.argv[3]
+title = workload + "_" + comparaison + cluster
 
 if (comparaison == "Maximum_queue_time"):
 	Y_index = 2
@@ -52,7 +53,7 @@ Y = list(df.iloc[:, Y_index])
   
 # Plot the data using bar() method
 # ~ plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta"])
-plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan"])
+plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orange", "pink", "purple"])
 plt.xticks(rotation=60)
 plt.title(plot_title)
 plt.xlabel("Scheduler")

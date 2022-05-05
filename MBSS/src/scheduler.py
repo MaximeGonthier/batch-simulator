@@ -322,7 +322,7 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 				c.job_queue.append(j)
 									
 			# Just for printing in terminal. Can be removed.
-			if PRINT:
+			if __debug__:
 				print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 			# 6. Add job in list to remove
