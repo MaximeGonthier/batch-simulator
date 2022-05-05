@@ -56,8 +56,8 @@ def random_scheduler(available_job_list, node_list, t):
 		# Just for printing in terminal. Can be removed.
 		# ~ print(choosen_core[0].job_queue[0].unique_id)
 		# ~ print(choosen_core[0].job_queue[0].end_time)
-		print("T =", t)
-		print_decision_in_scheduler(choosen_core, j, choosen_node)
+		# ~ print("T =", t)
+		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
@@ -104,12 +104,15 @@ def fcfs_with_a_score_scheduler(l, node_list, t):
 			if j.data == 0:
 				time_to_load_file = 0
 			else:
-				files_on_node = files_on_node_at_certain_time(earliest_available_time, n)
+				# ~ print("earliest time is", earliest_available_time, "and t is", t)
+				files_on_node = files_on_node_at_certain_time(earliest_available_time, n, t)
+				# ~ print(files_on_node)
+				# ~ print(j.data)
 				if j.data in files_on_node:
 					time_to_load_file = 0
 				else:
 					time_to_load_file = j.data_size/n.bandwidth
-				# ~ print("Time to load is", time_to_load_file)
+				# ~ print("Time to load is", time_to_load_file, "on node", n.unique_id)
 				
 			# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
 			size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
@@ -144,7 +147,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t):
 			c.job_queue.append(j)
 									
 		# Just for printing in terminal. Can be removed.
-		print_decision_in_scheduler(choosen_core, j, choosen_node)
+		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 		# 6. Add job in list to remove
 		# ~ job_to_remove.append(j)
@@ -178,7 +181,7 @@ def single_job_fcfs_with_a_score_scheduler(j, node_list, t, scheduled_job_list):
 		if j.data == 0:
 			time_to_load_file = 0
 		else:
-			files_on_node = files_on_node_at_certain_time(earliest_available_time, n)
+			files_on_node = files_on_node_at_certain_time(earliest_available_time, n, t)
 			if j.data in files_on_node:
 				time_to_load_file = 0
 			else:
@@ -238,7 +241,7 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 
 	# If no file is shared, I just schedule all available jobs on eariest available times
 	if (most_shared_file == 0):
-		print("Most shared file  is 0, zut...")
+		# ~ print("Most shared file  is 0, zut...")
 		for j in l:
 			# ~ scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
 			schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
@@ -266,7 +269,7 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 		earliest_available_time = max(t, earliest_available_time)
 
 		# 2.4. Look if the file choosen will be available at earliest available time
-		files_on_node = files_on_node_at_certain_time(earliest_available_time, n)
+		files_on_node = files_on_node_at_certain_time(earliest_available_time, n, t)
 		
 		# 2.5 Look for node with earliest time and file loaded
 		if most_shared_file in files_on_node:
@@ -279,7 +282,7 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 		
 	# Means that the file is not in any node. So schedule all jobs using file on earliest available node only.
 	if (choosen_node == None):
-		print("Choosen node is None :/ The file is not anywhere at time t")
+		# ~ print("Choosen node is None :/ The file is not anywhere at time t")
 		min_earliest_available_time = -1
 		for n in nodes_to_choose_from:
 			n.cores.sort(key = operator.attrgetter("available_time"))
@@ -291,9 +294,9 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 			elif min_earliest_available_time > earliest_available_time:
 				min_earliest_available_time = earliest_available_time
 				choosen_node = n
-		print("Choosen node after None is", choosen_node.unique_id)
-	else:
-		print("Choosen node is", choosen_node.unique_id, "it uses the choosen file!")
+		# ~ print("Choosen node after None is", choosen_node.unique_id)
+	# ~ else:
+		# ~ print("Choosen node is", choosen_node.unique_id, "it uses the choosen file!")
 	
 	job_to_remove = [] # Here I need it because I don't always schedule everything in one call of maximum_use_single_file_scheduler
 	
@@ -318,7 +321,7 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 				c.job_queue.append(j)
 									
 			# Just for printing in terminal. Can be removed.
-			print_decision_in_scheduler(choosen_core, j, choosen_node)
+			# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 			# 6. Add job in list to remove
 			job_to_remove.append(j)
@@ -336,5 +339,9 @@ def fcfs(available_job_list, node_list, t, scheduled_job_list):
 		scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
 	available_job_list.clear()
 	return scheduled_job_list
+	
+def fcfs_scheduler(l, node_list, t):
+	for j in l:
+		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
 
 # ~ def easy_bf_fcfs_fcfs():

@@ -20,14 +20,16 @@ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue ti
 for ((i=0; i<5; i++))
 do
 	if [ $((i)) == 0 ]; then SCHEDULER="Random" 
-	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs_with_a_score" 
-	elif [ $((i)) == 2 ]; then SCHEDULER="Maximum_use_single_file" 
-	elif [ $((i)) == 3 ]; then SCHEDULER="Easy_bf_fcfs_fcfs" 
+	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs" 
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score" 
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_easybf" 
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easy_bf" 
+	#~ elif [ $((i)) == 5 ]; then SCHEDULER="Maximum_use_single_file" 
 	fi
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
-	python3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER 0
+	#~ python3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER 0
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py inputs/workloads/converted/$WORKLOAD $CLUSTER $SCHEDULER 0
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv
 	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_${WORKLOAD}.csv

@@ -51,11 +51,12 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 	# ~ print("Adding", data_unique_id, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
 	return transfer_time, waiting_for_a_load_time
 
-def remove_data_from_node(finished_job_list):
-	for j in finished_job_list:
+def remove_data_from_node(l):
+	for j in l:
 		for d in j.node_used.data:
 			if (j.data == d.unique_id):
 				d.nb_task_using_it -= 1
+				# ~ j.node_used.data.remove(d)
 				break
 	
 def print_csv(to_print_list, scheduler):
@@ -71,7 +72,6 @@ def print_csv(to_print_list, scheduler):
 	makespan = 0
 	core_time_used = 0
 	for tp in to_print_list:
-		# ~ print("print")
 		core_time_used += tp.time_used*tp.job_cores
 		# ~ total_queue_time += tp.time - tp.job_subtime
 		total_queue_time += tp.job_start_time - tp.job_subtime
@@ -116,25 +116,40 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 	return start_time
 
 # Return set of files that will be on node at a given time
-def files_on_node_at_certain_time(time, node):
-	# ~ print("files_on_node_at_certain_time at time", time)
+def files_on_node_at_certain_time(predicted_time, node, current_time):
 	file_on_node = []
-	for c in node.cores:
-		for j in c.job_queue:
-			# ~ print("For job", j.unique_id, "transfer done at", j.start_time + j.transfer_time, "end at", j.start_time + j.walltime)
-			if j.start_time + j.transfer_time <= time and j.start_time + j.walltime >= time: # Data will be loaded at this time
-				if j.data not in file_on_node:
-					file_on_node.append(j.data)
-					# ~ print(j.data , "is on node of", node.unique_id)
-				break # Break because no other possibility on this core ?
+	
+	if (current_time == predicted_time):
+		for d in node.data:
+			if (d.nb_task_using_it > 0):
+				file_on_node.append(d.unique_id)
+				# ~ print("on node", node.unique_id, "there is", d.unique_id)
+	else:
+		for c in node.cores:
+			for j in c.job_queue:
+				# ~ print("Job is on node", node.unique_id, j.unique_id)
+				# ~ print("For job", j.unique_id, "transfer done at", j.start_time + j.transfer_time, "end at", j.start_time + j.walltime)
+				if j.start_time + j.transfer_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+					if j.data not in file_on_node:
+						file_on_node.append(j.data)
+						# ~ print(j.data , "is on node of", node.unique_id)
+					break # Break because no other possibility on this core ?
 	return file_on_node
 
-def size_files_ended_at_certain_time(time, cores, current_data):
+def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 	size_file_ended = 0
+	# ~ if (current_time == predicted_time):
+		# ~ for d in node.data:
+			# ~ if (d.nb_task_using_it > 0):
+				# ~ if d.unique_id != current_data:
+					# ~ size_file_ended +=
+	# ~ else:
+	already_counted = []
 	for c in cores:
 		for j in c.job_queue:
-			if j.walltime == time and j.data != current_data: # Data will end at this time
+			if j.start_time + j.walltime == predicted_time and j.data != current_data and j.data not in already_counted: # Data will end at this time
 				size_file_ended += j.data_size
+				already_counted.append(j.data)
 				break
 	return size_file_ended
 	
@@ -215,9 +230,10 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 	
 	# ~ if (choosen_node.unique_id == 482):
 		# ~ print("Add in 482")	
-	
+	# ~ choosen_node.n_available_cores -= j.cores
 	# ~ scheduled_job_list.append(j)
 	print_decision_in_scheduler(choosen_core, j, choosen_node)
+	# ~ start_jobs_single_job(t, j)
 	# ~ return scheduled_job_list
 
 def reset_cores(node_list, t):
@@ -225,9 +241,32 @@ def reset_cores(node_list, t):
 		for c in n.cores:
 			c.job_queue.clear()
 			if c.running_job != None:
-				print("Running on node", n.unique_id)
 				c.available_time = c.running_job.start_time + c.running_job.walltime
 				c.job_queue.append(c.running_job)
 			else:
 				c.available_time = t
 			
+# ~ def nb_available_cores(n, t):
+	# ~ nb = 20
+	# ~ for c in n.cores:
+		# ~ c.job_queue.sort(key = operator.attrgetter("start_time"))
+		# ~ for j in c.job_queue:
+			# ~ if j.start_time <= t and j.end_time >= t: # A job is running right now
+				# ~ print(j.unique_id, "runs at", t, "on node", n.unique_id)
+				# ~ nb -= 1
+				# ~ break
+	# ~ return nb
+
+def return_cores_not_running_a_job(node, nb_cores_to_return, t, critical_node, first_job_in_queue_cores):
+	cores_to_return = []
+	for c in node.cores:
+		cant_add = False
+		for j in c.job_queue:
+			if ((j.start_time <= t and j.end_time >= t) or (critical_node == True and c in first_job_in_queue_cores)): # A job is running right now or it's the first job
+				cant_add = True
+				break
+		if cant_add == False:
+			cores_to_return.append(c)
+			if len(cores_to_return) == nb_cores_to_return:
+				return cores_to_return, True
+	return cores_to_return, False
