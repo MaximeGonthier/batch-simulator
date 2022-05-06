@@ -1,0 +1,4 @@
+		\item Independant and homogeneous tasks 
+		% A l'oral : (can be adapted to heterogeneous task)
+		\item Same size data 
+		% A l'oral : (again, can be adapted to data of different sizes)

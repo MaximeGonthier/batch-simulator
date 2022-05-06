@@ -133,8 +133,8 @@
 		}
 		\label{fig.topo}
 	\end{figure}
-	\successbox{GPUs are quick but have a limited memory}
-	\successbox{They share the same PCI bus with limited bandwidth}
+	\successbox{GPUs are fast but have a limited memory}
+	\successbox{Share the same PCI bus with limited bandwidth}
 \end{frame}
 
 %% ---------------------------------------------------------------------------
@@ -349,7 +349,7 @@
 \begin{frame}{Problem modeling}
 \begin{block}{$\GPU{k}$ wants to process task $T$}
 	\begin{enumerate}
-		\item \emph{Evict} data from the memory of $\GPU{k}$
+		\item \emph{Evict} selected data (possibly none) from the memory of $\GPU{k}$
 		\item \emph{Load} data in $T$ that are not yet in memory
 		%~ \item Data in $T$ that are not yet in memory are loaded in the memory of $\GPU{k}$
 		\item \emph{Process} $T$ on $\GPU{k}$
@@ -357,8 +357,10 @@
 \end{block}
 \begin{block}{Hypothesis}
 	\begin{itemize}
-		\item Task are independant and homogeneous (can be adapted to heterogeneous task)
-		\item Data all have the same size (again, can be adapted to data of different sizes)
+		\item Independant and homogeneous tasks 
+		% A l'oral : (can be adapted to heterogeneous task)
+		\item Same size data 
+		% A l'oral : (again, can be adapted to data of different sizes)
 	\end{itemize}
 \end{block}
 \end{frame}
@@ -374,7 +376,7 @@
 \end{block}
 
 \begin{block}{\bf Objective 2: Data Movement}
-	Minimize the number of \emph{load} from the main memory:
+	Minimize the number of data load from the main memory:
 $$
 \nbloads_k =\sum data~load~for~each~T~computed~on~\GPU{k}
 $$
@@ -405,12 +407,12 @@ $$
 		\item Deque Model Data Aware Ready (DMDAR)
 	\end{itemize}
 \end{block}
-\begin{block}{1 algorithm from the state of the art}
+\begin{block}{1 algorithm adapted from the literature}
 	\begin{itemize}
 		\item hMETIS
 	\end{itemize}
 \end{block}
-\begin{block}{Our contribution}
+\begin{block}{Novel algorithm}
 	\begin{itemize}
 		\item Data-Aware Reactive Task Scheduling (DARTS)
 	\end{itemize}
@@ -479,7 +481,7 @@ $$
 % Without a hypergraph, the same data is counted multiple times.\\
 Hypergraph $\rightarrow$ Represent a data being used by different tasks \\
 %~ One hyperedge for each data $D$ $\rightarrow$ Includes all the vertices corresponding to tasks using $D$ $\rightarrow$
-Better represent data shares
+Accurately represent data shares
 \end{column}
 \end{columns}
 	\setbeamercolor{block title}{bg=pink,fg=black}
@@ -488,7 +490,7 @@ Better represent data shares
 		\item Decompose the set of tasks into several subsets of similar size while minimizing the number of common data among subsets
 		\item Each subset is allocated to a GPU
 		\item Use the \emph{Ready} strategy
-		\item Implement dynamic load balancing using task stealing
+		\item Dynamic load balancing using task stealing
 	\end{enumerate}
 	\end{block}
 \end{frame}
@@ -620,11 +622,15 @@ Better represent data shares
 			%~ \onslide<8-8> { \path[every node/.style={font=\sffamily\small}] (5) edge[bend right=90] node [left] {} (7); }
 			\onslide<8-8> { \draw[->] (5) edge[bend right=90] node [left] {} (7); }
 			
-			\onslide<10-12> { \draw[color=black, fill=blue!40] (3.1*\x, 3.7*\y) rectangle (7.9*\x, 3.6*\y)  node[midway] {}; }
-			\onslide<11-> { \draw[color=black, fill=blue!40] (3.1*\x, 3.9*\y) rectangle (7.9*\x, 3.8*\y)  node[midway] {}; }
-			\onslide<12-13> { \draw[color=black, fill=blue!40] (3.1*\x, 1.5*\y) rectangle (7.9*\x, 1.4*\y)  node[midway] {}; }
-			\onslide<13-13> { \draw[color=black, fill=blue!40] (3.1*\x, 0.8*\y) rectangle (7.9*\x, 0.7*\y)  node[midway] {}; }
-			\onslide<13-> { \draw[color=black, fill=blue!40] (-2.9*\x, 0.8*\y) rectangle (1.9*\x, 0.7*\y)  node[midway] {}; }
+			\onslide<10-> { \draw[color=black, fill=blue!40] (3.1*\x, 3.7*\y) rectangle (7.9*\x, 3.6*\y)  node[midway] (8) {}; }
+			\onslide<11-12> { \draw[color=black, fill=blue!40] (3.1*\x, 3.9*\y) rectangle (7.9*\x, 3.8*\y)  node[midway] (9) {}; }
+			\onslide<12-13> { \draw[color=black, fill=blue!40] (3.1*\x, 1.5*\y) rectangle (7.9*\x, 1.4*\y)  node[midway] (10) {}; }
+			\onslide<13-13> { \draw[color=black, fill=blue!40] (3.1*\x, 0.8*\y) rectangle (7.9*\x, 0.7*\y)  node[midway] (11) {}; }
+			\onslide<13-> { \draw[color=black, fill=blue!40] (-2.9*\x, 0.8*\y) rectangle (1.9*\x, 0.7*\y)  node[midway] (12) {}; }
+			
+			\onslide<12-12> { \draw[->] (8) edge[bend right=90] node [left] {} (10); }
+			\onslide<13-13> { \draw[->] (10) edge[bend right=90] node [left] {} (11); }
+			
 		\end{tikzpicture}
 		}
 \end{figure}
@@ -653,6 +659,9 @@ Better represent data shares
 	\begin{alertblock}{Intuition: consider data locality before task allocation}
 		Perform as many tasks as possible with the data at hand
 	\end{alertblock}
+	
+	When no more available tasks with data at hand:
+	
 	\begin{alertblock}{}
 		%~ Everything is distributed. The scheduling is done by \GPU{k} when it needs new tasks.
 		\begin{itemize}
@@ -674,7 +683,7 @@ Better represent data shares
 		% \end{itemize}
 		\begin{enumerate}
 			\item If possible, evict data not useful for any task in $\pulledTasks{k}$ and used by a minimal number of tasks in $\plannedTasks{k}$
-			\item Else, apply Belady's rule on tasks already allocated
+			\item Otherwise, apply Belady's rule on tasks already allocated
 			\item Update $\plannedTasks{k}$
 		\end{enumerate}
 	\end{alertblock}
