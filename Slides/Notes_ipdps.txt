@@ -1,4 +1,10 @@
+Slide 3: Describe where is each task and make the link between the 2 figures
+
+Slide 9: Ready from last slide
+
 		\item Independant and homogeneous tasks 
 		% A l'oral : (can be adapted to heterogeneous task)
 		\item Same size data 
 		% A l'oral : (again, can be adapted to data of different sizes)
+
+Slide 12 ; explain Belady

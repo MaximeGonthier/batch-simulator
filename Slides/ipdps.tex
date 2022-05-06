@@ -350,7 +350,7 @@
 \begin{block}{$\GPU{k}$ wants to process task $T$}
 	\begin{enumerate}
 		\item \emph{Evict} selected data (possibly none) from the memory of $\GPU{k}$
-		\item \emph{Load} data in $T$ that are not yet in memory
+		\item \emph{Load} data for $T$ that are not yet in memory
 		%~ \item Data in $T$ that are not yet in memory are loaded in the memory of $\GPU{k}$
 		\item \emph{Process} $T$ on $\GPU{k}$
 	\end{enumerate}
@@ -376,7 +376,7 @@
 \end{block}
 
 \begin{block}{\bf Objective 2: Data Movement}
-	Minimize the number of data load from the main memory:
+	Minimize the number of data loads from the main memory:
 $$
 \nbloads_k =\sum data~load~for~each~T~computed~on~\GPU{k}
 $$
@@ -424,7 +424,8 @@ $$
 \begin{frame}{Dynamic scheduler of \starpu: DMDAR}
 	\begin{exampleblock}{Strategy}
 		Schedule tasks so their completion time is minimal
-		based on computation + communication times
+		%~ based on computation + communication times
+		based on computation + data movement
 		% Tasks are first allocated to GPUs following their order of submission. \\
 	\end{exampleblock}
 	\begin{exampleblock}{+ \emph{Ready} reordering heuristic on \GPU{k}}
@@ -481,7 +482,8 @@ $$
 % Without a hypergraph, the same data is counted multiple times.\\
 Hypergraph $\rightarrow$ Represent a data being used by different tasks \\
 %~ One hyperedge for each data $D$ $\rightarrow$ Includes all the vertices corresponding to tasks using $D$ $\rightarrow$
-Accurately represent data shares
+%~ Accurately represent data shares
+Accurately represent data sharing
 \end{column}
 \end{columns}
 	\setbeamercolor{block title}{bg=pink,fg=black}
@@ -665,7 +667,7 @@ Accurately represent data shares
 	\begin{alertblock}{}
 		%~ Everything is distributed. The scheduling is done by \GPU{k} when it needs new tasks.
 		\begin{itemize}
-			\item Find $D_{optimal}$ such that the number of tasks depending on $D_{optimal}$ and on other data already in memory is maximum
+			\item Find data $D_{optimal}$ such that the number of tasks depending on $D_{optimal}$ and on other data already in memory is maximum
 			%~ (if there is a tie: choose data with most total unprocessed task)
 			\item $\plannedTasks{k} \gets$ set of unprocessed tasks depending only on $D_{optimal}$ and on other data already in memory 
 			%~ \item Remove $\Dopt$ from \Dtouse{k}
@@ -690,9 +692,9 @@ Accurately represent data shares
 	% \begin{alertblock}{Optimizations and improvements}
 	\begin{alertblock}{Improvements}
 		\begin{itemize}
-			\item \threeinputs: Extension to deal with an heterogenous number of data per task
+			\item \threeinputs: Extension to deal with a heterogenous number of data per task
 			%~ \item \bold{\OPTI}: We stop the search a soon as we find a data allowing to compute at least one task
-			\item \OPTI: Reduce scheduling complexity by stopping earlier the search for $D_{opt}$
+			\item \OPTI: Reduce scheduling complexity by stopping the search for $D_{opt}$ earlier
 		\end{itemize}
 	\end{alertblock}
 \end{frame}
@@ -763,7 +765,7 @@ Accurately represent data shares
 		\item EAGER, hMETIS \& DARTS: Pathological matrix size after the red line
 		\item DMDAR: Conflict between prefetch and eviction
 		 \item DARTS+LUF outperforms DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
-		overlapping communications and computations}
+		overlapping communication and computations}
 	\end{itemize}
 \end{frame}
 
@@ -844,7 +846,7 @@ Accurately represent data shares
 \begin{frame}[noframenumbering]{Dynamic Scheduling Strategies for Matrix Multiplication}
     \begin{figure}
         \centering
-        \includegraphics[scale=0.3]{Images/dynamic_outer_example.png}
+        \includegraphics[scale=0.26]{Images/dynamic_outer_example.png}
         \source{Analysis of Dynamic Scheduling Strategies for Matrix Multiplication on Heterogeneous Platforms - Marchal - Beaumont}
     \end{figure}
 \end{frame}
@@ -853,7 +855,7 @@ Accurately represent data shares
 \begin{frame}[noframenumbering]{Outer product with 4 Tesla V100 GPUs in real}
     \begin{figure}
         \centering
-        \includegraphics[scale=0.45]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
+        \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
     \end{figure}
 \end{frame}
 
@@ -861,7 +863,7 @@ Accurately represent data shares
 \begin{frame}[noframenumbering]{Tiled GeMM with 4 Tesla V100 GPUs in simulation}
     \begin{figure}
         \centering
-        \includegraphics[scale=0.45]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}
+        \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}
     \end{figure}
 \end{frame}
 
@@ -876,7 +878,7 @@ Accurately represent data shares
 		\begin{column}{0.3\textwidth}
 		\begin{itemize}
 			\item DARTS produces a \emph{processing order that best distributes transfers over time} 
-			\item hMETIS suffers from an important partitioning cost
+			\item hMETIS suffers from a significant partitioning cost
 		\end{itemize}
 		\end{column}
 	\end{columns}
