@@ -1,4 +1,4 @@
-\documentclass{libs/ufc_format}
+	\documentclass{libs/ufc_format}
 \usepackage{amsmath, tikz, graphicx}
 \usetikzlibrary{trees,shapes, calc, external, fit, arrows,decorations,decorations.pathreplacing,patterns, automata, positioning, arrows.meta}
 
@@ -102,7 +102,7 @@
 		\definecolor{green}{RGB}{70, 220, 70}
 		\definecolor{orangegray}{RGB}{245, 191, 169}
 		\centering
-		\scalebox{0.79}{
+		\scalebox{0.73}{
 		\begin{tikzpicture}[thick]
 			\def\x{1.2}
 			\def\y{1.5}
@@ -118,17 +118,17 @@
 			\path[ultra thick] (7*\x,1.4*\y) edge (7*\x,2*\y); 
 			\path[ultra thick] (10*\x,1.4*\y) edge (10*\x,2*\y); 
 			% Arrow 1
-			\node at (-0.4, 0.5) (n1){};
+			\node at (-0.4, 0) (n1){};
 			\node(n2)[above=3.5cm of n1]{};
 			% this path will place/draw a node call (text)
-			\path (n1) -- node[sloped] (text) {Loading data} (n2);
+			\scalebox{1.3}{\path (n1) -- node[sloped] (text) {Loading data} (n2);
 			% Now draw arrows. This way it will be like you want.
-			\draw[ultra thick][->] (n1)--(text)--(n2);
+			\draw[ultra thick][->] (n1)--(text)--(n2);}
 			% Arrow 2
-			\node at (13.6, 0.5) (n1){};
+			\node at (10.5, 0) (n1){};
 			\node(n2)[above=3.5cm of n1]{};
-			\path (n1) -- node[sloped] (text) {Evicting data} (n2);
-			\draw[ultra thick][->] (n2)--(text)--(n1);
+			\scalebox{1.3}{\path (n1) -- node[sloped] (text) {Evicting data} (n2);
+			\draw[ultra thick][->] (n2)--(text)--(n1);}
 		\end{tikzpicture}
 		}
 		\label{fig.topo}
@@ -598,24 +598,27 @@ Better represent data shares
 			
 			\onslide<1-8> { \draw[color=black, fill=red!10] (-3*\x, 0.4*\y) rectangle (2*\x, -0.2*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
 			\onslide<9-12> { \draw[color=black, fill=green!10] (3*\x, 0.4*\y) rectangle (8*\x, -0.2*\y)  node[midway] {$\GPU{2}$ is asking for a task!}; }
-			\onslide<12-12> { \draw[color=black, fill=red!10] (-3*\x, 0.4*\y) rectangle (2*\x, -0.2*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
+			%~ \onslide<12-12> { \draw[color=black, fill=red!10] (-3*\x, 0.4*\y) rectangle (2*\x, -0.2*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
 			
 			\onslide<2-> { \draw[color=black, fill=blue!40] (-2.9*\x, 3.7*\y) rectangle (1.9*\x, 3.6*\y)  node[midway] (1) {}; }
 			\onslide<3-> { \draw[color=black, fill=blue!40] (-2.9*\x, 3.9*\y) rectangle (1.9*\x, 3.8*\y)  node[midway] (2) {}; }
 			\onslide<4-6> { \draw[color=black, fill=blue!40] (-2.9*\x, 4.1*\y) rectangle (1.9*\x, 4.0*\y)  node[midway] (3) {}; }
 			\onslide<5-5> { \draw[color=black, fill=blue!40] (-2.9*\x, 4.3*\y) rectangle (1.9*\x, 4.2*\y)  node[midway] (4) {}; } 
 			 			 
-			\onslide<6-12> { \draw[color=black, fill=blue!40] (-2.9*\x, 1.5*\y) rectangle (1.9*\x, 1.4*\y)  node[midway] (5) {}; }
+			\onslide<6-> { \draw[color=black, fill=blue!40] (-2.9*\x, 1.5*\y) rectangle (1.9*\x, 1.4*\y)  node[midway] (5) {}; }
 			
-			\onslide<5-6> { \path[every node/.style={font=\sffamily\small}] (4) edge[bend right=90] node [left] {} (5); }
+			%~ \onslide<6-6> { \path[every node/.style={font=\sffamily\small}] (1) edge[bend right=90] node [left] {} (5); }
+			\onslide<6-6> { \draw[->] (1) edge[bend right=90] node [left] {} (5); }
 			
 			\onslide<7-7> { \draw[color=black, fill=blue!40] (-2.9*\x, 1.7*\y) rectangle (1.9*\x, 1.6*\y) node[midway] (6) {}; }
 			
-			\onslide<6-7> { \path[every node/.style={font=\sffamily\small}] (3) edge[bend right=90] node [left] {} (6); }
+			%~ \onslide<7-7> { \path[every node/.style={font=\sffamily\small}] (1) edge[bend right=90] node [left] {} (6); }
+			\onslide<7-7> { \draw[->] (1) edge[bend right=90] node [left] {} (6); }
 			
-			\onslide<8-10> { \draw[color=black, fill=blue!40] (-2.9*\x, 0.8*\y) rectangle (1.9*\x, 0.7*\y) node[midway] (7) {}; }
+			\onslide<8-> { \draw[color=black, fill=blue!40] (-2.9*\x, 0.8*\y) rectangle (1.9*\x, 0.7*\y) node[midway] (7) {}; }
 			
-			\onslide<7-8> { \path[every node/.style={font=\sffamily\small}] (6) edge[bend right=90] node [left] {} (7); }
+			%~ \onslide<8-8> { \path[every node/.style={font=\sffamily\small}] (5) edge[bend right=90] node [left] {} (7); }
+			\onslide<8-8> { \draw[->] (5) edge[bend right=90] node [left] {} (7); }
 			
 			\onslide<10-12> { \draw[color=black, fill=blue!40] (3.1*\x, 3.7*\y) rectangle (7.9*\x, 3.6*\y)  node[midway] {}; }
 			\onslide<11-> { \draw[color=black, fill=blue!40] (3.1*\x, 3.9*\y) rectangle (7.9*\x, 3.8*\y)  node[midway] {}; }
@@ -708,7 +711,7 @@ Better represent data shares
 		\end{block}
 			\begin{block}{Applications}
 			\begin{itemize}
-				\item Dense and sparse outer product 
+				\item Tiled dense and sparse outer product 
 				\item Tiled GeMM
 				\item Tiled Cholesky decomposition (without dependencies)
 			\end{itemize}
@@ -718,8 +721,8 @@ Better represent data shares
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\subsection{Dense outer product}
-\begin{frame}{Dense outer product with 2 real Tesla V100 GPUs}
+\subsection{Tiled dense outer product}
+\begin{frame}{Tiled dense outer product with 2 real Tesla V100 GPUs}
     \begin{columns}{}
         \begin{column}{0.5\textwidth}
 	\begin{figure}
@@ -750,7 +753,7 @@ Better represent data shares
 	\begin{itemize}
 		\item EAGER, hMETIS \& DARTS: Pathological matrix size after the red line
 		\item DMDAR: Conflict between prefetch and eviction
-		 \item DARTS+LUF outperform DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
+		 \item DARTS+LUF outperforms DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
 		overlapping communications and computations}
 	\end{itemize}
 \end{frame}
@@ -782,8 +785,8 @@ Better represent data shares
 		\end{column}
 		\begin{column}{0.3\textwidth}
 		\begin{itemize}
-			\item \OPTI reduce scheduling time which improve performance
-			\item DMDAR suffer from a large scheduling time
+			\item \OPTI reduces scheduling time which improves performance
+			\item DMDAR suffers from a large scheduling time
 		\end{itemize}
 		\end{column}
 	\end{columns}
@@ -803,7 +806,7 @@ Better represent data shares
 		\begin{itemize}
 			\item \textbf{Limits data transfers} thanks to the finding of an optimal data and the adapted eviction policy 
 			\item \textbf{Overlaps} communication and computation by distributing transfers over time
-			\item Can be adapted to applications with \textbf{different number of inputs}
+			%~ \item Can be adapted to applications with \textbf{different number of inputs}
 			\item Can be used with a \textbf{reduced complexity}
 		\end{itemize}
 \end{exampleblock}
@@ -818,14 +821,16 @@ Better represent data shares
 		
 	\begin{exampleblock}{Areas for improvement}
 		\begin{itemize}
-		\item Manage multiple MPI nodes
 		\item Improve computational complexity
 		\item Take inter-GPU communications into account
 		\item Consider tasks with dependencies
+		\item Manage multiple MPI nodes
 		\end{itemize}
 	\end{exampleblock}
 \end{frame}
 
+% JOKER
+\appendix{
 %% ---------------------------------------------------------------------------
 \begin{frame}[noframenumbering]{Dynamic Scheduling Strategies for Matrix Multiplication}
     \begin{figure}
@@ -867,5 +872,6 @@ Better represent data shares
 		\end{column}
 	\end{columns}
 \end{frame}
+}
 
 \end{document}
