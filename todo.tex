@@ -100,7 +100,8 @@
 			\item Look at maxshare weird results, build small example and traces. Count nb of 0 load and number of 1 load and see if it's compare with FCFS.
 			\item Similar results: look if it's exactly the same or it is because the cluster is mainly empty ? Do they take exactly the same decision ? Does easy back fill really change anything or it just reschedule like FCFS ?
 			\item Elongation: multiply each submission time by a constant
-			\item Test with a smaller cluster but not 4 nodes.
+			\item THe cluster is empty most of the time: Test with a smaller cluster but not 4 nodes.
+			\item THe cluster is empty most of the time: Test with 3 phases and full cluster
 			\item Idea algo: 6.2 + penalty for fcfs + easybf or conservative bf
 			\item Code something to use a workload with 3 phase. Example: Day 1 2 and 3. Use the same scheduler for all 3 days. Only jobs in day 2 files are taken into consideration in the results.
 			\item Bonus in depth slide about eviction for Stefano

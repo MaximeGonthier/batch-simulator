@@ -72,6 +72,8 @@ class To_print: # Struct used to know what to print later in csv
     waiting_for_a_load_time: int
    
 job_list = []
+nb_0_loads = 0
+nb_1_loads = 0
 available_job_list = []
 scheduled_job_list = []
 to_print_list = []
@@ -116,7 +118,7 @@ def start_jobs_single_job(t, j):
 		exit(1)
 	
 	# ~ return scheduled_job_list, running_jobs
-def start_jobs(t, scheduled_job_list, running_jobs):
+def start_jobs(t, scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads):
 	jobs_to_remove = []
 	for j in scheduled_job_list:
 		if (j.start_time == t):
@@ -128,6 +130,13 @@ def start_jobs(t, scheduled_job_list, running_jobs):
 				# Let's look if a data transfer is needed
 				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.walltime)
 			j.transfer_time = transfer_time
+			
+			if (j.data != 0):
+				if (j.transfer_time > 0):
+					nb_1_loads += 1
+				else:
+					nb_0_loads += 1
+			
 			j.waiting_for_a_load_time = waiting_for_a_load_time
 			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
 			if (j.delay + transfer_time < j.walltime):
@@ -144,7 +153,7 @@ def start_jobs(t, scheduled_job_list, running_jobs):
 			jobs_to_remove.append(j)
 			running_jobs.append(j)
 	scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
-	return scheduled_job_list, running_jobs
+	return scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads
 
 def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs): # TODO plus besoin de scheduleed job list
 	jobs_to_remove = []
@@ -500,9 +509,13 @@ while(total_number_jobs != finished_jobs):
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 		# Reset all cores and jobs
 		# ~ print("Reset...")
-		reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+		# PAS POUR MAXIMUM USE SINGLE FILE
+		if (scheduler != "Maximum_use_single_file"):
+			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+		
 		if __debug__:
 			print("Reschedule...")
+			
 		if (scheduler == "Random"):
 			# ~ random.shuffle(scheduled_job_list)
 			random_scheduler(scheduled_job_list, node_list, t)
@@ -510,12 +523,18 @@ while(total_number_jobs != finished_jobs):
 			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t)
 		elif (scheduler == "Fcfs"):
 			fcfs_scheduler(scheduled_job_list, node_list, t)
+			
 		elif (scheduler == "Maximum_use_single_file"):
-			temp = []
-			for j in scheduled_job_list:
-				temp.append(j)
+			# ~ temp = []
+			reset_cores(affected_node_list, t)
+			# ~ for j in scheduled_job_list:
+				# ~ temp.append(j)
 			while(len(temp) > 0):
-				temp = maximum_use_single_file_scheduler(temp, node_list, t)
+				# ~ temp = maximum_use_single_file_scheduler(temp, node_list, t)
+				maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
+			if finished_jobs > 80:
+				exit(1)
+				
 	if (old_finished_jobs < finished_jobs):
 		if (scheduler == "Fcfs_easybf"):
 			if (len(scheduled_job_list) > 0):
@@ -539,7 +558,9 @@ while(total_number_jobs != finished_jobs):
 		# ~ ShiftLeft(affected_node_list, t)
 		
 	# Get started jobs	
-	scheduled_job_list, running_jobs = start_jobs(t, scheduled_job_list, running_jobs)
+	#TODO : a suppr, temporary for test
+	scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads = start_jobs(t, scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads)
+	# ~ scheduled_job_list, running_jobs = start_jobs(t, scheduled_job_list, running_jobs)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	if len(finished_job_list) > 0:
@@ -554,3 +575,5 @@ while(total_number_jobs != finished_jobs):
 # Print results in a csv file
 print("Computing and writing results...")
 print_csv(to_print_list, scheduler)
+print("Nb 0 loads", nb_0_loads)
+print("Nb 1 loads", nb_1_loads)

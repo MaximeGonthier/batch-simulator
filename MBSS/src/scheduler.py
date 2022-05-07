@@ -215,6 +215,31 @@ def single_job_fcfs_with_a_score_scheduler(j, node_list, t, scheduled_job_list):
 		
 	return scheduled_job_list
 
+# Reschedule on same node task from affected node
+def maximum_use_single_file_re_scheduler(l, t, affected_node_list):
+	for j in l:
+		if j.used_node in affected_node_list: # Need to rescheule this job
+			j.used_node.cores.sort(key = operator.attrgetter("available_time"))
+			earliest_available_time = j.used_node.cores[j.cores - 1].available_time 
+			earliest_available_time = max(t, earliest_available_time)
+			
+			choosen_core = j.used_node.cores[0:j.cores]
+
+			# 4. Get start time and update available times of the cores
+			start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+		
+			# 5. Update jobs info and add job in choosen cores
+			# ~ j.node_used = choosen_node
+			j.cores_used = choosen_core
+			j.start_time = start_time
+			j.end_time = start_time + j.walltime			
+			for c in choosen_core:
+				c.job_queue.append(j)
+									
+			# Just for printing in terminal. Can be removed.
+			if __debug__:
+				print_decision_in_scheduler(choosen_core, j, choosen_node)
+
 # Find the file shared the most among available jobs. Schedule all jobs using this file on a node using this file with most available cores.
 # Then repeat until the list of available jobs is empty.
 # For jobs with no file they will be schedule after on the earlieast available node

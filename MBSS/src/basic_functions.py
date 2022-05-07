@@ -240,8 +240,8 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 	# ~ start_jobs_single_job(t, j)
 	# ~ return scheduled_job_list
 
-def reset_cores(node_list, t):
-	for n in node_list:
+def reset_cores(l, t):
+	for n in l:
 		for c in n.cores:
 			c.job_queue.clear()
 			if c.running_job != None:
