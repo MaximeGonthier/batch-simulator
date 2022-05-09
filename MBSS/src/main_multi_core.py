@@ -38,6 +38,7 @@ class Job:
     cores_used: list
     transfer_time: int
     waiting_for_a_load_time: int
+    workload: int
 @dataclass
 class Node:
     unique_id: int
@@ -163,7 +164,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 
 			# Just printing, can remove
 			# ~ if (finished_jobs%100 == 0):
-			if (finished_jobs%100 == 0):
+			if (finished_jobs%500 == 0):
 				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
 			
 			if __debug__:	
@@ -180,7 +181,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 					# ~ j.cores_used[i].available_time = t
 					
 				core_ids.append(j.cores_used[i].unique_id)
-						
+			
 			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
 
 			if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
@@ -406,8 +407,10 @@ def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
 # Print in a csv file the results of this job allocation
 def to_print_job_csv(job, node_used, core_ids, time):	
 	time_used = job.end_time - job.start_time
-	tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time)
-	to_print_list.append(tp)
+	
+	if (job.workload == 1):	
+		tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time)
+		to_print_list.append(tp)
 		
 	if (write_all_jobs == 1): # For gantt charts
 		file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"

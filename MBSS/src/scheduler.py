@@ -22,6 +22,7 @@ class Job:
     cores_used: list
     transfer_time: int
     waiting_for_a_load_time: int
+    workload: int
     
 # Schedule random available jobs on random nodes and cores, even if not available
 # The numbers here indicate the minimum you must do in a scheduler. In other scheduler there are more steps but they are optional.

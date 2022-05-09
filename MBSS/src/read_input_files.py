@@ -17,6 +17,7 @@ class Job:
     cores_used: list
     transfer_time: int
     waiting_for_a_load_time: int
+    workload: int
 @dataclass
 class Node:
     unique_id: int
@@ -64,7 +65,7 @@ def read_workload(input_job_file, job_list):
 	with open(input_job_file) as f:
 		line = f.readline()
 		while line:
-			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18 = line.split() # split it by whitespace
+			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20 = line.split() # split it by whitespace
 			
 			# Getting index of node_list depending on size
 			if ((float(r17)*10)/(float(r11)*10) == 0.0):
@@ -79,7 +80,7 @@ def read_workload(input_job_file, job_list):
 				print("Error", (float(r17)*10)/(float(r11)*10), "is a wrong input job data size. Line is:", line)
 				exit
 			
-			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0, 0)
+			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0, 0, int(r19))
 			job_list.append(j)
 			line = f.readline()	
 		f.close

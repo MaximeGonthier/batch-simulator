@@ -72,6 +72,7 @@ def print_csv(to_print_list, scheduler):
 	makespan = 0
 	core_time_used = 0
 	for tp in to_print_list:
+		print("print", tp.job_unique_id)
 		core_time_used += tp.time_used*tp.job_cores
 		# ~ total_queue_time += tp.time - tp.job_subtime
 		total_queue_time += tp.job_start_time - tp.job_subtime
