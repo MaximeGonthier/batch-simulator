@@ -489,7 +489,8 @@ Accurately represent data sharing
 	\setbeamercolor{block title}{bg=pink,fg=black}
 	\begin{block}{Strategy}
 	\begin{enumerate}
-		\item Decompose the set of tasks into several subsets of similar size while minimizing the number of common data among subsets
+		%~ \item Decompose the set of tasks into several subsets of similar size while minimizing the number of common data among subsets
+		\item Apply hMETIS to create tasks subsets
 		\item Each subset is allocated to a GPU
 		\item Use the \emph{Ready} strategy
 		\item Dynamic load balancing using task stealing
@@ -593,6 +594,8 @@ Accurately represent data sharing
 			\draw[color=black, fill=green!30] (3*\x, 5.5*\y) rectangle (8*\x, 3.5*\y)  node[midway] {$\plannedTasks{2}$}; 
 						
 			\node[draw, rotate=90] at (3, 3) {\LARGE $\starpu$};
+			
+			\onslide<1-1> { \node[draw] at (2.6*\x, 5.7*\y) {DARTS is demand driven. It uses 2 queues. Task selection detailed next slide.}; }
 			
 			%~ \onslide<1-1> { \node[draw] at (0.6*\x, 5.7*\y) {$\plannedTasks{k}$: Task reserved for later allocation}; }
 			%~ \onslide<1-1> { \node[draw] at (3.6*\x, 5.7*\y) {$\pulledTasks{k}$: Task popped for execution on $\GPU{k}$}; }
@@ -723,7 +726,7 @@ Accurately represent data sharing
 			\begin{block}{Applications}
 			\begin{itemize}
 				\item Tiled dense and sparse outer product 
-				\item Tiled GeMM
+				\item Tiled 3D Matrix Multiplication
 				\item Tiled Cholesky decomposition (without dependencies)
 			\end{itemize}
 			\end{block}
@@ -733,7 +736,7 @@ Accurately represent data sharing
 
 %% ---------------------------------------------------------------------------
 \subsection{Tiled dense outer product}
-\begin{frame}{Tiled dense outer product with 2 real Tesla V100 GPUs}
+\begin{frame}{Tiled dense outer product with 2 real Tesla V100}
     \begin{columns}{}
         \begin{column}{0.5\textwidth}
 	\begin{figure}
@@ -852,7 +855,7 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Outer product with 4 Tesla V100 GPUs in real}
+\begin{frame}[noframenumbering]{Tiled outer product with 4 Tesla V100 GPUs in real}
     \begin{figure}
         \centering
         \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
@@ -860,7 +863,7 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Tiled GeMM with 4 Tesla V100 GPUs in simulation}
+\begin{frame}[noframenumbering]{Tiled 3D Matrix Multiplication with 4 Tesla V100 GPUs in simulation}
     \begin{figure}
         \centering
         \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}

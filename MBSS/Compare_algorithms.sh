@@ -25,6 +25,14 @@ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue ti
 #~ for ((i=0; i<5; i++))
 for ((i=0; i<6; i++))
 do
+	#~ if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_with_a_score"
+	#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+	#~ echo "${SCHEDULER}"
+	#~ ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0
+	#~ echo "Results ${SCHEDULER} are:"
+	#~ head outputs/Results_${SCHEDULER}.csv
+	#~ exit
+	#~ fi 
 	if [ $((i)) == 0 ]; then SCHEDULER="Random" 
 	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs" 
 	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score" 

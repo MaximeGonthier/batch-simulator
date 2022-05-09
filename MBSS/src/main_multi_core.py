@@ -164,7 +164,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 
 			# Just printing, can remove
 			# ~ if (finished_jobs%100 == 0):
-			if (finished_jobs%500 == 0):
+			if (finished_jobs%100 == 0):
 				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
 			
 			if __debug__:	

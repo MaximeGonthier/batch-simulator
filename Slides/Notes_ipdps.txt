@@ -6,5 +6,7 @@ Slide 9: Ready from last slide
 		% A l'oral : (can be adapted to heterogeneous task)
 		\item Same size data 
 		% A l'oral : (again, can be adapted to data of different sizes)
+		
+Slide 10: Say that the selection of task will be precised on the next slide
 
 Slide 12 ; explain Belady
