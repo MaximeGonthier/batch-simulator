@@ -73,11 +73,10 @@ class To_print: # Struct used to know what to print later in csv
     waiting_for_a_load_time: int
    
 job_list = []
-nb_0_loads = 0
-nb_1_loads = 0
 available_job_list = []
 scheduled_job_list = []
 to_print_list = []
+end_times = []
 # ~ nstart: int
 # ~ node_list = []
 # ~ available_node_list = [] # Contient aussi les coeurs disponibles
@@ -119,7 +118,7 @@ def start_jobs_single_job(t, j):
 		exit(1)
 	
 	# ~ return scheduled_job_list, running_jobs
-def start_jobs(t, scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads):
+def start_jobs(t, scheduled_job_list, running_jobs, end_times):
 	jobs_to_remove = []
 	for j in scheduled_job_list:
 		if (j.start_time == t):
@@ -131,15 +130,12 @@ def start_jobs(t, scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads):
 				# Let's look if a data transfer is needed
 				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.walltime)
 			j.transfer_time = transfer_time
-			
-			if (j.data != 0):
-				if (j.transfer_time > 0):
-					nb_1_loads += 1
-				else:
-					nb_0_loads += 1
-			
+						
 			j.waiting_for_a_load_time = waiting_for_a_load_time
 			j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
+			
+			end_times.append(j.end_time)
+			
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
 				
@@ -153,8 +149,11 @@ def start_jobs(t, scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads):
 				c.running_job = j
 			jobs_to_remove.append(j)
 			running_jobs.append(j)
-	scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
-	return scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads
+		# ~ else: # dans le cas ou on start que quand ya un start time qui convient et que on a trié la liste par start times
+			# ~ break
+	if len(jobs_to_remove) > 0:
+		scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
+	return scheduled_job_list, running_jobs, end_times
 
 def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs): # TODO plus besoin de scheduleed job list
 	jobs_to_remove = []
@@ -171,6 +170,8 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 				print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
 			
 			finished_job_list.append(j)
+			
+			end_times.remove(j.end_time)
 			
 			core_ids = []
 			for i in range (0, len(j.cores_used)):
@@ -458,11 +459,15 @@ first_job_in_queue = None
 while(total_number_jobs != finished_jobs):
 	# Get the set of available jobs at time t
 	# Jobs are already sorted by subtime so I can simply stop wit ha break
+	to_remove = []
 	for j in job_list:
 		if (j.subtime == t):
 			available_job_list.append(j)
 			scheduled_job_list.append(j) # Cause they will end up here anyway
+			to_remove.append(j)
 		elif (j.subtime > t):
+			if (len(to_remove) > 0):
+				remove_jobs_from_list(job_list, to_remove)
 			break
 	
 	# New jobs are available! Schedule them
@@ -507,7 +512,9 @@ while(total_number_jobs != finished_jobs):
 	affected_node_list = []	
 	finished_job_list = []	
 	old_finished_jobs = finished_jobs
-	finished_jobs, affected_node_list, finished_job_list, running_jobs = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs)
+	
+	if t in end_times:
+		finished_jobs, affected_node_list, finished_job_list, running_jobs = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs)
 	
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 		# Reset all cores and jobs
@@ -556,15 +563,9 @@ while(total_number_jobs != finished_jobs):
 		
 		if __debug__:
 			print("End of reschedule")
-	
-	# ~ if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
-		# ~ # Filling
-		# ~ ShiftLeft(affected_node_list, t)
-		
+			
 	# Get started jobs	
-	#TODO : a suppr, temporary for test
-	scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads = start_jobs(t, scheduled_job_list, running_jobs, nb_0_loads, nb_1_loads)
-	# ~ scheduled_job_list, running_jobs = start_jobs(t, scheduled_job_list, running_jobs)
+	scheduled_job_list, running_jobs, end_times = start_jobs(t, scheduled_job_list, running_jobs, end_times)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	if len(finished_job_list) > 0:
@@ -579,5 +580,3 @@ while(total_number_jobs != finished_jobs):
 # Print results in a csv file
 print("Computing and writing results...")
 print_csv(to_print_list, scheduler)
-print("Nb 0 loads", nb_0_loads)
-print("Nb 1 loads", nb_1_loads)

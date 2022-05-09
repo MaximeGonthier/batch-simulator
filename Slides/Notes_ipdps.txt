@@ -9,4 +9,4 @@ Slide 9: Ready from last slide
 		
 Slide 10: Say that the selection of task will be precised on the next slide
 
-Slide 12 ; explain Belady
+Slide 12: explain Belady
