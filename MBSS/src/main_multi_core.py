@@ -509,7 +509,7 @@ while(total_number_jobs != finished_jobs):
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 		# Reset all cores and jobs
 		# ~ print("Reset...")
-		# PAS POUR MAXIMUM USE SINGLE FILE
+
 		if (scheduler != "Maximum_use_single_file"):
 			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
 		
@@ -529,11 +529,11 @@ while(total_number_jobs != finished_jobs):
 			reset_cores(affected_node_list, t)
 			# ~ for j in scheduled_job_list:
 				# ~ temp.append(j)
-			while(len(temp) > 0):
+			# ~ while(len(temp) > 0):
 				# ~ temp = maximum_use_single_file_scheduler(temp, node_list, t)
-				maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
-			if finished_jobs > 80:
-				exit(1)
+			maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
+			# ~ if finished_jobs > 80:
+			# ~ exit(1)
 				
 	if (old_finished_jobs < finished_jobs):
 		if (scheduler == "Fcfs_easybf"):
@@ -550,8 +550,9 @@ while(total_number_jobs != finished_jobs):
 				if len(affected_node_list) > 0:
 					fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-			
-		# ~ print("End of reschedule")
+		
+		if __debug__:
+			print("End of reschedule")
 	
 	# ~ if (len(affected_node_list) > 0 and total_number_jobs != finished_jobs): # At least one job has ended before it's walltime
 		# ~ # Filling
