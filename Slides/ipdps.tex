@@ -855,7 +855,7 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Tiled outer product with 4 Tesla V100 GPUs in real}
+\begin{frame}[noframenumbering]{Tiled dense outer product with 4 Tesla V100 GPUs in real}
     \begin{figure}
         \centering
         \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
@@ -887,5 +887,13 @@ Accurately represent data sharing
 	\end{columns}
 \end{frame}
 }
+
+%% ---------------------------------------------------------------------------
+\begin{frame}[noframenumbering]{Visualization of DARTS processing order on the tiled dense outer product}
+	\begin{figure}
+		\center\includegraphics[scale = 0.17]{Images/cutDDA.png}
+	\end{figure}
+
+\end{frame}
 
 \end{document}
