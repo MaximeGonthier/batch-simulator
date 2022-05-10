@@ -7,7 +7,7 @@ data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv")
 workload = sys.argv[1]
 comparaison = sys.argv[2]
 cluster = sys.argv[3]
-title = workload + "_" + comparaison + cluster
+title = workload + "_" + comparaison + "_" + cluster
 
 if (comparaison == "Maximum_queue_time"):
 	Y_index = 2

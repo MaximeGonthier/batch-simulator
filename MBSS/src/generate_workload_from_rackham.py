@@ -93,7 +93,7 @@ f_input.close()
 workload.sort(key = operator.attrgetter("subtime"))
 min_subtime = workload[0].subtime
 nb_jobs_by_phase=id_count/3
-print("There are", id_count - 1, "valid jobs")
+print("There are", id_count - 1, "jobs and", nb_jobs_by_phase, "will be evaluated")
 # Getting data. 0 means no data
 f_output = open("inputs/workloads/converted/" + FILENAME, "w")
 if (workload[0].cores >= 5):

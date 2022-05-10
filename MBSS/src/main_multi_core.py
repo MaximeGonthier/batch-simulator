@@ -579,9 +579,7 @@ while(total_number_jobs != finished_jobs):
 	if len(finished_job_list) > 0:
 		remove_data_from_node(finished_job_list)
 	
-	# To update datas in nodes
-	# update_nodes() # TODO : do this for available nodes ?
-	
+	# Print cores used
 	f_running_cores.write("%d\n" % (running_cores))
 	
 	# Time is advancing
