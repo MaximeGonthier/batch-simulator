@@ -369,7 +369,10 @@ def fcfs(available_job_list, node_list, t, scheduled_job_list):
 	return scheduled_job_list
 	
 def fcfs_scheduler(l, node_list, t):
+	# ~ i = 0
 	for j in l:
+		# ~ i += 1
+		# ~ if i < 100:
 		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
 
 # ~ def easy_bf_fcfs_fcfs():

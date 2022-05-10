@@ -195,8 +195,8 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 	
 	scheduled_job_list.append(j)
 	
-	if __debug__:
-		print_decision_in_scheduler(choosen_core, j, choosen_node)
+	# ~ if __debug__:
+		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 	return scheduled_job_list
 	
@@ -232,14 +232,8 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 		
 		c.job_queue.append(j)
 	
-	# ~ if (choosen_node.unique_id == 482):
-		# ~ print("Add in 482")	
-	# ~ choosen_node.n_available_cores -= j.cores
-	# ~ scheduled_job_list.append(j)
-	if __debug__:
-		print_decision_in_scheduler(choosen_core, j, choosen_node)
-	# ~ start_jobs_single_job(t, j)
-	# ~ return scheduled_job_list
+	# ~ if __debug__:
+		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 
 def reset_cores(l, t):
 	for n in l:

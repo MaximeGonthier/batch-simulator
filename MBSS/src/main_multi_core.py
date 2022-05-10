@@ -117,12 +117,10 @@ def start_jobs_single_job(t, j):
 		exit(1)
 	
 	# ~ return scheduled_job_list, running_jobs
-def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores):
+def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes):
 	jobs_to_remove = []
 	for j in scheduled_job_list:
 		if (j.start_time == t):
-			# ~ print(nstart)
-			# ~ nstart +=1
 			transfer_time = 0
 			waiting_for_a_load_time = 0
 			if (j.data != 0):
@@ -137,17 +135,17 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores):
 			
 			# Just for stats
 			running_cores += j.cores
-			
+			if (j.node_used.n_available_cores == 20):
+				running_nodes += 1
+			j.node_used.n_available_cores -= j.cores
+
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
 				
 			if __debug__:
 				print("Job", j.unique_id, "start at", t, "on node", j.node_used.unique_id, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime, "transfer time is", transfer_time, "data was", j.data)
-			# Remove from available cores used cores
-			# ~ j.node_used.n_available_cores -= j.cores
 			
 			for c in j.cores_used:
-				# ~ c.job_queue.remove(j)
 				c.running_job = j
 			jobs_to_remove.append(j)
 			running_jobs.append(j)
@@ -155,9 +153,9 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores):
 			# ~ break
 	if len(jobs_to_remove) > 0:
 		scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
-	return scheduled_job_list, running_jobs, end_times, running_cores
+	return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes
 
-def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores): # TODO plus besoin de scheduleed job list
+def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes): # TODO plus besoin de scheduleed job list
 	jobs_to_remove = []
 	for j in running_jobs:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
@@ -165,7 +163,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 
 			# Just printing, can remove
 			# ~ if (finished_jobs%100 == 0):
-			if (finished_jobs%333 == 0):
+			if (finished_jobs%1 == 0):
 				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
 			
 			if __debug__:	
@@ -175,6 +173,9 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 			
 			# Just for stats
 			running_cores -= j.cores
+			j.node_used.n_available_cores += j.cores
+			if (j.node_used.n_available_cores == 20):
+				running_nodes -= 1
 			
 			end_times.remove(j.end_time)
 			
@@ -193,11 +194,10 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 			if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
 				affected_node_list.append(j.node_used)
 			jobs_to_remove.append(j)
-			# Add cores
-			# ~ j.node_used.n_available_cores += j.cores
+						
 	running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
 						
-	return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores
+	return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes
 
 # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
 def easy_backfill(first_job_in_queue, t, node_list, available_job_list, scheduled_job_list):
@@ -459,8 +459,10 @@ running_jobs = []
 
 # Just for stats
 running_cores = 0
-f_running_cores = open("outputs/running_cores.csv", "w")
-f_running_cores.write("Used cores\n")
+running_nodes = 0
+title = "outputs/Stats_" + scheduler + ".csv"
+f_stats = open(title, "w")
+f_stats.write("Used cores,Used nodes\n")
 
 # Start of simulation
 first_job_in_queue = None
@@ -522,7 +524,8 @@ while(total_number_jobs != finished_jobs):
 	old_finished_jobs = finished_jobs
 	
 	if t in end_times:
-		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores)
+	# ~ if 1 == 1:
+		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes)
 	
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 		# Reset all cores and jobs
@@ -573,19 +576,19 @@ while(total_number_jobs != finished_jobs):
 			print("End of reschedule")
 			
 	# Get started jobs	
-	scheduled_job_list, running_jobs, end_times, running_cores = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores)
+	scheduled_job_list, running_jobs, end_times, running_cores, running_nodes = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	if len(finished_job_list) > 0:
 		remove_data_from_node(finished_job_list)
 	
 	# Print cores used
-	f_running_cores.write("%d\n" % (running_cores))
+	f_stats.write("%d,%d\n" % (running_cores, running_nodes))
 	
 	# Time is advancing
 	t += 1
 
-f_running_cores.close()
+f_stats.close()
 
 # Print results in a csv file
 print("Computing and writing results...")
