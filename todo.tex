@@ -89,11 +89,13 @@
 		\item Code to have 3 days and keep only the second one for stats
 		\item New results with 3 days and keeping only one of them
 		\item Début inscription D3
+		\item Courbe Stats sur la charge du cluster au cours de l'exec
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
+		\item ACACES
 		\item It's now a 100 seconds frame to have similar input files for 2 jobs of the same user. Is it ok ?
 		\item Stefanos: "Cache Replacement Based on Reuse-Distance Prediction". Try to predict reuse distance and use this information for eviction. The main idea is that the future is not know but you can still predict it to make decision, just like in our case with tasks and data. Here reuse distance is two consecutive access of the smae cacheline. But can be extended to data for us. Use real information and a prediction with a confidence. As the real information is updated, so is the confidence of the prediction (decreased or increased). Then discussion very specific to caches sizes. To know what to evict: "We look for the cacheline that is going to be accessed farthest in the future by computing its Estimated Time of Access (ETA). The ETA of a line is the time it was last accessed plus its predicted reuse-distance minus the current time. In other words, a cacheline’s ETA is the (predicted) number of accesses that separate the present moment from its next access". In the case they have no prediction they just evict cacheline whose predicted reuse time has passed. Once a cacheline was found the fiursthers in the future, they won't necessarly evict it cause you can find even better sometimes. "The longer a line remains unaccessed the higher the probability that it is useless". We now have two candidates, quantified by exactly the same metric: time measured in accesses. One candidate is the line with the largest ETA (the ETA line), and the other is the line with the largest Decay time (the LRU line). We pick the largest of the two for replacement. IN OUR CASE: We want the workload to be unknown and possibly not regular ? So we would need to estimate the number of time a data will be used to get the next reuse time. Or we could look at the frequency of usage of a data in the past to predict the future. So if a data is used a lot in short interval we can say that the next use is soon. Whereas if it's used only sparsely, we can evict it cause anyway it's not regular. + We can use our buffer information.
 		\item Inscription D3
@@ -104,20 +106,17 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item Stats sur la charge du cluster au cours de l'exec
 			\item Cours pour l'année prochaine
 			\item Après avis favorable déposer dossier sur SIGED
 			\item Similar results: look if it's exactly the same or it is because the cluster is mainly empty ? Do they take exactly the same decision ? Does easy back fill really change anything or it just reschedule like FCFS ?
 			\item Elongation: multiply each submission time by a constant
-			\item The cluster is empty most of the time: Test with full workload and a smaller cluster but not 4 nodes.
-			\item The cluster is empty most of the time: Test with 3 phases and full cluster
+			\item The cluster is empty most of the time: Test with full workload and a smaller cluster but not 4 nodes and 3 phases as well
 			\item Idea algo: 6.2 + penalty for fcfs + easybf or conservative bf
 			\item Se ré inscrire à l'ENS avant le 15 Juin
 			\item Refelchir a maximum use en mieux
 			\item faire des boxplots
 			\item faire option easy bf a la place de shceuler en particulier
 			\item surprr code inutile
-			\item Voir papiers Stefanos
 			\item Voir thèses de Herman
 			\item Talk to Hans Karlsson
 			\item Talk to David Black-Schaffer

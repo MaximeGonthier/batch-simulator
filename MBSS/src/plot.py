@@ -6,7 +6,10 @@ import sys
 df = pd.read_csv(sys.argv[1])
 title = sys.argv[2]
 
-plt = df.plot(x='Number of jobs', title=title)
+# ~ df.set_index('Time').plot.bar(title ="Championship", rot=0)
+# ~ df.set_index('Time')
+
+plt = df.plot(title=title)
 
 filename = "plot/" + title + ".pdf"
 

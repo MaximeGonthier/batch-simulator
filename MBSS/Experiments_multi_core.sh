@@ -11,7 +11,7 @@ fi
 WORKLOAD=$1
 CLUSTER=$2
 SCHEDULER=$3
-PRINT=$4
+PRINT=$4 # 0 = not even printfs
 #~ BACKFILL=$5 # ShiftLeft or FCFS or NoFilling
 DATE=${WORKLOAD:27:30}
 
@@ -28,7 +28,12 @@ if [ $PRINT == 2 ]; then
 fi
 
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
-../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT
+
+if [ $PRINT == 0 ]; then
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT
+else
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT
+fi
 
 if [ $PRINT == 1 ]; then
 	python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
