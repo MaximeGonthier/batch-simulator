@@ -697,7 +697,7 @@ Accurately represent data sharing
 		\begin{itemize}
 			\item \threeinputs: Extension to deal with a heterogenous number of data per task
 			%~ \item \bold{\OPTI}: We stop the search a soon as we find a data allowing to compute at least one task
-			\item \OPTI: Reduce scheduling complexity by stopping the search for $D_{opt}$ earlier
+			\item \OPTI: Reduce scheduling complexity by stopping the search for $D_{optimal}$ earlier
 		\end{itemize}
 	\end{alertblock}
 \end{frame}
@@ -818,8 +818,8 @@ Accurately represent data sharing
 	%~ \MVRightarrow{}
 	%~ \emph{DARTS achieves very good performance because:}
 		\begin{itemize}
-			\item \textbf{Limits data transfers} thanks to the finding of an optimal data and the adapted eviction policy 
-			\item \textbf{Overlaps} communication and computation by distributing transfers over time
+			\item \textbf{Limits data transfers} thanks to the finding of an optimal data and an adapted eviction policy 
+			\item \textbf{Overlaps} communication and computations by distributing transfers over time
 			%~ \item Can be adapted to applications with \textbf{different number of inputs}
 			\item Can be used with a \textbf{reduced complexity}
 		\end{itemize}
@@ -835,9 +835,9 @@ Accurately represent data sharing
 		
 	\begin{exampleblock}{Areas for improvement}
 		\begin{itemize}
-		\item Improve computational complexity
-		\item Take inter-GPU communications into account
+		\item Reduce computational complexity
 		\item Consider tasks with dependencies
+		\item Take inter-GPU communications into account
 		\item Manage multiple MPI nodes
 		\end{itemize}
 	\end{exampleblock}
@@ -871,7 +871,7 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Sparse outer product without memory limitation (32GB by GPU) with 4 Tesla V100 GPUs}
+\begin{frame}[noframenumbering]{Sparse outer product without memory limitation (32GB by GPU) with 4 real Tesla V100 GPUs}
     \begin{columns}{}
 		\begin{column}{0.7\textwidth}
 		\begin{figure}
