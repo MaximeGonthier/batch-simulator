@@ -162,8 +162,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 			finished_jobs += 1
 
 			# Just printing, can remove
-			# ~ if (finished_jobs%100 == 0):
-			if (finished_jobs%1 == 0):
+			if (finished_jobs%100 == 0):
 				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
 			
 			if __debug__:	
@@ -462,7 +461,7 @@ running_cores = 0
 running_nodes = 0
 title = "outputs/Stats_" + scheduler + ".csv"
 f_stats = open(title, "w")
-f_stats.write("Used cores,Used nodes\n")
+f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
 
 # Start of simulation
 first_job_in_queue = None
@@ -583,7 +582,7 @@ while(total_number_jobs != finished_jobs):
 		remove_data_from_node(finished_job_list)
 	
 	# Print cores used
-	f_stats.write("%d,%d\n" % (running_cores, running_nodes))
+	f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(scheduled_job_list)))
 	
 	# Time is advancing
 	t += 1

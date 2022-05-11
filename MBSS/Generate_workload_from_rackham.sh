@@ -1,6 +1,6 @@
 #!/bin/bash
 # Merge consecutive files and do a workload that my simulator can read
-# bash Generate_workload_from_rackham.sh input_files
+# bash Generate_workload_from_rackham.sh input_files1 input_files2 input_files3 etc...
 
 # Get job history
 #~ echo "Downloading job history of" $1 "..."
