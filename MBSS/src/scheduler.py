@@ -4,6 +4,7 @@ from print_functions import *
 import random
 from dataclasses import dataclass
 import operator
+import math
 
 @dataclass
 class Job:
@@ -119,8 +120,8 @@ def fcfs_with_a_score_scheduler(l, node_list, t, variant):
 			# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
 			size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
 			time_to_reload_evicted_files = size_files_ended/n.bandwidth
-			# ~ print("Time to reload", time_to_reload_evicted_files)
 			
+			# Compute node's score
 			if (variant == 0):	
 				score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files
 			elif (variant == 1):	
@@ -165,6 +166,70 @@ def fcfs_with_a_score_scheduler(l, node_list, t, variant):
 	# ~ available_job_list.clear()
 	# ~ return scheduled_job_list
 	# ~ return l
+
+# Just return choosen node and cores
+def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, variant):
+	
+	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
+	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+		nodes_to_choose_from = node_list[1] + node_list[2]
+	elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+		nodes_to_choose_from = node_list[2]
+					
+	min_score = -1
+			
+	for n in nodes_to_choose_from:
+									
+		# 2.2. Sort cores by available times
+		n.cores.sort(key = operator.attrgetter("available_time"))
+				
+		# 2.3. Get the earliest available time from the number of cores required by the job and add it to the score
+		earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0
+		earliest_available_time = max(t, earliest_available_time)
+		# ~ print("Earliest time for node", n.unique_id, "is", earliest_available_time)
+				
+		# 2.4. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node
+		if j.data == 0:
+			time_to_load_file = 0
+		else:
+			# ~ print("earliest time is", earliest_available_time, "and t is", t)
+			files_on_node = files_on_node_at_certain_time(earliest_available_time, n, t)
+			# ~ print(files_on_node)
+			# ~ print(j.data)
+			if j.data in files_on_node:
+				time_to_load_file = 0
+			else:
+				time_to_load_file = j.data_size/n.bandwidth
+			# ~ print("Time to load is", time_to_load_file, "on node", n.unique_id)
+				
+		# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
+		size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
+		time_to_reload_evicted_files = size_files_ended/n.bandwidth
+			
+		# Compute node's score
+		if (variant == 0):	
+			score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files
+		elif (variant == 1):	
+			score = earliest_available_time + 2*time_to_load_file + 2*time_to_reload_evicted_files
+		else:
+			print("Error variant fcfs with a score")
+			exit(1)
+		
+		# 2.6. Get minimum score
+		if min_score == -1:
+			min_score = score
+			choosen_node = n
+		elif min_score > score:
+			min_score = score
+			choosen_node = n
+					
+	# ~ print("Min score for job", j.unique_id, "is", min_score, "with node", choosen_node.unique_id)
+								
+	# 3. Choose a core
+	choosen_core = choosen_node.cores[0:j.cores]
+	
+	return choosen_node, choosen_core
 
 # Reschedule on same node task from affected node
 def maximum_use_single_file_re_scheduler(l, t, affected_node_list):
@@ -326,5 +391,72 @@ def fcfs_scheduler(l, node_list, t):
 			# ~ break
 		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
 
-# ~ def common_file_package_with_a_score(l, node_list, t):
+def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
+	# Find all jobs using the same file as the first job in the queue. 
+	# The job list is sorted by submission time so it's easy, I can just take all 
+	# consecutive job in the list with the same data and one the data change it's a new package.
+	# Still need to deal with 0 data jobs that is not in order in the list
+	print("Start of common_file_packages_with_a_score")
+	list_of_packages = []
+	temp = l
+	number_cores_asked = 0
 	
+	while (len(temp) > 0):
+		new_package = []
+		data_first_job = l[0].data
+		print("First data is", data_first_job)
+		
+		job_to_remove = []
+		# Get all jobs with this data, even if it's 0
+		for j in l:
+			if j.data == data_first_job:
+				new_package.append(j)
+				number_cores_asked += j.cores
+				job_to_remove.append(j)
+			else:
+				if data_first_job != 0:
+					break # Because data shares are consecutive and it's sorted by submission time
+		list_of_packages.append(new_package)
+		temp = remove_jobs_from_list(temp, job_to_remove)
+
+	# Just printing
+	i = 1
+	for p in list_of_packages:
+		print("Jobs of package number", i)
+		for j in p:
+			print(j.unique_id)
+		i += 1
+	print("Number of asked cores", number_cores_asked, "Total number of cores is", total_number_cores)
+	
+	# Divide
+	max_number_cores_asked_by_package = math.ceil(number_cores_asked/total_number_cores)
+
+	print("A package can have up to", max_number_cores_asked_by_package, "cores asked")
+		
+	# Compute score just like in Fcfs_with_a_score but with packages. The benefit of not loading a file is only counted once.
+	# Choose node
+	cores_asked_current_package = 0
+	for p in list_of_packages:
+		for j in p:
+			# For the first job of the sub package you get the node. Then you only get earliest available cores
+			if (cores_asked_current_package == 0):
+				choosen_node, choosen_core = return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, 0)
+			elif (cores_asked_current_package <= max_number_cores_asked_by_package):
+				# Schedule on the same node as previously but different cores probably so need to get the cores
+				choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(j.cores, choosen_node, t)
+			
+			# TODO : a opti et get earliest time for first job as well
+			start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+			j.node_used = choosen_node
+			j.cores_used = choosen_core
+			j.start_time = start_time
+			j.end_time = start_time + j.walltime			
+			for c in choosen_core:
+				c.job_queue.append(j)
+			cores_asked_current_package += j.cores
+			if (cores_asked_current_package > max_number_cores_asked_by_package):
+				# Getting on a new sub_package
+				cores_asked_current_package = 0
+
+	
+	exit(1)

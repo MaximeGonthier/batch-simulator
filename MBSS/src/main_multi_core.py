@@ -451,6 +451,8 @@ node_list, available_node_list = read_cluster(input_node_file, node_list, availa
 # Read workload
 job_list = read_workload(input_job_file, job_list, constraint_on_sizes)
 
+total_number_cores = (len(node_list) + 1)*20
+
 finished_jobs = 0
 total_number_jobs = len(job_list)
 new_job = False
@@ -489,9 +491,11 @@ while(total_number_jobs != finished_jobs):
 	if (len(available_job_list) > 0):
 		if __debug__:	
 			print(len(available_job_list), "new jobs at time", t)
+			
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
+			
 		elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 			fcfs_with_a_score_scheduler(available_job_list, node_list, t, variant)
 			
@@ -505,7 +509,7 @@ while(total_number_jobs != finished_jobs):
 				first_job_in_queue = scheduled_job_list[0]
 			fcfs_scheduler(available_job_list, node_list, t)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
-			# ~ first_job_in_queue = None
+
 		elif (scheduler == "Fcfs_with_a_score_easy_bf"):
 			if (first_job_in_queue == None):
 				first_job_in_queue = available_job_list[0]
@@ -513,8 +517,10 @@ while(total_number_jobs != finished_jobs):
 				first_job_in_queue = scheduled_job_list[0]
 			fcfs_with_a_score_scheduler(available_job_list, node_list, t, variant)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
-			# ~ first_job_in_queue = None
 			
+		elif (scheduler == "Common_file_packages_with_a_score"):
+			common_file_packages_with_a_score(available_job_list, node_list, t, total_number_cores)
+				
 		elif (scheduler == "Maximum_use_single_file"):
 			while(len(available_job_list) > 0):
 				# ~ print(len(available_job_list))
@@ -552,16 +558,13 @@ while(total_number_jobs != finished_jobs):
 			fcfs_scheduler(scheduled_job_list, node_list, t)
 			
 		elif (scheduler == "Maximum_use_single_file"):
-			# ~ temp = []
 			reset_cores(affected_node_list, t)
-			# ~ for j in scheduled_job_list:
-				# ~ temp.append(j)
-			# ~ while(len(temp) > 0):
-				# ~ temp = maximum_use_single_file_scheduler(temp, node_list, t)
 			maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
-			# ~ if finished_jobs > 80:
-			# ~ exit(1)
-				
+			
+		elif (scheduler == "Common_file_packages_with_a_score"):
+			common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
+	
+	# Ones with backfill
 	if (old_finished_jobs < finished_jobs):
 		if (scheduler == "Fcfs_easybf"):
 			if (len(scheduled_job_list) > 0):
@@ -570,6 +573,7 @@ while(total_number_jobs != finished_jobs):
 				if len(affected_node_list) > 0:
 					fcfs_scheduler(scheduled_job_list, node_list, t)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
+			
 		elif (scheduler == "Fcfs_with_a_score_easy_bf"):
 			if (len(scheduled_job_list) > 0):
 				first_job_in_queue = scheduled_job_list[0]

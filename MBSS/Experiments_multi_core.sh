@@ -3,7 +3,7 @@
 start=`date +%s`
 
 if [ "$#" -ne 5 ]; then
-    echo "Usage is bash Experiments_multi_core.sh workload cluster scheduler PRINT? CONTRAINTE_TAILLES"
+    echo "Usage is bash Experiments_multi_core.sh workload cluster scheduler PRINT? CONTRAINTE_TAILLES?"
     exit
 fi
 
