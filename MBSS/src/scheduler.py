@@ -399,9 +399,9 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 	# The job list is sorted by submission time so it's easy, I can just take all 
 	# consecutive job in the list with the same data and one the data change it's a new package.
 	# Still need to deal with 0 data jobs that is not in order in the list
-	print("Start of common_file_packages_with_a_score")
+	if __debug__:
+		print("Start of common_file_packages_with_a_score")
 	list_of_packages = []
-	
 	
 	temp = l.copy()
 	number_cores_asked = 0
@@ -409,7 +409,8 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 	while (len(temp) > 0):
 		new_package = []
 		data_first_job = temp[0].data
-		print("First data is", data_first_job)
+		if __debug__:
+			print("First data is", data_first_job)
 		
 		job_to_remove = []
 		# Get all jobs with this data, even if it's 0
@@ -425,31 +426,36 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 		temp = remove_jobs_from_list(temp, job_to_remove)
 	
 	# Just printing
-	i = 1
-	for p in list_of_packages:
-		print("Jobs of package number", i)
-		for j in p:
-			print(j.unique_id)
-		i += 1
-	print("Number of asked cores", number_cores_asked, "Total number of cores is", total_number_cores)
+	if __debug__:
+		i = 1
+		for p in list_of_packages:
+			print("Jobs of package number", i)
+			for j in p:
+				print(j.unique_id)
+			i += 1
+		print("Number of asked cores", number_cores_asked, "Total number of cores is", total_number_cores)
 	
 	# Divide
 	max_number_cores_asked_by_package = math.ceil(number_cores_asked/total_number_cores)
-
-	print("A package can have up to", max_number_cores_asked_by_package, "cores asked")
+	
+	if __debug__:
+		print("A package can have up to", max_number_cores_asked_by_package, "cores asked")
 		
 	# Compute score just like in Fcfs_with_a_score but with packages. The benefit of not loading a file is only counted once.
 	# Choose node
 	for p in list_of_packages:
 		cores_asked_current_package = 0
-		print("Start of a package")
+		if __debug__:
+			print("Start of a package")
 		for j in p:
 			# For the first job of the sub package you get the node. Then you only get earliest available cores
 			if (cores_asked_current_package == 0):
-				print("New subpackage")
+				if __debug__:
+					print("New subpackage")
 				choosen_node, choosen_core, earliest_available_time = return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, 0)
 			elif (cores_asked_current_package <= max_number_cores_asked_by_package):
-				print("Same package")
+				if __debug__:
+					print("Same package")
 				# Schedule on the same node as previously but different cores probably so need to get the cores
 				choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(j.cores, choosen_node, t)
 			
@@ -462,7 +468,8 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 				c.job_queue.append(j)
 				c.available_time = start_time + j.walltime
 			
-			print_decision_in_scheduler(choosen_core, j, choosen_node)
+			if __debug__:
+				print_decision_in_scheduler(choosen_core, j, choosen_node)
 			
 			cores_asked_current_package += j.cores
 			if (cores_asked_current_package >= max_number_cores_asked_by_package):

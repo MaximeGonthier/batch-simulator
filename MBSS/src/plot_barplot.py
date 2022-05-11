@@ -53,7 +53,7 @@ Y = list(df.iloc[:, Y_index])
   
 # Plot the data using bar() method
 # ~ plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta"])
-plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orange", "pink", "purple"])
+plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orange", "pink", "purple", "grey", "dodgerblue"])
 plt.xticks(rotation=60)
 plt.title(plot_title)
 plt.xlabel("Scheduler")

@@ -541,8 +541,8 @@ while(total_number_jobs != finished_jobs):
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 		
 		# ~ # Reset all cores and jobs
-		# ~ if (scheduler != "Maximum_use_single_file"):
-			# ~ reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+		if (scheduler != "Maximum_use_single_file"):
+			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
 		
 		if __debug__:
 			print("Reschedule...")
@@ -560,8 +560,11 @@ while(total_number_jobs != finished_jobs):
 			reset_cores(affected_node_list, t)
 			maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
 			
-		# ~ elif (scheduler == "Common_file_packages_with_a_score"):
-			# ~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
+		elif (scheduler == "Common_file_packages_with_a_score"):
+			common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
+			
+		if __debug__:
+			print("End of reschedule")
 	
 	# Ones with backfill
 	if (old_finished_jobs < finished_jobs):
@@ -580,9 +583,6 @@ while(total_number_jobs != finished_jobs):
 				if len(affected_node_list) > 0:
 					fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, variant)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-		
-		if __debug__:
-			print("End of reschedule")
 			
 	# Get started jobs
 	if (len(scheduled_job_list) > 0):

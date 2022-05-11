@@ -384,7 +384,7 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
 \subsection{Maximum use single file X Fcfs with a score}
 \paragraph{Intuition}
 Select job submitted the earliest. Takes all available jobs using file from this job. Do this with all available jobs.
-Once you have these packages of jobs, divide them so you have as much packages as nodes.
+Once you have these packages of jobs, divide them. You divide the sum of the number of cores asked by available jobs by the total number of cores. The result is the maximum number of cores that can be asked by one package.
 Schedule packages in the order in which you created them (so depending on the submission time of the first job using the shared file) on the node with the highest score (score of a node is computed just like fcfs with a score).
 
 \section{Stats on workloads for Rackham}
