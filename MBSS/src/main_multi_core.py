@@ -539,18 +539,17 @@ while(total_number_jobs != finished_jobs):
 		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes)
 	
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
-		# Reset all cores and jobs
-		# ~ print("Reset...")
-
-		if (scheduler != "Maximum_use_single_file"):
-			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+		
+		# ~ # Reset all cores and jobs
+		# ~ if (scheduler != "Maximum_use_single_file"):
+			# ~ reset_cores(node_list[0] + node_list[1] + node_list[2], t)
 		
 		if __debug__:
 			print("Reschedule...")
 			
 		if (scheduler == "Random"):
-			# ~ random.shuffle(scheduled_job_list)
 			random_scheduler(scheduled_job_list, node_list, t)
+			
 		elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, variant)
 			
@@ -561,8 +560,8 @@ while(total_number_jobs != finished_jobs):
 			reset_cores(affected_node_list, t)
 			maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
 			
-		elif (scheduler == "Common_file_packages_with_a_score"):
-			common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
+		# ~ elif (scheduler == "Common_file_packages_with_a_score"):
+			# ~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
 	
 	# Ones with backfill
 	if (old_finished_jobs < finished_jobs):
@@ -589,8 +588,6 @@ while(total_number_jobs != finished_jobs):
 	if (len(scheduled_job_list) > 0):
 		scheduled_job_list.sort(key = operator.attrgetter("start_time"))
 		if (scheduled_job_list[0].start_time == t):
-			# ~ print("error")
-			# ~ exit(1)
 			scheduled_job_list, running_jobs, end_times, running_cores, running_nodes = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice

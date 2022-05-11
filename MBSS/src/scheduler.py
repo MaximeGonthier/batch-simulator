@@ -178,7 +178,8 @@ def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, varian
 		nodes_to_choose_from = node_list[2]
 					
 	min_score = -1
-			
+	earliest_available_time_to_return = 0
+	
 	for n in nodes_to_choose_from:
 									
 		# 2.2. Sort cores by available times
@@ -220,16 +221,18 @@ def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, varian
 		if min_score == -1:
 			min_score = score
 			choosen_node = n
+			earliest_available_time_to_return = earliest_available_time
 		elif min_score > score:
 			min_score = score
 			choosen_node = n
+			earliest_available_time_to_return = earliest_available_time
 					
 	# ~ print("Min score for job", j.unique_id, "is", min_score, "with node", choosen_node.unique_id)
 								
 	# 3. Choose a core
 	choosen_core = choosen_node.cores[0:j.cores]
 	
-	return choosen_node, choosen_core
+	return choosen_node, choosen_core, earliest_available_time_to_return
 
 # Reschedule on same node task from affected node
 def maximum_use_single_file_re_scheduler(l, t, affected_node_list):
@@ -398,17 +401,19 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 	# Still need to deal with 0 data jobs that is not in order in the list
 	print("Start of common_file_packages_with_a_score")
 	list_of_packages = []
-	temp = l
+	
+	
+	temp = l.copy()
 	number_cores_asked = 0
 	
 	while (len(temp) > 0):
 		new_package = []
-		data_first_job = l[0].data
+		data_first_job = temp[0].data
 		print("First data is", data_first_job)
 		
 		job_to_remove = []
 		# Get all jobs with this data, even if it's 0
-		for j in l:
+		for j in temp:
 			if j.data == data_first_job:
 				new_package.append(j)
 				number_cores_asked += j.cores
@@ -418,7 +423,7 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 					break # Because data shares are consecutive and it's sorted by submission time
 		list_of_packages.append(new_package)
 		temp = remove_jobs_from_list(temp, job_to_remove)
-
+	
 	# Just printing
 	i = 1
 	for p in list_of_packages:
@@ -435,28 +440,31 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 		
 	# Compute score just like in Fcfs_with_a_score but with packages. The benefit of not loading a file is only counted once.
 	# Choose node
-	cores_asked_current_package = 0
 	for p in list_of_packages:
+		cores_asked_current_package = 0
+		print("Start of a package")
 		for j in p:
 			# For the first job of the sub package you get the node. Then you only get earliest available cores
 			if (cores_asked_current_package == 0):
-				choosen_node, choosen_core = return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, 0)
+				print("New subpackage")
+				choosen_node, choosen_core, earliest_available_time = return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, 0)
 			elif (cores_asked_current_package <= max_number_cores_asked_by_package):
+				print("Same package")
 				# Schedule on the same node as previously but different cores probably so need to get the cores
 				choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(j.cores, choosen_node, t)
 			
-			# TODO : a opti et get earliest time for first job as well
-			start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+			start_time = earliest_available_time
 			j.node_used = choosen_node
 			j.cores_used = choosen_core
 			j.start_time = start_time
 			j.end_time = start_time + j.walltime			
 			for c in choosen_core:
 				c.job_queue.append(j)
+				c.available_time = start_time + j.walltime
+			
+			print_decision_in_scheduler(choosen_core, j, choosen_node)
+			
 			cores_asked_current_package += j.cores
-			if (cores_asked_current_package > max_number_cores_asked_by_package):
+			if (cores_asked_current_package >= max_number_cores_asked_by_package):
 				# Getting on a new sub_package
 				cores_asked_current_package = 0
-
-	
-	exit(1)

@@ -196,7 +196,7 @@ def return_earliest_available_cores_and_start_time_specific_node(cores_asked, no
 	node.cores.sort(key = operator.attrgetter("available_time"))
 	earliest_available_time = node.cores[cores_asked - 1].available_time	
 	earliest_available_time = max(t, earliest_available_time)
-	choosen_core = choosen_node.cores[0:cores_asked]		
+	choosen_core = node.cores[0:cores_asked]		
 	return choosen_core, earliest_available_time
 	
 # Schedule a job earliest available node and write start time and add job in queues
