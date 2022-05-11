@@ -61,24 +61,27 @@ def read_cluster(input_node_file, node_list, available_node_list):
 		f.close
 	return node_list, available_node_list
 
-def read_workload(input_job_file, job_list):
+def read_workload(input_job_file, job_list, constraint_on_sizes):
 	with open(input_job_file) as f:
 		line = f.readline()
 		while line:
 			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20 = line.split() # split it by whitespace
 			
-			# Getting index of node_list depending on size
-			if ((float(r17)*10)/(float(r11)*10) == 0.0):
-				index_node = 0
-			elif ((float(r17)*10)/(float(r11)*10) == 6.4):
-				index_node = 0
-			elif ((float(r17)*10)/(float(r11)*10) == 12.8):
-				index_node = 1
-			elif ((float(r17)*10)/(float(r11)*10) == 51.2):
-				index_node = 2
+			# Getting index of node_list depending on size if constraint is enabled
+			if (constraint_on_sizes == 1):
+				if ((float(r17)*10)/(float(r11)*10) == 0.0):
+					index_node = 0
+				elif ((float(r17)*10)/(float(r11)*10) == 6.4):
+					index_node = 0
+				elif ((float(r17)*10)/(float(r11)*10) == 12.8):
+					index_node = 1
+				elif ((float(r17)*10)/(float(r11)*10) == 51.2):
+					index_node = 2
+				else:
+					print("Error", (float(r17)*10)/(float(r11)*10), "is a wrong input job data size. Line is:", line)
+					exit
 			else:
-				print("Error", (float(r17)*10)/(float(r11)*10), "is a wrong input job data size. Line is:", line)
-				exit
+				index_node = 0
 			
 			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0, 0, int(r19))
 			job_list.append(j)

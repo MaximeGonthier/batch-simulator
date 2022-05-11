@@ -107,21 +107,11 @@ def print_csv(to_print_list, scheduler):
 
 def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 	start_time = t
-	# OLD
-	# ~ for c in choosen_core:
-		# ~ if (c.available_time > t): # Look for max available time
-			# ~ for c in choosen_core:
-				# ~ if (c.available_time > start_time):
-					# ~ start_time = c.available_time
-			# ~ break
-	# NEW
 	for c in choosen_core:
 		if (c.available_time > start_time):
 			start_time = c.available_time
-	# ~ print("avail start time is", start_time)			
 	for c in choosen_core:
 		c.available_time = start_time + walltime
-	
 	return start_time
 
 # Return set of files that will be on node at a given time
@@ -184,7 +174,8 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 			choosen_node = n
 													
 	choosen_core = choosen_node.cores[0:j.cores]
-	start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	# ~ start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	start_time = min_time
 	j.node_used = choosen_node
 	j.cores_used = choosen_core
 	j.start_time = start_time
@@ -192,6 +183,7 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 			
 	for c in choosen_core:
 		c.job_queue.append(j)
+		c.available_time = start_time + j.walltime
 	
 	scheduled_job_list.append(j)
 	
@@ -222,16 +214,16 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 			choosen_node = n
 													
 	choosen_core = choosen_node.cores[0:j.cores]
-	start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	# ~ start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	start_time = min_time
 	j.node_used = choosen_node
 	j.cores_used = choosen_core
 	j.start_time = start_time
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
-		
-		
 		c.job_queue.append(j)
-	
+		c.available_time = start_time + j.walltime
+		
 	# ~ if __debug__:
 		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
 

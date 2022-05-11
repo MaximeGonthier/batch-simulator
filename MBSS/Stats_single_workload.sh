@@ -1,6 +1,6 @@
 #!/bin/bash
 # Stats on an execution but also on the workload itself
-# bash Stats_single_workload.sh WORKLOAD CLUSTER SCHEDULER
+# bash Stats_single_workload.sh WORKLOAD CLUSTER SCHEDULER CONTRAINTES_TAILLES
 start=`date +%s`
 
 # Get arguments
@@ -11,8 +11,9 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 SCHEDULER=$3
 DATE=${WORKLOAD:27:30}
+CONTRAINTES_TAILLES=$4
 
-../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 1
+../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
 python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER}
 python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} 
 python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Nb_scheduled_jobs ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} 

@@ -25,7 +25,7 @@ class Job:
 FILENAME = sys.argv[1] # FILE 1
 PROBABILITY_OF_USING_256GB = int(sys.argv[2]) # 0-100
 PROBABILITY_OF_USING_1TB = int(sys.argv[3]) # 0-100
-# ~ MERGE_3_FILES = int(sys.argv[4]) # 0 or 1
+DATA_ON_ALL_JOBS = int(sys.argv[4]) # 0 or 1
 
 # ~ if (MERGE_3_FILES == 1):
 	# ~ FILENAME_BEFORE = sys.argv[5] # FILE before main file
@@ -95,11 +95,11 @@ f_input.close()
 # Min sub time takes 0
 workload.sort(key = operator.attrgetter("subtime"))
 min_subtime = workload[0].subtime
-nb_jobs_by_phase=id_count/3
-print("There are", id_count - 1, "jobs and", nb_jobs_by_phase, "will be evaluated")
+nb_ignored_jobs=(int(sys.argv[5])*id_count)/100
+print("There are", id_count - 1, "jobs and", id_count - nb_ignored_jobs*2, "will be evaluated")
 # Getting data. 0 means no data
 f_output = open("inputs/workloads/converted/" + FILENAME, "w")
-if (workload[0].cores >= 5):
+if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 	workload[0].data = 1
 	r = 0
 	r = random.randint(0,99)
@@ -117,7 +117,7 @@ last_user = workload[0].user
 last_subtime = workload[0].subtime
 last_core = workload[0].cores
 for i in range (1, id_count - 1):
-	if (workload[i].cores >= 5):
+	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		share_last_user = random.randint(0,99)
 		if (last_user == workload[i].user and last_subtime + 100 >= workload[i].subtime and last_core == workload[i].cores): # Max 30 seconds between two jobs for them to use the same data and must use the same amount of cores and have the smae user
 			workload[i].data = last_data
@@ -138,11 +138,17 @@ for i in range (1, id_count - 1):
 			last_user = workload[i].user
 			last_subtime = workload[i].subtime
 			last_core = workload[i].cores
-	if (i < nb_jobs_by_phase - 1):
+	# ~ if (i < nb_ignored_jobs - 1):
+		# ~ workload[i].workload = 0
+	# ~ elif (i < nb_ignored_jobs*2 - 1):
+		# ~ workload[i].workload = 1
+	# ~ else:
+		# ~ workload[i].workload = 2
+	if (i < nb_ignored_jobs - 1):
 		workload[i].workload = 0
-	elif (i < nb_jobs_by_phase*2 - 1):
-		workload[i].workload = 1
-	else:
+	elif (i > id_count - nb_ignored_jobs - 1):
 		workload[i].workload = 2
+	else:
+		workload[i].workload = 1
 	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
 f_output.close()

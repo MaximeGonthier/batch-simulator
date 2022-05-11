@@ -19,7 +19,8 @@ input_node_file = sys.argv[2]
 scheduler = sys.argv[3]
 # ~ filling_strategy = sys.argv[4]
 write_all_jobs = int(sys.argv[4]) # Si on veut faire un gantt chart il faut imprimer tous les jobs et mettre ca à 1
-# ~ aaa = int(0)
+constraint_on_sizes = int(sys.argv[5]) # To add or remove the constraint that some jobs can't be executed on certain nodes. 0 or 1.
+
 # Global structs and input files
 @dataclass
 class Job:
@@ -149,8 +150,8 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 				c.running_job = j
 			jobs_to_remove.append(j)
 			running_jobs.append(j)
-		# ~ else: # dans le cas ou on start que quand ya un start time qui convient et que on a trié la liste par start times
-			# ~ break
+		else: # dans le cas où on a trié la liste par start times
+			break
 	if len(jobs_to_remove) > 0:
 		scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
 	return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes
@@ -448,7 +449,7 @@ def to_print_job_csv(job, node_used, core_ids, time):
 node_list, available_node_list = read_cluster(input_node_file, node_list, available_node_list)
 
 # Read workload
-job_list = read_workload(input_job_file, job_list)
+job_list = read_workload(input_job_file, job_list, constraint_on_sizes)
 
 finished_jobs = 0
 total_number_jobs = len(job_list)
@@ -462,6 +463,11 @@ running_nodes = 0
 title = "outputs/Stats_" + scheduler + ".csv"
 f_stats = open(title, "w")
 f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
+
+if (scheduler == "Fcfs_with_a_score_variant"):
+	variant = 1
+elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_easy_bf"):
+	variant = 0
 
 # Start of simulation
 first_job_in_queue = None
@@ -486,8 +492,9 @@ while(total_number_jobs != finished_jobs):
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
-		elif (scheduler == "Fcfs_with_a_score"):
-			fcfs_with_a_score_scheduler(available_job_list, node_list, t)
+		elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+			fcfs_with_a_score_scheduler(available_job_list, node_list, t, variant)
+			
 		elif (scheduler == "Fcfs"):
 			fcfs_scheduler(available_job_list, node_list, t)
 				
@@ -504,7 +511,7 @@ while(total_number_jobs != finished_jobs):
 				first_job_in_queue = available_job_list[0]
 			else:
 				first_job_in_queue = scheduled_job_list[0]
-			fcfs_with_a_score_scheduler(available_job_list, node_list, t)
+			fcfs_with_a_score_scheduler(available_job_list, node_list, t, variant)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
 			# ~ first_job_in_queue = None
 			
@@ -523,7 +530,6 @@ while(total_number_jobs != finished_jobs):
 	old_finished_jobs = finished_jobs
 	
 	if t in end_times:
-	# ~ if 1 == 1:
 		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes)
 	
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
@@ -539,8 +545,9 @@ while(total_number_jobs != finished_jobs):
 		if (scheduler == "Random"):
 			# ~ random.shuffle(scheduled_job_list)
 			random_scheduler(scheduled_job_list, node_list, t)
-		elif (scheduler == "Fcfs_with_a_score"):
-			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t)
+		elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, variant)
+			
 		elif (scheduler == "Fcfs"):
 			fcfs_scheduler(scheduled_job_list, node_list, t)
 			
@@ -568,14 +575,19 @@ while(total_number_jobs != finished_jobs):
 				first_job_in_queue = scheduled_job_list[0]
 				# ~ print("First job is", first_job_in_queue.unique_id)
 				if len(affected_node_list) > 0:
-					fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t)
+					fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, variant)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
 		
 		if __debug__:
 			print("End of reschedule")
 			
-	# Get started jobs	
-	scheduled_job_list, running_jobs, end_times, running_cores, running_nodes = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes)
+	# Get started jobs
+	if (len(scheduled_job_list) > 0):
+		scheduled_job_list.sort(key = operator.attrgetter("start_time"))
+		if (scheduled_job_list[0].start_time == t):
+			# ~ print("error")
+			# ~ exit(1)
+			scheduled_job_list, running_jobs, end_times, running_cores, running_nodes = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	if len(finished_job_list) > 0:

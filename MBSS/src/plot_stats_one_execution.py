@@ -15,12 +15,38 @@ if (comparaison == "Used_cores"):
 	Y_index = 0
 	plot_title = "Used cores" + " " + scheduler
 	Y_label = "Number of cores used"
-	plt.axhline(y = 9720, color = 'black', linestyle = '-', label = "Total number of cores")
+	
+	if (cluster == "41_128_3_256_1_1024"):
+		line = 900
+	elif (cluster == "95_128_4_256_1_1024"):
+		line = 2000
+	elif (cluster == "182_128_16_256_2_1024"):
+		line = 4000
+	elif (cluster == "450_128_32_256_4_1024"):
+		line = 9720
+	else:
+		print("error")
+		exit(1)
+	
+	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of cores")
 elif (comparaison == "Used_nodes"):
 	Y_index = 1
 	plot_title = "Used nodes" + " " + scheduler
 	Y_label = "Number of nodes used"
-	plt.axhline(y = 486, color = 'black', linestyle = '-', label = "Total number of nodes")
+	
+	if (cluster == "41_128_3_256_1_1024"):
+		line = 45
+	elif (cluster == "95_128_4_256_1_1024"):
+		line = 100
+	elif (cluster == "182_128_16_256_2_1024"):
+		line = 200
+	elif (cluster == "450_128_32_256_4_1024"):
+		line = 486
+	else:
+		print("error")
+		exit(1)
+	
+	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of nodes")
 elif (comparaison == "Nb_scheduled_jobs"):
 	Y_index = 2
 	plot_title = "Number of jobs in the queue" + " " + scheduler

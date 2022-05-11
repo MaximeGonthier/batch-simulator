@@ -2,8 +2,8 @@
 # bash Experiments_multi_core.sh workload cluster scheduler PRINT?
 start=`date +%s`
 
-if [ "$#" -ne 4 ]; then
-    echo "Usage is bash Experiments_multi_core.sh workload cluster scheduler PRINT?"
+if [ "$#" -ne 5 ]; then
+    echo "Usage is bash Experiments_multi_core.sh workload cluster scheduler PRINT? CONTRAINTE_TAILLES"
     exit
 fi
 
@@ -12,7 +12,7 @@ WORKLOAD=$1
 CLUSTER=$2
 SCHEDULER=$3
 PRINT=$4 # 0 = not even printfs
-#~ BACKFILL=$5 # ShiftLeft or FCFS or NoFilling
+CONTRAINTES_TAILLES=$5
 DATE=${WORKLOAD:27:30}
 
 # Generate workload
@@ -30,9 +30,9 @@ fi
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 
 if [ $PRINT == 0 ]; then
-	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 else
-	../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 fi
 
 if [ $PRINT == 1 ]; then

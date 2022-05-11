@@ -1,9 +1,9 @@
 #!/bin/bash
-# bash Compare_algorithms.sh workload cluster
+# bash Compare_algorithms.sh workload cluster contrainte_taille
 start=`date +%s`
 
-if [ "$#" -ne 2 ]; then
-    echo "Usage is bash Compare_algorithms.sh workload cluster"
+if [ "$#" -ne 3 ]; then
+    echo "Usage is bash Compare_algorithms.sh workload cluster contraintes_tailles_données"
     exit
 fi
 
@@ -15,6 +15,7 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 echo ${WORKLOAD_TP}
 echo ${CLUSTER_TP}
+CONTRAINTES_TAILLES=$3
 
 # Generate workload
 #~ bash Generate_workload_from_rackham.sh $WORKLOAD
@@ -23,7 +24,7 @@ echo ${CLUSTER_TP}
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_${WORKLOAD_TP}.csv
 
 #~ for ((i=0; i<5; i++))
-for ((i=0; i<6; i++))
+for ((i=0; i<7; i++))
 do
 	#~ if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_with_a_score"
 	#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
@@ -39,10 +40,11 @@ do
 	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_easybf" 
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easy_bf" 
 	elif [ $((i)) == 5 ]; then SCHEDULER="Maximum_use_single_file" 
+	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_variant"
 	fi
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
-	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0
+	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv
 	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_${WORKLOAD_TP}.csv
