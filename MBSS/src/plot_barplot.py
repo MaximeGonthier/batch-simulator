@@ -3,10 +3,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 
-data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv")
+skip_row = int(sys.argv[4])
+if (skip_row == 0):
+	data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv")
+else:
+	data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv", skiprows=[6])
 workload = sys.argv[1]
 comparaison = sys.argv[2]
 cluster = sys.argv[3]
+
 title = workload + "_" + comparaison + "_" + cluster
 
 if (comparaison == "Maximum_queue_time"):
@@ -61,7 +66,9 @@ plt.ylabel("Seconds")
   
 # Show the plot
 # ~ plt.show()
-
-filename = "plot/" + title + ".pdf"
+if (skip_row == 1):
+	filename = "plot/" + title + "_skip_maximum_use.pdf"
+else:	
+	filename = "plot/" + title + ".pdf"
 # ~ plt.figure.savefig(filename)
 plt.savefig(filename, bbox_inches='tight')

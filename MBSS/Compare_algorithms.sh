@@ -24,7 +24,7 @@ CONTRAINTES_TAILLES=$3
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_${WORKLOAD_TP}.csv
 
 #~ for ((i=0; i<5; i++))
-for ((i=0; i<7; i++))
+for ((i=0; i<8; i++))
 do
 	#~ if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_with_a_score"
 	#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
@@ -41,6 +41,7 @@ do
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easy_bf" 
 	elif [ $((i)) == 5 ]; then SCHEDULER="Maximum_use_single_file" 
 	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_variant"
+	elif [ $((i)) == 7 ]; then SCHEDULER="Common_file_packages_with_a_score"
 	fi
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
@@ -54,17 +55,17 @@ echo "Final results are:"
 cat outputs/Results_${WORKLOAD_TP}.csv
 
 echo "Plotting results..."
-python3 src/plot_barplot.py ${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Mean_flow ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Total_flow ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Transfer_time ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Makespan ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Core_time_used ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP}
-python3 src/plot_barplot.py ${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP}
+python3 src/plot_barplot.py ${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0
+python3 src/plot_barplot.py ${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0
 
 end=`date +%s` 
 runtime=$((end-start))

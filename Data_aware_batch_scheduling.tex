@@ -350,6 +350,8 @@ For each node, C = compute the amount of data that will need to be evicted to lo
 
 Each node get a score combining these three values: Score = A + B + (C/BW)
 
+For FCFS with a score variant I do: Score = A + 2 $\times$ B + 2 $\times$ (C/BW)
+
 Schedule j on the node with the best score and on the cores available the earliest.
 
 \subsection{EASYBF-FCFS-FCFS}
@@ -381,94 +383,123 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Maximum use single file X Fcfs with a score}
+\subsection{Common file packages with a score}
 \paragraph{Intuition}
-Select job submitted the earliest. Takes all available jobs using file from this job. Do this with all available jobs.
-Once you have these packages of jobs, divide them. You divide the sum of the number of cores asked by available jobs by the total number of cores. The result is the maximum number of cores that can be asked by one package.
-Schedule packages in the order in which you created them (so depending on the submission time of the first job using the shared file) on the node with the highest score (score of a node is computed just like fcfs with a score).
+%~ Select job submitted the earliest. Takes all available jobs using the file from this job. Do this with all available jobs.
+%~ Once you have these packages of jobs, divide them. 
+%~ You divide the sum of the number of cores asked by available jobs by the total number of cores. The result is the maximum number of cores that can be asked by one package.
+%~ A full package is scheduled on a single node.
+%~ Schedule packages in the order in which you created them (so sorted by submission time of the first job selected) on the node with the highest score (score of a node is computed just like fcfs with a score).
+Group together jobs sharing a file. and sorted by submission time. The maximum size of a package of jobs is
+the number of cores asked by available jobs divided by the total number of cores. Jobs from a same package are 
+scheduled on the same node following a score computed like in FCFS with a score.
 
-\section{Stats on workloads for Rackham}
-% Cores
-\begin{figure}[H] 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_cores.pdf} 
-    \caption{Cores - January 2022} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_cores.pdf} 
-    \caption{Cores - February 2022} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_cores.pdf} 
-    \caption{Cores - Mars 2022} 
-    \vspace{4ex}
-  \end{minipage}%% *
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_cores.pdf} 
-    \caption{Cores - December 2021} 
-    \vspace{4ex}
-  \end{minipage}%%
-\end{figure}
-% Delay
-\begin{figure}[H] 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_delay.pdf} 
-    \caption{delay - January 2022} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_delay.pdf} 
-    \caption{delay - February 2022} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_delay.pdf} 
-    \caption{delay - Mars 2022} 
-    \vspace{4ex}
-  \end{minipage}%% 
-    \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_delay.pdf} 
-    \caption{delay - December 2021} 
-    \vspace{4ex}
-  \end{minipage}%%
-\end{figure}
-% Walltime
-\begin{figure}[H] 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_walltime.pdf} 
-    \caption{walltime - January 2022} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_walltime.pdf} 
-    \caption{walltime - February 2022} 
-    \vspace{4ex}
-  \end{minipage} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_walltime.pdf} 
-    \caption{walltime - Mars 2022} 
-    \vspace{4ex}
-  \end{minipage}%% 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_walltime.pdf} 
-    \caption{walltime - Decembre 2021} 
-    \vspace{4ex}
-  \end{minipage}%%
-\end{figure}
+\begin{enumerate}
+	\item While the available job list is not empty do:
+	\begin{enumerate}
+		\item Select job $J_i$ submitted the earliest
+		\item Group in a package all jobs using $\inputs(J_i)$
+		\item Remove from available jobs list jobs from this package
+	\end{enumerate}
+	\item $Nb\_cores\_asked\_by\_package \gets $ sum of cores asked by available jobs divided by the number of cores on the cluster
+	\item While all jobs are not scheduled
+	\begin{enumerate}
+		\item Select first package not empty
+		\item Select first job of this package
+		\item $best\_node \gets$ node with the best score (Like in FCFS with a score)
+		\item Schedule $J_i$ on $best\_node$
+		\item Remove $J_i$ from package
+		\item $Cores\_asked\_by\_package\_i \gets Cores(J_i)$
+		\item $i \gets i + 1$
+		\item While $Nb\_cores\_asked\_by\_package < Cores\_asked\_by\_package\_i$
+		\begin{enumerate}
+			\item Schedule $J_{i}$ on $best\_node$
+			\item Remove $J_{i}$ from package
+			\item $Cores\_asked\_by\_package\_i \gets Cores\_asked\_by\_package\_i + Cores(J_{i})$
+			\item $i \gets i + 1$
+		\end{enumerate}
+	\end{enumerate}
+\end{enumerate}
+
+%~ \section{Stats on workloads for Rackham}
+%~ \begin{figure}[H] 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_cores.pdf} 
+    %~ \caption{Cores - January 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_cores.pdf} 
+    %~ \caption{Cores - February 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_cores.pdf} 
+    %~ \caption{Cores - Mars 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% *
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_cores.pdf} 
+    %~ \caption{Cores - December 2021} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+%~ \end{figure}
+%~ \begin{figure}[H] 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_delay.pdf} 
+    %~ \caption{delay - January 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_delay.pdf} 
+    %~ \caption{delay - February 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_delay.pdf} 
+    %~ \caption{delay - Mars 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+    %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_delay.pdf} 
+    %~ \caption{delay - December 2021} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+%~ \end{figure}
+%~ \begin{figure}[H] 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_01_walltime.pdf} 
+    %~ \caption{walltime - January 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_02_walltime.pdf} 
+    %~ \caption{walltime - February 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2022_03_walltime.pdf} 
+    %~ \caption{walltime - Mars 2022} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%% 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/2021_12_walltime.pdf} 
+    %~ \caption{walltime - Decembre 2021} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+%~ \end{figure}
 
 \section{Gantt charts}
 \begin{figure}[H] 
@@ -499,81 +530,49 @@ Schedule packages in the order in which you created them (so depending on the su
   \begin{minipage}[b]{0.5\linewidth}
     \centering
     \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/test/Fcfs_with_a_score_easy_bf.png} 
-    \caption{FCFS with a score + Easy Bf- May 5} 
+    \caption{FCFS with a score + Easy Bf - May 5} 
     \vspace{4ex}
   \end{minipage}%%
+  \begin{minipage}[b]{0.5\linewidth}
+    \centering
+    \includegraphics[width=1.11\linewidth]{MBSS/plot/Gantt_charts/test/Common_file_packages_with_a_score.png} 
+    \caption{Common file packages with a score - May 12} 
+    \vspace{4ex}
+  \end{minipage}
 \end{figure}
 
 \section{Experiments}
-	\subsection{Full workload with 3 days and full cluster}
-	\begin{figure}[H]
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Maximum_queue_time450_128_32_256_4_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Mean_queue_time450_128_32_256_4_1024.pdf}\caption{Mean queue time}\vspace{4ex}\end{minipage} 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Total_queue_time450_128_32_256_4_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Makespan450_128_32_256_4_1024.pdf}\caption{Makespan}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16 - Full cluster - May 9}\end{figure}
-	\begin{figure}[H]
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Maximum_flow450_128_32_256_4_1024.pdf}\caption{Maximum flow}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Mean_flow450_128_32_256_4_1024.pdf}\caption{Mean flow}\vspace{4ex}\end{minipage} 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Total_flow450_128_32_256_4_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Core_time_used450_128_32_256_4_1024.pdf}\caption{Core time used}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16 - Full cluster - May 9}\end{figure}
-	\begin{figure}[H] 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Transfer_time450_128_32_256_4_1024.pdf}\caption{Transfer time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Waiting_for_a_load_time450_128_32_256_4_1024.pdf}\caption{Waiting for a load}\vspace{4ex}\end{minipage} 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Total_waiting_for_a_load_time_and_transfer_time450_128_32_256_4_1024.pdf}\caption{Waiting for a load + Transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16 - Full cluster - May 9}\end{figure}
+	\subsection{Full workload and full cluster}
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Total_queue_time450_128_32_256_4_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16_Total_flow450_128_32_256_4_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16 - Full cluster - May 9}\end{figure}
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Cluster usage - Full cluster - May 11}\end{figure}
 	
-	\subsection{800 jobs and 4 nodes}
-	\begin{figure}[H]
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Maximum_queue_time4nodes.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Mean_queue_time4nodes.pdf}\caption{Mean queue time}\vspace{4ex}\end{minipage} 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Total_queue_time4nodes.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Makespan4nodes.pdf}\caption{Makespan}\vspace{4ex}\end{minipage}\caption{Workload 2021-05-23-800 - 4 nodes - May 5}\end{figure}
-	\begin{figure}[H]
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Maximum_flow4nodes.pdf}\caption{Maximum flow}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Mean_flow4nodes.pdf}\caption{Mean flow}\vspace{4ex}\end{minipage} 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Total_flow4nodes.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Core_time_used4nodes.pdf}\caption{Core time used}\vspace{4ex}\end{minipage}\caption{Workload 2021-05-23-800 - 4 nodes - May 5}\end{figure}
-	\begin{figure}[H] 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Transfer_time4nodes.pdf}\caption{Transfer time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Waiting_for_a_load_time4nodes.pdf}\caption{Waiting for a load}\vspace{4ex}\end{minipage} 
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Total_waiting_for_a_load_time_and_transfer_time4nodes.pdf}\caption{Waiting for a load + Transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2021-05-23-800 - 4 nodes - May 9}\end{figure}
+	\subsection{Full workload and 1/4 of the cluster and files on all jobs and no constraint on file sizes}
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Cluster usage - 1/4 of the cluster - May 11}\end{figure}
 	
-	%~ \subsection{800 jobs and 50 nodes}
-	%~ \begin{figure}[H]
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Maximum_queue_time47_128_2_256_1_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Mean_queue_time47_128_2_256_1_1024.pdf}\caption{Mean queue time}\vspace{4ex}\end{minipage} 
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Total_queue_time47_128_2_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Makespan47_128_2_256_1_1024.pdf}\caption{Makespan}\vspace{4ex}\end{minipage}\caption{Workload 2021-05-23-800 - 50 nodes - May 5}\end{figure}
-	%~ \begin{figure}[H]
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Maximum_flow47_128_2_256_1_1024.pdf}\caption{Maximum flow}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Mean_flow47_128_2_256_1_1024.pdf}\caption{Mean flow}\vspace{4ex}\end{minipage} 
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Total_flow47_128_2_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Core_time_used47_128_2_256_1_1024.pdf}\caption{Core time used}\vspace{4ex}\end{minipage}\caption{Workload 2021-05-23-800 - 50 nodes - May 5}\end{figure}
-	%~ \begin{figure}[H] 
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Transfer_time47_128_2_256_1_1024.pdf}\caption{Transfer time}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Waiting_for_a_load_time47_128_2_256_1_1024.pdf}\caption{Waiting for a load}\vspace{4ex}\end{minipage} 
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2021-05-23-800_Total_waiting_for_a_load_time_and_transfer_time47_128_2_256_1_1024.pdf}\caption{Waiting for a load + Transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2021-05-23-800 - 50 nodes - May 5}\end{figure}
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Transfer + waiting for a load time}\vspace{4ex}\end{minipage}%%
+	\caption{Workload 2022-03-16 - 1/4 of the cluster - May 11}\end{figure}
+	
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024_skip_maximum_use.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024_skip_maximum_use.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16 - 1/4 of the cluster - Ignoring Maximu use single file - May 11}\end{figure}
 
-\section{Cluster usage}
-\begin{figure}[H] 
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Used_cores_2022-03-16.pdf}\caption{2022-03-16 - May 10} 
-\end{figure}
-
-\section{Distribution of queue times}
-\begin{figure}[H] 
-  \label{ fig7} 
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/Queue_Times/Fcfs_with_a_score_2021-05-23.pdf}
-    \caption{FCFS with a score} 
-    \vspace{4ex}
-  \end{minipage}%%
-  \begin{minipage}[b]{0.5\linewidth}
-    \centering
-    \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/Queue_Times/Maximum_use_single_file_2021-05-23.pdf}
-    \caption{Maximum use single file} 
-    \vspace{4ex}
-  \end{minipage} 
-\end{figure}
+%~ \section{Distribution of queue times}
+%~ \begin{figure}[H] 
+  %~ \label{ fig7} 
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/Queue_Times/Fcfs_with_a_score_2021-05-23.pdf}
+    %~ \caption{FCFS with a score} 
+    %~ \vspace{4ex}
+  %~ \end{minipage}%%
+  %~ \begin{minipage}[b]{0.5\linewidth}
+    %~ \centering
+    %~ \includegraphics[width=1.11\linewidth]{MBSS/plot/Distribution/Queue_Times/Maximum_use_single_file_2021-05-23.pdf}
+    %~ \caption{Maximum use single file} 
+    %~ \vspace{4ex}
+  %~ \end{minipage} 
+%~ \end{figure}
 
 %~ \printbibliography
 \end{document}

@@ -1,0 +1,11 @@
+{ id: 1 subtime: 0 delay: 826348 walltime: 36000 cores: 10 user: torsteng data: 1 data_size: 64 workload: 1 }
+{ id: 2 subtime: 0 delay: 833496 walltime: 36000 cores: 10 user: torsteng data: 1 data_size: 64 workload: 1 }
+{ id: 3 subtime: 0 delay: 833744 walltime: 36000 cores: 10 user: torsteng data: 1 data_size: 64 workload: 1 }
+{ id: 4 subtime: 0 delay: 854101 walltime: 36000 cores: 10 user: torsteng data: 2 data_size: 64 workload: 1 }
+{ id: 5 subtime: 0 delay: 859696 walltime: 36000 cores: 10 user: torsteng data: 2 data_size: 64 workload: 1 }
+{ id: 6 subtime: 100 delay: 863178 walltime: 36000 cores: 15 user: torsteng data: 3 data_size: 96 workload: 1 }
+{ id: 7 subtime: 100 delay: 830996 walltime: 36000 cores: 15 user: torsteng data: 3 data_size: 96 workload: 1 }
+{ id: 8 subtime: 100 delay: 833852 walltime: 36000 cores: 15 user: torsteng data: 3 data_size: 96 workload: 1 }
+{ id: 9 subtime: 100 delay: 848885 walltime: 36000 cores: 15 user: torsteng data: 3 data_size: 96 workload: 1 }
+{ id: 10 subtime: 500 delay: 63112 walltime: 259200 cores: 5 user: ama51 data: 4 data_size: 32 workload: 1 }
+{ id: 11 subtime: 500 delay: 63112 walltime: 259200 cores: 5 user: ama51 data: 4 data_size: 32 workload: 1 }
