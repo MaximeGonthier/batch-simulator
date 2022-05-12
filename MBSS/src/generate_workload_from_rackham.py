@@ -119,7 +119,7 @@ last_core = workload[0].cores
 for i in range (1, id_count - 1):
 	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		share_last_user = random.randint(0,99)
-		if (last_user == workload[i].user and last_subtime + 100 >= workload[i].subtime and last_core == workload[i].cores): # Max 30 seconds between two jobs for them to use the same data and must use the same amount of cores and have the smae user
+		if (last_user == workload[i].user and last_subtime + 800 >= workload[i].subtime and last_core == workload[i].cores): # Max 800 seconds between two jobs for them to use the same data and must use the same amount of cores and have the smae user
 			workload[i].data = last_data
 			workload[i].data_size = last_size
 			last_subtime = workload[i].subtime
@@ -138,17 +138,13 @@ for i in range (1, id_count - 1):
 			last_user = workload[i].user
 			last_subtime = workload[i].subtime
 			last_core = workload[i].cores
-	# ~ if (i < nb_ignored_jobs - 1):
-		# ~ workload[i].workload = 0
-	# ~ elif (i < nb_ignored_jobs*2 - 1):
-		# ~ workload[i].workload = 1
-	# ~ else:
-		# ~ workload[i].workload = 2
+
 	if (i < nb_ignored_jobs - 1):
 		workload[i].workload = 0
 	elif (i > id_count - nb_ignored_jobs - 1):
 		workload[i].workload = 2
 	else:
 		workload[i].workload = 1
+		
 	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
 f_output.close()

@@ -9,13 +9,14 @@ comparaison = sys.argv[2]
 workload = sys.argv[3]
 cluster = sys.argv[4]
 scheduler = sys.argv[5]
+firstjob = int(sys.argv[6])
+lastjob = int(sys.argv[7])
 title = workload + "_" + scheduler + "_" + comparaison + "_" + cluster
 
 if (comparaison == "Used_cores"):
 	Y_index = 0
 	plot_title = "Used cores" + " " + scheduler
 	Y_label = "Number of cores used"
-	
 	if (cluster == "41_128_3_256_1_1024"):
 		line = 900
 	elif (cluster == "95_128_4_256_1_1024"):
@@ -27,13 +28,12 @@ if (comparaison == "Used_cores"):
 	else:
 		print("error")
 		exit(1)
-	
 	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of cores")
+	
 elif (comparaison == "Used_nodes"):
 	Y_index = 1
 	plot_title = "Used nodes" + " " + scheduler
 	Y_label = "Number of nodes used"
-	
 	if (cluster == "41_128_3_256_1_1024"):
 		line = 45
 	elif (cluster == "95_128_4_256_1_1024"):
@@ -45,13 +45,13 @@ elif (comparaison == "Used_nodes"):
 	else:
 		print("error")
 		exit(1)
-	
 	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of nodes")
+	
 elif (comparaison == "Nb_scheduled_jobs"):
 	Y_index = 2
 	plot_title = "Number of jobs in the queue" + " " + scheduler
 	Y_label = "Number of jobs in the queue"
-	# ~ plt.axhline(y = 486, color = 'black', linestyle = '-', label = "Number of jobs")
+
 else:
 	print("Wrong comparison")
 	exit(1)
@@ -77,7 +77,10 @@ Y = list(df.iloc[:, Y_index])
 
 
 # ~ plt = data.plot(title=plot_title)
-
+# ~ print(firstjob)
+# ~ exit(1)
+plt.axvline(x = firstjob, color = 'blue', linestyle = '-', label = "Submission time first job taken into account")
+plt.axvline(x = lastjob, color = 'darkblue', linestyle = '-', label = "submission time last job taken into account")
 
 plt.plot(Y)
 plt.title(plot_title)

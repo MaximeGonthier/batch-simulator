@@ -379,7 +379,7 @@ def to_print_job_csv(job, node_used, core_ids, time):
 node_list, available_node_list = read_cluster(input_node_file, node_list, available_node_list)
 
 # Read workload
-job_list = read_workload(input_job_file, job_list, constraint_on_sizes)
+job_list = read_workload(input_job_file, job_list, constraint_on_sizes, write_all_jobs)
 
 total_number_cores = (len(node_list) + 1)*20
 

@@ -13,15 +13,18 @@ SCHEDULER=$3
 DATE=${WORKLOAD:27:30}
 CONTRAINTES_TAILLES=$4
 
-../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER}
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} 
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Nb_scheduled_jobs ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} 
-
+# General info on delay walltime and number of cores used
 ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/convert_stats_workload_single_file.py ${WORKLOAD_TP}
 python3 src/plot_stats_workload.py ${WORKLOAD_TP} cores
 python3 src/plot_stats_workload.py ${WORKLOAD_TP} walltime
 python3 src/plot_stats_workload.py ${WORKLOAD_TP} delay
+
+# Usage
+../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_TAILLES
+read V1 V2 < outputs/Start_end_slice_2.txt
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Nb_scheduled_jobs ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2
 
 end=`date +%s` 
 runtime=$((end-start))

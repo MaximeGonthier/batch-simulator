@@ -84,32 +84,26 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Correction of maximum use single file
-		\item Code to have 3 days by ending times and keep only the second one for stats then corrected with sorting by submission time
-		\item New results with 3 days and keeping only one of them
-		\item New algo
-		\item Stats on cluster usage
-		\item Code to have 3 phases sorted and divided in 3 by subtime
-		\item With 3 phase I am on a very intensive part of the workload with similar submission times and lot of jobs because I ignore the start which is a part of older execution. But for now I just divide in 3 the workload by submission time. Maybe I can just cut the first and last 10\% ? That's what I did for the last results.
-		\item stats on 3 phases workload : cores used, node used, delay and walltime distribution, size of queue.
-		\item Added data on every job and removed constraint on size of files and nodes to focus on data locality
-		\item re test with new method of 3 phases and no constraint and data on all jobs
-		\item Idea of strat to deal with different sizes of files requirement ?
+		\item Try with 900 seconds time frame for consecutive jobs sharing a file to see what happens. Seems to work well because with much more I get the same number of different data.
+		\item Code and script to get stats on workload used (cores asked and used, node used, scheduled job, walltime and delay)
+		\item Change percentage of task with 256 or 1024 files to 80/10/5
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item New strategy ? Score variant ? Any other ideas of heuristics ?
-		\item Huge complexity when I reduce the number of nodes, takes an eternity to complete
 		\item Which question can I be asked at the conference ?
-		\item It's now a 100 seconds frame to have similar input files for 2 jobs of the same user. Is it ok ?
-		\item Change percentage of task with 256 or 1024 files ? for now it's 80/10/10 
+		\item Common file packages with a score: change name of result of division because it's more a ratio. Try to distribute divide packages differently. Maybe get the share of the platform needed ? Do a figure to help.
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Plot vertical line on workload usage of the start and end of slice 2
+			\item See usage on full cluster with 10 days
+			\item Try fcfs with a score new variant: add penalty the more a file is loaded on other nodes
+			\item Play with factor of score and plot results varying this factor
+			\item Problem of different nodes sizes requirmeent: Ok we can try. for the varaint add to the score the walltime of the job because you don't want to occupy too much a big node. Test this idea with data but with no constraint on data locality, so ignore transfer time (both in the end time and the stats) and see the results.
 			\item Préparer présentation le 18
 			\item S'inscrire a ACACES
 			\item Billets d'avion BOD-FUI NPL-BOD

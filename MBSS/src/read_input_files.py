@@ -61,7 +61,11 @@ def read_cluster(input_node_file, node_list, available_node_list):
 		f.close
 	return node_list, available_node_list
 
-def read_workload(input_job_file, job_list, constraint_on_sizes):
+def read_workload(input_job_file, job_list, constraint_on_sizes, write_all_jobs):
+	
+	if (write_all_jobs == 3):
+		first_job_slice_2 = 0
+	
 	with open(input_job_file) as f:
 		line = f.readline()
 		while line:
@@ -82,6 +86,24 @@ def read_workload(input_job_file, job_list, constraint_on_sizes):
 					exit
 			else:
 				index_node = 0
+			
+			# To compute stats on cluster usage
+			if (write_all_jobs == 3 and (first_job_slice_2 == 0 or first_job_slice_2 == 1)):
+				if (int(r19) == 1 and first_job_slice_2 == 0):
+					# ~ print("here1")
+					f_start_end_slice_2 = open("outputs/Start_end_slice_2.txt", "w")
+					f_start_end_slice_2.write("%d" % (int(r5)))
+					first_job_slice_2 = 1
+					# ~ f_start_end_slice_2.close
+				elif (int(r19) == 1 and first_job_slice_2 == 1):
+					last = int(r5)
+				elif (int(r19) == 2): # Need to get previous job
+					# ~ print("here2", last)
+					# ~ f_start_end_slice_2 = open("outputs/Start_end_slice_2.txt", "w")
+					f_start_end_slice_2.write(" %d\n" % (last))
+					# ~ print("wrote")
+					first_job_slice_2 = 2
+					f_start_end_slice_2.close
 			
 			j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0, 0, int(r19))
 			job_list.append(j)
