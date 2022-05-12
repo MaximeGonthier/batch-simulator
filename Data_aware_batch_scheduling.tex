@@ -143,8 +143,11 @@ the inputs are not the same. So HDFS would be less efficient.
 \subsection{Framework}
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
-Each node is equipped with 20 cores noted: $\Node{1}(C_1, C_2, ..., C_{20})$.
-Each node has a limited memory $\memory(\Node{i})$ of size 1TB, 256GB or 128GB.
+Each node is equipped with $N$ cores noted: $\Node{1}(C_1, C_2, ..., C_{N})$.
+
+Let's note $\mathbb{M}$ the set of available memory sizes.
+Each node has a limited memory $\memory(\Node{i})$ such has $\memory(\Node{i}) \in \mathbb{M}$.
+
 We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
 We denote by $\inputs(J_i)$ the input file required by job $J_i$. $\inputs(J_i)$ can be empty.
 Each file has a size in GB noted $\memory(F_i)$. 
@@ -256,12 +259,13 @@ to evaluate our scheduler in terms of fairness. We can do:
 $$
 	Average\_queue\_time = \frac{\sum^{m}_{i = 0} \start(J_i) - \submissiontime(J_i)}{m}
 $$
+We can also have cores hours used, makespan, and total flow or queue time.
 
-%~ We also want to measure the core-hours used. We need to take into consideration the amount of files loaded before the computation.
-%~ With $\core(J_i)$ the number of processor units used by job $i$ and $\duration(J_i)$ the duration of job $i$ in hours, we have:
-%~ $$
-	%~ \#Corehours = \sum^{m}_{i = 0} \core(J_i) \times (\duration(J_i) + \frac{\memory(\inputs\left(J_{\sigma(k,i)}\right) \backslash \live(k,i-1)))}{\bandwidth}
-%~ $$
+\section{Experimental settings}
+
+In our case we will be using the Rackham cluster. The reason is to both have
+real cluster information as well as real history of jobs submitted by users.
+Each node is equipped with 20 cores.
 
 \section{The use of simulation}
 
