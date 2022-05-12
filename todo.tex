@@ -90,42 +90,41 @@
 		\item New algo
 		\item Stats on cluster usage
 		\item Code to have 3 phases sorted and divided in 3 by subtime
-		\item With 3 phase I am on a very intensive part of the workload with similar submission times and lot of jobs because I ignore the start which is a part of older execution. But for now I just divide in 3 the workload by submission time. Maybe I can just cut the first and last 10\%
-		\item stats on 3 phases workload : cores used, node used, n cores by job, delay and walltime distribution, size of queue. + do the same with real history done.
+		\item With 3 phase I am on a very intensive part of the workload with similar submission times and lot of jobs because I ignore the start which is a part of older execution. But for now I just divide in 3 the workload by submission time. Maybe I can just cut the first and last 10\% ? That's what I did for the last results.
+		\item stats on 3 phases workload : cores used, node used, delay and walltime distribution, size of queue.
 		\item Added data on every job and removed constraint on size of files and nodes to focus on data locality
 		\item re test with new method of 3 phases and no constraint and data on all jobs
+		\item Idea of strat to deal with different sizes of files requirement
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
+		\item New strategy ? Scpore variant ?
 		\item Huge complexity when I reduce the number of nodes, takes an eternity to complete
 		\item Which question can I be asked at the conference ?
 		\item It's now a 100 seconds frame to have similar input files for 2 jobs of the same user. Is it ok ?
-		\item Change percentage of task with 256 or 1024 files? 
+		\item Change percentage of task with 256 or 1024 files ? for now it's 80/10/10 
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Préparer présentation le 18
 			\item S'inscrire a ACACES
 			\item Billets d'avion BOD-FUI NPL-BOD
 			\item Remove stat printing from executions
-			\item Organise document for meeting thursday maybe with slides ?
 			\item Se ré-inscrire à l'ENS avant le 15 Juin
 			\item Faire slides + longues pour Fréjus
 			\item Envoyer abstract ACACES avant 15 juin
 			\item Faire poster ACACES
 			\item Budget ACACES		
-			\item plots same stats with real data used from rackham history
-			\item Mettre un fois sur les scores B et C de fcfs score pour voir
+			\item plots same stats with real data used from rackham history decision
 			\item Rendre général le modèle des coeurs et des mémoires et des tailles des fichiers. Pour ce dernier chaque job a un fichier d'une certaine taille. Dans mo cas particulier la taille est un multiple de la taille de la mémoire des noeuds. Ensuite décrire la plateforme précise que j'utilise mais avant rendre le cas général. Décrire la plateforme au moment expé.
-			\item Le probleme a 2 cntraites : reuse data et localité ET jobs qui vont que sur certains noeuds. Donc essayer de tester en enlevant 1 des 2 contraintes et ensuite brancher les 2 trucs. Dans un premier temps enlever la contrainte de la taille des fichiers.
 			\item Cours pour l'année prochaine
 			\item Après avis favorable déposer dossier sur SIGED
 			\item Similar results: look if it's exactly the same or it is because the cluster is mainly empty ? Do they take exactly the same decision ? Does easy back fill really change anything or it just reschedule like FCFS ?
 			\item Elongation: multiply each submission time by a constant
-			\item The cluster is empty most of the time: Test with full workload and a smaller cluster but not 4 nodes and 3 phases as well
 			\item Idea algo: 6.2 + penalty for fcfs + easybf or conservative bf
 			\item Refelchir a maximum use en mieux
 			\item faire des boxplots
