@@ -423,20 +423,46 @@ scheduled on the same node following a score computed like in FCFS with a score.
 
 \section{How to deal with files that can only be computed on certain nodes ?}
 The goal is to use the big nodes for all jobs without delaying jobs that require these nodes.
+
 \subsection{Backfill big nodes}
-\paragraph{Intuition} Only schedule jobs that can be started immediatly on big nodes.
+\paragraph{Intuition} Only schedule jobs that can be started immediately on big nodes.
 Jobs requiring a big node are scheduled before other available jobs.
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$
 	\begin{enumerate}
-		\item If $J_i$ can start immediatly on a $x$ node, start it there
-		\item Else if $J_i$ can start immediatly on a $x+1$ node, start it there
-		\item Else if $J_i$ can start immediatly on a $x+2$ node, start it there
-		\item Else if $J_i$ can start immediatly on a $x+3$ node, start it there
+		\item If $J_i$ can start immediately on a $x$ node, start it there
+		\item Else if $J_i$ can start immediately on a $x+1$ node, start it there
+		\item Else if $J_i$ can start immediately on a $x+2$ node, start it there
+		\item Else if $J_i$ can start immediately on a $x+3$ node, start it there
 		\item ...
 		\item Else schedule $J_i$ on a $x$ node
 	\end{enumerate}
+\end{enumerate}
+
+\subsection{Variant of backfill big nodes}
+\paragraph{Intuition} Only schedule jobs that can be started immediately on big nodes and that can't be started on any other nodes in a certain time frame.
+the time frame is the Mean queue time minus the time that already waited the current job.
+\begin{enumerate}
+	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
+	\item Need to schedule job $J_i$, requiring a node of size $x$
+	\item \textbf{$y \gets Mean\_queue\_time\_after\_i\_jobs - Queue\_time(j_i)$}
+	\begin{enumerate}
+		\item If $J_i$ can start immediately on a $x$ node, start it there
+		\item Else if $J_i$ can start immediately on a $x+1$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
+		\item Else if $J_i$ can start immediately on a $x+2$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
+		\item Else if $J_i$ can start immediately on a $x+3$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
+		\item ...
+		\item Else schedule $J_i$ on a $x$ node
+	\end{enumerate}
+\end{enumerate}
+
+\subsection{Schedule first big jobs}
+\paragraph{Intuition} Put jobs requiring big nodes at the beggining of the available job list.
+Big nodes can be used like any other nodes.
+\begin{enumerate}
+	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
+	\item Schedule each job in available job list
 \end{enumerate}
 
 %~ \section{Stats on workloads for Rackham}
