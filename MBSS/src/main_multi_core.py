@@ -18,7 +18,7 @@ input_job_file = sys.argv[1]
 input_node_file = sys.argv[2]
 scheduler = sys.argv[3]
 # ~ filling_strategy = sys.argv[4]
-write_all_jobs = int(sys.argv[4]) # Si on veut faire un gantt chart il faut imprimer tous les jobs et mettre ca à 1
+write_all_jobs = int(sys.argv[4]) # 1 for gantt charts, 2 for distribution of queue times, 3 for cluster usage
 constraint_on_sizes = int(sys.argv[5]) # To add or remove the constraint that some jobs can't be executed on certain nodes. 0 or 1.
 
 # Global structs and input files
@@ -134,11 +134,12 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 			
 			end_times.append(j.end_time)
 			
-			# Just for stats
-			running_cores += j.cores
-			if (j.node_used.n_available_cores == 20):
-				running_nodes += 1
-			j.node_used.n_available_cores -= j.cores
+			if (write_all_jobs == 3):
+				# Just for stats
+				running_cores += j.cores
+				if (j.node_used.n_available_cores == 20):
+					running_nodes += 1
+				j.node_used.n_available_cores -= j.cores
 
 			if (j.delay + transfer_time < j.walltime):
 				j.end_before_walltime = True
@@ -171,11 +172,12 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 			
 			finished_job_list.append(j)
 			
-			# Just for stats
-			running_cores -= j.cores
-			j.node_used.n_available_cores += j.cores
-			if (j.node_used.n_available_cores == 20):
-				running_nodes -= 1
+			if (write_all_jobs == 3):
+				# Just for stats
+				running_cores -= j.cores
+				j.node_used.n_available_cores += j.cores
+				if (j.node_used.n_available_cores == 20):
+					running_nodes -= 1
 			
 			end_times.remove(j.end_time)
 			
@@ -198,78 +200,6 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 	running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
 						
 	return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes
-
-# Try to schedule immediatly in FCFS order without delaying first_job_in_queue
-def easy_backfill(first_job_in_queue, t, node_list, available_job_list, scheduled_job_list):
-	# ~ print("Début de Easy BackFilling...")
-	job_to_remove = []
-	# ~ print_job_info_from_list(available_job_list, t)
-	for j in available_job_list:
-		# ~ print("Try to backfill", j.unique_id, "at time", t, "first job is", first_job_in_queue.unique_id)
-		# ~ choosen_node = None
-		# ~ nb_possible_cores = 0
-		# ~ choosen_core = []
-		if (j.index_node_list == 0): # Je peux choisir dans la liste entière
-			nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
-		elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-			nodes_to_choose_from = node_list[1] + node_list[2]
-		elif (j.index_node_list == 2): # Je peux choisir que dans la 2
-			nodes_to_choose_from = node_list[2]
-		for n in nodes_to_choose_from:
-			choosen_node = None
-			choosen_core = []
-			nb_possible_cores = 0
-			if n.n_available_cores >= j.cores: 
-				# ~ print("On node", n.unique_id, ":", n.n_available_cores, j.cores) 
-				# Need to make sure it won't delay first_job_in_queue
-				# If it's the same node and the job is longer that start time of first_job_in_queue it might cause problems
-				if (n == first_job_in_queue.node_used and t + j.walltime > first_job_in_queue.start_time):
-					# Careful, you can't choose the same cores!
-					# ~ print("same node")
-					for c in n.cores:
-						if c.available_time <= t and c not in first_job_in_queue.cores_used:
-							nb_possible_cores += 1
-					if (nb_possible_cores >= j.cores): # Ok you can!
-						choosen_node = n
-						# ~ print("node choosen is the same as first j")
-						for c in choosen_node.cores:
-							if c.available_time <= t and c not in first_job_in_queue.cores_used:
-								choosen_core.append(c)
-								
-								# ~ if (j.unique_id == 19848 or j.unique_id == 20143 or j.unique_id == 21407):
-									# ~ print("In bf same node at time", t, "Added on node", choosen_node.unique_id, "core", c.unique_id)
-								
-								c.job_queue.append(j)
-								if (len(choosen_core) == j.cores):
-									break										
-				else: # You can choose any free core
-					# ~ print("free node")
-					choosen_node = n
-					choosen_node.cores.sort(key = operator.attrgetter("available_time"))
-					choosen_core = choosen_node.cores[0:j.cores]
-					for c in choosen_core:
-												
-						c.job_queue.append(j)
-						
-						# Fix en carton
-						c.available_time = t
-						
-				if choosen_node != None:
-					start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
-					j.node_used = choosen_node
-					j.cores_used = choosen_core
-					j.start_time = start_time
-					j.end_time = start_time + j.walltime							
-					# ~ available_job_list.remove(j)
-					job_to_remove.append(j)
-					scheduled_job_list.append(j)
-					# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
-					start_jobs_single_job(t, j)
-					# ~ print_job_info_from_list(available_job_list, t)
-					break
-	available_job_list = remove_jobs_from_list(available_job_list, job_to_remove)
-	# ~ print("Fin de Easy BackFilling...")
-	return scheduled_job_list
 
 # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
 def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
@@ -462,9 +392,11 @@ running_jobs = []
 # Just for stats
 running_cores = 0
 running_nodes = 0
-title = "outputs/Stats_" + scheduler + ".csv"
-f_stats = open(title, "w")
-f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
+
+if (write_all_jobs == 3):
+	title = "outputs/Stats_" + scheduler + ".csv"
+	f_stats = open(title, "w")
+	f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
 
 if (scheduler == "Fcfs_with_a_score_variant"):
 	variant = 1
@@ -595,12 +527,14 @@ while(total_number_jobs != finished_jobs):
 		remove_data_from_node(finished_job_list)
 	
 	# Print cores used
-	f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(scheduled_job_list)))
+	if (write_all_jobs == 3):
+		f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(scheduled_job_list)))
 	
 	# Time is advancing
 	t += 1
 
-f_stats.close()
+if (write_all_jobs == 3):
+	f_stats.close()
 
 # Print results in a csv file
 print("Computing and writing results...")
