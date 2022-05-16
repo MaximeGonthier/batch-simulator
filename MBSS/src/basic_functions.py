@@ -114,26 +114,35 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 		c.available_time = start_time + walltime
 	return start_time
 
-# Return set of files that will be on node at a given time
-def files_on_node_at_certain_time(predicted_time, node, current_time):
-	file_on_node = []
+# ~ # Return set of files that will be on node at a given time
+# ~ def files_on_node_at_certain_time(predicted_time, node, current_time):
+	# ~ file_on_node = []
 	
-	if (current_time == predicted_time):
-		for d in node.data:
-			if (d.nb_task_using_it > 0):
-				file_on_node.append(d.unique_id)
-				# ~ print("on node", node.unique_id, "there is", d.unique_id)
-	else:
-		for c in node.cores:
-			for j in c.job_queue:
-				# ~ print("Job is on node", node.unique_id, j.unique_id)
-				# ~ print("For job", j.unique_id, "transfer done at", j.start_time + j.transfer_time, "end at", j.start_time + j.walltime)
+	# ~ if (current_time == predicted_time):
+		# ~ for d in node.data:
+			# ~ if (d.nb_task_using_it > 0):
+				# ~ file_on_node.append(d.unique_id)
+	# ~ else:
+		# ~ for c in node.cores:
+			# ~ for j in c.job_queue:
+				# ~ if j.start_time + j.transfer_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+					# ~ if j.data not in file_on_node:
+						# ~ file_on_node.append(j.data)
+					# ~ break # Break because no other possibility on this core ?
+	# ~ return file_on_node
+	
+# Return transfer time and return if the file is being loaded
+def is_my_file_on_node_at_certain_time_and_transfer_time (predicted_time, node, current_time, current_data, current_data_size):
+	# ~ is_being_loaded = False
+	for c in node.cores:
+		for j in c.job_queue:
+			if j.data == current_data:
 				if j.start_time + j.transfer_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
-					if j.data not in file_on_node:
-						file_on_node.append(j.data)
-						# ~ print(j.data , "is on node of", node.unique_id)
-					break # Break because no other possibility on this core ?
-	return file_on_node
+					return 0, False
+				# ~ elif (predicted_time == current_time and j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time) or (j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time): # Data is being loaded at this time
+				elif j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data is being loaded at this time
+					return j.start_time + j.transfer_time - current_time, True
+	return current_data_size/node.bandwidth, False
 
 def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 	size_file_ended = 0
@@ -151,6 +160,26 @@ def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 				already_counted.append(j.data)
 				break
 	return size_file_ended
+
+# Return the number of copy of a file at a certain time in the future
+def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
+	nb_of_copy = 0
+	need_to_break = False
+	for n in nodes:
+		for c in n.cores:
+			# ~ print("Looking at core", c.unique_id, "node", n.unique_id)
+			for j in c.job_queue:
+				if j.data == current_data:
+					if j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+						nb_of_copy += 1
+						# We can go on the next node now
+						need_to_break = True
+						# ~ print("++, need to break")
+						break
+			if need_to_break == True:
+				need_to_break = False
+				break
+	return nb_of_copy
 	
 # Schedule a job earliest available node and write start time and add job in queues
 def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):

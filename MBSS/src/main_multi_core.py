@@ -398,10 +398,40 @@ if (write_all_jobs == 3):
 	f_stats = open(title, "w")
 	f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
 
-if (scheduler == "Fcfs_with_a_score_variant"):
-	variant = 1
-elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_easy_bf"):
-	variant = 0
+# Variant for FCFS with a score
+multiplier = 1
+multiplier_nb_copy = 1
+if (scheduler == "Fcfs_with_a_score_x1_x1"):
+	multiplier = 1
+elif (scheduler == "Fcfs_with_a_score_x1.5_x1"):
+	multiplier = 1.5
+elif (scheduler == "Fcfs_with_a_score_x2_x1"):
+	multiplier = 2
+elif (scheduler == "Fcfs_with_a_score_x2.5_x1"):
+	multiplier = 2.5
+elif (scheduler == "Fcfs_with_a_score_x3_x1"):
+	multiplier = 3
+elif (scheduler == "Fcfs_with_a_score_x3.5_x1"):
+	multiplier = 3.5
+elif (scheduler == "Fcfs_with_a_score_x4_x1"):
+	multiplier = 4
+elif (scheduler == "Fcfs_with_a_score_x4.5_x1"):
+	multiplier = 4.5
+elif (scheduler == "Fcfs_with_a_score_x5_x1"):
+	multiplier = 5
+elif (scheduler == "Fcfs_with_a_score_x1_x1.5"):
+	multiplier = 1
+	multiplier_nb_copy = 1.5
+elif (scheduler == "Fcfs_with_a_score_x1_x2"):
+	multiplier = 1
+	multiplier_nb_copy = 2
+elif (scheduler == "Fcfs_with_a_score_x1_x2.5"):
+	multiplier = 1
+	multiplier_nb_copy = 2.5
+elif (scheduler == "Fcfs_with_a_score_x1_x3"):
+	multiplier = 1
+	multiplier_nb_copy = 3
+	
 
 # Start of simulation
 first_job_in_queue = None
@@ -428,8 +458,9 @@ while(total_number_jobs != finished_jobs):
 			random.shuffle(available_job_list)
 			random_scheduler(available_job_list, node_list, t)
 			
-		elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
-			fcfs_with_a_score_scheduler(available_job_list, node_list, t, variant)
+		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
+			fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
 			fcfs_scheduler(available_job_list, node_list, t)
@@ -447,7 +478,7 @@ while(total_number_jobs != finished_jobs):
 				first_job_in_queue = available_job_list[0]
 			else:
 				first_job_in_queue = scheduled_job_list[0]
-			fcfs_with_a_score_scheduler(available_job_list, node_list, t, variant)
+			fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
 			
 		elif (scheduler == "Common_file_packages_with_a_score"):
@@ -472,7 +503,7 @@ while(total_number_jobs != finished_jobs):
 	
 	if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 		
-		# ~ # Reset all cores and jobs
+		# Reset all cores and jobs
 		if (scheduler != "Maximum_use_single_file"):
 			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
 		
@@ -482,8 +513,9 @@ while(total_number_jobs != finished_jobs):
 		if (scheduler == "Random"):
 			random_scheduler(scheduled_job_list, node_list, t)
 			
-		elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
-			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, variant)
+		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
+			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
 			fcfs_scheduler(scheduled_job_list, node_list, t)
@@ -513,7 +545,7 @@ while(total_number_jobs != finished_jobs):
 				first_job_in_queue = scheduled_job_list[0]
 				# ~ print("First job is", first_job_in_queue.unique_id)
 				if len(affected_node_list) > 0:
-					fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, variant)
+					fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
 			easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
 			
 	# Get started jobs
