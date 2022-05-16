@@ -1,6 +1,7 @@
 # Imports
 from basic_functions import *
 from print_functions import *
+from size_of_node_constraint import start_job_immediatly_specific_node_size
 import random
 from dataclasses import dataclass
 import operator
@@ -427,18 +428,41 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 	# ~ return scheduled_job_list
 	return l
 
-def fcfs(available_job_list, node_list, t, scheduled_job_list):
-	for j in available_job_list:
-		scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
-	available_job_list.clear()
-	return scheduled_job_list
+# ~ def fcfs(available_job_list, node_list, t, scheduled_job_list):
+	# ~ for j in available_job_list:
+		# ~ scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
+	# ~ available_job_list.clear()
+	# ~ return scheduled_job_list
 	
 def fcfs_scheduler(l, node_list, t):
-	# ~ i = 0
 	for j in l:
-		# ~ i += 1
-		# ~ if i > 100:
-			# ~ break
+		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
+
+# TODO : pas besoin de sort a chaque fois
+def fcfs_scheduler_backfill_big_nodes(l, node_list, t):
+	number_of_nodes_sub_list = len(node_list)
+	l.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+	for j in l:
+		result = False
+		i = j.index_node_list
+		while (result == False and i != number_of_nodes_sub_list):
+			print("Try to start immedialy on node of size", i)
+			result = start_job_immediatly_specific_node_size(j, node_list[i], t)
+			i += 1
+		if (result == False):
+			print("Just schedule job", j.unique_id)
+			# If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits)
+			schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, node_list[j.index_node_list], t)
+
+# TODO : a coder
+def fcfs_scheduler_backfill_big_nodes_variant(l, node_list, t):
+	for j in l:
+		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
+		
+# Sort by size of data before scheduling
+def fcfs_scheduler_big_job_first(l, node_list, t):
+	l.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+	for j in l:
 		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
 
 def common_file_packages_with_a_score(l, node_list, t, total_number_cores):

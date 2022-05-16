@@ -216,8 +216,8 @@ def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list
 	
 	scheduled_job_list.append(j)
 	
-	# ~ if __debug__:
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+	if __debug__:
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
 		
 	return scheduled_job_list
 
@@ -250,7 +250,7 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 			choosen_node = n
 													
 	choosen_core = choosen_node.cores[0:j.cores]
-	# ~ start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	# start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
 	start_time = min_time
 	j.node_used = choosen_node
 	j.cores_used = choosen_core
@@ -260,8 +260,36 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 		c.job_queue.append(j)
 		c.available_time = start_time + j.walltime
 		
-	# ~ if __debug__:
-		# ~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+	if __debug__:
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
+
+# Same but from a specific node list		
+def schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, sublist_node, t):					
+	min_time = -1	
+	for n in sublist_node:
+		n.cores.sort(key = operator.attrgetter("available_time"))
+		earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0	
+		earliest_available_time = max(t, earliest_available_time) # A core can't be available before t. This happens when a node is idling						
+		if min_time == -1:
+			min_time = earliest_available_time
+			choosen_node = n
+		elif min_time > earliest_available_time:
+			min_time = earliest_available_time
+			choosen_node = n
+													
+	choosen_core = choosen_node.cores[0:j.cores]
+	# start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	start_time = min_time
+	j.node_used = choosen_node
+	j.cores_used = choosen_core
+	j.start_time = start_time
+	j.end_time = start_time + j.walltime			
+	for c in choosen_core:
+		c.job_queue.append(j)
+		c.available_time = start_time + j.walltime
+		
+	if __debug__:
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
 
 def reset_cores(l, t):
 	for n in l:
