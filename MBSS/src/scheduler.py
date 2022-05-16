@@ -140,7 +140,6 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 			# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
 
 			# Compute node's score
-			multiplier_nb_copy = 1
 			# ~ score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files
 			# TODO: ++ socre if nb_copy_file_to_load is high AND you are on a node htat doesn't have this file.
 			# ~ score = earliest_available_time + multiplier*(time_to_load_file*(nb_copy_file_to_load + 1)) + multiplier*time_to_reload_evicted_files
@@ -190,7 +189,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 	# ~ return l
 
 # Just return choosen node and cores
-def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, multiplier):
+def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, multiplier, multiplier_nb_copy):
 	
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
 		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
@@ -202,6 +201,10 @@ def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, multip
 	min_score = -1
 	earliest_available_time_to_return = 0
 	
+	
+	time_checked_for_nb_copy = []
+	corresponding_results = []
+		
 	for n in nodes_to_choose_from:
 									
 		# 2.2. Sort cores by available times
@@ -226,10 +229,32 @@ def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, multip
 			# ~ else:
 				# ~ time_to_load_file = j.data_size/n.bandwidth
 			# ~ print("Time to load is", time_to_load_file, "on node", n.unique_id)
-				
+		
 		# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
 		size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
 		time_to_reload_evicted_files = size_files_ended/n.bandwidth
+		
+		# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
+		# ~ if j.data != 0:
+		if time_to_load_file != 0 and is_being_loaded == False:
+			if (earliest_available_time not in time_checked_for_nb_copy):
+				nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
+				time_checked_for_nb_copy.append(earliest_available_time)
+				corresponding_results.append(nb_copy_file_to_load)
+			else:
+				nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
+			# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
+		else:
+			nb_copy_file_to_load = 0
+			# ~ print("Data is 0 or is_being_loaded or already on node, file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
+
+		# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
+
+		# Compute node's score
+		# ~ score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files
+		# TODO: ++ socre if nb_copy_file_to_load is high AND you are on a node htat doesn't have this file.
+		# ~ score = earliest_available_time + multiplier*(time_to_load_file*(nb_copy_file_to_load + 1)) + multiplier*time_to_reload_evicted_files
+		score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
 			
 		# Compute node's score
 		score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files
@@ -474,7 +499,7 @@ def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
 			if (cores_asked_current_package == 0):
 				if __debug__:
 					print("New subpackage")
-				choosen_node, choosen_core, earliest_available_time = return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, 1)
+				choosen_node, choosen_core, earliest_available_time = return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, 1, 1)
 			elif (cores_asked_current_package <= max_number_cores_asked_by_package):
 				if __debug__:
 					print("Same package")
