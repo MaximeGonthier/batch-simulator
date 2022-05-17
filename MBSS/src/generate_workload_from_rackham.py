@@ -57,6 +57,12 @@ workload = []
 	# ~ f_input_before.close()
 	
 line = f_input.readline()
+
+# Get start of first job because all job submitted after this start time will be on the used workload
+r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
+first_time_used_jobs = int(str(r8)[4:])
+print("Time of first job of used days is", first_time_used_jobs)
+
 while line:
 	r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
 	if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20 and int(str(r8)[4:]) - int(str(r7)[6:]) > 0): # DELAY MUST NOT BE 0! I don't know why but there are 0 seconds jobs with completed status
@@ -105,10 +111,14 @@ f_input.close()
 # Min sub time takes 0
 workload.sort(key = operator.attrgetter("subtime"))
 min_subtime = workload[0].subtime
-nb_ignored_jobs=(int(sys.argv[5])*id_count)/100
-print("There are", id_count - 1, "jobs and", id_count - nb_ignored_jobs*2, "will be evaluated")
+nb_used_jobs = 0
+# ~ nb_ignored_jobs=(int(sys.argv[5])*id_count)/100
+
+# ~ print("There are", id_count - 1, "jobs and", id_count - nb_ignored_jobs*2, "will be evaluated")
+
 # Getting data. 0 means no data
 f_output = open("inputs/workloads/converted/" + FILENAME, "w")
+
 if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 	workload[0].data = 1
 	r = 0
@@ -119,13 +129,20 @@ if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 	elif (r < PROBABILITY_OF_USING_1TB + PROBABILITY_OF_USING_256GB):
 		size = 51.2
 	workload[0].data_size = size*workload[0].cores
-workload[0].workload = 0
+
+if workload[0].subtime >= first_time_used_jobs:
+	workload[0].workload = 1
+	nb_used_jobs += 1
+else:
+	workload[0].workload = 0
+
 f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size, workload[0].workload))
 last_data = workload[0].data
 last_size = workload[0].data_size
 last_user = workload[0].user
 last_subtime = workload[0].subtime
 last_core = workload[0].cores
+
 for i in range (1, id_count - 1):
 	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		share_last_user = random.randint(0,99)
@@ -149,12 +166,20 @@ for i in range (1, id_count - 1):
 			last_subtime = workload[i].subtime
 			last_core = workload[i].cores
 
-	if (i < nb_ignored_jobs - 1):
-		workload[i].workload = 0
-	elif (i > id_count - nb_ignored_jobs - 1):
-		workload[i].workload = 2
-	else:
+	# ~ if (i < nb_ignored_jobs - 1):
+		# ~ workload[i].workload = 0
+	# ~ elif (i > id_count - nb_ignored_jobs - 1):
+		# ~ workload[i].workload = 2
+	# ~ else:
+		# ~ workload[i].workload = 1
+		
+	if workload[i].subtime >= first_time_used_jobs:
 		workload[i].workload = 1
+		nb_used_jobs += 1
+	else:
+		workload[i].workload = 0
 		
 	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
 f_output.close()
+
+print("There are", id_count - 1, "jobs and", nb_used_jobs, "will be evaluated")
