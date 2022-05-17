@@ -118,10 +118,16 @@ def start_jobs_single_job(t, j):
 		exit(1)
 	
 	# ~ return scheduled_job_list, running_jobs
-def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes):
+def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time):
 	jobs_to_remove = []
 	for j in scheduled_job_list:
 		if (j.start_time == t):
+			
+			
+			# For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
+			total_queue_time += j.start_time - j.subtime
+			
+			
 			transfer_time = 0
 			waiting_for_a_load_time = 0
 			if (j.data != 0):
@@ -155,7 +161,7 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 			break
 	if len(jobs_to_remove) > 0:
 		scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
-	return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes
+	return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time
 
 def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes): # TODO plus besoin de scheduleed job list
 	jobs_to_remove = []
@@ -431,8 +437,15 @@ elif (scheduler == "Fcfs_with_a_score_x1_x2.5"):
 elif (scheduler == "Fcfs_with_a_score_x1_x3"):
 	multiplier = 1
 	multiplier_nb_copy = 3
-	
 
+# Variant for backfill big nodes
+backfill_big_node_mode = 0
+if (scheduler == "Fcfs_backfill_big_nodes_variant"):
+	backfill_big_node_mode = 1
+	
+# For constraint on node sizes
+total_queue_time = 0
+	
 # Start of simulation
 first_job_in_queue = None
 while(total_number_jobs != finished_jobs):
@@ -468,8 +481,8 @@ while(total_number_jobs != finished_jobs):
 		elif (scheduler == "Fcfs_big_job_first"):
 			fcfs_scheduler_big_job_first(available_job_list, node_list, t)
 			
-		elif (scheduler == "Fcfs_backfill_big_nodes"):
-			fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t)
+		elif (scheduler[0:23] == "Fcfs_backfill_big_nodes"):
+			fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
 				
 		elif (scheduler == "Fcfs_easybf"):
 			if (first_job_in_queue == None):
@@ -529,8 +542,8 @@ while(total_number_jobs != finished_jobs):
 		elif (scheduler == "Fcfs_big_job_first"):
 			fcfs_scheduler_big_job_first(scheduled_job_list, node_list, t)
 			
-		elif (scheduler == "Fcfs_backfill_big_nodes"):
-			fcfs_scheduler_backfill_big_nodes(scheduled_job_list, node_list, t)
+		elif (scheduler[0:23] == "Fcfs_backfill_big_nodes"):
+			fcfs_scheduler_backfill_big_nodes(scheduled_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
 			
 		elif (scheduler == "Maximum_use_single_file"):
 			reset_cores(affected_node_list, t)
@@ -564,7 +577,7 @@ while(total_number_jobs != finished_jobs):
 	if (len(scheduled_job_list) > 0):
 		scheduled_job_list.sort(key = operator.attrgetter("start_time"))
 		if (scheduled_job_list[0].start_time == t):
-			scheduled_job_list, running_jobs, end_times, running_cores, running_nodes = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes)
+			scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time)
 	
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	if len(finished_job_list) > 0:

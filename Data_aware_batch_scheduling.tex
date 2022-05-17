@@ -447,6 +447,7 @@ Jobs requiring a big node are scheduled before other available jobs.
 \subsection{Variant of backfill big nodes}
 \paragraph{Intuition} Only schedule jobs that can be started immediately on big nodes and that can't be started on any other nodes in a certain time frame.
 the time frame is the Mean queue time minus the time that already waited the current job.
+A job started immeditly must not delay other jobs.
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$
@@ -454,8 +455,8 @@ the time frame is the Mean queue time minus the time that already waited the cur
 	\begin{enumerate}
 		\item If $J_i$ can start immediately on a $x$ node, start it there
 		\item Else if $J_i$ can start immediately on a $x+1$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
-		\item Else if $J_i$ can start immediately on a $x+2$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
-		\item Else if $J_i$ can start immediately on a $x+3$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
+		\item Else if $J_i$ can start immediately on a $x+2$ node \textbf{and can't be started on an $x+1$ node before time $t + y$}, start it there
+		\item Else if $J_i$ can start immediately on a $x+3$ node \textbf{and can't be started on an $x+2$ node before time $t + y$}, start it there
 		\item ...
 		\item Else schedule $J_i$ on a $x$ node
 	\end{enumerate}

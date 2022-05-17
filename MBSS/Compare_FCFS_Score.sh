@@ -21,9 +21,8 @@ CONTRAINTES_TAILLES=$3
 #~ bash Generate_workload_from_rackham.sh $WORKLOAD
 # OR $1 is already an existing workload
 
-#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_FCFS_Score_${WORKLOAD_TP}.csv
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_FCFS_Score_${WORKLOAD_TP}.csv
 
-#~ for ((i=0; i<5; i++))
 for ((i=0; i<13; i++))
 do
 	# Schedulers

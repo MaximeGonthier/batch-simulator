@@ -439,7 +439,7 @@ def fcfs_scheduler(l, node_list, t):
 		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
 
 # TODO : pas besoin de sort a chaque fois
-def fcfs_scheduler_backfill_big_nodes(l, node_list, t):
+def fcfs_scheduler_backfill_big_nodes(l, node_list, t, backfill_big_node_mode, mean_queue_time):
 	number_of_nodes_sub_list = len(node_list)
 	l.sort(key = operator.attrgetter("index_node_list"), reverse = True)
 	for j in l:
@@ -447,17 +447,12 @@ def fcfs_scheduler_backfill_big_nodes(l, node_list, t):
 		i = j.index_node_list
 		while (result == False and i != number_of_nodes_sub_list):
 			print("Try to start immedialy on node of size", i)
-			result = start_job_immediatly_specific_node_size(j, node_list[i], t)
+			result = start_job_immediatly_specific_node_size(j, node_list[i], t, backfill_big_node_mode, mean_queue_time)
 			i += 1
 		if (result == False):
 			print("Just schedule job", j.unique_id)
 			# If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits)
 			schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, node_list[j.index_node_list], t)
-
-# TODO : a coder
-def fcfs_scheduler_backfill_big_nodes_variant(l, node_list, t):
-	for j in l:
-		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
 		
 # Sort by size of data before scheduling
 def fcfs_scheduler_big_job_first(l, node_list, t):
