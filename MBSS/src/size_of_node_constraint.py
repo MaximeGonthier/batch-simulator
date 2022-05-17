@@ -19,7 +19,7 @@ def start_job_immediatly_specific_node_size(job, node_sublist, current_time, bac
 	for n in node_sublist:
 		choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(job.cores, n, current_time)
 		if backfill_big_node_mode:
-			threshold_for_a_start = current_time + mean_queue_time - (current_time - job.subtime)
+			threshold_for_a_start = current_time + mean_queue_time - (current_time - job.subtime) + job.walltime
 		else:
 			threshold_for_a_start = current_time
 			

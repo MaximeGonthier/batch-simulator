@@ -428,6 +428,14 @@ scheduled on the same node following a score computed like in FCFS with a score.
 \section{How to deal with files that can only be computed on certain nodes ?}
 The goal is to use the big nodes for all jobs without delaying jobs that require these nodes.
 
+\subsection{Schedule first big jobs}
+\paragraph{Intuition} Put jobs requiring big nodes at the beggining of the available job list.
+Big nodes can be used like any other nodes.
+\begin{enumerate}
+	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
+	\item Schedule each job in available job list
+\end{enumerate}
+
 \subsection{Backfill big nodes}
 \paragraph{Intuition} Only schedule jobs that can be started immediately on big nodes.
 Jobs requiring a big node are scheduled before other available jobs.
@@ -446,12 +454,17 @@ Jobs requiring a big node are scheduled before other available jobs.
 
 \subsection{Variant of backfill big nodes}
 \paragraph{Intuition} Only schedule jobs that can be started immediately on big nodes and that can't be started on any other nodes in a certain time frame.
-the time frame is the Mean queue time minus the time that already waited the current job.
-A job started immeditly must not delay other jobs.
+the time frame is the Mean queue time minus the time that already waited the current job plus the walltime of the job.
+A job started immediately must not delay other jobs.
+Let's note $x$ the size of a node.
+\todo[inline]{Max: In order to scale the impact of walltime we can compute statistics on the cluster and the previous workloads.\\
+Cluster: Get \% of nodes of each size noted $percentage\_node\_size(x)$ for each x.\\
+Previous workloads: Get the \% of jobs demanding a certain size noted $percentage\_job\_size(x)$.\\
+For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we scale the walltime for this size of node to $\walltime(J_i) \times (percentage\_job\_size(x) - percentage\_node\_size(x))$.}
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$
-	\item \textbf{$y \gets Mean\_queue\_time\_after\_i\_jobs - Queue\_time(j_i)$}
+	\item \textbf{$y \gets Mean\_queue\_time\_after\_i\_jobs - Queue\_time(J_i) + \walltime(J_i)$}
 	\begin{enumerate}
 		\item If $J_i$ can start immediately on a $x$ node, start it there
 		\item Else if $J_i$ can start immediately on a $x+1$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
@@ -460,14 +473,6 @@ A job started immeditly must not delay other jobs.
 		\item ...
 		\item Else schedule $J_i$ on a $x$ node
 	\end{enumerate}
-\end{enumerate}
-
-\subsection{Schedule first big jobs}
-\paragraph{Intuition} Put jobs requiring big nodes at the beggining of the available job list.
-Big nodes can be used like any other nodes.
-\begin{enumerate}
-	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
-	\item Schedule each job in available job list
 \end{enumerate}
 
 %~ \section{Stats on workloads for Rackham}
@@ -612,5 +617,14 @@ Big nodes can be used like any other nodes.
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Total_queue_time_450_128_32_256_4_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer + waiting time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16-2022-03-20 - Performance - Full cluster - May 14}\end{figure}
+	
+	\subsection{1 day and 1/4 cluster}
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 16}\end{figure}
+	
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Performance - 1/4 cluster - May 16}\end{figure}
 
 \end{document}
