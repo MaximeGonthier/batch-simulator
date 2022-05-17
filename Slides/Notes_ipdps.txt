@@ -49,3 +49,4 @@ Slide 12: explain Belady
 
 Slide 14:
 	
+Joker 2D: 2 fois plus de tâches car 2 fois plus de GPUs

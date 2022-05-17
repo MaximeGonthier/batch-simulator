@@ -574,9 +574,6 @@ Accurately represent data sharing
 
 %% ---------------------------------------------------------------------------
 \begin{frame}{DARTS: Task flow}
-%~ \begin{frame}{DARTS}
-%~ \plannedTasks{k}: Task reserved for later allocation
-%~ \pulledTasks{k}: Task popped from \plannedTasks{k} for execution on \GPU{k}
 
 \begin{figure}[tb]
 		\scalebox{0.79}{
@@ -602,6 +599,8 @@ Accurately represent data sharing
 			
 			\onslide<2-4> { \node[draw] at (2.6*\x, 5.7*\y) {If $\plannedTasks{k} = \emptyset \rightarrow$ DARTS fill $\plannedTasks{k}$}; }
 			\onslide<5-6> { \node[draw] at (2.6*\x, 5.7*\y) {If $\pulledTasks{k} = \emptyset \rightarrow \GPU{k}$ will pop $\plannedTasks{k}$}; }
+			
+			\onslide<7-7> { \node[draw] at (2.6*\x, 5.7*\y) {Data from $\pulledTasks{k}$ is prefetched}; }
 			
 			\onslide<1-8> { \draw[color=black, fill=red!10] (-3*\x, 0.4*\y) rectangle (2*\x, -0.2*\y)  node[midway] {$\GPU{1}$ is asking for a task!}; }
 			\onslide<9-12> { \draw[color=black, fill=green!10] (3*\x, 0.4*\y) rectangle (8*\x, -0.2*\y)  node[midway] {$\GPU{2}$ is asking for a task!}; }
@@ -725,9 +724,9 @@ Accurately represent data sharing
 		\end{block}
 			\begin{block}{Applications}
 			\begin{itemize}
-				\item Tiled dense and sparse outer product 
+				\item Tiled dense and sparse outer product ($C = A \times B$)
 				\item Tiled 3D Matrix Multiplication
-				\item Tiled Cholesky decomposition (without dependencies)
+				\item Tiled Cholesky decomposition (without dependencies) ($A = L \times L^T$)
 			\end{itemize}
 			\end{block}
         %~ \end{column}
@@ -855,6 +854,13 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
+\begin{frame}[noframenumbering]{Visualization of DARTS processing order on the tiled dense outer product}
+	\begin{figure}
+		\center\includegraphics[scale = 0.17]{Images/cutDDA.png}
+	\end{figure}
+\end{frame}
+
+%% ---------------------------------------------------------------------------
 \begin{frame}[noframenumbering]{Tiled dense outer product with 4 Tesla V100 GPUs in real}
     \begin{figure}
         \centering
@@ -887,13 +893,5 @@ Accurately represent data sharing
 	\end{columns}
 \end{frame}
 }
-
-%% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Visualization of DARTS processing order on the tiled dense outer product}
-	\begin{figure}
-		\center\includegraphics[scale = 0.17]{Images/cutDDA.png}
-	\end{figure}
-
-\end{frame}
 
 \end{document}
