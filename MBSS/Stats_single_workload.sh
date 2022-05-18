@@ -19,8 +19,12 @@ python3 src/plot_stats_workload.py ${WORKLOAD_TP} cores
 python3 src/plot_stats_workload.py ${WORKLOAD_TP} walltime
 python3 src/plot_stats_workload.py ${WORKLOAD_TP} delay
 
-# Usage
+
+# Simulation
 ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_TAILLES
+#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_TAILLES
+
+
 #~ read V1 V2 < outputs/Start_end_slice_2.txt
 read V1 < outputs/Start_end_slice_2.txt
 #~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2

@@ -80,114 +80,121 @@ def random_scheduler(available_job_list, node_list, t):
 # Schedule j on the node with the lowest score and on the cores available the earliest.
 def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy):
 	
+	# Test reduced complexity
+	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
+	scheduled_job_list = []
+		
 	# 1. Declare a list of job to remove and loop on available jobs
 	for j in l:
-				
-		# 2. Choose a node
-		# 2.1. Different list depending on file size
-		if (j.index_node_list == 0): # Je peux choisir dans la liste entière
-			nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
-		elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-			nodes_to_choose_from = node_list[1] + node_list[2]
-		elif (j.index_node_list == 2): # Je peux choisir que dans la 2
-			nodes_to_choose_from = node_list[2]
-					
-		min_score = -1
 		
-		# For the number of valid copy of a data on other nodes. I add in this list time already checked for current job.
-		time_checked_for_nb_copy = []
-		corresponding_results = []
+		# Reduce complexity a bit ?
+		if nb_non_available_cores < nb_cores:
+			scheduled_job_list.append(j)
 		
-		for n in nodes_to_choose_from:
-									
-			# 2.2. Sort cores by available times
-			n.cores.sort(key = operator.attrgetter("available_time"))
-				
-			# 2.3. Get the earliest available time from the number of cores required by the job and add it to the score
-			earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0
-			earliest_available_time = max(t, earliest_available_time)
-			# ~ print("Earliest time for node", n.unique_id, "is", earliest_available_time)
-				
-			# 2.4. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node
-			if j.data == 0:
-				time_to_load_file = 0
-			else:
-				# ~ files_on_node = files_on_node_at_certain_time(earliest_available_time, n, t)
-				time_to_load_file, is_being_loaded = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j.data, j.data_size)
-				# ~ if j.data in files_on_node:
-				# ~ if file_on_node == 1:
-					# ~ time_to_load_file = 0
-				# ~ else:
-					# ~ time_to_load_file = j.data_size/n.bandwidth
-				
-			# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
-			size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
-			time_to_reload_evicted_files = size_files_ended/n.bandwidth
+			# 2. Choose a node
+			# 2.1. Different list depending on file size
+			if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+				nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
+			elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+				nodes_to_choose_from = node_list[1] + node_list[2]
+			elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+				nodes_to_choose_from = node_list[2]
+						
+			min_score = -1
 			
-			# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
-			# ~ if j.data != 0:
-			if time_to_load_file != 0 and is_being_loaded == False:
-				if (earliest_available_time not in time_checked_for_nb_copy):
-					nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
-					time_checked_for_nb_copy.append(earliest_available_time)
-					corresponding_results.append(nb_copy_file_to_load)
+			# For the number of valid copy of a data on other nodes. I add in this list time already checked for current job.
+			time_checked_for_nb_copy = []
+			corresponding_results = []
+			
+			for n in nodes_to_choose_from:
+										
+				# 2.2. Sort cores by available times
+				n.cores.sort(key = operator.attrgetter("available_time"))
+					
+				# 2.3. Get the earliest available time from the number of cores required by the job and add it to the score
+				earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0
+				earliest_available_time = max(t, earliest_available_time)
+				# ~ print("Earliest time for node", n.unique_id, "is", earliest_available_time)
+					
+				# 2.4. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node
+				if j.data == 0:
+					time_to_load_file = 0
 				else:
-					nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
-				# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
-			else:
-				nb_copy_file_to_load = 0
-				# ~ print("Data is 0 or is_being_loaded or already on node, file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
-
-			# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
-
-			# Compute node's score
-			# ~ score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files
-			# TODO: ++ socre if nb_copy_file_to_load is high AND you are on a node htat doesn't have this file.
-			# ~ score = earliest_available_time + multiplier*(time_to_load_file*(nb_copy_file_to_load + 1)) + multiplier*time_to_reload_evicted_files
-			score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
-			
-			# ~ print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier*time_to_load_file, "+ TRL", multiplier*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id)
-			
-			# 2.6. Get minimum score
-			if min_score == -1:
-				min_score = score
-				choosen_node = n
-				choosen_time_to_load_file = time_to_load_file
-			elif min_score > score:
-				min_score = score
-				choosen_node = n
-				choosen_time_to_load_file = time_to_load_file
+					# ~ files_on_node = files_on_node_at_certain_time(earliest_available_time, n, t)
+					time_to_load_file, is_being_loaded = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j.data, j.data_size)
+					# ~ if j.data in files_on_node:
+					# ~ if file_on_node == 1:
+						# ~ time_to_load_file = 0
+					# ~ else:
+						# ~ time_to_load_file = j.data_size/n.bandwidth
 					
-		# ~ print("Min score for job", j.unique_id, "is", min_score, "with node", choosen_node.unique_id)
-		
-		j.transfer_time = choosen_time_to_load_file
+				# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
+				size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
+				time_to_reload_evicted_files = size_files_ended/n.bandwidth
 				
-		# 3. Choose a core
-		choosen_core = choosen_node.cores[0:j.cores]
+				# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
+				# ~ if j.data != 0:
+				if time_to_load_file != 0 and is_being_loaded == False:
+					if (earliest_available_time not in time_checked_for_nb_copy):
+						nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
+						time_checked_for_nb_copy.append(earliest_available_time)
+						corresponding_results.append(nb_copy_file_to_load)
+					else:
+						nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
+					# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
+				else:
+					nb_copy_file_to_load = 0
+					# ~ print("Data is 0 or is_being_loaded or already on node, file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
 
-		# 4. Get start time and update available times of the cores
-		start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+				# ~ print("Nb of copy of file", j.data, "size", j.data_size, "at time", earliest_available_time, "is", nb_copy_file_to_load)
+
+				# Compute node's score
+				# ~ score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files
+				# TODO: ++ socre if nb_copy_file_to_load is high AND you are on a node htat doesn't have this file.
+				# ~ score = earliest_available_time + multiplier*(time_to_load_file*(nb_copy_file_to_load + 1)) + multiplier*time_to_reload_evicted_files
+				score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
+				
+				# ~ print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier*time_to_load_file, "+ TRL", multiplier*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id)
+				
+				# 2.6. Get minimum score
+				if min_score == -1:
+					min_score = score
+					choosen_node = n
+					choosen_time_to_load_file = time_to_load_file
+				elif min_score > score:
+					min_score = score
+					choosen_node = n
+					choosen_time_to_load_file = time_to_load_file
+						
+			# ~ print("Min score for job", j.unique_id, "is", min_score, "with node", choosen_node.unique_id)
+			
+			j.transfer_time = choosen_time_to_load_file
+					
+			# 3. Choose a core
+			choosen_core = choosen_node.cores[0:j.cores]
+
+			# 4. Get start time and update available times of the cores
+			start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+			
+			# 5. Update jobs info and add job in choosen cores
+			j.node_used = choosen_node
+			j.cores_used = choosen_core
+			j.start_time = start_time
+			j.end_time = start_time + j.walltime			
+			for c in choosen_core:
+				c.job_queue.append(j)
+				
+				# Test reduced complexity
+				if c.available_time <= t:
+					nb_non_available_cores += 1
+										
+			if __debug__:
+				print_decision_in_scheduler(choosen_core, j, choosen_node)
+				
+		else:
+			break
 		
-		# 5. Update jobs info and add job in choosen cores
-		j.node_used = choosen_node
-		j.cores_used = choosen_core
-		j.start_time = start_time
-		j.end_time = start_time + j.walltime			
-		for c in choosen_core:
-			c.job_queue.append(j)
-									
-		if __debug__:
-			print_decision_in_scheduler(choosen_core, j, choosen_node)
-		
-		# 6. Add job in list to remove
-		# ~ job_to_remove.append(j)
-		
-		# ~ scheduled_job_list.append(j)
-		
-	# 7. Remove jobs from list
-	# ~ available_job_list.clear()
-	# ~ return scheduled_job_list
-	# ~ return l
+	return scheduled_job_list
 
 # Just return choosen node and cores
 def return_choice_fcfs_with_a_score_scheduler_single_job(j, node_list, t, multiplier, multiplier_nb_copy):
@@ -427,22 +434,10 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 	# ~ exit(1)
 	# ~ return scheduled_job_list
 	return l
-
-# ~ def fcfs(available_job_list, node_list, t, scheduled_job_list):
-	# ~ for j in available_job_list:
-		# ~ scheduled_job_list = schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list)
-	# ~ available_job_list.clear()
-	# ~ return scheduled_job_list
 	
-def fcfs_scheduler(l, node_list, t):
-	nb_non_available_cores = 0
+def fcfs_scheduler(l, node_list, t):	
+	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
 	scheduled_job_list = []
-	for n in node_list[0] + node_list[1] + node_list[2]:
-		for c in n.cores:
-			if c.available_time > t:
-				nb_non_available_cores += 1
-	nb_cores = len(node_list[0] + node_list[1] + node_list[2])*20
-	
 	for j in l:
 		if nb_non_available_cores < nb_cores:
 			scheduled_job_list.append(j)

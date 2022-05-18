@@ -58,7 +58,16 @@ def remove_data_from_node(l):
 				d.nb_task_using_it -= 1
 				# ~ j.node_used.data.remove(d)
 				break
-	
+
+def get_cores_non_available_cores(node_list, t):
+	nb_non_available_cores = 0
+	for n in node_list[0] + node_list[1] + node_list[2]:
+		for c in n.cores:
+			if c.available_time > t:
+				nb_non_available_cores += 1
+	nb_cores = len(node_list[0] + node_list[1] + node_list[2])*20
+	return nb_cores, nb_non_available_cores
+
 def print_csv(to_print_list, scheduler):
 	max_queue_time = 0
 	mean_queue_time = 0

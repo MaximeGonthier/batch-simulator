@@ -484,7 +484,8 @@ while(total_number_jobs != finished_jobs):
 			
 		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
-			fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			# ~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
 			# ~ fcfs_scheduler(available_job_list, node_list, t)
@@ -550,7 +551,8 @@ while(total_number_jobs != finished_jobs):
 			
 		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
-			fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			# ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
 			# ~ fcfs_scheduler(scheduled_job_list, node_list, t)
@@ -573,7 +575,7 @@ while(total_number_jobs != finished_jobs):
 			print("End of reschedule")
 	
 	# Ones with backfill
-	if (old_finished_jobs < finished_jobs):
+	# ~ if (old_finished_jobs < finished_jobs):
 		if (scheduler == "Fcfs_easybf"):
 			if (len(scheduled_job_list) > 0):
 				first_job_in_queue = scheduled_job_list[0]

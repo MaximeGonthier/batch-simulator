@@ -93,6 +93,7 @@
 		\item Play with multiplier of fcfs with a score
 		\item New ideas on big nodes variant
 		\item Prendre que les jobs des jours sélectionés en utilisant la premiere ligne du raw avec vrai temps et starttime qui donne le temps du jour
+		\item New application name in slides. What do you think ? If it's ok I'll change the name in the slides' title as well?
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -107,15 +108,18 @@
 		\item Speech expliquer dense outer ? AxB ? C += AxB ? A la slide 13 dire C = AxB, A = LLt pour cholesky Et dire A et b a charger pour calculer C. Prendre le temps sur la slide 14
 		\item Volontaire
 		\item Different results if full cluster or reduced one because the time frame is really full on the reduced cluster. It's not the true behavior with reduce cluster because users would act differently.
+		\item Can I reduce complexity by not scheduling everything ? But how without altering th schedule ?
+		\item python3 is actually faster ?
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
 			\item reduire complexité
-			\item re tester avec workload corrigées full
+			\item re tester avec workload corrigées full et 5 jours
 			\item re tester avec workload corrigées 1 jour et cluster réduit
-			\item Regarder conversion workload
+			\item test fcfs score
+			\item test big nodes strats
 			\item decaler orignie au premier jour pris en compte pour les figures utilisation du cluster
 			\item Compter le nb de coeurs demandé par les jobs et compter pendant pendant l'execution combien de coeurs j'ai a la date 16
 			\item prendre les jobs d'avant et les tronquer du temps t du 16 sur leurs walltime et delay et les schedule pour de vrai avec le vrai historique en prenant la vrai date de demarrage et le noeuds. Ceux qui traverse pas el 16 ils prennent le vrai historique. Ceux qui traverse sur le 16 je les reschedule avec mon algo avant les autres jobs mais seulement leurs partie tronqués. Puis apres je lance mon algo sur les jobs soumis le 16.

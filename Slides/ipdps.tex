@@ -705,16 +705,6 @@ Accurately represent data sharing
 \section{Experimental evaluation}
 \subsection{Experimental settings}
 \begin{frame}{Experimental settings}
-    %~ \begin{columns}{}
-        %~ \begin{column}{0.4\textwidth}
-            %~ \justify
-            %~ \begin{figure}
-				%~ \centering
-				%~ \includegraphics[scale=0.29]{Images/example_lines.pdf}
-			%~ \end{figure}
-
-        %~ \end{column}
-        %~ \begin{column}{0.6\textwidth}
         \begin{block}{}
             \begin{itemize}
 				\item Real Tesla V100 GPUs and simulations on Simgrid
@@ -724,13 +714,13 @@ Accurately represent data sharing
 		\end{block}
 			\begin{block}{Applications}
 			\begin{itemize}
-				\item Tiled dense and sparse outer product ($C = A \times B$)
-				\item Tiled 3D Matrix Multiplication
+				%~ \item Tiled dense and sparse outer product ($C = A \times B$)
+				\item Tiled $(1 \times n)(n \times 1)$ dense and sparse Matrix Multiplication in outer product order: $C = A \times B$
+				%~ \item Tiled 3D Matrix Multiplication
+				\item Tiled $(n \times n)$ Gemm: $C = A \times B$
 				\item Tiled Cholesky decomposition (without dependencies) ($A = L \times L^T$)
 			\end{itemize}
 			\end{block}
-        %~ \end{column}
-    %~ \end{columns}
 \end{frame}
 
 %% ---------------------------------------------------------------------------

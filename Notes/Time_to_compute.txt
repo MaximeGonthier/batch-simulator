@@ -1,6 +1,5 @@
 oarsub -p nova -l core=1,walltime=10:00:10 "bash Stats_single_workload.sh inputs/workloads/converted/2022-03-16-\>2022-03-25 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0"
 
-16->20 mars 2022 (70k) FCFS: 29min
-16->21 mars 2022 (125k) FCFS: More than 2 hours and did not finish
-16->22 mars 2022 (174k) FCFS: ???
-16->25 mars 2022 (490k) FCFS: Not finished after 10h
+14->14 mars 2022 (8626) FCFS: pypy: 0min 32sec python3: 0min 36sec
+14->15 mars 2022 (23182) FCFS: pypy: 1min 24sec python3: 1min 59sec
+14->16 mars 2022 (50998) FCFS: 42min?
