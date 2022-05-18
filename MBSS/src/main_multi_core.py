@@ -171,6 +171,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 			finished_jobs += 1
 			# Just printing, can remove
 			if (finished_jobs%100 == 0):
+			# ~ if (finished_jobs%1 == 0):
 				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
 			
 			if __debug__:	
@@ -604,7 +605,7 @@ while(total_number_jobs != finished_jobs):
 	
 	# Print cores used
 	if (write_all_jobs == 3):
-		f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(scheduled_job_list)))
+		f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
 	
 	# Time is advancing
 	t += 1

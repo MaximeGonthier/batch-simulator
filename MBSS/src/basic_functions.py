@@ -173,21 +173,29 @@ def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 # Return the number of copy of a file at a certain time in the future
 def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 	nb_of_copy = 0
-	need_to_break = False
+	# ~ need_to_break = False
 	for n in nodes:
-		for c in n.cores:
-			# ~ print("Looking at core", c.unique_id, "node", n.unique_id)
-			for j in c.job_queue:
-				if j.data == current_data:
-					if j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
-						nb_of_copy += 1
-						# We can go on the next node now
-						need_to_break = True
-						# ~ print("++, need to break")
-						break
-			if need_to_break == True:
-				need_to_break = False
+		# ~ print(n.unique_id)
+		# ~ if current_data in n.data:
+			# ~ exit(1)
+		for d in n.data:
+			if d.unique_id == current_data:
+				nb_of_copy += 1
 				break
+			# ~ print(d.unique_id, d.nb_task_using_it, d.start_time)
+	# ~ exit(1)
+		# ~ for c in n.cores:
+			# ~ for j in c.job_queue:
+				# ~ if j.data == current_data:
+					# ~ if j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+						# ~ nb_of_copy += 1
+						# ~ # We can go on the next node now
+						# ~ need_to_break = True
+						# ~ break
+			# ~ if need_to_break == True:
+				# ~ need_to_break = False
+				# ~ break
+	# ~ print(nb_of_copy)
 	return nb_of_copy
 	
 # Schedule a job earliest available node and write start time and add job in queues
