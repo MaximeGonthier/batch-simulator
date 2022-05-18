@@ -30,7 +30,8 @@ fi
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 
 if [ $PRINT == 0 ]; then
-	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
+	#~ ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
+	python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 else
 	../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 fi

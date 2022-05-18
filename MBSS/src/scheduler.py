@@ -435,8 +435,25 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 	# ~ return scheduled_job_list
 	
 def fcfs_scheduler(l, node_list, t):
+	nb_non_available_cores = 0
+	scheduled_job_list = []
+	for n in node_list[0] + node_list[1] + node_list[2]:
+		for c in n.cores:
+			if c.available_time > t:
+				nb_non_available_cores += 1
+	nb_cores = len(node_list[0] + node_list[1] + node_list[2])*20
+	
 	for j in l:
-		schedule_job_on_earliest_available_cores_no_return(j, node_list, t)
+		if nb_non_available_cores < nb_cores:
+			scheduled_job_list.append(j)
+			nb_non_available_cores = schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores)
+		else:
+			break
+	# ~ for j in l:
+		# ~ scheduled_job_list.append(j)
+		# ~ nb_non_available_cores = schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores)
+		
+	return scheduled_job_list
 
 # TODO : pas besoin de sort a chaque fois
 def fcfs_scheduler_backfill_big_nodes(l, node_list, t, backfill_big_node_mode, mean_queue_time):

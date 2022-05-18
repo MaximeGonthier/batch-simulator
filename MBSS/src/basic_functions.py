@@ -229,7 +229,7 @@ def return_earliest_available_cores_and_start_time_specific_node(cores_asked, no
 	return choosen_core, earliest_available_time
 	
 # Schedule a job earliest available node and write start time and add job in queues
-def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
+def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores):
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
 		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
 	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
@@ -248,6 +248,7 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 		elif min_time > earliest_available_time:
 			min_time = earliest_available_time
 			choosen_node = n
+		
 													
 	choosen_core = choosen_node.cores[0:j.cores]
 	# start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
@@ -258,10 +259,17 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t):
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
 		c.job_queue.append(j)
+		
+		# Test reduced complexity
+		if c.available_time <= t:
+			nb_non_available_cores += 1
+			
 		c.available_time = start_time + j.walltime
 		
 	if __debug__:
 		print_decision_in_scheduler(choosen_core, j, choosen_node)
+	
+	return nb_non_available_cores
 
 # Same but from a specific node list		
 def schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, sublist_node, t):					

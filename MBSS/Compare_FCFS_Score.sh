@@ -43,7 +43,8 @@ do
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
-	../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
+	#~ ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
+	python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv
 	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}.csv
