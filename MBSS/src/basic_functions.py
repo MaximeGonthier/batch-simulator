@@ -174,14 +174,14 @@ def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 	nb_of_copy = 0
 	# ~ need_to_break = False
-	for n in nodes:
+	# ~ for n in nodes:
 		# ~ print(n.unique_id)
 		# ~ if current_data in n.data:
 			# ~ exit(1)
-		for d in n.data:
-			if d.unique_id == current_data:
-				nb_of_copy += 1
-				break
+		# ~ for d in n.data:
+			# ~ if d.unique_id == current_data:
+				# ~ nb_of_copy += 1
+				# ~ break
 			# ~ print(d.unique_id, d.nb_task_using_it, d.start_time)
 	# ~ exit(1)
 		# ~ for c in n.cores:

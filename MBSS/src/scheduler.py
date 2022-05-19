@@ -130,6 +130,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 					if (earliest_available_time not in time_checked_for_nb_copy):
 						# Cette fonction ci dessus prends trop de temps
 						nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
+						# ~ nb_copy_file_to_load = 0
 						time_checked_for_nb_copy.append(earliest_available_time)
 						corresponding_results.append(nb_copy_file_to_load)
 					else:
