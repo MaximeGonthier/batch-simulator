@@ -52,7 +52,9 @@ class Node:
 class Data:
     unique_id: int
     start_time: int
+    end_time: int
     nb_task_using_it: int
+    temp_interval_usage_time: list
 @dataclass
 class Core:
     unique_id: int
@@ -132,7 +134,7 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 			waiting_for_a_load_time = 0
 			if (j.data != 0):
 				# Let's look if a data transfer is needed
-				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.walltime)
+				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.end_time)
 			j.transfer_time = transfer_time
 						
 			j.waiting_for_a_load_time = waiting_for_a_load_time
@@ -408,7 +410,10 @@ if (write_all_jobs == 3):
 # Variant for FCFS with a score
 multiplier = 1
 multiplier_nb_copy = 1
-if (scheduler == "Fcfs_with_a_score_x1_x1"):
+if (scheduler == "Fcfs_with_a_score_x0_x0"):
+	multiplier = 0
+	multiplier_nb_copy = 0
+elif (scheduler == "Fcfs_with_a_score_x1_x1"):
 	multiplier = 1
 elif (scheduler == "Fcfs_with_a_score_x1.5_x1"):
 	multiplier = 1.5
@@ -536,6 +541,10 @@ while(total_number_jobs != finished_jobs):
 	
 	if t in end_times:
 		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes)
+		
+	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+	if len(finished_job_list) > 0:
+		remove_data_from_node(finished_job_list)
 	
 	# ~ if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 	if (old_finished_jobs < finished_jobs):
@@ -599,9 +608,9 @@ while(total_number_jobs != finished_jobs):
 		# ~ if (scheduled_job_list[0].start_time == t):
 		scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
 	
-	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
-	if len(finished_job_list) > 0:
-		remove_data_from_node(finished_job_list)
+	# ~ # Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+	# ~ if len(finished_job_list) > 0:
+		# ~ remove_data_from_node(finished_job_list)
 	
 	# Print cores used
 	if (write_all_jobs == 3):

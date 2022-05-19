@@ -6,8 +6,20 @@ from dataclasses import dataclass
 class Data:
     unique_id: int
     start_time: int
+    end_time: int
     nb_task_using_it: int
+    temp_interval_usage_time: list
 
+def get_current_intervals(node_list, t):
+	for n in node_list:
+		for d in n.data:
+			# ~ print("Clear", n.unique_id, d.unique_id)
+			d.temp_interval_usage_time.clear()
+			# ~ print(d.unique_id, d.nb_task_using_it)
+			if d.nb_task_using_it > 0:
+				d.temp_interval_usage_time.append(t)
+				d.temp_interval_usage_time.append(d.end_time)
+	
 # Remove jobs rom the main job list. I do it outside the loop because I need to go through the list before deleting
 def remove_jobs_from_list(list_to_update, job_to_remove): # TODO: simplifier en 1 seule boucle ?
 	for j1 in job_to_remove:
@@ -17,14 +29,15 @@ def remove_jobs_from_list(list_to_update, job_to_remove): # TODO: simplifier en 
 	return list_to_update
 
 # Add data in the node
-def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
+def add_data_in_node(data_unique_id, data_size, node_used, t, end_time):
 	# ~ print("Adding", data_unique_id)
 	data_is_on_node = False
 	waiting_for_a_load_time = 0
 	# Let's try to find it in the node
 	for d in node_used.data:
 		if (data_unique_id == d.unique_id): # It is already on node
-			if (d.nb_task_using_it > 0): # And is still valid!
+			# ~ if (d.nb_task_using_it > 0): # And is still valid!
+			if (d.nb_task_using_it > 0 or d.end_time == t): # And is still valid!
 				# ~ if (d.end_time < t + walltime): # New end time for the data cause current job will hold it for longer
 					# ~ d.end_time = t + walltime
 					
@@ -40,22 +53,29 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, walltime):
 				d.start_time = t + transfer_time
 			data_is_on_node = True
 			d.nb_task_using_it += 1
+			
+			if d.end_time < end_time:
+				d.end_time = end_time
+			
 			break
 	
 	if (data_is_on_node == False): # Need to load it
 		transfer_time = data_size/node_used.bandwidth
 		# Create a class Data for this node
-		d = Data(data_unique_id, t + transfer_time, 1)
+		d = Data(data_unique_id, t + transfer_time, end_time, 1, list())
+		# ~ d = Data(data_unique_id, t + transfer_time, 1, list())
 		node_used.data.append(d)
 	
-	# ~ print("Adding", data_unique_id, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
+	print("Adding", data_unique_id, "s/e:", d.start_time, d.end_time, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
 	return transfer_time, waiting_for_a_load_time
 
 def remove_data_from_node(l):
 	for j in l:
 		for d in j.node_used.data:
 			if (j.data == d.unique_id):
+				# ~ print("--", d.unique_id, "node", j.node_used.unique_id)
 				d.nb_task_using_it -= 1
+				# ~ print(d.nb_task_using_it)
 				# ~ j.node_used.data.remove(d)
 				break
 
@@ -170,6 +190,23 @@ def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 				break
 	return size_file_ended
 
+def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
+	nb_of_copy = 0
+	
+	for n in nodes:
+		for d in n.data:
+			if d.unique_id == current_data and len(d.temp_interval_usage_time) > 0:
+				print(d.unique_id, "is on node", n.unique_id, "but at time", predicted_time, "?")
+				i = 0
+				while i < len(d.temp_interval_usage_time):
+					if d.temp_interval_usage_time[i] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 1]:
+						nb_of_copy += 1
+						print("++")
+						break
+					i += 2
+				break	
+	return nb_of_copy
+
 # Return the number of copy of a file at a certain time in the future
 # ~ def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 	# ~ nb_of_copy = 0
@@ -199,15 +236,15 @@ def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 	# ~ return nb_of_copy
 	
 # Return the number of copy of a file at a certain time in the future
-def get_nb_valid_copy_of_each_file(nodes):
+# ~ def get_nb_valid_copy_of_each_file(nodes):
 	# ~ nb_of_copy = 0
 	# ~ need_to_break = False
-	list_of_files_all_node = []
-	for n in nodes:
-		for d in n.data:
-			if d.nb_task_using_it > 1:
-				list_of_files_all_node.append(d.unique_id)
-	return list_of_files_all_node		
+	# ~ list_of_files_all_node = []
+	# ~ for n in nodes:
+		# ~ for d in n.data:
+			# ~ if d.nb_task_using_it > 1:
+				# ~ list_of_files_all_node.append(d.unique_id)
+	# ~ return list_of_files_all_node		
 	# ~ for i in list_of_files_all_node:
 		
 	# ~ couple = (i, list_of_files_all_node.count(i))

@@ -356,7 +356,7 @@ D = compute the number of copy (and thus the time it took to load them all) of t
 
 Each node get a score combining these three values: Score = A + B + (C/BW) + D
 
-For FCFS with a score variant I do: Score = A + X $\times$ B + X $\times$ (C/BW) + Y $\times$ D
+For FCFS with a score variant I do: Score = A + X $\times$ B + X $\times$ (C/BW) + Y $\times$ D\\
 X and Y have to be found experimentally.
 
 Schedule j on the node with the lowest score and on the cores available the earliest.
@@ -455,10 +455,18 @@ Jobs requiring a big node are scheduled before other available jobs.
 the time frame is the Mean queue time minus the time that already waited the current job plus the walltime of the job.
 A job started immediately must not delay other jobs.
 Let's note $x$ the size of a node.
+
 \todo[inline]{Max: In order to scale the impact of walltime we can compute statistics on the cluster and the previous workloads.\\
 Cluster: Get \% of nodes of each size noted $percentage\_node\_size(x)$ for each x.\\
 Previous workloads: Get the \% of jobs demanding a certain size noted $percentage\_job\_size(x)$.\\
 For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we scale the walltime for this size of node to $\walltime(J_i) + \walltime(J_i) \times (percentage\_job\_size(x) - percentage\_node\_size(x))$.}
+OR\\
+\todo[inline]{
+Cluster: Get area of nodes of each size noted $area\_node\_size(x) = nb\_cores \times ?$ for each x.\\
+Previous workloads: Get the area of jobs demanding a certain size noted $area\_job\_size(x) = nb\_cores \times Duration(J_i)$.\\
+}
+
+
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$

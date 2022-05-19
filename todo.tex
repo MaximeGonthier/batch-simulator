@@ -84,37 +84,32 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Correction on walltimes conversion. Need to redo test and now it's much longer because the cluster is really used.
-		\item Try with 900 seconds time frame for consecutive jobs sharing a file to see what happens. Seems to work well because with much more I get the same number of different data.
-		\item Code and script to get stats on workload used (cores asked and used, node used, scheduled job, walltime and delay)
-		\item Change percentage of task with 256 or 1024 files to 80/10/5
-		\item Cluster usage with 3 consecutive days.
-		\item Try fcfs with a score new variant: add penalty the more a file is loaded on other nodes
-		\item Play with multiplier of fcfs with a score
-		\item New ideas on big nodes variant coded and added walltime
-		\item Prendre que les jobs des jours sélectionés et correction utilisation du cluster
+		\item Does FCFS has same result as FCFS with a score ad 0 on both multiplier ? Yes.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item The formula for the score is: $score = earliest\_available\_time + multiplier*time\_to\_load\_file + multiplier*time\_to\_reload\_evicted\_files + nb\_copy\_file\_to\_load*time\_to\_load\_file*multiplier\_nb\_copy$. I separate time to load and number of copy because for the first one I consider the case of parallel load, not for the other one where if a load started, I consider the file to be on the node and thus do not put a malus for this node. So the multiplier can be different for transfer and copy. Is it correct ?
-		\item Which question can I be asked at the conference ?
-		%~ \item Common file packages with a score: change name of result of division because it's more a ratio. Try to distribute divide packages differently. Maybe get the share of the platform needed ? Do a figure to help: call it nb cores asked. Préciser que le point b donne le i avec i = 0 ou $J_i$. Le i de paquets est pas le même. On peut pas comparer une proportion avec un nombre. Pas utile de diviser par nb de coeurs du cluster. Il faut regarder quand c'est plus grand. Mettre 1 coeur par job. Calculer nb de coeurs total demandé. uand je prens un packets pour lui je calcule le nb de noeud que je veux lui dedier. Je prends le (nb de coeur demandé par le paquet en question*nb de ceurs disponible sur la plateforme) / total de nb de nodes demandé par tous les paquets. arrondi a au moins 1.
-		\item Scaling walltime impact on algo about big nodes.
-		\item Volontaire
-		\item python3 is actually faster ?
+		\item
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Tester que mes intervals marche
+			\item for now test reduce cluster and workload for fcfs score corrigé et big jobs
+			\item Yes use predicted time for nb of copy and not t, needto correct in the code.
+			\item Time interval of data on nodes to reduce complexity of nb of copy
+			\item change x axis usage cluster
+			\item try both multipliser to 0 to see fcfs with a score = fcfs ?
+			\item use area big jobs/area of all jobs times walltime for algo variant big nodes and test ?
 			\item New application name in slides. What do you think ? If it's ok I'll change the name in the slides' title as well?
 			\item How to incorporate my strategy on sizes constraint into other algorithms than FCFS ?
 			\item reduire complexité
 			\item re tester avec workload corrigées full et 5 jours
 			\item re tester avec workload corrigées 1 jour et cluster réduit
 			\item test fcfs score
+			\item Common file packages with a score: change name of result of division because it's more a ratio. Try to distribute divide packages differently. Maybe get the share of the platform needed ? Do a figure to help: call it nb cores asked. Préciser que le point b donne le i avec i = 0 ou $J_i$. Le i de paquets est pas le même. On peut pas comparer une proportion avec un nombre. Pas utile de diviser par nb de coeurs du cluster. Il faut regarder quand c'est plus grand. Mettre 1 coeur par job. Calculer nb de coeurs total demandé. uand je prens un packets pour lui je calcule le nb de noeud que je veux lui dedier. Je prends le (nb de coeur demandé par le paquet en question*nb de ceurs disponible sur la plateforme) / total de nb de nodes demandé par tous les paquets. arrondi a au moins 1.
 			\item test big nodes strats
 			\item decaler orignie au premier jour pris en compte pour les figures utilisation du cluster
 			\item Compter le nb de coeurs demandé par les jobs et compter pendant pendant l'execution combien de coeurs j'ai a la date 16

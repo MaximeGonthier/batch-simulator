@@ -84,8 +84,23 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
 	scheduled_job_list = []
 	
-	# Simplified method
-	nb_copy_of_files = get_nb_valid_copy_of_each_file(node_list[0] + node_list[1] + node_list[2])
+	# ~ for n in node_list[0] + node_list[1] + node_list[2]:
+		# ~ print("Node", n.unique_id)
+		# ~ for d in n.data:
+			# ~ if d.nb_task_using_it > 0:
+				# ~ print(d.unique_id, ":", d.temp_interval_usage_time[0])
+	
+	# Test interval
+	get_current_intervals(node_list[0] + node_list[1] + node_list[2], t)
+	
+	for n in node_list[0] + node_list[1] + node_list[2]:
+		print("Node", n.unique_id)
+		for d in n.data:
+			if d.nb_task_using_it > 0:
+				print(d.unique_id, ":", d.temp_interval_usage_time)
+	
+	# ~ # Simplified method
+	# ~ nb_copy_of_files = get_nb_valid_copy_of_each_file(node_list[0] + node_list[1] + node_list[2])
 		
 	# 1. Declare a list of job to remove and loop on available jobs
 	for j in l:
@@ -102,20 +117,22 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 				nodes_to_choose_from = node_list[1] + node_list[2]
 			elif (j.index_node_list == 2): # Je peux choisir que dans la 2
 				nodes_to_choose_from = node_list[2]
-						
+			
+			print("Scheduling job", j.unique_id)
+				
 			min_score = -1
 			
 			# For the number of valid copy of a data on other nodes. I add in this list time already checked for current job.
 			time_checked_for_nb_copy = []
 			corresponding_results = []
 			
-			# Simplified method
-			if j.data != 0:
-				nb_copy_current_file = nb_copy_of_files.count(j.data)
+			# ~ # Simplified method
+			# ~ if j.data != 0:
+				# ~ nb_copy_current_file = nb_copy_of_files.count(j.data)
 				# ~ print("For", j.data, ":", nb_copy_current_file)
 			
 			for n in nodes_to_choose_from:
-										
+				print("On node", n.unique_id)					
 				# 2.2. Sort cores by available times
 				n.cores.sort(key = operator.attrgetter("available_time"))
 					
@@ -135,28 +152,29 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 				
 				# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
 				if time_to_load_file != 0 and is_being_loaded == False:
-					# ~ if (earliest_available_time not in time_checked_for_nb_copy):
+					nb_copy_file_to_load = 0
+					if (earliest_available_time not in time_checked_for_nb_copy):
 						
-						# Cette fonction ci dessus prends trop de temps
+						print("Need to compute nb of copy")
+						nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
 						# ~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
 					
-					# Simplified version
-					nb_copy_file_to_load = nb_copy_current_file
+					# ~ # Simplified version
+					# ~ nb_copy_file_to_load = nb_copy_current_file
 											
-						# ~ time_checked_for_nb_copy.append(earliest_available_time)
-						# ~ corresponding_results.append(nb_copy_file_to_load)
-					# ~ else:
-						# ~ nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
-				
+						time_checked_for_nb_copy.append(earliest_available_time)
+						print("Appended", earliest_available_time)
+						corresponding_results.append(nb_copy_file_to_load)
+					else:
+						nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
+						print("Already done for", j.unique_id, "at time", earliest_available_time, "so nb of copy is", nb_copy_file_to_load)
+					print("Nb of copy for data", j.unique_id, "at time", earliest_available_time, "on node", n.unique_id, "is", nb_copy_file_to_load, "\n")
 				else:
 					nb_copy_file_to_load = 0
 
 				# Compute node's score
 				score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
-				
-				# TODO: A SUPPR ET DECOMMENTER AU DESSUS
-				# ~ score = earliest_available_time
-				
+								
 				# print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier*time_to_load_file, "+ TRL", multiplier*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id)
 				
 				# 2.6. Get minimum score
@@ -170,21 +188,37 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 					min_score = score
 					choosen_node = n
 					choosen_time_to_load_file = time_to_load_file
-									
+				
 			j.transfer_time = choosen_time_to_load_file
 					
 			# 3. Choose a core
 			choosen_core = choosen_node.cores[0:j.cores]
 
 			# 4. Get start time and update available times of the cores
-			# ~ start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+			# start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
 			start_time = min_time
 			
 			# 5. Update jobs info and add job in choosen cores
 			j.node_used = choosen_node
 			j.cores_used = choosen_core
 			j.start_time = start_time
-			j.end_time = start_time + j.walltime			
+			j.end_time = start_time + j.walltime
+			
+			# Test intervals. Need to add here for current scheduling
+			found = False
+			for d in choosen_node.data:
+				if d.unique_id == j.data:
+					found = True
+					d.temp_interval_usage_time.append(j.start_time)
+					d.temp_interval_usage_time.append(j.end_time)
+					break
+			if found == False:
+				print("Need to create it for the node", choosen_node.unique_id, "data", j.data, ":/")
+				# Create a class Data for this node
+				d = Data(j.data, -1, -1, 0, list())
+				choosen_node.data.append(d)
+				# ~ exit(1)
+					
 			for c in choosen_core:
 				c.job_queue.append(j)
 								
@@ -198,7 +232,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 				print_decision_in_scheduler(choosen_core, j, choosen_node)
 				
 		else:
-			# ~ print("Break")
+			# print("Break")
 			break
 		
 	return scheduled_job_list
