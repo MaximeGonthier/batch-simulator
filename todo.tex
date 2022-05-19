@@ -88,33 +88,29 @@
 		\item Try with 900 seconds time frame for consecutive jobs sharing a file to see what happens. Seems to work well because with much more I get the same number of different data.
 		\item Code and script to get stats on workload used (cores asked and used, node used, scheduled job, walltime and delay)
 		\item Change percentage of task with 256 or 1024 files to 80/10/5
-		\item Cluster usage with 5 consecutive days. For more (7 and 10 days) it starts to be too long to compute.
+		\item Cluster usage with 3 consecutive days.
 		\item Try fcfs with a score new variant: add penalty the more a file is loaded on other nodes
 		\item Play with multiplier of fcfs with a score
-		\item New ideas on big nodes variant
-		\item Prendre que les jobs des jours sélectionés en utilisant la premiere ligne du raw avec vrai temps et starttime qui donne le temps du jour
-		\item New application name in slides. What do you think ? If it's ok I'll change the name in the slides' title as well?
+		\item New ideas on big nodes variant coded and added walltime
+		\item Prendre que les jobs des jours sélectionés et correction utilisation du cluster
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item The formula foir the score is: $score = earliest\_available\_time + multiplier*time\_to\_load\_file + multiplier*time\_to\_reload\_evicted\_files + nb\_copy\_file\_to\_load*time\_to\_load\_file*multiplier\_nb\_copy$. I separate time to load and number of copy because for the first one I consider the case of parallel load, not for the other one where if a load started, I consider the file to be on the node and thus do not put a malus for this node. So the multiplier can be different for transfer and copy. Is it correct ?
+		\item The formula for the score is: $score = earliest\_available\_time + multiplier*time\_to\_load\_file + multiplier*time\_to\_reload\_evicted\_files + nb\_copy\_file\_to\_load*time\_to\_load\_file*multiplier\_nb\_copy$. I separate time to load and number of copy because for the first one I consider the case of parallel load, not for the other one where if a load started, I consider the file to be on the node and thus do not put a malus for this node. So the multiplier can be different for transfer and copy. Is it correct ?
 		\item Which question can I be asked at the conference ?
-		\item Common file packages with a score: change name of result of division because it's more a ratio. Try to distribute divide packages differently. Maybe get the share of the platform needed ? Do a figure to help: call it nb cores asked. Préciser que le point b donne le i avec i = 0 ou $J_i$. Le i de paquets est pas le même. On peut pas comparer une proportion avec un nombre. Pas utile de diviser par nb de coeurs du cluster. Il faut regarder quand c'est plus grand. Mettre 1 coeur par job. Calculer nb de coeurs total demandé. uand je prens un packets pour lui je calcule le nb de noeud que je veux lui dedier. Je prends le (nb de coeur demandé par le paquet en question*nb de ceurs disponible sur la plateforme) / total de nb de nodes demandé par tous les paquets. arrondi a au moins 1.
-		\item How can I add the walltime in the score y of variant of bacfilling big nodes ?
-		\item How to incorporate my strategy on sizes constraint into other algorithms than FCFS ?
-		\item Speech flow of task: Expliquer le cadre gris car on ne peut pas toucher au gris. On met un certain nombre de tache dans le buffer, peut faire du prefetch. Un certain nombre pour recouvrir le prefetch. Puis la premiere en donné au gpu. Dire que ya 2 etapes distinctes dans les buffers. 
-		\item Speech expliquer dense outer ? AxB ? C += AxB ? A la slide 13 dire C = AxB, A = LLt pour cholesky Et dire A et b a charger pour calculer C. Prendre le temps sur la slide 14
+		%~ \item Common file packages with a score: change name of result of division because it's more a ratio. Try to distribute divide packages differently. Maybe get the share of the platform needed ? Do a figure to help: call it nb cores asked. Préciser que le point b donne le i avec i = 0 ou $J_i$. Le i de paquets est pas le même. On peut pas comparer une proportion avec un nombre. Pas utile de diviser par nb de coeurs du cluster. Il faut regarder quand c'est plus grand. Mettre 1 coeur par job. Calculer nb de coeurs total demandé. uand je prens un packets pour lui je calcule le nb de noeud que je veux lui dedier. Je prends le (nb de coeur demandé par le paquet en question*nb de ceurs disponible sur la plateforme) / total de nb de nodes demandé par tous les paquets. arrondi a au moins 1.
+		\item Scaling walltime impact on algo about big nodes.
 		\item Volontaire
-		\item Different results if full cluster or reduced one because the time frame is really full on the reduced cluster. It's not the true behavior with reduce cluster because users would act differently.
-		\item Can I reduce complexity by not scheduling everything ? But how without altering th schedule ?
 		\item python3 is actually faster ?
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item New application name in slides. What do you think ? If it's ok I'll change the name in the slides' title as well?
+			\item How to incorporate my strategy on sizes constraint into other algorithms than FCFS ?
 			\item reduire complexité
 			\item re tester avec workload corrigées full et 5 jours
 			\item re tester avec workload corrigées 1 jour et cluster réduit
@@ -136,7 +132,7 @@
 			\item Apply bignodes backfill to fcfs with a score
 			\item test with full cluster multiplier on nb of copy
 			\item Problem of different nodes sizes requirmeent: Ok I can try. for the varaint add to the score the walltime of the job because you don't want to occupy too much a big node. Test this idea with data but with no constraint on data locality, so ignore transfer time (remove files in the workload for this) and see the results. Need to produce workload with 0 files but constraint on sizes. Or just ignore transfers.
-			\item Préparer présentation le 18
+			\item Préparer speech IPDPS le 1er
 			\item S'inscrire a ACACES
 			\item Billets d'avion BOD-FUI NPL-BOD
 			\item Se ré-inscrire à l'ENS avant le 15 Juin
@@ -162,7 +158,6 @@
 			\item Use same X scale workloads stats
 			\item Use same X scale for some gantt charts when I want to compare them
 			\item Code algo 2
-			\item vidéo IPDPS avant le 15 mai
 			\item TODO du code: backfill, available node list qui contient les cores available aussi
 			\item contrainte de la localié sur la taille de la données, contrainte sur les coeurs, contrainte sur les partage de données
 			\item stratégie qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?

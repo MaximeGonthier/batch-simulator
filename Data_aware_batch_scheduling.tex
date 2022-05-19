@@ -352,11 +352,14 @@ For each node, B = compute the time it will take to load all the files from j no
 
 For each node, C = compute the amount of data that will need to be evicted to load all the files from j not yet in memory. These files will need to be re loaded for other jobs.
 
-Each node get a score combining these three values: Score = A + B + (C/BW)
+D = compute the number of copy (and thus the time it took to load them all) of the file you want to load on other nodes at the predicted time you want to compute the job.
 
-For FCFS with a score variant I do: Score = A + 2 $\times$ B + 2 $\times$ (C/BW)
+Each node get a score combining these three values: Score = A + B + (C/BW) + D
 
-Schedule j on the node with the best score and on the cores available the earliest.
+For FCFS with a score variant I do: Score = A + X $\times$ B + X $\times$ (C/BW) + Y $\times$ D
+X and Y have to be found experimentally.
+
+Schedule j on the node with the lowest score and on the cores available the earliest.
 
 \subsection{EASYBF-FCFS-FCFS}
 Small adaptation from the paper: \url{https://hal.archives-ouvertes.fr/hal-01522459/document}.
@@ -389,11 +392,6 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
 
 \subsection{Common file packages with a score}
 \paragraph{Intuition}
-%~ Select job submitted the earliest. Takes all available jobs using the file from this job. Do this with all available jobs.
-%~ Once you have these packages of jobs, divide them. 
-%~ You divide the sum of the number of cores asked by available jobs by the total number of cores. The result is the maximum number of cores that can be asked by one package.
-%~ A full package is scheduled on a single node.
-%~ Schedule packages in the order in which you created them (so sorted by submission time of the first job selected) on the node with the highest score (score of a node is computed just like fcfs with a score).
 Group together jobs sharing a file. and sorted by submission time. The maximum size of a package of jobs is
 the number of cores asked by available jobs divided by the total number of cores. Jobs from a same package are 
 scheduled on the same node following a score computed like in FCFS with a score.
@@ -460,7 +458,7 @@ Let's note $x$ the size of a node.
 \todo[inline]{Max: In order to scale the impact of walltime we can compute statistics on the cluster and the previous workloads.\\
 Cluster: Get \% of nodes of each size noted $percentage\_node\_size(x)$ for each x.\\
 Previous workloads: Get the \% of jobs demanding a certain size noted $percentage\_job\_size(x)$.\\
-For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we scale the walltime for this size of node to $\walltime(J_i) \times (percentage\_job\_size(x) - percentage\_node\_size(x))$.}
+For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we scale the walltime for this size of node to $\walltime(J_i) + \walltime(J_i) \times (percentage\_job\_size(x) - percentage\_node\_size(x))$.}
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$
@@ -617,9 +615,9 @@ For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we
 	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 16}\end{figure}
 	
-	%~ \begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}%%
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Performance - 1/4 cluster - May 16}\end{figure}
+	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Performance - 1/4 cluster - May 16}\end{figure}
 
 \end{document}
