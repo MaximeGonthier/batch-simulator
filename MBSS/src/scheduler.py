@@ -83,6 +83,9 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 	# Test reduced complexity
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
 	scheduled_job_list = []
+	
+	# Simplified method
+	nb_copy_of_files = get_nb_valid_copy_of_each_file(node_list[0] + node_list[1] + node_list[2])
 		
 	# 1. Declare a list of job to remove and loop on available jobs
 	for j in l:
@@ -106,6 +109,11 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 			time_checked_for_nb_copy = []
 			corresponding_results = []
 			
+			# Simplified method
+			if j.data != 0:
+				nb_copy_current_file = nb_copy_of_files.count(j.data)
+				# ~ print("For", j.data, ":", nb_copy_current_file)
+			
 			for n in nodes_to_choose_from:
 										
 				# 2.2. Sort cores by available times
@@ -127,14 +135,19 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 				
 				# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
 				if time_to_load_file != 0 and is_being_loaded == False:
-					if (earliest_available_time not in time_checked_for_nb_copy):
+					# ~ if (earliest_available_time not in time_checked_for_nb_copy):
+						
 						# Cette fonction ci dessus prends trop de temps
-						nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
-						# ~ nb_copy_file_to_load = 0
-						time_checked_for_nb_copy.append(earliest_available_time)
-						corresponding_results.append(nb_copy_file_to_load)
-					else:
-						nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
+						# ~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
+					
+					# Simplified version
+					nb_copy_file_to_load = nb_copy_current_file
+											
+						# ~ time_checked_for_nb_copy.append(earliest_available_time)
+						# ~ corresponding_results.append(nb_copy_file_to_load)
+					# ~ else:
+						# ~ nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
+				
 				else:
 					nb_copy_file_to_load = 0
 

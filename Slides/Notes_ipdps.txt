@@ -1,3 +1,4 @@
+		\item Speech flow of task: Expliquer le cadre gris car on ne peut pas toucher au gris. On met un certain nombre de tache dans le buffer, peut faire du prefetch. Un certain nombre pour recouvrir le prefetch. Puis la premiere en donné au gpu. Dire que ya 2 etapes distinctes dans les buffers. 
 
 
 Slide 3: 

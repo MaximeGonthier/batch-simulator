@@ -171,8 +171,8 @@ def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 	return size_file_ended
 
 # Return the number of copy of a file at a certain time in the future
-def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
-	nb_of_copy = 0
+# ~ def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
+	# ~ nb_of_copy = 0
 	# ~ need_to_break = False
 	# ~ for n in nodes:
 		# ~ print(n.unique_id)
@@ -196,7 +196,58 @@ def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 				# ~ need_to_break = False
 				# ~ break
 	# ~ print(nb_of_copy)
-	return nb_of_copy
+	# ~ return nb_of_copy
+	
+# Return the number of copy of a file at a certain time in the future
+def get_nb_valid_copy_of_each_file(nodes):
+	# ~ nb_of_copy = 0
+	# ~ need_to_break = False
+	list_of_files_all_node = []
+	for n in nodes:
+		for d in n.data:
+			if d.nb_task_using_it > 1:
+				list_of_files_all_node.append(d.unique_id)
+	return list_of_files_all_node		
+	# ~ for i in list_of_files_all_node:
+		
+	# ~ couple = (i, list_of_files_all_node.count(i))
+	# ~ unique_file_all_node.append(couple)
+	
+		# ~ print(n.unique_id)
+		# ~ if current_data in n.data:
+			# ~ exit(1)
+		# ~ for d in n.data:
+			# ~ if d.unique_id == current_data:
+				# ~ nb_of_copy += 1
+				# ~ break
+			# ~ print(d.unique_id, d.nb_task_using_it, d.start_time)
+	# ~ exit(1)
+		# ~ for c in n.cores:
+			# ~ for j in c.job_queue:
+				# ~ if j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+					# ~ if j.data not in list_of_files_one_node:
+						# ~ list_of_files_one_node.append(j.data)
+					# ~ break
+		# ~ list_of_files_all_node.append(list_of_files_one_node)
+	
+	# ~ for i in list_of_files_all_node:
+		# ~ if list_of_files_all_node[i] not in unique_file_all_node:
+			# ~ unique_file_all_node.append(list_of_files_all_node[i], list_of_files_all_node.count(i))
+	
+	# ~ return unique_file_all_node
+					# ~ nb_of_files_on_nodes.append(j.data)
+				# ~ if j.data == current_data:
+					# ~ if j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+						# ~ nb_of_copy += 1
+						# ~ # We can go on the next node now
+						# ~ need_to_break = True
+						# ~ break
+			# ~ if need_to_break == True:
+				# ~ need_to_break = False
+				# ~ break
+	# ~ print(nb_of_copy)
+	# ~ return nb_of_copy
+
 	
 # Schedule a job earliest available node and write start time and add job in queues
 def schedule_job_on_earliest_available_cores(j, node_list, t, scheduled_job_list):
