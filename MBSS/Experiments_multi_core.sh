@@ -37,12 +37,12 @@ else
 	python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 fi
 
-#~ if [ $PRINT == 1 ]; then
-	#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
-#~ fi
-#~ if [ $PRINT == 2 ]; then
-	#~ python3 src/plot_distribution_queue_times.py outputs/Distribution_queue_times_${SCHEDULER}.txt $SCHEDULER $DATE
-#~ fi
+if [ $PRINT == 1 ]; then
+	python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+fi
+if [ $PRINT == 2 ]; then
+	python3 src/plot_distribution_queue_times.py outputs/Distribution_queue_times_${SCHEDULER}.txt $SCHEDULER $DATE
+fi
 
 echo "Results:"
 head outputs/Results_${SCHEDULER}.csv

@@ -413,6 +413,9 @@ multiplier_nb_copy = 1
 if (scheduler == "Fcfs_with_a_score_x0_x0"):
 	multiplier = 0
 	multiplier_nb_copy = 0
+elif (scheduler == "Fcfs_with_a_score_x1_x0"):
+	multiplier = 1
+	multiplier_nb_copy = 0
 elif (scheduler == "Fcfs_with_a_score_x1_x1"):
 	multiplier = 1
 elif (scheduler == "Fcfs_with_a_score_x1.5_x1"):
@@ -543,6 +546,7 @@ while(total_number_jobs != finished_jobs):
 		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes)
 		
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+	# Now I deal with it with intevralk it should work like before
 	if len(finished_job_list) > 0:
 		remove_data_from_node(finished_job_list)
 	

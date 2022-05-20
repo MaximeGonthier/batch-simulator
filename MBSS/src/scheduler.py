@@ -96,8 +96,8 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 	for n in node_list[0] + node_list[1] + node_list[2]:
 		print("Node", n.unique_id)
 		for d in n.data:
-			if d.nb_task_using_it > 0:
-				print(d.unique_id, ":", d.temp_interval_usage_time)
+			# ~ if d.nb_task_using_it > 0:
+			print(d.unique_id, ":", d.temp_interval_usage_time)
 	
 	# ~ # Simplified method
 	# ~ nb_copy_of_files = get_nb_valid_copy_of_each_file(node_list[0] + node_list[1] + node_list[2])
@@ -106,6 +106,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 	for j in l:
 		
 		# Reduce complexity a bit ?
+		print("Nb cores", nb_cores, "Nb non available cores", nb_non_available_cores, "T =", t)
 		if nb_non_available_cores < nb_cores:
 			scheduled_job_list.append(j)
 		
@@ -118,7 +119,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 			elif (j.index_node_list == 2): # Je peux choisir que dans la 2
 				nodes_to_choose_from = node_list[2]
 			
-			print("Scheduling job", j.unique_id)
+			print("\nScheduling job", j.unique_id)
 				
 			min_score = -1
 			
@@ -155,7 +156,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 					nb_copy_file_to_load = 0
 					if (earliest_available_time not in time_checked_for_nb_copy):
 						
-						print("Need to compute nb of copy")
+						print("Need to compute nb of copy of data", j.data)
 						nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
 						# ~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, nodes_to_choose_from, j.data)
 					
@@ -163,19 +164,18 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 					# ~ nb_copy_file_to_load = nb_copy_current_file
 											
 						time_checked_for_nb_copy.append(earliest_available_time)
-						print("Appended", earliest_available_time)
 						corresponding_results.append(nb_copy_file_to_load)
 					else:
 						nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
 						print("Already done for", j.unique_id, "at time", earliest_available_time, "so nb of copy is", nb_copy_file_to_load)
-					print("Nb of copy for data", j.unique_id, "at time", earliest_available_time, "on node", n.unique_id, "is", nb_copy_file_to_load, "\n")
+					print("Nb of copy for data", j.data, "at time", earliest_available_time, "on node", n.unique_id, "is", nb_copy_file_to_load, "\n")
 				else:
 					nb_copy_file_to_load = 0
 
 				# Compute node's score
 				score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
 								
-				# print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier*time_to_load_file, "+ TRL", multiplier*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id)
+				print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier*time_to_load_file, "+ TRL", multiplier*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id)
 				
 				# 2.6. Get minimum score
 				if min_score == -1:
@@ -210,14 +210,18 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 				if d.unique_id == j.data:
 					found = True
 					d.temp_interval_usage_time.append(j.start_time)
+					d.temp_interval_usage_time.append(j.start_time + j.transfer_time)
 					d.temp_interval_usage_time.append(j.end_time)
+					print("After add interval is:", d.temp_interval_usage_time)
 					break
 			if found == False:
-				print("Need to create it for the node", choosen_node.unique_id, "data", j.data, ":/")
+				print("Need to create intervals for the node", choosen_node.unique_id, "data", j.data)
 				# Create a class Data for this node
-				d = Data(j.data, -1, -1, 0, list())
+				d = Data(j.data, -1, -1, 0, [j.start_time, j.start_time + j.transfer_time, j.end_time])
+				print("After add interval is:", d.temp_interval_usage_time)
 				choosen_node.data.append(d)
 				# ~ exit(1)
+			# ~ print
 					
 			for c in choosen_core:
 				c.job_queue.append(j)

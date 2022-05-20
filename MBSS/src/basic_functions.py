@@ -13,12 +13,15 @@ class Data:
 def get_current_intervals(node_list, t):
 	for n in node_list:
 		for d in n.data:
-			# ~ print("Clear", n.unique_id, d.unique_id)
 			d.temp_interval_usage_time.clear()
-			# ~ print(d.unique_id, d.nb_task_using_it)
 			if d.nb_task_using_it > 0:
 				d.temp_interval_usage_time.append(t)
+				d.temp_interval_usage_time.append(d.start_time)
 				d.temp_interval_usage_time.append(d.end_time)
+			elif d.nb_task_using_it == 0 and d.end_time >= t:
+				d.temp_interval_usage_time.append(t)
+				d.temp_interval_usage_time.append(t)
+				d.temp_interval_usage_time.append(t)
 	
 # Remove jobs rom the main job list. I do it outside the loop because I need to go through the list before deleting
 def remove_jobs_from_list(list_to_update, job_to_remove): # TODO: simplifier en 1 seule boucle ?
@@ -162,29 +165,49 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 	
 # Return transfer time and return if the file is being loaded
 def is_my_file_on_node_at_certain_time_and_transfer_time (predicted_time, node, current_time, current_data, current_data_size):
-	# ~ is_being_loaded = False
-	for c in node.cores:
-		for j in c.job_queue:
-			if j.data == current_data:
-				if j.start_time + j.transfer_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+	
+		# ~ for n in nodes:
+	print("Get transfer time")
+	for d in node.data:
+			# ~ print("Data", d.unique_id, "is on node", n.unique_id, "and has", len(d.temp_interval_usage_time), "intervals")
+		if d.unique_id == current_data and len(d.temp_interval_usage_time) > 0:
+			# ~ print(d.unique_id, "is on node", n.unique_id, "but at time", predicted_time, "?")
+			i = 0
+			while i < len(d.temp_interval_usage_time):
+				print("Checking", d.temp_interval_usage_time[i], "|", d.temp_interval_usage_time[i + 1], "|", d.temp_interval_usage_time[i + 2])
+				if d.temp_interval_usage_time[i] <= predicted_time and d.temp_interval_usage_time[i + 1] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 2]:
 					return 0, False
-				# ~ elif (predicted_time == current_time and j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time) or (j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time): # Data is being loaded at this time
-				elif j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data is being loaded at this time
-					return j.start_time + j.transfer_time - current_time, True
+				elif d.temp_interval_usage_time[i] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 2]:
+					return d.temp_interval_usage_time[i + 1] - current_time, True
+				i += 3
+			break	
 	return current_data_size/node.bandwidth, False
+	
+	# ~ for c in node.data:
+		# ~ for j in c.job_queue:
+			# ~ if j.data == current_data:
+				# ~ if j.start_time + j.transfer_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+					# ~ return 0, False
+				# ~ elif j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data is being loaded at this time
+					# ~ return j.start_time + j.transfer_time - current_time, True
+	# ~ return current_data_size/node.bandwidth, False
+	
+	# ~ for c in node.cores:
+		# ~ for j in c.job_queue:
+			# ~ if j.data == current_data:
+				# ~ if j.start_time + j.transfer_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data will be loaded at this time
+					# ~ return 0, False
+				# ~ elif j.start_time <= predicted_time and j.start_time + j.walltime >= predicted_time: # Data is being loaded at this time
+					# ~ return j.start_time + j.transfer_time - current_time, True
+	# ~ return current_data_size/node.bandwidth, False
 
 def size_files_ended_at_certain_time(predicted_time, cores, current_data):
 	size_file_ended = 0
-	# ~ if (current_time == predicted_time):
-		# ~ for d in node.data:
-			# ~ if (d.nb_task_using_it > 0):
-				# ~ if d.unique_id != current_data:
-					# ~ size_file_ended +=
-	# ~ else:
 	already_counted = []
 	for c in cores:
 		for j in c.job_queue:
 			if j.start_time + j.walltime == predicted_time and j.data != current_data and j.data not in already_counted: # Data will end at this time
+				print("File", j.data, "of size", j.data_size, "end at time", predicted_time)
 				size_file_ended += j.data_size
 				already_counted.append(j.data)
 				break
@@ -195,15 +218,17 @@ def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 	
 	for n in nodes:
 		for d in n.data:
+			print("Data", d.unique_id, "is on node", n.unique_id, "and has", len(d.temp_interval_usage_time), "intervals")
 			if d.unique_id == current_data and len(d.temp_interval_usage_time) > 0:
 				print(d.unique_id, "is on node", n.unique_id, "but at time", predicted_time, "?")
 				i = 0
 				while i < len(d.temp_interval_usage_time):
-					if d.temp_interval_usage_time[i] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 1]:
+					print("Checking", d.temp_interval_usage_time[i], "|", d.temp_interval_usage_time[i + 2])
+					if d.temp_interval_usage_time[i] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 2]:
 						nb_of_copy += 1
 						print("++")
 						break
-					i += 2
+					i += 3
 				break	
 	return nb_of_copy
 
