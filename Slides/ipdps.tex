@@ -724,8 +724,9 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\subsection{Tiled dense outer product}
-\begin{frame}{Tiled dense outer product with 2 real Tesla V100}
+\subsection{Tiled dense Matrix Multiplication in outer product order}
+\nologo{
+\begin{frame}{Tiled dense Matrix Multiplication in outer product order with 2 real Tesla V100}
     \begin{columns}{}
         \begin{column}{0.5\textwidth}
 	\begin{figure}
@@ -756,10 +757,11 @@ Accurately represent data sharing
 	\begin{itemize}
 		\item EAGER, hMETIS \& DARTS: Pathological matrix size after the red line
 		\item DMDAR: Conflict between prefetch and eviction
-		 \item DARTS+LUF outperforms DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
+		\item DARTS+LUF outperforms DMDAR even with more data transfers $\rightarrow$ \emph{DARTS is better at 
 		overlapping communication and computations}
 	\end{itemize}
 \end{frame}
+}
 
 %~ %% ---------------------------------------------------------------------------
 %~ {
@@ -844,14 +846,14 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Visualization of DARTS processing order on the tiled dense outer product}
+\begin{frame}[noframenumbering]{Visualization of DARTS processing order on the tiled dense Matrix Multiplication in outer product order}
 	\begin{figure}
 		\center\includegraphics[scale = 0.17]{Images/cutDDA.png}
 	\end{figure}
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Tiled dense outer product with 4 Tesla V100 GPUs in real}
+\begin{frame}[noframenumbering]{Tiled dense Matrix Multiplication in outer product order with 4 Tesla V100 GPUs in real}
     \begin{figure}
         \centering
         \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-2-ipdps_4GPU.pdf}
@@ -859,7 +861,7 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Tiled 3D Matrix Multiplication with 4 Tesla V100 GPUs in simulation}
+\begin{frame}[noframenumbering]{Tiled Gemm with 4 Tesla V100 GPUs in simulation}
     \begin{figure}
         \centering
         \includegraphics[scale=0.5]{Images/GF_dynamic_data_aware_no_hfp_gemini-1-fgcs_4GPU_M3D.pdf}
@@ -867,7 +869,7 @@ Accurately represent data sharing
 \end{frame}
 
 %% ---------------------------------------------------------------------------
-\begin{frame}[noframenumbering]{Sparse outer product without memory limitation (32GB by GPU) with 4 real Tesla V100 GPUs}
+\begin{frame}[noframenumbering]{Tiled sparse Matrix Multiplication in outer product order without memory limitation (32GB by GPU) with 4 real Tesla V100 GPUs}
     \begin{columns}{}
 		\begin{column}{0.7\textwidth}
 		\begin{figure}
