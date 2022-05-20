@@ -16,7 +16,10 @@ def get_current_intervals(node_list, t):
 			d.temp_interval_usage_time.clear()
 			if d.nb_task_using_it > 0:
 				d.temp_interval_usage_time.append(t)
-				d.temp_interval_usage_time.append(d.start_time)
+				if d.start_time < t:
+					d.temp_interval_usage_time.append(t)
+				else:
+					d.temp_interval_usage_time.append(d.start_time)
 				d.temp_interval_usage_time.append(d.end_time)
 			elif d.nb_task_using_it == 0 and d.end_time >= t:
 				d.temp_interval_usage_time.append(t)

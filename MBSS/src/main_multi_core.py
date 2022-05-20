@@ -551,14 +551,14 @@ while(total_number_jobs != finished_jobs):
 		remove_data_from_node(finished_job_list)
 	
 	# ~ if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
-	if (old_finished_jobs < finished_jobs):
+	if (old_finished_jobs < finished_jobs and len(available_job_list) > 0):
 		# ~ print("Core liberated")
 		# Reset all cores and jobs
 		if (scheduler != "Maximum_use_single_file"):
 			reset_cores(node_list[0] + node_list[1] + node_list[2], t)
 		
 		if __debug__:
-			print("Reschedule...")
+			print("Reschedule. Nb of job available:", len(available_job_list))
 			
 		if (scheduler == "Random"):
 			random_scheduler(scheduled_job_list, node_list, t)
