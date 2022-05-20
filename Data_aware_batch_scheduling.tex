@@ -350,7 +350,8 @@ For each node, A = compute the earliest available time to host job j.
 
 For each node, B = compute the time it will take to load all the files from j not yet in memory.
 
-For each node, C = compute the amount of data that will need to be evicted to load all the files from j not yet in memory. These files will need to be re loaded for other jobs.
+For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of core the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
+To do this we do: $C = \inputs(\Node{i})~that~end~before~predicted~start~time~ \times \frac{\core(J_i)}{\core(\Node{i})}$
 
 D = compute the number of copy (and thus the time it took to load them all) of the file you want to load on other nodes at the predicted time you want to compute the job.
 
@@ -602,23 +603,25 @@ Previous workloads: Get the area of jobs demanding a certain size noted $area\_j
 \end{figure}
 
 \section{Experiments}
-	%~ \subsection{5 days and full cluster}
-	%~ \begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16->2022-03-20_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-16->2022-03-20_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16-2022-03-20 - Cluster usage - Full cluster - May 14}\end{figure}
-	
-	%~ \begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Maximum_queue_time_450_128_32_256_4_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}%%
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Total_queue_time_450_128_32_256_4_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
-	%~ \begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-16->2022-03-20_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer + waiting time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-16-2022-03-20 - Performance - Full cluster - May 14}\end{figure}
-	
+		
 	\subsection{1 day and full cluster}
-	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - Full cluster - May 16}\end{figure}
+	\begin{figure}[H]\centering
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-14_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-14_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\end{subfigure}
+	\caption{Workload 2022-03-14-2022-03-14 - Cluster usage - Full cluster - May 20}\end{figure}
 	
-	\subsection{3 day and full cluster}
-	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-16_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-16_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-14->2022-03-16 - Cluster usage - Full cluster - May 18}\end{figure}
-
+	\subsection{2 days and full cluster}
+	\begin{figure}[H]\centering
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-15_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-15_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\end{subfigure}
+	\caption{Workload 2022-03-14-2022-03-15 - Cluster usage - Full cluster - May 20}\end{figure}
+	
+	\subsection{3 days and full cluster}
+	\begin{figure}[H]\centering
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-16_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Used nodes}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-14->2022-03-16_Fcfs_Nb_scheduled_jobs_450_128_32_256_4_1024.pdf}\caption{Jobs in queue}\end{subfigure}
+	\caption{Workload 2022-03-14-2022-03-16 - Cluster usage - Full cluster - May 20}\end{figure}
+	
 	\subsection{1 day and 1/4 cluster}
 	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 16}\end{figure}

@@ -78,7 +78,7 @@ def random_scheduler(available_job_list, node_list, t):
 # For each node, C = compute the amount of data that will need to be evicted to load all the files from j not yet in memory. These files will need to be re loaded for other jobs.
 # Score = A + B + (C/BW)
 # Schedule j on the node with the lowest score and on the cores available the earliest.
-def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy):
+def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy):
 	
 	# Test reduced complexity
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
@@ -148,7 +148,9 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 					time_to_load_file, is_being_loaded = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j.data, j.data_size)
 					
 				# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
-				size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n.cores[0:j.cores], j.data)
+				# ~ if j.data != 0 and time_to_load_file == 0
+					# ~ size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n, j.data)
+				size_files_ended = size_files_ended_at_before_certain_time(earliest_available_time, n.data, j.data, j.cores/20)
 				time_to_reload_evicted_files = size_files_ended/n.bandwidth
 				
 				# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
@@ -168,14 +170,14 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 					else:
 						nb_copy_file_to_load = corresponding_results[time_checked_for_nb_copy.index(earliest_available_time)]
 						print("Already done for", j.unique_id, "at time", earliest_available_time, "so nb of copy is", nb_copy_file_to_load)
-					print("Nb of copy for data", j.data, "at time", earliest_available_time, "on node", n.unique_id, "is", nb_copy_file_to_load, "\n")
+					print("Nb of copy for data", j.data, "at time", earliest_available_time, "on node", n.unique_id, "is", nb_copy_file_to_load)
 				else:
 					nb_copy_file_to_load = 0
 
 				# Compute node's score
-				score = earliest_available_time + multiplier*time_to_load_file + multiplier*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
+				score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy
 								
-				print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier*time_to_load_file, "+ TRL", multiplier*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id)
+				print("Score for job", j.unique_id, "is", score, "(EAT:", earliest_available_time, "+ TL", multiplier_file_to_load*time_to_load_file, "+ TRL", multiplier_file_evicted*time_to_reload_evicted_files, "+ CP", nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, ") with node", n.unique_id, "\n")
 				
 				# 2.6. Get minimum score
 				if min_score == -1:
@@ -217,7 +219,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier, multiplier_nb_copy)
 			if found == False:
 				print("Need to create intervals for the node", choosen_node.unique_id, "data", j.data)
 				# Create a class Data for this node
-				d = Data(j.data, -1, -1, 0, [j.start_time, j.start_time + j.transfer_time, j.end_time])
+				d = Data(j.data, -1, -1, 0, [j.start_time, j.start_time + j.transfer_time, j.end_time], j.data_size)
 				print("After add interval is:", d.temp_interval_usage_time)
 				choosen_node.data.append(d)
 				# ~ exit(1)

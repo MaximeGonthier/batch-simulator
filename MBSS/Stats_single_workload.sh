@@ -26,13 +26,13 @@ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_T
 
 
 #~ read V1 V2 < outputs/Start_end_slice_2.txt
-read V1 < outputs/Start_end_slice_2.txt
+#~ read V1 < outputs/Start_end_slice_2.txt
 #~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2
 #~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2
 #~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Nb_scheduled_jobs ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Nb_scheduled_jobs ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_cores ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER}
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER}
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Nb_scheduled_jobs ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER}
 
 end=`date +%s` 
 runtime=$((end-start))

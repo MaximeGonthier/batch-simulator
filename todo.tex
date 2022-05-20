@@ -84,7 +84,9 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Does FCFS has same result as FCFS with a score ad 0 on both multiplier ? Yes.
+		\item Does FCFS has same result as FCFS with a score ad 0 on both multiplier ? Yes before modification.
+		\item Change x axis on cluster usage plots.
+		\item Modification of FCFS with a score on the "evicted files" metric.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -98,10 +100,7 @@
 		\begin{enumerate}
 			\item Tester que mes intervals marche
 			\item for now test reduce cluster and workload for fcfs score corrigé et big jobs
-			\item Yes use predicted time for nb of copy and not t, needto correct in the code.
 			\item Time interval of data on nodes to reduce complexity of nb of copy
-			\item change x axis usage cluster
-			\item try both multipliser to 0 to see fcfs with a score = fcfs ?
 			\item use area big jobs/area of all jobs times walltime for algo variant big nodes and test ?
 			\item New application name in slides. What do you think ? If it's ok I'll change the name in the slides' title as well?
 			\item How to incorporate my strategy on sizes constraint into other algorithms than FCFS ?
@@ -121,7 +120,6 @@
 			\item Essayer de ne pas tout schedule a l'avance pour réduire la complexité
 			\item profiler mon code pour voir ce qui coute du temps
 			\item prendre jours du 14 au 20 pour voir
-			\item vrai subfigure dans le pdf
 			\item Test strats constraint on sizes
 			\item Pas besoin de sort la liste de job par tailles a chaque fois je peux juste insérr les nouveaux jobs en bas de chaque sous liste de jobs par tailles
 			\item Apply bignodes backfill to fcfs with a score
@@ -161,6 +159,7 @@
 			\item lire article bf : Utilization, Predictability, Workloads
 			\item Faire plusieurs test et mettre une barre d'erreur
 			\item Afficher temps de transferts sur les Gantt charts
+			\item Rendre le code général en enlevant les 20 correspondant aux nombres de cores et en mettant une var globale initialisé lors de la lecture du cluster
 		\end{enumerate}
 	\subsection{Batsim}
 		\begin{enumerate}

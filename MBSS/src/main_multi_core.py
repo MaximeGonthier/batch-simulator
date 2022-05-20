@@ -55,6 +55,7 @@ class Data:
     end_time: int
     nb_task_using_it: int
     temp_interval_usage_time: list
+    size: int
 @dataclass
 class Core:
     unique_id: int
@@ -388,7 +389,7 @@ def to_print_job_csv(job, node_used, core_ids, time):
 node_list, available_node_list = read_cluster(input_node_file, node_list, available_node_list)
 
 # Read workload
-job_list = read_workload(input_job_file, job_list, constraint_on_sizes, write_all_jobs)
+job_list, first_subtime_to_plot = read_workload(input_job_file, job_list, constraint_on_sizes, write_all_jobs)
 
 total_number_cores = (len(node_list) + 1)*20
 
@@ -408,44 +409,15 @@ if (write_all_jobs == 3):
 	f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
 
 # Variant for FCFS with a score
-multiplier = 1
-multiplier_nb_copy = 1
-if (scheduler == "Fcfs_with_a_score_x0_x0"):
-	multiplier = 0
-	multiplier_nb_copy = 0
-elif (scheduler == "Fcfs_with_a_score_x1_x0"):
-	multiplier = 1
-	multiplier_nb_copy = 0
-elif (scheduler == "Fcfs_with_a_score_x1_x1"):
-	multiplier = 1
-elif (scheduler == "Fcfs_with_a_score_x1.5_x1"):
-	multiplier = 1.5
-elif (scheduler == "Fcfs_with_a_score_x2_x1"):
-	multiplier = 2
-elif (scheduler == "Fcfs_with_a_score_x2.5_x1"):
-	multiplier = 2.5
-elif (scheduler == "Fcfs_with_a_score_x3_x1"):
-	multiplier = 3
-elif (scheduler == "Fcfs_with_a_score_x3.5_x1"):
-	multiplier = 3.5
-elif (scheduler == "Fcfs_with_a_score_x4_x1"):
-	multiplier = 4
-elif (scheduler == "Fcfs_with_a_score_x4.5_x1"):
-	multiplier = 4.5
-elif (scheduler == "Fcfs_with_a_score_x5_x1"):
-	multiplier = 5
-elif (scheduler == "Fcfs_with_a_score_x1_x1.5"):
-	multiplier = 1
-	multiplier_nb_copy = 1.5
-elif (scheduler == "Fcfs_with_a_score_x1_x2"):
-	multiplier = 1
-	multiplier_nb_copy = 2
-elif (scheduler == "Fcfs_with_a_score_x1_x2.5"):
-	multiplier = 1
-	multiplier_nb_copy = 2.5
-elif (scheduler == "Fcfs_with_a_score_x1_x3"):
-	multiplier = 1
-	multiplier_nb_copy = 3
+if scheduler[0:19] == "Fcfs_with_a_score_x":
+	if len(scheduler) != 26:
+		print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM")
+		exit(1)
+	
+	multiplier_file_to_load = int(scheduler[19])
+	multiplier_file_evicted = int(scheduler[22])
+	multiplier_nb_copy = int(scheduler[25])
+	print("Multiplier file to load:", multiplier_file_to_load, "| Multiplier file evicted:", multiplier_file_evicted, "| Multiplier nb of copy:", multiplier_nb_copy)
 
 # Variant for backfill big nodes
 backfill_big_node_mode = 0
@@ -494,7 +466,7 @@ while(total_number_jobs != finished_jobs):
 		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
 			# ~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
-			scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
 			# ~ fcfs_scheduler(available_job_list, node_list, t)
@@ -566,7 +538,7 @@ while(total_number_jobs != finished_jobs):
 		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
 			# ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
-			scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
 			# ~ fcfs_scheduler(scheduled_job_list, node_list, t)
@@ -617,8 +589,9 @@ while(total_number_jobs != finished_jobs):
 		# ~ remove_data_from_node(finished_job_list)
 	
 	# Print cores used
-	if (write_all_jobs == 3):
-		f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
+	if write_all_jobs == 3:
+		if t >= first_subtime_to_plot:
+			f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
 	
 	# Time is advancing
 	t += 1

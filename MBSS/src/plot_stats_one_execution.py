@@ -9,7 +9,7 @@ comparaison = sys.argv[2]
 workload = sys.argv[3]
 cluster = sys.argv[4]
 scheduler = sys.argv[5]
-firstjob = int(sys.argv[6])
+# ~ firstjob = int(sys.argv[6])
 # ~ lastjob = int(sys.argv[7])
 title = workload + "_" + scheduler + "_" + comparaison + "_" + cluster
 
@@ -61,7 +61,7 @@ df = pd.DataFrame(data)
 # ~ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
   
-plt.axvline(x = firstjob, color = 'orange', linestyle = '-', label = "Submission time first job taken into account")
+# ~ plt.axvline(x = firstjob, color = 'orange', linestyle = '-', label = "Submission time first job taken into account")
 # ~ plt.axvline(x = lastjob, color = 'red', linestyle = '-', label = "submission time last job taken into account")
 
 plt.plot(Y)

@@ -9,6 +9,7 @@ class Data:
     end_time: int
     nb_task_using_it: int
     temp_interval_usage_time: list
+    size: int
 
 def get_current_intervals(node_list, t):
 	for n in node_list:
@@ -68,11 +69,13 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, end_time):
 	if (data_is_on_node == False): # Need to load it
 		transfer_time = data_size/node_used.bandwidth
 		# Create a class Data for this node
-		d = Data(data_unique_id, t + transfer_time, end_time, 1, list())
+		d = Data(data_unique_id, t + transfer_time, end_time, 1, list(), data_size)
 		# ~ d = Data(data_unique_id, t + transfer_time, 1, list())
 		node_used.data.append(d)
-	
-	print("Adding", data_unique_id, "s/e:", d.start_time, d.end_time, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
+		
+	if __debug__:
+		print("Adding", data_unique_id, "s/e:", d.start_time, d.end_time, "on node", node_used.unique_id, "has a transfer time of", transfer_time, "at time", t)
+		
 	return transfer_time, waiting_for_a_load_time
 
 def remove_data_from_node(l):
@@ -204,17 +207,33 @@ def is_my_file_on_node_at_certain_time_and_transfer_time (predicted_time, node, 
 					# ~ return j.start_time + j.transfer_time - current_time, True
 	# ~ return current_data_size/node.bandwidth, False
 
-def size_files_ended_at_certain_time(predicted_time, cores, current_data):
+def size_files_ended_at_before_certain_time(predicted_time, data_list, current_data, percentage_occupied):
+	#NEW with % of space you take
 	size_file_ended = 0
-	already_counted = []
-	for c in cores:
-		for j in c.job_queue:
-			if j.start_time + j.walltime == predicted_time and j.data != current_data and j.data not in already_counted: # Data will end at this time
-				print("File", j.data, "of size", j.data_size, "end at time", predicted_time)
-				size_file_ended += j.data_size
-				already_counted.append(j.data)
-				break
-	return size_file_ended
+	print("Start of size_files_ended_at_before_certain_time")
+	for d in data_list:
+		if d.unique_id != current_data and len(d.temp_interval_usage_time) > 0:
+			print("Checking", d.temp_interval_usage_time[len(d.temp_interval_usage_time) - 1])
+			if predicted_time >= d.temp_interval_usage_time[len(d.temp_interval_usage_time) - 1]:
+				size_file_ended += d.size
+				print("Add", d.size)
+	print("Total size of data on node ending before my EAT is:", size_file_ended, "but I return", percentage_occupied, "of it:", size_file_ended*percentage_occupied)
+	return size_file_ended*percentage_occupied
+
+def size_files_ended_at_certain_time(predicted_time, node, current_data):
+	# OLD
+	print("Not coded, un-comment it.")
+	exit(1)
+	# ~ size_file_ended = 0
+	# ~ already_counted = []
+	# ~ for c in cores:
+		# ~ for j in c.job_queue:
+			# ~ if j.start_time + j.walltime == predicted_time and j.data != current_data and j.data not in already_counted: # Data will end at this time
+				# ~ print("File", j.data, "of size", j.data_size, "end at time", predicted_time)
+				# ~ size_file_ended += j.data_size
+				# ~ already_counted.append(j.data)
+				# ~ break
+	# ~ return size_file_ended
 
 def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 	nb_of_copy = 0
