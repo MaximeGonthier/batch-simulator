@@ -143,14 +143,19 @@ def print_csv(to_print_list, scheduler):
 	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time)))
 	f.close()
 
-def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
+def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime, nb_non_available_cores):
 	start_time = t
 	for c in choosen_core:
 		if (c.available_time > start_time):
 			start_time = c.available_time
 	for c in choosen_core:
+		
+		# Test reduced complexity
+		if c.available_time <= t:
+			nb_non_available_cores += 1
+		
 		c.available_time = start_time + walltime
-	return start_time
+	return start_time, nb_non_available_cores
 
 # ~ # Return set of files that will be on node at a given time
 # ~ def files_on_node_at_certain_time(predicted_time, node, current_time):

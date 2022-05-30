@@ -42,7 +42,7 @@ do
 done
 
 echo "Final results are:"
-cat outputs/Results_${WORKLOAD_TP}.csv
+cat outputs/Results_Size_Constraint_${WORKLOAD_TP}.csv
 
 echo "Plotting results..."
 python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0

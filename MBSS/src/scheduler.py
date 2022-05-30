@@ -28,49 +28,57 @@ class Job:
     
 # Schedule random available jobs on random nodes and cores, even if not available
 # The numbers here indicate the minimum you must do in a scheduler. In other scheduler there are more steps but they are optional.
-def random_scheduler(available_job_list, node_list, t):
+def random_scheduler(l, node_list, t):
 	
 	# 1. Declare a list of job to remove and loop on available jobs
-	# ~ job_to_remove = []
-	for j in available_job_list:
+	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
+	scheduled_job_list = []
+	for j in l:
+		if nb_non_available_cores < nb_cores:
+			scheduled_job_list.append(j)
 
-		# 2. Choose a node, different list depending on file size
-		if (j.index_node_list == 0): # Je peux choisir dans la liste entière
-			choosen_node = random.choice(node_list[0] + node_list[1] + node_list[2])
-		elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-			choosen_node = random.choice(node_list[1] + node_list[2])
-		elif (j.index_node_list == 2): # Je peux choisir que dans la 2
-			choosen_node = random.choice(node_list[2])
+			# 2. Choose a node, different list depending on file size
+			if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+				choosen_node = random.choice(node_list[0] + node_list[1] + node_list[2])
+			elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+				choosen_node = random.choice(node_list[1] + node_list[2])
+			elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+				choosen_node = random.choice(node_list[2])
+				
+			# 3. Choose a core
+			choosen_core = random.sample(choosen_node.cores, j.cores)
+
+			# 4. Get start time and update available times of the cores
+			start_time, nb_non_available_cores = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime, nb_non_available_cores) 
+			# ~ print(choosen_core[0].available_time)
+			# 5. Update jobs info and add job in choosen cores
+			j.node_used = choosen_node
+			j.cores_used = choosen_core
+			j.start_time = start_time
+			j.end_time = start_time + j.walltime			
+			for c in choosen_core:
+				c.job_queue.append(j)
+														
+			# Just for printing in terminal. Can be removed.
+			# ~ print(choosen_core[0].job_queue[0].unique_id)
+			# ~ print(choosen_core[0].job_queue[0].end_time)
+			# ~ print("T =", t)
+			if __debug__:
+				print_decision_in_scheduler(choosen_core, j, choosen_node)
 			
-		# 3. Choose a core
-		choosen_core = random.sample(choosen_node.cores, j.cores)
-
-		# 4. Get start time and update available times of the cores
-		start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
-		# ~ print(choosen_core[0].available_time)
-		# 5. Update jobs info and add job in choosen cores
-		j.node_used = choosen_node
-		j.cores_used = choosen_core
-		j.start_time = start_time
-		j.end_time = start_time + j.walltime			
-		for c in choosen_core:
-			c.job_queue.append(j)
-									
-		# Just for printing in terminal. Can be removed.
-		# ~ print(choosen_core[0].job_queue[0].unique_id)
-		# ~ print(choosen_core[0].job_queue[0].end_time)
-		# ~ print("T =", t)
-		if __debug__:
-			print_decision_in_scheduler(choosen_core, j, choosen_node)
+			# 6. Add job in list to remove
+			# ~ job_to_remove.append(j)
+			
+			# ~ scheduled_job_list.append(j)
 		
-		# 6. Add job in list to remove
-		# ~ job_to_remove.append(j)
-		
-		# ~ scheduled_job_list.append(j)
-	
-	# 7. Remove jobs from list
-	# ~ available_job_list.clear()
-	# ~ return scheduled_job_list
+		# 7. Remove jobs from list
+		# ~ available_job_list.clear()
+		else:
+			if __debug__:
+				print("Cluster full break")
+			break
+			
+	return scheduled_job_list
 	
 # Compute a score for each node.
 # For each node, A = compute the earliest available time to host job j.

@@ -469,7 +469,7 @@ while(total_number_jobs != finished_jobs):
 			
 		if (scheduler == "Random"):
 			random.shuffle(available_job_list)
-			random_scheduler(available_job_list, node_list, t)
+			scheduled_job_list = random_scheduler(new_job_list, node_list, t)
 			
 		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
@@ -548,7 +548,7 @@ while(total_number_jobs != finished_jobs):
 			print("Reschedule. Nb of job available:", len(available_job_list))
 			
 		if (scheduler == "Random"):
-			random_scheduler(scheduled_job_list, node_list, t)
+			scheduled_job_list = random_scheduler(available_job_list, node_list, t)
 			
 		# ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 		elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
