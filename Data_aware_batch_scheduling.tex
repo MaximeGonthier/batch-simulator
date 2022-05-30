@@ -350,15 +350,15 @@ For each node, A = compute the earliest available time to host job j.
 
 For each node, B = compute the time it will take to load all the files from j not yet in memory.
 
-For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of core the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
+For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of number of cores on the node the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
 To do this we do: $C = \inputs(\Node{i})~that~end~before~predicted~start~time~ \times \frac{\core(J_i)}{\core(\Node{i})}$
 
 D = compute the number of copy (and thus the time it took to load them all) of the file you want to load on other nodes at the predicted time you want to compute the job.
 
 Each node get a score combining these three values: Score = A + B + (C/BW) + D
 
-For FCFS with a score variant I do: Score = A + X $\times$ B + X $\times$ (C/BW) + Y $\times$ D\\
-X and Y have to be found experimentally.
+We can add multiplier: Score = A + X $\times$ B + Y $\times$ (C/BW) + Z $\times$ D\\
+X, Y and Z have to be found experimentally.
 
 Schedule j on the node with the lowest score and on the cores available the earliest.
 
@@ -453,25 +453,30 @@ Jobs requiring a big node are scheduled before other available jobs.
 
 \subsection{Variant of backfill big nodes}
 \paragraph{Intuition} Only schedule jobs that can be started immediately on big nodes and that can't be started on any other nodes in a certain time frame.
-the time frame is the Mean queue time minus the time that already waited the current job plus the walltime of the job.
+The time frame is the Mean queue time minus the time that already waited the current job plus the walltime of the job.
 A job started immediately must not delay other jobs.
 Let's note $x$ the size of a node.
 
-\todo[inline]{Max: In order to scale the impact of walltime we can compute statistics on the cluster and the previous workloads.\\
-Cluster: Get \% of nodes of each size noted $percentage\_node\_size(x)$ for each x.\\
-Previous workloads: Get the \% of jobs demanding a certain size noted $percentage\_job\_size(x)$.\\
-For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we scale the walltime for this size of node to $\walltime(J_i) + \walltime(J_i) \times (percentage\_job\_size(x) - percentage\_node\_size(x))$.}
-OR\\
-\todo[inline]{
-Cluster: Get area of nodes of each size noted $area\_node\_size(x) = nb\_cores \times ?$ for each x.\\
-Previous workloads: Get the area of jobs demanding a certain size noted $area\_job\_size(x) = nb\_cores \times Duration(J_i)$.\\
-}
+%~ \todo[inline]{Max: In order to scale the impact of walltime we can compute statistics on the cluster and the previous workloads.\\
+%~ Cluster: Get \% of nodes of each size noted $percentage\_node\_size(x)$ for each x.\\
+%~ Previous workloads: Get the \% of jobs demanding a certain size noted $percentage\_job\_size(x)$.\\
+%~ For each $x$, if $percentage\_node\_size(x) < percentage\_job\_size(x)$, then we scale the walltime for this size of node to $\walltime(J_i) + \walltime(J_i) \times (percentage\_job\_size(x) - percentage\_node\_size(x))$.}
+%~ OR\\
+%~ \todo[inline]{Cluster: Get area of nodes of each size noted $area\_node\_size(x) = nb\_cores \times ?$ for each x.\\
+%~ Previous workloads: Get the area of jobs demanding a certain size noted $area\_job\_size(x) = nb\_cores \times Duration(J_i)$.\\
+%~ }
 
+We compute statistics previous workloads \todo[inline]{(is it coherent to get statistics on previous workloads or it's better to just get statistics on already processed jobs of the current workload ?)}.\\
+For each job we compute it's usage area with $Area(J_i) = \core(J_i) \times \walltime(J_i)$.\\
+For each size $x$, compute: $Area(x) = \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) == x$.\\
+For each size $x$, compute: $Area\_ratio(x) = \frac{Area(x)}{Area(\mathbb{J})}$.
+$Area\_ratio(x)$ is a number between 0 and 1 and gives us information about the use of a certain node's size.
+We can try and use it as follow:
 
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$
-	\item \textbf{$y \gets Mean\_queue\_time\_after\_i\_jobs - Queue\_time(J_i) + \walltime(J_i)$}
+	\item \textbf{$y \gets Mean\_queue\_time\_after\_i\_jobs - Queue\_time(J_i) + \walltime(J_i) \times Area\_ratio(x)$}
 	\begin{enumerate}
 		\item If $J_i$ can start immediately on a $x$ node, start it there
 		\item Else if $J_i$ can start immediately on a $x+1$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
@@ -624,11 +629,11 @@ Previous workloads: Get the area of jobs demanding a certain size noted $area\_j
 	
 	\subsection{1 day and 1/4 cluster}
 	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 16}\end{figure}
-	
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 30}\end{figure}
+		
 	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}%%
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
 	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Performance - 1/4 cluster - May 16}\end{figure}
+	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Performance - 1/4 cluster - May 30}\end{figure}
 
 \end{document}

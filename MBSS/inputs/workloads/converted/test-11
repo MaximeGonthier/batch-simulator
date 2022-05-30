@@ -2,7 +2,7 @@
 { id: 2 subtime: 0 delay: 1000 walltime: 36000 cores: 10 user: torsteng data: 1 data_size: 64 workload: 1 }
 { id: 3 subtime: 0 delay: 833744 walltime: 36000 cores: 10 user: torsteng data: 1 data_size: 64 workload: 1 }
 { id: 4 subtime: 0 delay: 854101 walltime: 36000 cores: 10 user: torsteng data: 2 data_size: 64 workload: 1 }
-{ id: 5 subtime: 0 delay: 859696 walltime: 36000 cores: 10 user: torsteng data: 2 data_size: 64 workload: 1 }
+{ id: 5 subtime: 0 delay: 859696 walltime: 36000 cores: 10 user: torsteng data: 2 data_size: 512 workload: 1 }
 { id: 6 subtime: 100 delay: 863178 walltime: 36000 cores: 15 user: torsteng data: 3 data_size: 96 workload: 1 }
 { id: 7 subtime: 100 delay: 830996 walltime: 36000 cores: 15 user: torsteng data: 3 data_size: 96 workload: 1 }
 { id: 8 subtime: 100 delay: 833852 walltime: 36000 cores: 15 user: torsteng data: 1 data_size: 96 workload: 1 }

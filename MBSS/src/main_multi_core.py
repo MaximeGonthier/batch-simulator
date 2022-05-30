@@ -455,7 +455,7 @@ while(total_number_jobs != finished_jobs):
 	# ~ if (len(available_job_list) > 0):
 	if (len(new_job_list) > 0):
 	# ~ if (new_job == True):
-		if __debug__:	
+		if __debug__:
 			# ~ print(len(available_job_list), "new jobs at time", t)
 			print(len(new_job_list), "new jobs at time", t)
 			
@@ -474,10 +474,10 @@ while(total_number_jobs != finished_jobs):
 			scheduled_job_list = fcfs_scheduler(new_job_list, node_list, t)
 			
 		elif (scheduler == "Fcfs_big_job_first"):
-			fcfs_scheduler_big_job_first(available_job_list, node_list, t)
+			scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
 			
 		elif (scheduler[0:23] == "Fcfs_backfill_big_nodes"):
-			fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
+			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
 				
 		elif (scheduler == "Fcfs_easybf"):
 			if (first_job_in_queue == None):
@@ -545,10 +545,10 @@ while(total_number_jobs != finished_jobs):
 			scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
 			
 		elif (scheduler == "Fcfs_big_job_first"):
-			fcfs_scheduler_big_job_first(scheduled_job_list, node_list, t)
+			scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
 			
 		elif (scheduler[0:23] == "Fcfs_backfill_big_nodes"):
-			fcfs_scheduler_backfill_big_nodes(scheduled_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
+			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
 			
 		elif (scheduler == "Maximum_use_single_file"):
 			reset_cores(affected_node_list, t)

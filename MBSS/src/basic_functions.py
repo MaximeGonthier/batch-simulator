@@ -173,14 +173,14 @@ def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime):
 def is_my_file_on_node_at_certain_time_and_transfer_time (predicted_time, node, current_time, current_data, current_data_size):
 	
 		# ~ for n in nodes:
-	print("Get transfer time")
+	# ~ print("Get transfer time")
 	for d in node.data:
 			# ~ print("Data", d.unique_id, "is on node", n.unique_id, "and has", len(d.temp_interval_usage_time), "intervals")
 		if d.unique_id == current_data and len(d.temp_interval_usage_time) > 0:
 			# ~ print(d.unique_id, "is on node", n.unique_id, "but at time", predicted_time, "?")
 			i = 0
 			while i < len(d.temp_interval_usage_time):
-				print("Checking", d.temp_interval_usage_time[i], "|", d.temp_interval_usage_time[i + 1], "|", d.temp_interval_usage_time[i + 2])
+				# ~ print("Checking", d.temp_interval_usage_time[i], "|", d.temp_interval_usage_time[i + 1], "|", d.temp_interval_usage_time[i + 2])
 				if d.temp_interval_usage_time[i] <= predicted_time and d.temp_interval_usage_time[i + 1] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 2]:
 					return 0, False
 				elif d.temp_interval_usage_time[i] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 2]:
@@ -210,20 +210,20 @@ def is_my_file_on_node_at_certain_time_and_transfer_time (predicted_time, node, 
 def size_files_ended_at_before_certain_time(predicted_time, data_list, current_data, percentage_occupied):
 	#NEW with % of space you take
 	size_file_ended = 0
-	print("Start of size_files_ended_at_before_certain_time")
+	# ~ print("Start of size_files_ended_at_before_certain_time")
 	for d in data_list:
 		if d.unique_id != current_data and len(d.temp_interval_usage_time) > 0:
-			print("Checking", d.temp_interval_usage_time[len(d.temp_interval_usage_time) - 1])
+			# ~ print("Checking", d.temp_interval_usage_time[len(d.temp_interval_usage_time) - 1])
 			if predicted_time >= d.temp_interval_usage_time[len(d.temp_interval_usage_time) - 1]:
 				size_file_ended += d.size
-				print("Add", d.size)
-	print("Total size of data on node ending before my EAT is:", size_file_ended, "but I return", percentage_occupied, "of it:", size_file_ended*percentage_occupied)
+				# ~ print("Add", d.size)
+	# ~ print("Total size of data on node ending before my EAT is:", size_file_ended, "but I return", percentage_occupied, "of it:", size_file_ended*percentage_occupied)
 	return size_file_ended*percentage_occupied
 
-def size_files_ended_at_certain_time(predicted_time, node, current_data):
+# ~ def size_files_ended_at_certain_time(predicted_time, node, current_data):
 	# OLD
-	print("Not coded, un-comment it.")
-	exit(1)
+	# ~ print("Not coded, un-comment it.")
+	# ~ exit(1)
 	# ~ size_file_ended = 0
 	# ~ already_counted = []
 	# ~ for c in cores:
@@ -240,15 +240,15 @@ def get_nb_valid_copy_of_a_file(predicted_time, nodes, current_data):
 	
 	for n in nodes:
 		for d in n.data:
-			print("Data", d.unique_id, "is on node", n.unique_id, "and has", len(d.temp_interval_usage_time), "intervals")
+			# ~ print("Data", d.unique_id, "is on node", n.unique_id, "and has", len(d.temp_interval_usage_time), "intervals")
 			if d.unique_id == current_data and len(d.temp_interval_usage_time) > 0:
-				print(d.unique_id, "is on node", n.unique_id, "but at time", predicted_time, "?")
+				# ~ print(d.unique_id, "is on node", n.unique_id, "but at time", predicted_time, "?")
 				i = 0
 				while i < len(d.temp_interval_usage_time):
-					print("Checking", d.temp_interval_usage_time[i], "|", d.temp_interval_usage_time[i + 2])
+					# ~ print("Checking", d.temp_interval_usage_time[i], "|", d.temp_interval_usage_time[i + 2])
 					if d.temp_interval_usage_time[i] <= predicted_time and predicted_time <= d.temp_interval_usage_time[i + 2]:
 						nb_of_copy += 1
-						print("++")
+						# ~ print("++")
 						break
 					i += 3
 				break	
