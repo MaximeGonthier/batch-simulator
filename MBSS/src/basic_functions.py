@@ -424,7 +424,7 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_a
 	return nb_non_available_cores
 
 # Same but from a specific node list		
-def schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, sublist_node, t):					
+def schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, sublist_node, t, nb_non_available_cores):					
 	min_time = -1	
 	for n in sublist_node:
 		n.cores.sort(key = operator.attrgetter("available_time"))
@@ -446,10 +446,17 @@ def schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, 
 	j.end_time = start_time + j.walltime			
 	for c in choosen_core:
 		c.job_queue.append(j)
+		
+		# Test reduced complexity
+		if c.available_time <= t:
+			nb_non_available_cores += 1
+		
 		c.available_time = start_time + j.walltime
 		
 	if __debug__:
 		print_decision_in_scheduler(choosen_core, j, choosen_node)
+		
+	return nb_non_available_cores
 
 def reset_cores(l, t):
 	for n in l:

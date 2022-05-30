@@ -22,18 +22,19 @@ CONTRAINTES_TAILLES=1
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_Size_Constraint_${WORKLOAD_TP}.csv
 
-for ((i=0; i<4; i++))
+for ((i=0; i<5; i++))
 do
 	# Schedulers
 	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs"
-	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_big_job_first"
-	if [ $((i)) == 2 ]; then SCHEDULER="Fcfs_backfill_big_nodes"
-	if [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_variant"
+	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs_big_job_first"
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_backfill_big_nodes_2"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
-	#~ ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
+	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
 	python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv

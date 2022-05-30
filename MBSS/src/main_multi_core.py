@@ -413,16 +413,24 @@ if scheduler[0:19] == "Fcfs_with_a_score_x":
 	if len(scheduler) != 26:
 		print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM")
 		exit(1)
-	
 	multiplier_file_to_load = int(scheduler[19])
 	multiplier_file_evicted = int(scheduler[22])
 	multiplier_nb_copy = int(scheduler[25])
 	print("Multiplier file to load:", multiplier_file_to_load, "| Multiplier file evicted:", multiplier_file_evicted, "| Multiplier nb of copy:", multiplier_nb_copy)
 
 # Variant for backfill big nodes
-backfill_big_node_mode = 0
-if (scheduler == "Fcfs_backfill_big_nodes_variant"):
-	backfill_big_node_mode = 1
+if (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+	# Get mode and data from previous workloads
+	# 0 = don't compute anything, 1 = compute mean queue time 2 = compute mean queue time and walltime multiplied by area ratio
+	backfill_big_node_mode = int(scheduler[24])
+	f = open("inputs/file_size_requirement/Ratio_area_2022-03-25->2022-03-25.txt", "r")
+	ratio_sizes = []
+	line = f.readline()
+	while line:
+		r1, r2, r3, r4 = line.split()
+		ratio_sizes.append(float(r4))
+		line = f.readline()
+	f.close
 	
 # For constraint on node sizes
 total_queue_time = 0
@@ -474,10 +482,17 @@ while(total_number_jobs != finished_jobs):
 			scheduled_job_list = fcfs_scheduler(new_job_list, node_list, t)
 			
 		elif (scheduler == "Fcfs_big_job_first"):
+			# Order new jobs list and append them in order (depending on the size they need) in available job list
+			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			
 			scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
 			
-		elif (scheduler[0:23] == "Fcfs_backfill_big_nodes"):
-			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
+		elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			
+			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs, ratio_sizes)
 				
 		elif (scheduler == "Fcfs_easybf"):
 			if (first_job_in_queue == None):
@@ -547,8 +562,8 @@ while(total_number_jobs != finished_jobs):
 		elif (scheduler == "Fcfs_big_job_first"):
 			scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
 			
-		elif (scheduler[0:23] == "Fcfs_backfill_big_nodes"):
-			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time/finished_jobs)
+		elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs, ratio_sizes)
 			
 		elif (scheduler == "Maximum_use_single_file"):
 			reset_cores(affected_node_list, t)

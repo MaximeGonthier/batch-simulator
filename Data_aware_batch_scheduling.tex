@@ -476,7 +476,7 @@ We can try and use it as follow:
 \begin{enumerate}
 	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
 	\item Need to schedule job $J_i$, requiring a node of size $x$
-	\item \textbf{$y \gets Mean\_queue\_time\_after\_i\_jobs - Queue\_time(J_i) + \walltime(J_i) \times Area\_ratio(x)$}
+	\item \textbf{$y \gets max(0, Mean\_queue\_time\_after\_i\_jobs - Queue\_time(J_i)) + \walltime(J_i) \times Area\_ratio(x)$}
 	\begin{enumerate}
 		\item If $J_i$ can start immediately on a $x$ node, start it there
 		\item Else if $J_i$ can start immediately on a $x+1$ node \textbf{and can't be started on an $x$ node before time $t + y$}, start it there
