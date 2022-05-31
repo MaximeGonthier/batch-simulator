@@ -154,7 +154,7 @@ Each file has a size in GB noted $\memory(F_i)$.
 Each job request a certain number of cores $\core(J_i)$. 
 
 
-Only jobs using 5 cores or more have input files.
+%~ Only jobs using 5 cores or more have input files.
 If multiple jobs are submitted by the same user on a short period of time (less than 30 seconds between each job),
 then those jobs will share the same input file.
 The size of an input file is proportional to the number of cores required.
@@ -326,22 +326,6 @@ Schedule all jobs using this file on a node using this file with most available 
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Distribute files}
-\paragraph{Intuition}
-The goal is to distribute files on a certain number of nodes in order to equilibrate the load
-and have multiple choices when choosing a node.
-
-Let's say we have 50 nodes.
-
-Compute the number of copy of each file among each nodes.
-
-If a file is already loaded on 10 or more nodes, jobs using this 
-file can only be scheduled on the first available cores among those nodes.
-
-If a file is loaded on less than 10 nodes, jobs using this file are scheduled on nodes 
-that are not using this file and that have the most memory available left,
-until there are 10 nodes using this file. After that, jobs are schedule on nodes using this file.
-
 \subsection{FCFS with a score}
 \paragraph{Intuition}
 Choose the job j submitted the earliest.
@@ -393,33 +377,35 @@ If new cores are available -> Reschedule Queued Jobs + Backfill
 
 \subsection{Common file packages with a score}
 \paragraph{Intuition}
-Group together jobs sharing a file. and sorted by submission time. The maximum size of a package of jobs is
-the number of cores asked by available jobs divided by the total number of cores. Jobs from a same package are 
-scheduled on the same node following a score computed like in FCFS with a score.
+Group together jobs sharing a file and sorted by submission time.
+Each package is allocated a number of nodes it can use based on the total number of requested cores and the total number of cores on the cluster.
 
 \begin{enumerate}
+	\item $Nb\_cores\_cluster \gets$ Total number of cores
+	\item $n$ is the total number of nodes
 	\item While the available job list is not empty do:
 	\begin{enumerate}
 		\item Select job $J_i$ submitted the earliest
 		\item Group in a package all jobs using $\inputs(J_i)$
 		\item Remove from available jobs list jobs from this package
 	\end{enumerate}
-	\item $Nb\_cores\_asked\_by\_package \gets $ sum of cores asked by available jobs divided by the number of cores on the cluster
-	\item While all jobs are not scheduled
+	\item For each package $k$ do
 	\begin{enumerate}
-		\item Select first package not empty
-		\item Select first job of this package
-		\item $best\_node \gets$ node with the best score (Like in FCFS with a score)
-		\item Schedule $J_i$ on $best\_node$
-		\item Remove $J_i$ from package
-		\item $Cores\_asked\_by\_package\_i \gets Cores(J_i)$
-		\item $i \gets i + 1$
-		\item While $Nb\_cores\_asked\_by\_package < Cores\_asked\_by\_package\_i$
+		\item $Nb\_nodes\_allocated\_package\_k \gets \frac{Nb\_cores\_requested\_package\_k \times Nb\_cores\_cluster}{\sum_{i=0}^{n} Nb\_cores\_requested\_package\_i}$ rounded to the lowest node (so if I need 25 cores I will be granted 20 cores from 1 node, if I need 59, i will be granted 40 from 2 nodes).
+		\item $Used\_nodes \gets 0$
+		\item For each job $i$ in $k$ do
 		\begin{enumerate}
-			\item Schedule $J_{i}$ on $best\_node$
-			\item Remove $J_{i}$ from package
-			\item $Cores\_asked\_by\_package\_i \gets Cores\_asked\_by\_package\_i + Cores(J_{i})$
-			\item $i \gets i + 1$
+			\item If $Used\_nodes$ is inferior to $Nb\_nodes\_allocated\_package\_k$
+				\begin{enumerate}
+					\item $best\_node \gets$ node with the best score (Using FCFS with a score) for job $J_i$ from all nodes
+					\item $Used\_nodes \gets Used\_nodes + 1$
+				\end{enumerate}
+			\item Else
+				\begin{enumerate}
+					\item $best\_node \gets$ node with the best score (Using FCFS with a score) for job $J_i$ from already used nodes for package $k$
+				\end{enumerate}
+			\item Schedule $J_i$ on $best\_node$
+			\item Remove $J_i$ from package $k$
 		\end{enumerate}
 	\end{enumerate}
 \end{enumerate}
@@ -628,12 +614,26 @@ We can try and use it as follow:
 	\caption{Workload 2022-03-14-2022-03-16 - Cluster usage - Full cluster - May 20}\end{figure}
 	
 	\subsection{1 day and 1/4 cluster}
-	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 30}\end{figure}
+	\begin{figure}[H]\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Used_nodes_95_128_4_256_1_1024.pdf}\caption{Used nodes}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-26->2022-03-26_Fcfs_Nb_scheduled_jobs_95_128_4_256_1_1024.pdf}\caption{Jobs in queue}\end{subfigure}\caption{Workload 2022-03-26 - Cluster usage - 1/4 cluster - May 30}\end{figure}
 		
-	\begin{figure}[H]\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\vspace{4ex}\end{minipage}
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\vspace{4ex}\end{minipage}%%
-	\begin{minipage}[b]{0.5\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\vspace{4ex}\end{minipage}\caption{Workload 2022-03-26 - Performance - 1/4 cluster - May 30}\end{figure}
+	\begin{figure}[H]\centering
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\end{subfigure}\caption{Workload 2022-03-26 - Performance on FCFS with a score, no constraint on files sizes - 1/4 cluster - May 30}\end{figure}
+	
+	\begin{figure}[H]\centering
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_classic_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_classic_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_classic_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_classic_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\end{subfigure}\caption{Workload 2022-03-26\_classic - Performance on FCFS with constraint on files sizes - 1/4 cluster - May 30}\end{figure}
+	
+	\begin{figure}[H]\centering
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_Maximum_queue_time_95_128_4_256_1_1024.pdf}\caption{Maximum queue time}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_Total_queue_time_95_128_4_256_1_1024.pdf}\caption{Total queue time}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\end{subfigure}\caption{Workload 2022-03-26 - Performance on FCFS with constraint on files sizes - 1/4 cluster - May 30}\end{figure}
+
 
 \end{document}
