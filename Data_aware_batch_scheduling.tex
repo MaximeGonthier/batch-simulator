@@ -54,29 +54,32 @@ We can thus ask ourselves, \textbf{how can we minimize the amount of transfers b
 
 Users can manually group together input files into a single job to reduce the effects from I/O reads.
 Ideally, we would like to let the user submit jobs the way they want and schedule efficiently jobs on nodes.
-The workers have a way to store files (with a limit on the memory size), as well as a cache page which contains the files/data recently used.
+The workers have a way to store files (with a limit on the memory size).
+%~ as well as a cache page which contains the files/data recently used.
 Thus, a way to minimize data transfers is to create a scheduler that \textbf{take into consideration data locality and schedule on the same node jobs sharing inputs}.
 
 Our scheduler would be used to \textbf{distribute the load between the workers but also to have a vision of what the memory of each worker contains in order to re-use as much as possible a file already loaded on a worker's local memory}.
 
 Clusters already use the efficient SLURM scheduler in order to distribute jobs.
-\textbf{Thus our goal is to add a scheduler before the SLURM scheduler that would allocate to each job a node.}
+\textbf{Thus our goal is to replace SLURM's default scheduler.}
 
 \section{Related Work}
 
-\subsection{About SLURM}
+\subsection{The current state of SLURM}
 SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tolerant and highly scalable.
-Schedulers are part of the standard configuration. The Backfill algorithm is very widely used~\cite{New_Backfill}.
-Backfill is based on the First Come - First Served principle. While the scheduler is running, jobs in the queue are sorted by priority and queueing time~\cite{New_Backfill}.
-If there are not enough nodes to start a job, Backfill takes the next job from the queue and sets it for execution if there are enough nodes for this job and 
-it does not delay other jobs.
+%~ Schedulers are part of the standard configuration.
+First, jobs are scheduled in the FCFS order. 
+On top of that, the Backfill algorithm is very widely used~\cite{New_Backfill}.
+Backfill is, most often, based on the First Come - First Served principle as well. While the scheduler is running, jobs in the queue are sorted by priority and queueing time~\cite{New_Backfill}.
+Then, Backfill will start immediatly all jobs that can be started and completed without delaying the planned schedule.
+%~ If there are not enough nodes to start a job, Backfill takes the next job from the queue and sets it for execution if there are enough nodes for this job and it does not delay other jobs.
 This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
 for execution~\cite{Maui_Scheduler}.
-Thus our starting point can be the Backfill algorithm.
-To be precise, we will be using EASY-Backfilling, a scheduler known to be efficient and able to prevent starvation~\cite{easybf}.
-\textbf{We will add a data-aware strategy that maximize data reuse while maintaining EASY-Backfill's basic principle.}
+There are two types of backfills. Coservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
+EASY backfill is known to be efficient and able to prevent starvation~\cite{easybf}.
+\textbf{Thus our main competitor will be the EASY-Backfill algorithm.}
 
-\subsection{Improving SLURM and other batch systems}
+\subsection{Other ways to improve SLURM and other batch systems}
 To deal with communication-intensive jobs on SLURM, a solution is to minimize network contention by allocating nodes on the least
 contended switches~\cite{minimize_network_contention}. In our case we have
 jobs with one large file transfers that must be done before the computation start, which is different.
@@ -96,7 +99,7 @@ for data that will be used a lot by the job, thus not accessing the main disk to
 much) and space allocation.
 
 
-\subsection{About memory-aware scheduling}
+\subsection{Other papers about memory-aware scheduling}
 Memory-aware scheduling on clusters have been studied in the past.
  
 "Algorithmic Modifications to the
@@ -141,49 +144,38 @@ the inputs are not the same. So HDFS would be less efficient.
 \section{Problem Modeling}
 
 \subsection{Framework}
+
 We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
+
+\subsubsection{Nodes}
 Each node is equipped with $N$ cores noted: $\Node{1}(C_1, C_2, ..., C_{N})$.
+Let's note $\mathbb{M} = M_1, M_2, ..., M_l$ the set of available memory sizes, with $M_1 < M_2 < ... < M_l$.
+Each node has a limited memory $\memory(\Node{i})$ such that $\memory(\Node{i}) \in \mathbb{M}$.
 
-Let's note $\mathbb{M}$ the set of available memory sizes.
-Each node has a limited memory $\memory(\Node{i})$ such has $\memory(\Node{i}) \in \mathbb{M}$.
-
-We denote by $\fileset$ the set of input files and $\jobset$ the set of jobs.
-We denote by $\inputs(J_i)$ the input file required by job $J_i$. $\inputs(J_i)$ can be empty.
+\subsubsection{Input files}
+We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files.
 Each file has a size in GB noted $\memory(F_i)$. 
+The size of a file is proportional to the number of cores requested by the job using the file.
+This size is thus a multiple of $\frac{M_i}{N}$, $M_i \in \mathbb{M}$.
+
+\subsubsection{Jobs}
+We denote by $\jobset$ the set of jobs.
+
+We denote by $\inputs(J_i)$ the input file required by job $J_i$. $\inputs(J_i)$ can be empty.
 Each job request a certain number of cores $\core(J_i)$. 
-
-
-%~ Only jobs using 5 cores or more have input files.
-If multiple jobs are submitted by the same user on a short period of time (less than 30 seconds between each job),
-then those jobs will share the same input file.
-The size of an input file is proportional to the number of cores required.
-Each job has a certain probability of requiring cores of sizes 128GB, 256GB or 1024GB.
-Thus, the size of a file can be:
-\begin{itemize}
-	\item If $\core(J_i) < 5$:
-	\begin{itemize}
-		\item $0GB \times \core(J_i)$, requiring either the 128GB, 256GB or 1024GB node.
-	\end{itemize}
-	\item If $\core(J_i) \ge 5$:
-	\begin{itemize}
-		\item $6.4GB \times \core(J_i)$, requiring either the 128GB, 256GB or 1024GB node.
-		\item $12.8GB \times \core(J_i)$, requiring either the 256GB or 1024GB node.
-		\item $51.2GB \times \core(J_i)$, requiring exclusively 1024GB node.
-	\end{itemize}
-\end{itemize}
-With this model, a job cannot have a file larger than 1024GB.
-Also with this model there cannot be any situation in which the memory is fully used
-but the cores are not. Because these two values are related to each other. 
-However we can have situation where the memory is not fully used but the cores are,
-for example if a 20 core job using 128GB memory is schedule on the 1024GB node.
+Each job $j$ is equiped with a file of size $\frac{M_i}{N} \times \core(J_j)$, $M_i \in \mathbb{M}$.
 
 Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
-A job can request between 1 and 20 cores.
-Each job using input files is using a shared file.
+A job can request between 1 and $N$ cores.
+
+With this model there cannot be any situation in which the memory is fully used
+but the cores are not. Because these two values are related to each other. 
+However we can have situation where the memory is not fully used but the cores are,
+for example if a $N$ cores job using a file $i$ such that $\memory(F_i) = M_1$ is schedule a node with a $M_2$ memory.
 
 Initially, all input files are stored in the main shared file system.
-During the processing of a job $J_i$ on $\Node{k}$, all its inputs
+During the processing of a job $J_i$ on $\Node{k}$,
 $\inputs(J_i)$ must be in the memory of $\Node{k}$. 
 We do not consider the data output of jobs.
 Each of the $m$ jobs must be processed on some of the $K$ nodes. 
@@ -191,7 +183,7 @@ We consider that all jobs are single nodes.
 
 The file sharing system initially contains all of $\fileset$.
 Each node is connected to the file sharing system with a limited bandwidth.
-Each node has the same bandwidth noted $\bandwidth$ which is equal to 0.1 GB/s.
+Each node has the same bandwidth noted $\bandwidth$.
 The bounded bandwidth as well as the sizes of the files are the reasons why
 we aim at restricting the amount of data movement.
 
@@ -200,12 +192,8 @@ A file can be shared by two jobs $J_i$ and $J_j$ only in the following situation
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
-	\item $J_i$ and $J_j$ are computed on the same node and between the end of $J_i$ and the beggining of $J_j$, no other job is being computed.
 \end{enumerate}
 Otherwise we consider that memory operations will cause the files to be evicted.
-When a node is idling however, we consider that we can enforce a policy that will
-pin unoccupied address space containing the last input file that was used.
-This input file will be "free" to use for the next job schedule on the node. It correspond to point number 3.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
@@ -218,77 +206,93 @@ On $\Node{k}$, the schedule is made of a
 succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
 following stages (in this order):
 \begin{enumerate}
-%~ \item Eviction of files if the memory is saturated (we can use flags to force a file to stay in memory. In the same way, we can add a "won't use" flag on a file in order to evict it);
 \item The input files in $\inputs(J_{\sigma(k,i)})$ that are not yet in memory are loaded in the memory of $\Node{k}$;
 \item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
 \end{enumerate}
 It is important to note that the file transfers are done before the computation and can not be overlapped.
 
-%~ We define the \emph{live data} $\live(k,i)$
-%~ as the files in memory of $\Node{k}$ during the computation of $J_{\sigma(k,i)}$, which
-%~ can be defined recursively:
-%~ $$
-%~ \live(k,i)=
-%~ \begin{cases}
-  %~ \inputs(J_{\sigma(k,1)}) & \text{if~}i=1\\
-%~ \Big(\live(k,i-1) \backslash \evict(k,i)\Big) \cup \inputs(J_{\sigma(k,i)})
-%~ & \text{otherwise}
-%~ \end{cases}
-%~ $$
-
 We are in a Non-Preemptive case, so we cannot stop a job and resume it later.
 
 \subsection{Formalization of the objective}
-\textbf{Objective: Minimize the maximum \flow{}}
+\textbf{Objective: Minimize the \flow{} stretch}
 		We define the \flow{J_i} of a job as:
 		$$
 			\flow{J_i} = \completiontime(J_i) - \submissiontime(J_i)
 		$$
-		Our goal is:
+		The flow stretch is the ratio between the flow of a job and the time it would have taken to complete the job on an empty cluster.
 		$$
-			\textbf{Obj.}: \quad \mathit{minimize}~\mathit{max}(\flow{J_1}, \flow{J_2}, ..., \flow{J_m})
+			\textbf{Obj.}: \quad \mathit{minimize}~\sum_{i=0}^{n}\frac{\flow{J_i}}{\duration(J_i) + \frac{\memory(\inputs(J_i))}{\bandwidth}}
 		$$
-A secondary objective is to minimize the amount of file loaded in MB.
-Indeed, loading files has a huge impact on the total makespan and thus on the maximum \flow{}.
+A secondary objective is to minimize the amount of file load.
 
 \section{Other measurements}
 
 Each job has a start time $\start(J_i)$, the actual time at which the job was executed.
-We also want to measure the average queue time of a job in order
-to evaluate our scheduler in terms of fairness. We can do:
+We also want to make sure that the maximum queue time of a job is not significantly higher that other methods's maximum queue time with our schedulers.
 $$
-	Average\_queue\_time = \frac{\sum^{m}_{i = 0} \start(J_i) - \submissiontime(J_i)}{m}
+	Queue_{J_i} = \start(J_i) - \submissiontime(J_i)
 $$
-We can also have cores hours used, makespan, and total flow or queue time.
+$$
+	Maximum\_queue\_time = max(Queue_{J_1}, Queue_{J_2}, ..., Queue_{J_m})
+$$
 
 \section{Experimental settings}
 
 In our case we will be using the Rackham cluster. The reason is to both have
 real cluster information as well as real history of jobs submitted by users.
-Each node is equipped with 20 cores.
-
-\section{The use of simulation}
-
-The use of simulation is motivated both by the fidelity of simulated results as well as energy savings. 
-We will be using Batsim, a precise and realistic~\cite{Batsim} resource and job management system (RJMS) simulator.
-Batsim JSON-formatted workloads are extensible and allow easy workload generation. 
-Moreover, Batsim provides clear information about scheduling metrics and job placement.
-We will add a scheduler using Batsched~\footnote{\url{https://gitlab.inria.fr/batsim/batsched}}.
-
-\paragraph{Data mining for an accurate simulation}
-We are matching Uppsala's University cluster Rackham:
+From the rackham cluster we extract the following parameters:
 \begin{itemize}
-	\item	Bandwidth of each node: Let's stick with 100 MB/s as the BW for writing
-	\item	Size of input files: 800 to 0GB
-	\item	Duration of jobs: from real data
-	\item	Total number of jobs: from real data
-	\item	Number of available nodes: 486 max. We can test with different number ranging from 20 to 486
-	\item	Size of node's memory: 4 of 1TB, 32 of 256GB and the rest has 128GB : A file larger won't be accepted. You need to use the 1TB node if your file is too large.
+	\item There are $K = 486$ nodes.
+	\item There are $l = 3$ different nodes sizes: $\mathbb{M} = 128, 256, 1024$.
+	\item For $i \in [1,450]$, $\memory(\Node{i}) = 128$.
+	\item For $i \in [451,482]$, $\memory(\Node{i}) = 256$.
+	\item For $i \in [483,486]$, $\memory(\Node{i}) = 1024$.
+	\item Each node has $N = 20$ cores.
+	\item The bandwidth of each node is $\bandwidth = 0.1 GB/s$.
 \end{itemize}
 
-\paragraph{How to simulate data transfers ?}
-We can add dynamic job of duration the time it would take to transfer the file on the node in order
-to simulate file loads.
+We can extract from Rackham's history, the set of jobs that ended each day, with information on the submission time, walltime, cores asked
+and real execution time of each job.
+A job is rarely running for more than a week.
+
+Let's say we want to evaluate jobs submitted between day 1 and 3. 
+In order to do this we first look at all the jobs that ended between day 1 and 10. This should be enough to cover the ending times of most of the jobs submitted between day 1 and 3 because most jobs do not last for more than 7 days.
+We sort these jobs by submission time. All the jobs submitted before day 1 are scheduled but not considered in our evaluation.
+They are used to emulate the state of the cluster on day 1. All the jobs submitted between day 1 and 3 are scheduled and evaluated.
+All the jobs submitted between day 4 and 10 are not scheduled. \todo[inline]{Max: Or should they ?}
+
+In order to evaluate our schedulers focused on file re-use, we need to incorparate input files for each jobs. This information is not know from the workload's history, we must create it as follow:
+\begin{itemize}
+	\item Each job has an input file.
+	\item A file is shared between two jobs if they are submitted by the same user in a $800$ seconds timeframe and are using the same number of cores.
+\end{itemize}
+
+From the workloads history, we observed that only a small portion of jobs use input files
+requiring 256 or 1024GB nodes. Thus for our experiments we will consider that when a file is created, it has 
+a 5\% chance to require a 1024 node and a 10\% to require a 256 GB node.
+
+%~ \section{The use of simulation}
+
+%~ The use of simulation is motivated both by the fidelity of simulated results as well as energy savings. 
+%~ We will be using Batsim, a precise and realistic~\cite{Batsim} resource and job management system (RJMS) simulator.
+%~ Batsim JSON-formatted workloads are extensible and allow easy workload generation. 
+%~ Moreover, Batsim provides clear information about scheduling metrics and job placement.
+%~ We will add a scheduler using Batsched~\footnote{\url{https://gitlab.inria.fr/batsim/batsched}}.
+
+%~ \paragraph{Data mining for an accurate simulation}
+%~ We are matching Uppsala's University cluster Rackham:
+%~ \begin{itemize}
+	%~ \item	Bandwidth of each node: Let's stick with 100 MB/s as the BW for writing
+	%~ \item	Size of input files: 800 to 0GB
+	%~ \item	Duration of jobs: from real data
+	%~ \item	Total number of jobs: from real data
+	%~ \item	Number of available nodes: 486 max. We can test with different number ranging from 20 to 486
+	%~ \item	Size of node's memory: 4 of 1TB, 32 of 256GB and the rest has 128GB : A file larger won't be accepted. You need to use the 1TB node if your file is too large.
+%~ \end{itemize}
+
+%~ \paragraph{How to simulate data transfers ?}
+%~ We can add dynamic job of duration the time it would take to transfer the file on the node in order
+%~ to simulate file loads.
 
 \section{Algorithms}
 
@@ -328,23 +332,23 @@ Schedule all jobs using this file on a node using this file with most available 
 
 \subsection{FCFS with a score}
 \paragraph{Intuition}
-Choose the job j submitted the earliest.
+Choose the job $J_i$ submitted the earliest.
 
-For each node, A = compute the earliest available time to host job j.
+For each node, A = compute the earliest available time to host job $J_i$.
 
-For each node, B = compute the time it will take to load all the files from j not yet in memory.
+For each node, B = compute the time it will take to load all the files from $J_i$ not yet in memory.
 
 For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of number of cores on the node the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
 To do this we do: $C = \inputs(\Node{i})~that~end~before~predicted~start~time~ \times \frac{\core(J_i)}{\core(\Node{i})}$
 
-D = compute the number of copy (and thus the time it took to load them all) of the file you want to load on other nodes at the predicted time you want to compute the job.
+D = First compute the number of copy $NC$ of file $\inputs(J_i)$ on other nodes than the current node at the predicted time you want to compute the job. Then D get the time it took to load this file on the other nodes with: $D = \frac{NC \times \memory(\inputs(J_i))}{BW}$.
 
 Each node get a score combining these three values: Score = A + B + (C/BW) + D
 
 We can add multiplier: Score = A + X $\times$ B + Y $\times$ (C/BW) + Z $\times$ D\\
 X, Y and Z have to be found experimentally.
 
-Schedule j on the node with the lowest score and on the cores available the earliest.
+Schedule $J_i$ on the node with the lowest score and on the cores available the earliest.
 
 \subsection{EASYBF-FCFS-FCFS}
 Small adaptation from the paper: \url{https://hal.archives-ouvertes.fr/hal-01522459/document}.
@@ -382,16 +386,17 @@ Each package is allocated a number of nodes it can use based on the total number
 
 \begin{enumerate}
 	\item $Nb\_cores\_cluster \gets$ Total number of cores
-	\item $n$ is the total number of nodes
+	\item $K$ is the total number of nodes
+	\item $Nb\_cores\_requested\_package\_i$ is the sum of $\core(J_j)$ of each job on package i.
 	\item While the available job list is not empty do:
 	\begin{enumerate}
 		\item Select job $J_i$ submitted the earliest
 		\item Group in a package all jobs using $\inputs(J_i)$
 		\item Remove from available jobs list jobs from this package
 	\end{enumerate}
-	\item For each package $k$ do
+	\item For each package $j$ do
 	\begin{enumerate}
-		\item $Nb\_nodes\_allocated\_package\_k \gets \frac{Nb\_cores\_requested\_package\_k \times Nb\_cores\_cluster}{\sum_{i=0}^{n} Nb\_cores\_requested\_package\_i}$ rounded to the lowest node (so if I need 25 cores I will be granted 20 cores from 1 node, if I need 59, i will be granted 40 from 2 nodes).
+		\item $Nb\_nodes\_allocated\_package\_j \gets \frac{Nb\_cores\_requested\_package\_j \times Nb\_cores\_cluster}{\sum_{i=0}^{K} Nb\_cores\_requested\_package\_i}$ rounded to the lowest node (so if I need 25 cores I will be granted 20 cores from 1 node, if I need 59, i will be granted 40 from 2 nodes).
 		\item $Used\_nodes \gets 0$
 		\item For each job $i$ in $k$ do
 		\begin{enumerate}
