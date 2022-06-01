@@ -33,10 +33,8 @@ DATA_ON_ALL_JOBS = int(sys.argv[4]) # 0 or 1
 	# ~ f_input_before = open("inputs/workloads/raw/" + FILENAME_BEFORE, "r")
 	# ~ f_input_after = open("inputs/workloads/raw/" + FILENAME_AFTER, "r")
 
-f_input = open("inputs/workloads/raw/" + FILENAME, "r")
-
-id_count = 1
-workload = []	
+# ~ id_count = 1
+# ~ workload = []	
 
 # ~ # Read the file first to get a struct to sort by submission time
 # ~ if (MERGE_3_FILES == 1):
@@ -55,27 +53,32 @@ workload = []
 			# ~ id_count += 1
 		# ~ line = f_input_before.readline()
 	# ~ f_input_before.close()
-	
-line = f_input.readline()
 
-# Get start of first job because all job submitted after this start time will be on the used workload
+# Get start of first and last job times that will be considered in terms of submission times
+f_start_end = open("outputs/start_end_date_evaluated_jobs.txt", "r")
+line = f_start_end.readline()
 r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
 first_time_used_jobs = int(str(r8)[4:])
+line = f_start_end.readline()
+r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
+last_used_job = int(str(r8)[4:])
+f_start_end.close()
 print("Time of first job of used days is", first_time_used_jobs)
+print("Time of last job of used days is", last_used_job)
+# ~ exit(1)
 
+f_input = open("inputs/workloads/raw/" + FILENAME, "r")
+line = f_input.readline()
+id_count = 1
+workload = []	
 while line:
 	r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
 	if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20 and int(str(r8)[4:]) - int(str(r7)[6:]) > 0): # DELAY MUST NOT BE 0! I don't know why but there are 0 seconds jobs with completed status
-	# ~ if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20): # DELAY MUST NOT BE 0. I don't know why but there are 0seconds jobs with completed status
 		if (len(str(r15)) > 17): # Mean that the walltime is superior to 10 days
 			print("Error, size not dealt with")
 			exit(1)
 		elif (len(str(r15)) == 17): # Mean that the walltime is superior to 10 days
-			# ~ print(str(r15))
-			# ~ print(str(r15)[6:8])
-			# ~ print(int(str(r15)[6:8]))
 			walltime = int(str(r15)[6:8])*24*60*60 + int(str(r15)[9:11])*60*60 + int(str(r15)[12:14])*60 + int(str(r15)[15:17])
-			# ~ print(walltime)
 		elif (len(str(r15)) == 16): # Mean that the walltime is superior to 24h
 			walltime = int(str(r15)[6:7])*24*60*60 + int(str(r15)[8:10])*60*60 + int(str(r15)[11:13])*60 + int(str(r15)[14:16])
 		else:
@@ -88,25 +91,9 @@ while line:
 		else:
 			print("Error walltime is 0 ??")
 			exit(1)
+	# ~ print (line)
 	line = f_input.readline()
 f_input.close()
-
-# ~ if (MERGE_3_FILES == 1):
-	# ~ line = f_input_after.readline()
-	# ~ while line:
-		# ~ r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
-		# ~ if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20):
-			# ~ if (len(str(r15)) == 17): # Mean that the walltime is superior to 10 days
-				# ~ walltime = int(str(r15)[6:8])*24*60*60 + int(str(r15)[9:11])*60*60 + int(str(r15)[12:14])*60 + int(str(r15)[15:17])
-			# ~ if (len(str(r15)) == 16): # Mean that the walltime is superior to 24h
-				# ~ walltime = int(str(r15)[6:7])*24*60*60 + int(str(r15)[8:10])*60*60 + int(str(r15)[11:13])*60 + int(str(r15)[14:16])
-			# ~ else:
-				# ~ walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
-			# ~ w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, 2)
-			# ~ workload.append(w)
-			# ~ id_count += 1
-		# ~ line = f_input_after.readline()
-	# ~ f_input_after.close()
 
 # Min sub time takes 0
 workload.sort(key = operator.attrgetter("subtime"))
@@ -130,9 +117,11 @@ if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		size = 51.2
 	workload[0].data_size = size*workload[0].cores
 
-if workload[0].subtime >= first_time_used_jobs:
+if workload[0].subtime >= first_time_used_jobs and workload[0].subtime <= last_used_job:
 	workload[0].workload = 1
 	nb_used_jobs += 1
+elif workload[0].subtime > last_used_job:
+	workload[0].workload = 2
 else:
 	workload[0].workload = 0
 
@@ -142,7 +131,7 @@ last_size = workload[0].data_size
 last_user = workload[0].user
 last_subtime = workload[0].subtime
 last_core = workload[0].cores
-
+id_count_2 = 0
 for i in range (1, id_count - 1):
 	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		share_last_user = random.randint(0,99)
@@ -166,20 +155,19 @@ for i in range (1, id_count - 1):
 			last_subtime = workload[i].subtime
 			last_core = workload[i].cores
 
-	# ~ if (i < nb_ignored_jobs - 1):
-		# ~ workload[i].workload = 0
-	# ~ elif (i > id_count - nb_ignored_jobs - 1):
-		# ~ workload[i].workload = 2
-	# ~ else:
-		# ~ workload[i].workload = 1
 		
-	if workload[i].subtime >= first_time_used_jobs:
+	if workload[i].subtime >= first_time_used_jobs and workload[i].subtime <= last_used_job:
 		workload[i].workload = 1
 		nb_used_jobs += 1
+	elif workload[i].subtime > last_used_job:
+		workload[i].workload = 2
 	else:
 		workload[i].workload = 0
-		
-	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
+	
+	if workload[i].workload != 2:
+		f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
+	else:
+		id_count_2 += 1
 f_output.close()
 
-print("There are", id_count - 1, "jobs and", nb_used_jobs, "will be evaluated")
+print("There are", id_count - 1, "jobs.", id_count_2, "are after and ignored.", id_count - 1 - id_count_2, "will be processed and", nb_used_jobs, "will be evaluated")

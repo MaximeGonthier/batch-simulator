@@ -388,11 +388,11 @@ def return_earliest_available_cores_and_start_time_specific_node(cores_asked, no
 # Schedule a job earliest available node and write start time and add job in queues
 def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores):
 	if (j.index_node_list == 0): # Je peux choisir dans la liste entière
-		# ~ nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
-		nodes_to_choose_from = node_list[0]
+		nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
+		# ~ nodes_to_choose_from = node_list[0]
 	elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
-		# ~ nodes_to_choose_from = node_list[1] + node_list[2]
-		nodes_to_choose_from = node_list[1]
+		nodes_to_choose_from = node_list[1] + node_list[2]
+		# ~ nodes_to_choose_from = node_list[1]
 	elif (j.index_node_list == 2): # Je peux choisir que dans la 2
 		nodes_to_choose_from = node_list[2]
 					

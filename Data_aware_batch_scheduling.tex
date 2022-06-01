@@ -164,7 +164,7 @@ We denote by $\jobset$ the set of jobs.
 
 We denote by $\inputs(J_i)$ the input file required by job $J_i$. $\inputs(J_i)$ can be empty.
 Each job request a certain number of cores $\core(J_i)$. 
-Each job $j$ is equiped with a file of size $\frac{M_i}{N} \times \core(J_j)$, $M_i \in \mathbb{M}$.
+For eac $j$, $\memory(\inputs(J_j)) = \frac{M_i}{N} \times \core(J_j)$, $M_i \in \mathbb{M}$.
 
 Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 A job can request between 1 and $N$ cores.
