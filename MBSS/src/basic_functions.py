@@ -44,6 +44,7 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, end_time):
 	for d in node_used.data:
 		if (data_unique_id == d.unique_id): # It is already on node
 			# ~ if (d.nb_task_using_it > 0): # And is still valid!
+			# ~ print(d.end_time)
 			if (d.nb_task_using_it > 0 or d.end_time == t): # And is still valid!
 				# ~ if (d.end_time < t + walltime): # New end time for the data cause current job will hold it for longer
 					# ~ d.end_time = t + walltime
@@ -78,12 +79,16 @@ def add_data_in_node(data_unique_id, data_size, node_used, t, end_time):
 		
 	return transfer_time, waiting_for_a_load_time
 
-def remove_data_from_node(l):
+def remove_data_from_node(l, t):
 	for j in l:
 		for d in j.node_used.data:
 			if (j.data == d.unique_id):
 				# ~ print("--", d.unique_id, "node", j.node_used.unique_id)
 				d.nb_task_using_it -= 1
+				
+				if d.nb_task_using_it == 0:
+					d.end_time = t
+				
 				# ~ print(d.nb_task_using_it)
 				# ~ j.node_used.data.remove(d)
 				break
@@ -108,8 +113,15 @@ def print_csv(to_print_list, scheduler):
 	total_waiting_for_a_load_time = 0
 	total_waiting_for_a_load_time_and_transfer_time = 0
 	makespan = 0
+	total_flow_stretch = 0
+	mean_flow_stretch = 0
 	core_time_used = 0
 	for tp in to_print_list:
+		
+		# Flow stretch
+		total_flow_stretch += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time
+		# ~ print((tp.job_end_time - tp.job_subtime), tp.empty_cluster_time)
+		
 		# ~ print("print", tp.job_unique_id)
 		core_time_used += tp.time_used*tp.job_cores
 		# ~ total_queue_time += tp.time - tp.job_subtime
@@ -130,6 +142,7 @@ def print_csv(to_print_list, scheduler):
 			makespan = tp.job_end_time
 	mean_queue_time = total_queue_time/len(to_print_list)
 	mean_flow = total_flow/len(to_print_list)
+	mean_flow_stretch = total_flow_stretch/len(to_print_list)
 	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
 	
@@ -140,7 +153,12 @@ def print_csv(to_print_list, scheduler):
 	elif (scheduler == "Fcfs_with_a_score_easy_bf"):
 		scheduler = "Fcfs-Score-EasyBf"
 	
-	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time)))
+	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time), str(mean_flow_stretch)))
+	f.close()
+	
+	file_to_open = "outputs/Stretch_" + scheduler + ".txt"
+	f = open(file_to_open, "w")
+	f.write("%s" % (str(mean_flow_stretch)))
 	f.close()
 
 def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime, nb_non_available_cores):

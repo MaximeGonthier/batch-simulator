@@ -75,8 +75,12 @@ class To_print: # Struct used to know what to print later in csv
     job_end_time: int
     job_cores: int
     waiting_for_a_load_time: int
+    empty_cluster_time: float
    
 job_list = []
+# ~ job_list_0 = []
+# ~ job_list_1 = []
+# ~ job_list_2 = []
 available_job_list = []
 new_job_list = []
 scheduled_job_list = []
@@ -167,15 +171,19 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 		available_job_list = remove_jobs_from_list(available_job_list, jobs_to_remove)
 	return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list
 
-def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes): # TODO plus besoin de scheduleed job list
+def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate):
 	jobs_to_remove = []
 	for j in running_jobs:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
+			
+			if j.workload == 1:
+				nb_job_to_evaluate_finished += 1
+				
 			finished_jobs += 1
 			# Just printing, can remove
+			# ~ if (finished_jobs%5 == 0):
 			if (finished_jobs%100 == 0):
-			# ~ if (finished_jobs%1 == 0):
-				print(finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs), "| Schedule =", len(scheduled_job_list))
+				print("Evaluated jobs:", nb_job_to_evaluate_finished, "/", nb_job_to_evaluate, "| All jobs:", finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs))
 			
 			if __debug__:	
 				print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
@@ -209,7 +217,7 @@ def end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_j
 						
 	running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
 						
-	return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes
+	return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished
 
 # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
 def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
@@ -355,7 +363,7 @@ def to_print_job_csv(job, node_used, core_ids, time):
 	time_used = job.end_time - job.start_time
 	
 	if (job.workload == 1):	
-		tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time)
+		tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time, job.delay + job.data_size/0.1)
 		to_print_list.append(tp)
 		
 	if (write_all_jobs == 1): # For gantt charts
@@ -389,11 +397,15 @@ def to_print_job_csv(job, node_used, core_ids, time):
 node_list, available_node_list = read_cluster(input_node_file, node_list, available_node_list)
 
 # Read workload
-job_list, first_subtime_to_plot = read_workload(input_job_file, job_list, constraint_on_sizes, write_all_jobs)
+# ~ job_list_0, job_list_1, job_list_2, first_subtime_to_plot, nb_job_to_evaluate = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
+# ~ job_list, first_subtime_to_plot, nb_job_to_evaluate = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
+job_list, nb_job_to_evaluate = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
 
 total_number_cores = (len(node_list) + 1)*20
 
 finished_jobs = 0
+# ~ total_number_jobs = len(job_list)
+# ~ total_number_jobs = len(job_list_0) + len(job_list_1) + len(job_list_2)
 total_number_jobs = len(job_list)
 new_job = False
 new_core = False
@@ -442,22 +454,54 @@ print("Start with", scheduler)
 
 next_submit_time = 0
 
-while(total_number_jobs != finished_jobs):
+nb_job_to_evaluate_finished = 0
+# ~ nexta = True
+# ~ while(total_number_jobs != finished_jobs):
+while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 	# Get the set of available jobs at time t
 	# Jobs are already sorted by subtime so I can simply stop with a break
 	if next_submit_time == t:
+		# ~ to_remove = []
+		# ~ if len(job_list_0) != 0:
+			# ~ for j in job_list_0:
+				# ~ if (j.subtime == t):
+					# ~ new_job_list.append(j)
+					# ~ available_job_list.append(j)
+					# ~ to_remove.append(j)
+				# ~ elif (j.subtime > t):
+					# ~ next_submit_time = j.subtime
+					# ~ break
+			# ~ remove_jobs_from_list(job_list_0, to_remove)
+		# ~ if len(job_list_1) != 0 and len(job_list_0) == 0:
+			# ~ for j in job_list_1:
+				# ~ if (j.subtime == t):
+					# ~ new_job_list.append(j)
+					# ~ available_job_list.append(j)
+					# ~ to_remove.append(j)
+				# ~ elif (j.subtime > t):
+					# ~ next_submit_time = j.subtime
+					# ~ break
+			# ~ remove_jobs_from_list(job_list_1, to_remove)
+		# ~ if len(job_list_2) != 0 and len(job_list_1) == 0:
+			# ~ for j in job_list_2:
+				# ~ if (j.subtime == t):
+					# ~ new_job_list.append(j)
+					# ~ available_job_list.append(j)
+					# ~ to_remove.append(j)
+				# ~ elif (j.subtime > t):
+					# ~ next_submit_time = j.subtime
+					# ~ break
+			# ~ remove_jobs_from_list(job_list_2, to_remove)
 		to_remove = []
 		for j in job_list:
 			if (j.subtime == t):
 				new_job_list.append(j)
 				available_job_list.append(j)
-				# ~ scheduled_job_list.append(j) # Cause they will end up here anyway
 				to_remove.append(j)
 			elif (j.subtime > t):
-				# ~ if (len(to_remove) > 0):
-				remove_jobs_from_list(job_list, to_remove)
 				next_submit_time = j.subtime
 				break
+		remove_jobs_from_list(job_list, to_remove)
 	
 	# New jobs are available! Schedule them
 	# ~ if (len(available_job_list) > 0):
@@ -530,12 +574,12 @@ while(total_number_jobs != finished_jobs):
 	old_finished_jobs = finished_jobs
 	
 	if t in end_times:
-		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes = end_jobs(t, scheduled_job_list, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes)
+		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate)
 		
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	# Now I deal with it with intevralk it should work like before
 	if len(finished_job_list) > 0:
-		remove_data_from_node(finished_job_list)
+		remove_data_from_node(finished_job_list, t)
 	
 	# ~ if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
 	if (old_finished_jobs < finished_jobs and len(available_job_list) > 0):
@@ -605,9 +649,9 @@ while(total_number_jobs != finished_jobs):
 	
 	# Print cores used
 	if write_all_jobs == 3:
-		if t >= first_subtime_to_plot:
-			f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
-	
+		# ~ if t >= first_subtime_to_plot:
+		f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
+		
 	# Time is advancing
 	t += 1
 

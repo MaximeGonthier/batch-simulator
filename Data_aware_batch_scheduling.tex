@@ -221,7 +221,7 @@ We are in a Non-Preemptive case, so we cannot stop a job and resume it later.
 		$$
 		The flow stretch is the ratio between the flow of a job and the time it would have taken to complete the job on an empty cluster.
 		$$
-			\textbf{Obj.}: \quad \mathit{minimize}~\sum_{i=0}^{n}\frac{\flow{J_i}}{\duration(J_i) + \frac{\memory(\inputs(J_i))}{\bandwidth}}
+			\textbf{Obj.}: \quad \mathit{minimize}~\frac{\sum_{i=0}^{|\jobset|}\frac{\flow{J_i}}{\duration(J_i) + \frac{\memory(\inputs(J_i))}{\bandwidth}}}{|\jobset|}
 		$$
 A secondary objective is to minimize the amount of file load.
 
@@ -255,11 +255,10 @@ We can extract from Rackham's history, the set of jobs that ended each day, with
 and real execution time of each job.
 A job is rarely running for more than a week.
 
-Let's say we want to evaluate jobs submitted between day 1 and 3. 
-In order to do this we first look at all the jobs that ended between day 1 and 10. This should be enough to cover the ending times of most of the jobs submitted between day 1 and 3 because most jobs do not last for more than 7 days.
-We sort these jobs by submission time. All the jobs submitted before day 1 are scheduled but not considered in our evaluation.
-They are used to emulate the state of the cluster on day 1. All the jobs submitted between day 1 and 3 are scheduled and evaluated.
-All the jobs submitted between day 4 and 10 are not scheduled. \todo[inline]{Max: Or should they ?}
+Let's say we want to evaluate jobs submitted on day 1.
+In order to do this we first look at all the jobs that ended between day 0 and 8. This should be enough to cover the ending times of most of the jobs submitted on day 1 because most jobs do not last for more than 7 days.
+We sort these jobs by submission time. All the jobs submitted on day 0 and before are scheduled but not considered in our evaluation.
+Job submitted before day 0 gives us the state of the cluster on day 0. Jobs from day 0 are ignored to limit the effect of bulk of jobs we could get with jobs submitted before day 0. Jobs from day 0 to 8 are all scheduled but only jobs from day 1 are evaluated.
 
 In order to evaluate our schedulers focused on file re-use, we need to incorparate input files for each jobs. This information is not know from the workload's history, we must create it as follow:
 \begin{itemize}

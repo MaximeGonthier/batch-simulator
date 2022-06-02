@@ -27,45 +27,29 @@ PROBABILITY_OF_USING_256GB = int(sys.argv[2]) # 0-100
 PROBABILITY_OF_USING_1TB = int(sys.argv[3]) # 0-100
 DATA_ON_ALL_JOBS = int(sys.argv[4]) # 0 or 1
 
-# ~ if (MERGE_3_FILES == 1):
-	# ~ FILENAME_BEFORE = sys.argv[5] # FILE before main file
-	# ~ FILENAME_AFTER = sys.argv[6] # FILE after main file
-	# ~ f_input_before = open("inputs/workloads/raw/" + FILENAME_BEFORE, "r")
-	# ~ f_input_after = open("inputs/workloads/raw/" + FILENAME_AFTER, "r")
-
-# ~ id_count = 1
-# ~ workload = []	
-
-# ~ # Read the file first to get a struct to sort by submission time
-# ~ if (MERGE_3_FILES == 1):
-	# ~ line = f_input_before.readline()
-	# ~ while line:
-		# ~ r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
-		# ~ if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20):
-			# ~ if (len(str(r15)) == 17): # Mean that the walltime is superior to 10 days
-				# ~ walltime = int(str(r15)[6:8])*24*60*60 + int(str(r15)[9:11])*60*60 + int(str(r15)[12:14])*60 + int(str(r15)[15:17])
-			# ~ if (len(str(r15)) == 16): # Mean that the walltime is superior to 24h
-				# ~ walltime = int(str(r15)[6:7])*24*60*60 + int(str(r15)[8:10])*60*60 + int(str(r15)[11:13])*60 + int(str(r15)[14:16])
-			# ~ else:
-				# ~ walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
-			# ~ w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, 0)
-			# ~ workload.append(w)
-			# ~ id_count += 1
-		# ~ line = f_input_before.readline()
-	# ~ f_input_before.close()
-
 # Get start of first and last job times that will be considered in terms of submission times
 f_start_end = open("outputs/start_end_date_evaluated_jobs.txt", "r")
 line = f_start_end.readline()
 r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
-first_time_used_jobs = int(str(r8)[4:])
+first_time_day_0 = int(str(r8)[4:])
 line = f_start_end.readline()
 r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
-last_used_job = int(str(r8)[4:])
+last_time_day_0 = int(str(r8)[4:])
+line = f_start_end.readline()
+r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
+first_time_day_1 = int(str(r8)[4:])
+line = f_start_end.readline()
+r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
+last_time_day_1 = int(str(r8)[4:])
+line = f_start_end.readline()
+r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
+first_time_day_2 = int(str(r8)[4:])
 f_start_end.close()
-print("Time of first job of used days is", first_time_used_jobs)
-print("Time of last job of used days is", last_used_job)
-# ~ exit(1)
+print("Time of first job day 0", first_time_day_0)
+print("Time of last job day 0", last_time_day_0)
+print("Time of first job day 1", first_time_day_1)
+print("Time of last job day 1", last_time_day_1)
+print("Time of first job day 2", first_time_day_2)
 
 f_input = open("inputs/workloads/raw/" + FILENAME, "r")
 line = f_input.readline()
@@ -85,6 +69,7 @@ while line:
 			walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
 		# Similarly walltime must not be 0
 		if (walltime > 0):
+			# ~ # And I don't want failed jobs with long walltimes
 			w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1)
 			workload.append(w)
 			id_count += 1
@@ -98,7 +83,7 @@ f_input.close()
 # Min sub time takes 0
 workload.sort(key = operator.attrgetter("subtime"))
 min_subtime = workload[0].subtime
-nb_used_jobs = 0
+# ~ nb_used_jobs = 0
 # ~ nb_ignored_jobs=(int(sys.argv[5])*id_count)/100
 
 # ~ print("There are", id_count - 1, "jobs and", id_count - nb_ignored_jobs*2, "will be evaluated")
@@ -117,13 +102,26 @@ if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		size = 51.2
 	workload[0].data_size = size*workload[0].cores
 
-if workload[0].subtime >= first_time_used_jobs and workload[0].subtime <= last_used_job:
-	workload[0].workload = 1
-	nb_used_jobs += 1
-elif workload[0].subtime > last_used_job:
-	workload[0].workload = 2
-else:
+nb_jobs_before_day_0 = 0
+nb_jobs_day_0 = 0
+nb_jobs_day_1 = 0
+nb_jobs_day_2 = 0
+
+if workload[0].subtime < first_time_day_0:
+	workload[0].workload = -1
+	nb_jobs_before_day_0 += 1
+elif workload[0].subtime >= first_time_day_0 and workload[0].subtime <= last_time_day_0:
 	workload[0].workload = 0
+	nb_jobs_day_0 +=1
+elif workload[0].subtime >= first_time_day_1 and workload[0].subtime <= last_time_day_1:
+	workload[0].workload = 1
+	nb_jobs_day_1 +=1
+elif workload[0].subtime > last_time_day_1:
+	workload[0].workload = 2
+	nb_jobs_day_2 +=1
+else:
+	print("Error time generation workload")
+	exit(1)
 
 f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size, workload[0].workload))
 last_data = workload[0].data
@@ -131,7 +129,6 @@ last_size = workload[0].data_size
 last_user = workload[0].user
 last_subtime = workload[0].subtime
 last_core = workload[0].cores
-id_count_2 = 0
 for i in range (1, id_count - 1):
 	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		share_last_user = random.randint(0,99)
@@ -156,18 +153,31 @@ for i in range (1, id_count - 1):
 			last_core = workload[i].cores
 
 		
-	if workload[i].subtime >= first_time_used_jobs and workload[i].subtime <= last_used_job:
-		workload[i].workload = 1
-		nb_used_jobs += 1
-	elif workload[i].subtime > last_used_job:
-		workload[i].workload = 2
-	else:
+	# ~ if workload[i].subtime >= first_time_used_jobs and workload[i].subtime <= last_used_job:
+		# ~ workload[i].workload = 1
+		# ~ nb_used_jobs += 1
+	# ~ elif workload[i].subtime > last_used_job:
+		# ~ workload[i].workload = 2
+	# ~ else:
+		# ~ workload[i].workload = 0
+	if workload[i].subtime < first_time_day_0:
+		workload[i].workload = -1
+		nb_jobs_before_day_0 += 1
+	elif workload[i].subtime >= first_time_day_0 and workload[i].subtime <= last_time_day_0:
 		workload[i].workload = 0
-	
-	if workload[i].workload != 2:
-		f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
+		nb_jobs_day_0 +=1
+	elif workload[i].subtime >= first_time_day_1 and workload[i].subtime <= last_time_day_1:
+		workload[i].workload = 1
+		nb_jobs_day_1 +=1
+	elif workload[i].subtime > last_time_day_1:
+		workload[i].workload = 2
+		nb_jobs_day_2 +=1
 	else:
-		id_count_2 += 1
+		print("Error time generation workload")
+		exit(1)
+	
+	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
 f_output.close()
 
-print("There are", id_count - 1, "jobs.", id_count_2, "are after and ignored.", id_count - 1 - id_count_2, "will be processed and", nb_used_jobs, "will be evaluated")
+# ~ print("There are", id_count - 1, "jobs.", nb_used_jobs, "will be evaluated")
+print("There are", id_count - 1, "jobs.", nb_jobs_before_day_0, "before day 0,", nb_jobs_day_0, "at day 0,", nb_jobs_day_1, "evaluated at day 1,", nb_jobs_day_2, "at day 2 and beyond.")

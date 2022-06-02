@@ -84,13 +84,9 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Does FCFS has same result as FCFS with a score ad 0 on both multiplier ? Yes.
-		\item Change X axis on cluster usage plots.
-		\item Lower complexity again of FCFS with a score by stopping as soon as score is too high instead of computing each variable of the score.
-		\item New tests with reduced cluster for FCFS with a score.
-		\item Area for walltime multiplier.
-		\item Code area and test
-		\item Re-writing of Common file packages with a score algorithm with new idea
+		\item Using list in python is where it takes a lot of time
+		\item New workload generation with day -1, day 0, 1 and 2
+		\item It goes down before day 0 because it's job with huge walltime that failed and lastes a few seconds even tho they have the COMPLETED state. Should I remove them ?
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -103,6 +99,9 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Plot distribution of queue/flow time with 2 schedulers on X and Y axis. 1 for all, different color for bigger jobs and smaller jobs
+			\item same with stretch on Y and all the schedulers on X
+			\item plot heat map of fcfs score with a parameter to 1 or 0 and the 2 others
 			\item général et algo a relire puis envoyer a loris.
 			\item Prendre coupe plus large sur la fin où je prends les jobs de 14 à 21. Je considere ceux soumis entre le 14 et le 16 par subtime pour les stats. Pour le load ceux soumis entre 14 et 16 par subtime et ceux soumis avant le 14. et faire par semaine donc jusqu'a la fin de la semaine. En écrire une méthofologhie et les choix. Je veux letat au x 14 et tout ceux soumis entre le 14 et le 16 et ceux dans la queue depuis avant. Commencer a regarder a partir du 14 pour les ends time. Regarder sur 1 mois entier apres
 			\item Essayer de pouser X un peu plus le multiplicateur de time to load file
@@ -110,7 +109,7 @@
 			\item rendre modèle généraliste
 			\item prendre le stretch du flou (flow/flow cluster vide (avec transferts)) Moyenne mediane des ratio de tt les jobs ensuite.
 			\item plot garder exposant sur l axe a gauche
-			\item Enlever transferts sur courbes contraintes tailles
+			\item Enlever transferts sur courbes contraintes tailles et enlever les données d'entrées même si les algos les regardent
 			\item mettre la rose sur la 12 pour contraintes. La 13 sert pas car trop desiquilibré
 			\item plot stats ratio area et cluster
 			\item Est-ce vraiment utile ?
@@ -121,7 +120,6 @@
 			\item re tester avec workload corrigées full et 5 jours
 			\item retester avec autres algos
 			\item profiler mon code pour voir ce qui coute du temps
-			\item Préparer speech IPDPS le 1er
 			\item Se ré-inscrire à l'ENS avant le 15 Juin
 			\item Envoyer abstract ACACES avant 15 juin
 			\item Faire poster ACACES

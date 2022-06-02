@@ -9,8 +9,10 @@ comparaison = sys.argv[2]
 workload = sys.argv[3]
 cluster = sys.argv[4]
 scheduler = sys.argv[5]
-# ~ firstjob = int(sys.argv[6])
-# ~ lastjob = int(sys.argv[7])
+first_job_before_day_0 = int(sys.argv[6])
+first_job_day_0 = int(sys.argv[7])
+first_job_day_1 = int(sys.argv[8])
+first_job_day_2 = int(sys.argv[9])
 title = workload + "_" + scheduler + "_" + comparaison + "_" + cluster
 
 if (comparaison == "Used_cores"):
@@ -61,18 +63,19 @@ df = pd.DataFrame(data)
 # ~ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
   
-# ~ plt.axvline(x = firstjob, color = 'orange', linestyle = '-', label = "Submission time first job taken into account")
-# ~ plt.axvline(x = lastjob, color = 'red', linestyle = '-', label = "submission time last job taken into account")
+plt.axvline(x = first_job_before_day_0, color = 'yellow', linestyle = '-', label = "Submission time first job before day 0")
+plt.axvline(x = first_job_day_0, color = 'green', linestyle = '-', label = "Submission time first job day 0")
+plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
+plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
 
 plt.plot(Y)
 plt.title(plot_title)
 plt.xlabel("Time in seconds")
 plt.ylabel(Y_label)
 
-if (comparaison != "Nb_scheduled_jobs"):
-	plt.legend(loc = 'upper left')
+# ~ if (comparaison != "Nb_scheduled_jobs"):
+	# ~ plt.legend(loc = 'upper left')
 
 filename = "plot/" + title + ".pdf"
 
-# ~ plt.figure.savefig(filename)
 plt.savefig(filename)
