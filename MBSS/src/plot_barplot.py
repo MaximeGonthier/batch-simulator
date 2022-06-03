@@ -5,9 +5,9 @@ import sys
 
 skip_row = int(sys.argv[4])
 if (skip_row == 0):
-	data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv")
+	data = pd.read_csv(sys.argv[5])
 else:
-	data = pd.read_csv("outputs/Results_" + sys.argv[1] + ".csv", skiprows=[6])
+	data = pd.read_csv(sys.argv[5], skiprows=[6])
 workload = sys.argv[1]
 comparaison = sys.argv[2]
 cluster = sys.argv[3]
@@ -59,6 +59,7 @@ Y = list(df.iloc[:, Y_index])
 # Plot the data using bar() method
 # ~ plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta"])
 plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
+# ~ plt.bar(X, Y)
 # ~ plt.bar(X, Y)
 plt.xticks(rotation=90)
 plt.title(plot_title)
