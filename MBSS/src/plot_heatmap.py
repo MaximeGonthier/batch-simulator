@@ -4,33 +4,37 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+import seaborn as sns
 
-a = []
-i = 0
-temp = []
-N = int(sys.argv[3])
-with open(sys.argv[1]) as f:
-	line = f.readline()
+uniform_data = np.random.rand(10, 12)
+ax = sns.heatmap(uniform_data, linewidth=0.5)
+
+# ~ a = []
+# ~ i = 0
+# ~ temp = []
+# ~ N = int(sys.argv[3])
+# ~ with open(sys.argv[1]) as f:
 	# ~ line = f.readline()
-	while line:
+	# ~ while line:
 		
-		i += 1
+		# ~ i += 1
+		
+		# ~ temp.append(float(line))
+		
+		# ~ if i%N == 0:
+			# ~ a.append(temp)
+			# ~ temp = []
 		
 		# ~ line = f.readline()
-		temp.append(float(line))
-		
-		if i%N == 0:
-			a.append(temp)
-			temp = []
-		
-		line = f.readline()
-f.close()
+# ~ f.close()
 
-print(a)
+# ~ print(a)
 
-plt.imshow(a, cmap='hot', interpolation='nearest')
+# ~ plt.imshow(a, cmap='hot', interpolation='nearest')
 
-plt.xticks(range(N))
-plt.yticks(range(N))
-filename = "plot/Heatmap_" + sys.argv[2] + ".pdf"
-plt.savefig(filename, bbox_inches='tight')
+# ~ plt.xticks(range(N))
+# ~ plt.yticks(range(N))
+# ~ filename = "plot/Heatmap_" + sys.argv[2] + ".pdf"
+plt.savefig("plot.pdf")
+
+

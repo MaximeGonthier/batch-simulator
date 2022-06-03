@@ -103,6 +103,11 @@ def get_cores_non_available_cores(node_list, t):
 	return nb_cores, nb_non_available_cores
 
 def print_csv(to_print_list, scheduler):
+	# For distribution of flow and queue times on each job
+	f_queue = open("outputs/Queue_times_" + scheduler + ".txt", "w")
+	f_flow = open("outputs/Flow_times_" + scheduler + ".txt", "w")
+	f_stretch= open("outputs/Stretch_times_" + scheduler + ".txt", "w")
+	
 	max_queue_time = 0
 	mean_queue_time = 0
 	total_queue_time = 0
@@ -140,12 +145,24 @@ def print_csv(to_print_list, scheduler):
 		if (makespan < tp.job_end_time):
 			# ~ makespan = tp.time + tp.time_used
 			makespan = tp.job_end_time
+		
+		# For distribution of flow and queue times on each job
+		f_queue.write("%d %d %d\n" % (tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type))
+		f_flow.write("%d %d %d\n" % (tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type))
+		f_stretch.write("%d %d %d\n" % (tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type))
+	
+	f_queue.close()
+	f_flow.close()
+	f_stretch.close()
+		
+	# Compute mean values
 	mean_queue_time = total_queue_time/len(to_print_list)
 	mean_flow = total_flow/len(to_print_list)
 	mean_flow_stretch = total_flow_stretch/len(to_print_list)
 	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
 	
+	# Simplify alorithms names
 	if (scheduler == "Fcfs_with_a_score"):
 		scheduler = "Fcfs-Score"
 	elif (scheduler == "Fcfs_easybf"):
@@ -156,6 +173,7 @@ def print_csv(to_print_list, scheduler):
 	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time), str(mean_flow_stretch)))
 	f.close()
 	
+	# For flow heat map
 	file_to_open = "outputs/Stretch_" + scheduler + ".txt"
 	f = open(file_to_open, "w")
 	f.write("%s" % (str(mean_flow_stretch)))

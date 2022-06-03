@@ -76,6 +76,7 @@ class To_print: # Struct used to know what to print later in csv
     job_cores: int
     waiting_for_a_load_time: int
     empty_cluster_time: float
+    data_type: int
    
 job_list = []
 # ~ job_list_0 = []
@@ -362,8 +363,9 @@ def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
 def to_print_job_csv(job, node_used, core_ids, time):	
 	time_used = job.end_time - job.start_time
 	
+	# Only evaluate jobs from workload 1
 	if (job.workload == 1):	
-		tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time, job.delay + job.data_size/0.1)
+		tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time, job.delay + job.data_size/0.1, job.index_node_list)
 		to_print_list.append(tp)
 		
 	if (write_all_jobs == 1): # For gantt charts
