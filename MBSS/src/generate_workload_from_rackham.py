@@ -56,27 +56,29 @@ line = f_input.readline()
 id_count = 1
 workload = []	
 while line:
-	r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
-	if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20 and int(str(r8)[4:]) - int(str(r7)[6:]) > 0): # DELAY MUST NOT BE 0! I don't know why but there are 0 seconds jobs with completed status
-		if (len(str(r15)) > 17): # Mean that the walltime is superior to 10 days
-			print("Error, size not dealt with")
-			exit(1)
-		elif (len(str(r15)) == 17): # Mean that the walltime is superior to 10 days
-			walltime = int(str(r15)[6:8])*24*60*60 + int(str(r15)[9:11])*60*60 + int(str(r15)[12:14])*60 + int(str(r15)[15:17])
-		elif (len(str(r15)) == 16): # Mean that the walltime is superior to 24h
-			walltime = int(str(r15)[6:7])*24*60*60 + int(str(r15)[8:10])*60*60 + int(str(r15)[11:13])*60 + int(str(r15)[14:16])
-		else:
-			walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
-		# Similarly walltime must not be 0
-		if (walltime > 0):
-			# ~ # And I don't want failed jobs with long walltimes
-			w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1)
-			workload.append(w)
-			id_count += 1
-		else:
-			print("Error walltime is 0 ??")
-			exit(1)
-	# ~ print (line)
+	if (len(line.split()) != 15):
+		print("Line:", line, "is wrong!!")
+	else:
+		r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
+		if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20 and int(str(r8)[4:]) - int(str(r7)[6:]) > 0): # DELAY MUST NOT BE 0! I don't know why but there are 0 seconds jobs with completed status
+			if (len(str(r15)) > 17): # Mean that the walltime is superior to 10 days
+				print("Error, size not dealt with")
+				exit(1)
+			elif (len(str(r15)) == 17): # Mean that the walltime is superior to 10 days
+				walltime = int(str(r15)[6:8])*24*60*60 + int(str(r15)[9:11])*60*60 + int(str(r15)[12:14])*60 + int(str(r15)[15:17])
+			elif (len(str(r15)) == 16): # Mean that the walltime is superior to 24h
+				walltime = int(str(r15)[6:7])*24*60*60 + int(str(r15)[8:10])*60*60 + int(str(r15)[11:13])*60 + int(str(r15)[14:16])
+			else:
+				walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
+			# Similarly walltime must not be 0
+			if (walltime > 0):
+				# ~ # And I don't want failed jobs with long walltimes
+				w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1)
+				workload.append(w)
+				id_count += 1
+			else:
+				print("Error walltime is 0 ??")
+				exit(1)
 	line = f_input.readline()
 f_input.close()
 

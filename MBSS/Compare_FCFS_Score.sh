@@ -57,6 +57,15 @@ CONTRAINTES_TAILLES=$3
 # 3. Barplots and heatmap of stretch
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
+# Fcfs only first
+SCHEDULER="Fcfs"
+truncate -s 0 outputs/Results_${SCHEDULER}.csv
+echo "Starting ${SCHEDULER}"
+python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
+echo "Results ${SCHEDULER} are:"
+head outputs/Results_${SCHEDULER}.csv
+cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+		
 # To get all combinations of multiplier couples
 for ((i=1; i<=3; i++))
 do
