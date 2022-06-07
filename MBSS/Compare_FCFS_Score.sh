@@ -54,25 +54,26 @@ CONTRAINTES_TAILLES=$3
 #~ mv outputs/Stretch_times_${SCHEDULER_3}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
 #~ mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}.pdf
 
-# 3. Barplots and heatmap of stretch
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ # 3. Barplots and heatmap of stretch
+#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-# Fcfs only first
-SCHEDULER="Fcfs"
-truncate -s 0 outputs/Results_${SCHEDULER}.csv
-echo "Starting ${SCHEDULER}"
-python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
-echo "Results ${SCHEDULER} are:"
-head outputs/Results_${SCHEDULER}.csv
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ # Fcfs only first
+#~ SCHEDULER="Fcfs"
+#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+#~ echo "Starting ${SCHEDULER}"
+#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
+#~ echo "Results ${SCHEDULER} are:"
+#~ head outputs/Results_${SCHEDULER}.csv
+#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 		
 # To get all combinations of multiplier couples
-for ((i=1; i<=3; i++))
+#~ for ((i=1; i<=3; i++))
+for ((i=3; i<=3; i++))
 do
-	truncate -s 0 outputs/heatmap.txt
+	#~ truncate -s 0 outputs/heatmap.txt
 	
 	# Heatmap size
-	N=2
+	N=5
 	
 	if [ $((i)) == 1 ]; then
 		MULTIPLIER_1=Time_to_load_file
@@ -87,12 +88,14 @@ do
 	
 	# 0 if not choosen
 	M1=0
-	M2=0
-	M3=0
+	M2=4
+	M3=3
 		
-	for ((j=0; j<N; j++))
+	#~ for ((j=0; j<N; j++))
+	for ((j=4; j<N; j++))
 	do
-		for ((k=0; k<N; k++))
+		#~ for ((k=0; k<N; k++))
+		for ((k=3; k<N; k++))
 		do
 			SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
 			truncate -s 0 outputs/Results_${SCHEDULER}.csv

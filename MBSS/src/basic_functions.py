@@ -464,6 +464,50 @@ def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_a
 		print_decision_in_scheduler(choosen_core, j, choosen_node)
 	
 	return nb_non_available_cores
+	
+# Schedule a job earliest available node and write start time and add job in queues
+def schedule_job_on_earliest_available_cores_no_return_no_use_bigger_nodes(j, node_list, t, nb_non_available_cores):
+	if (j.index_node_list == 0):
+		nodes_to_choose_from = node_list[0]
+		# ~ nodes_to_choose_from = node_list[0]
+	elif (j.index_node_list == 1):
+		nodes_to_choose_from = node_list[1]
+		# ~ nodes_to_choose_from = node_list[1]
+	elif (j.index_node_list == 2):
+		nodes_to_choose_from = node_list[2]
+					
+	min_time = -1	
+	for n in nodes_to_choose_from:
+		n.cores.sort(key = operator.attrgetter("available_time"))
+		earliest_available_time = n.cores[j.cores - 1].available_time # -1 because tab start at 0	
+		earliest_available_time = max(t, earliest_available_time) # A core can't be available before t. This happens when a node is idling						
+		if min_time == -1:
+			min_time = earliest_available_time
+			choosen_node = n
+		elif min_time > earliest_available_time:
+			min_time = earliest_available_time
+			choosen_node = n
+													
+	choosen_core = choosen_node.cores[0:j.cores]
+	# start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+	start_time = min_time
+	j.node_used = choosen_node
+	j.cores_used = choosen_core
+	j.start_time = start_time
+	j.end_time = start_time + j.walltime			
+	for c in choosen_core:
+		c.job_queue.append(j)
+		
+		# Test reduced complexity
+		if c.available_time <= t:
+			nb_non_available_cores += 1
+			
+		c.available_time = start_time + j.walltime
+		
+	if __debug__:
+		print_decision_in_scheduler(choosen_core, j, choosen_node)
+	
+	return nb_non_available_cores
 
 # Same but from a specific node list		
 def schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, sublist_node, t, nb_non_available_cores):					

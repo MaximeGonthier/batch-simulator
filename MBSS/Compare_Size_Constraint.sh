@@ -14,49 +14,46 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 echo ${WORKLOAD_TP}
 echo ${CLUSTER_TP}
-CONTRAINTES_TAILLES=1
 
-# Generate workload
-#~ bash Generate_workload_from_rackham.sh $WORKLOAD
-# OR $1 is already an existing workload
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time" > outputs/Results_Size_Constraint_${WORKLOAD_TP}.csv
-
-for ((i=0; i<5; i++))
-#~ for ((i=0; i<1; i++))
+for ((i=0; i<6; i++))
 do
 	#~ # Schedulers
-	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs"
-	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs_big_job_first"
-	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
-	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
-	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_backfill_big_nodes_2"
+	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
+	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_big_job_first"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
+	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_backfill_big_nodes_2"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
-	#~ # ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
 	python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 1
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv
-	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_Constraint_${WORKLOAD_TP}.csv
+	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 done
 
 echo "Final results are:"
-cat outputs/Results_Size_Constraint_${WORKLOAD_TP}.csv
+cat outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 echo "Plotting results..."
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0
-python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+
+# Moving main csv data file
+mv outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 end=`date +%s` 
 runtime=$((end-start))

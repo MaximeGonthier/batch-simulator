@@ -145,7 +145,7 @@ the inputs are not the same. So HDFS would be less efficient.
 
 \subsection{Framework}
 
-We consider the problem of scheduling independent jobs $J$ on $K$ nodes,
+We consider the problem of scheduling a set of independent jobs $\jobset$ on $K$ nodes,
 denoted by $\Node{1},\ldots, \Node{K}$.
 
 \subsubsection{Nodes}
@@ -164,7 +164,7 @@ We denote by $\jobset$ the set of jobs.
 
 We denote by $\inputs(J_i)$ the input file required by job $J_i$. $\inputs(J_i)$ can be empty.
 Each job request a certain number of cores $\core(J_i)$. 
-For eac $j$, $\memory(\inputs(J_j)) = \frac{M_i}{N} \times \core(J_j)$, $M_i \in \mathbb{M}$.
+For each $j$, $\memory(\inputs(J_j)) = \frac{M_i}{N} \times \core(J_j)$, $M_i \in \mathbb{M}$.
 
 Each job has a submission time $\submissiontime(J_i)$ and a walltime $\walltime(J_i)$.
 A job can request between 1 and $N$ cores.
@@ -312,8 +312,6 @@ Find the file shared the most among available jobs.
 Schedule all jobs using this file on a node using this file with most available cores.
 \begin{algorithm}[H]
 \caption{Maximum use single file}
-\hspace*{\algorithmicindent} \textbf{Input: Set of available jobs $\jobset$ at time $t$} \\
-\hspace*{\algorithmicindent} \textbf{Output: Schedule for each job}
 \begin{algorithmic}[1]
 \While{$\jobset != \emptyset$}
 	\State Find file $F_j$ used by the most jobs in $\jobset$
@@ -348,6 +346,24 @@ We can add multiplier: Score = A + X $\times$ B + Y $\times$ (C/BW) + Z $\times$
 X, Y and Z have to be found experimentally.
 
 Schedule $J_i$ on the node with the lowest score and on the cores available the earliest.
+\begin{algorithm}[H]
+\caption{Fcfs with a score}
+\begin{algorithmic}[1]
+\While{$\jobset != \emptyset$}
+	\State Find file $F_j$ used by the most jobs in $\jobset$
+	\State $\Node{selected} \gets$ node with most available cores such as $F_j \in \inputs(\Node{i})$ and $\memory(F_j) <= \memory(\Node{i})$
+	\If{$\Node{selected} = \emptyset$}
+		\State $\Node{selected} \gets$ node with most available cores such as $\memory(F_j) <= \memory(\Node{i})$
+	\EndIf
+	\ForEach {$J_i \in \jobset$ such as $F_j \in \inputs(J_i)$}
+		\State Schedule $J_i$ on $\Node{selected}$ on the earliest available core(s)
+		\State Remove $J_i$ from $\jobset$
+	\EndFor
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+
 
 \subsection{EASYBF-FCFS-FCFS}
 Small adaptation from the paper: \url{https://hal.archives-ouvertes.fr/hal-01522459/document}.

@@ -527,6 +527,9 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 			# ~ scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
 			scheduled_job_list = fcfs_scheduler(new_job_list, node_list, t)
 			
+		elif (scheduler == "Fcfs_no_use_bigger_nodes"):
+			scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(new_job_list, node_list, t)
+			
 		elif (scheduler == "Fcfs_big_job_first"):
 			# Order new jobs list and append them in order (depending on the size they need) in available job list
 			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
@@ -605,6 +608,9 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 			# ~ fcfs_scheduler(scheduled_job_list, node_list, t)
 			scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
 			
+		elif (scheduler == "Fcfs_no_use_bigger_nodes"):
+			scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(available_job_list, node_list, t)
+
 		elif (scheduler == "Fcfs_big_job_first"):
 			scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
 			

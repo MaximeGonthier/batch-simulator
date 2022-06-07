@@ -498,6 +498,17 @@ def maximum_use_single_file_scheduler(l, node_list, t):
 	# ~ return scheduled_job_list
 	return l
 	
+def fcfs_no_use_bigger_nodes_scheduler(l, node_list, t):	
+	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
+	scheduled_job_list = []
+	for j in l:
+		if nb_non_available_cores < nb_cores:
+			scheduled_job_list.append(j)
+			nb_non_available_cores = schedule_job_on_earliest_available_cores_no_return_no_use_bigger_nodes(j, node_list, t, nb_non_available_cores)
+		else:
+			break		
+	return scheduled_job_list
+	
 def fcfs_scheduler(l, node_list, t):	
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
 	scheduled_job_list = []
@@ -506,11 +517,7 @@ def fcfs_scheduler(l, node_list, t):
 			scheduled_job_list.append(j)
 			nb_non_available_cores = schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores)
 		else:
-			break
-	# ~ for j in l:
-		# ~ scheduled_job_list.append(j)
-		# ~ nb_non_available_cores = schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores)
-		
+			break		
 	return scheduled_job_list
 
 def common_file_packages_with_a_score(l, node_list, t, total_number_cores):
