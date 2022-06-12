@@ -54,26 +54,18 @@ CONTRAINTES_TAILLES=$3
 #~ mv outputs/Stretch_times_${SCHEDULER_3}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
 #~ mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}.pdf
 
-#~ # 3. Barplots and heatmap of stretch
+# 3. Barplots and heatmap of stretch
 #~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-
-#~ # Fcfs only first
-#~ SCHEDULER="Fcfs"
-#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
-#~ echo "Starting ${SCHEDULER}"
-#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
-#~ echo "Results ${SCHEDULER} are:"
-#~ head outputs/Results_${SCHEDULER}.csv
-#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 		
 # To get all combinations of multiplier couples
 #~ for ((i=1; i<=3; i++))
 for ((i=3; i<=3; i++))
 do
-	#~ truncate -s 0 outputs/heatmap.txt
+	truncate -s 0 outputs/heatmap.txt
 	
 	# Heatmap size
 	N=5
+	#~ N=8
 	
 	if [ $((i)) == 1 ]; then
 		MULTIPLIER_1=Time_to_load_file
@@ -83,19 +75,20 @@ do
 		MULTIPLIER_2=Nb_copy
 	elif [ $((i)) == 3 ]; then
 		MULTIPLIER_1=Time_to_evict_file
-		MULTIPLIER_2=Nb_copy
+		MULTIPLIER_2=Nb_copy	
 	fi
 	
 	# 0 if not choosen
+	#~ M1=60000
 	M1=0
-	M2=4
-	M3=3
+	M2=0
+	M3=0
+	#~ M3=15000
+	PAS=15000
 		
-	#~ for ((j=0; j<N; j++))
-	for ((j=4; j<N; j++))
+	for ((j=0; j<N; j++))
 	do
-		#~ for ((k=0; k<N; k++))
-		for ((k=3; k<N; k++))
+		for ((k=0; k<N; k++))
 		do
 			SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
 			truncate -s 0 outputs/Results_${SCHEDULER}.csv
@@ -109,30 +102,30 @@ do
 			echo "" >> outputs/heatmap.txt
 		
 			if [ ${MULTIPLIER_2} == "Time_to_load_file" ]; then
-				M1=$((M1+1))
+				M1=$((M1+PAS))
 			elif [ ${MULTIPLIER_2} == "Time_to_evict_file" ]; then
-				M2=$((M2+1))
+				M2=$((M2+PAS))
 			elif [ ${MULTIPLIER_2} == "Nb_copy" ]; then
-				M3=$((M3+1))
+				M3=$((M3+PAS))
 			fi
 		done
 		if [ ${MULTIPLIER_1} == "Time_to_load_file" ]; then
-			M1=$((M1+1))
+			M1=$((M1+PAS))
 			M2=0
 			M3=0
 		elif [ ${MULTIPLIER_1} == "Time_to_evict_file" ]; then
 			M1=0
-			M2=$((M2+1))
+			M2=$((M2+PAS))
 			M3=0
 		elif [ ${MULTIPLIER_1} == "Nb_copy" ]; then
 			M1=0
 			M2=0
-			M3=$((M3+1))
+			M3=$((M3+PAS))
 		fi
 	done
 	
 	echo "Plotting heatmap ${MULTIPLIER_1} X ${MULTIPLIER_2}"
-	python3 src/plot_heatmap.py outputs/heatmap.txt ${WORKLOAD_TP} $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2}
+	python3 src/plot_heatmap.py outputs/heatmap.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2}
 	mv plot.pdf plot/Heatmap_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
 	mv outputs/heatmap.txt data/Heatmap_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 done

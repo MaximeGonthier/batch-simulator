@@ -87,7 +87,7 @@
 		\item Using list in python is where it takes a lot of time
 		\item New workload generation with day -1, day 0, 1 and 2
 		\item It goes down before day 0 because it's job with huge walltime that failed and lastes a few seconds even tho they have the COMPLETED state. Should I remove them ?
-		\item Plot distribution of queue/flow time with 2 schedulers on X and Y axis. 1 for all, different color for bigger jobs and smaller jobs
+		\item Plot distribution of queue/flow time with 2 schedulers on X and Y axis. 1 for all, different color for bigger jobs and smaller jobs	
 		\item Heatmaps of stretch
 		\item Code stretch and multiple scheduler same plot
 	\end{enumerate}
@@ -96,22 +96,41 @@
 
 	\begin{enumerate}
 		\item PDSEC et mailing list HPC ?
+		\item Voir new algo big nodes
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item Faire area comme photo loris
+			\item Envoyer param hMETIS a Bora
+			
+			\item ajouter easy bf a fcfs avec un score si on le valide
+			
+			\item tester strat backfill on previous job avec data du orkload u on va utiliser en mode omnisicnet pour voir
+			
+			\item Ré écrire abstract et poster: Envoyer mail
+		
+			\item flow stretch courbe de points triée par walltime ou par delay au lieu de trier par job ids.
+			
+			\item Test fcfs score X plus grand
+			
+			\item Jobs commencé avant jour 0: je les ordonne comme l'ordo réel de traces. Ceux juste soumis sont toujours dans la queue. A coder et réécrire l'explication dans le document.
+			\item tracer terminaison de ces jobs sur courbes usgae des nodes
+			
+			\item Contraintes tailles algo 3: calculer volume gros et petits jobs. Puis calculer la proportion de petits jobs que je peux mettre sur des plus grosses machines sans dépasser la proportion d'aires occupé par les gros jobs. Ecrire ca en théorie.
+			
+			\item Soumettre abstract avant le 15 et le ré écrire un peu
+		
 			\item Do test with 3 new plot methods
-			\item tirer conclusion fcfs score
+			\item tirer conclusions fcfs score
+			\item tirer conclusions contraintes tailles en testant avec meme workload puis workload special avec des petits jobs aussi long que des gros
 			\item Pareil contraintes tailles
 			
+			\item ré ecrire algos
 			
 			\item plot heat map of fcfs score with a parameter to 1 or 0 and the 2 others
-			\item général et algo a relire puis envoyer a loris.
-			\item Prendre coupe plus large sur la fin où je prends les jobs de 14 à 21. Je considere ceux soumis entre le 14 et le 16 par subtime pour les stats. Pour le load ceux soumis entre 14 et 16 par subtime et ceux soumis avant le 14. et faire par semaine donc jusqu'a la fin de la semaine. En écrire une méthofologhie et les choix. Je veux letat au x 14 et tout ceux soumis entre le 14 et le 16 et ceux dans la queue depuis avant. Commencer a regarder a partir du 14 pour les ends time. Regarder sur 1 mois entier apres
-			\item Essayer de pouser X un peu plus le multiplicateur de time to load file
 			\item Virer 3eme multiplicateur et faire heat map pour voir des stretch
-			\item rendre modèle généraliste
 			\item prendre le stretch du flou (flow/flow cluster vide (avec transferts)) Moyenne mediane des ratio de tt les jobs ensuite.
 			\item plot garder exposant sur l axe a gauche
 			\item Enlever transferts sur courbes contraintes tailles et enlever les données d'entrées même si les algos les regardent

@@ -424,12 +424,28 @@ if (write_all_jobs == 3):
 
 # Variant for FCFS with a score
 if scheduler[0:19] == "Fcfs_with_a_score_x":
-	if len(scheduler) != 26:
-		print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM")
-		exit(1)
-	multiplier_file_to_load = int(scheduler[19])
-	multiplier_file_evicted = int(scheduler[22])
-	multiplier_nb_copy = int(scheduler[25])
+	i = 19
+	j = 19
+	while scheduler[i] != "_":
+		i+= 1
+	multiplier_file_to_load = int(scheduler[j:i])
+	j = i + 2
+	i = i + 1
+	while scheduler[i] != "_":
+		i+= 1
+	multiplier_file_evicted = int(scheduler[j:i])
+	j = i + 2
+	multiplier_nb_copy = int(scheduler[j:len(scheduler)])
+	
+	
+	# ~ if len(scheduler) == 26:
+	# ~ elif len(scheduler) == 27:
+	# ~ else:
+		# ~ print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM. Or I haven't dealt with this number for multipliers :/")
+		# ~ exit(1)
+	# ~ multiplier_file_to_load = int(scheduler[19])
+	# ~ multiplier_file_evicted = int(scheduler[22])
+	# ~ multiplier_nb_copy = int(scheduler[25])
 	print("Multiplier file to load:", multiplier_file_to_load, "| Multiplier file evicted:", multiplier_file_evicted, "| Multiplier nb of copy:", multiplier_nb_copy)
 
 # Variant for backfill big nodes

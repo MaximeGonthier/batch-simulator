@@ -1,4 +1,4 @@
-# python3 plot_heatmap.py input_file date N
+# python3 plot_heatmap.py input_file N X Y
 
 # Imports
 import matplotlib.pyplot as plt
@@ -8,35 +8,65 @@ import seaborn as sns
 
 # ~ uniform_data = np.random.rand(10, 12)
 # ~ ax = sns.heatmap(uniform_data, linewidth=0.5)
-
+# ~ min_value = 
 a = []
 i = 0
 temp = []
-N = int(sys.argv[3])
+N = int(sys.argv[2])
 with open(sys.argv[1]) as f:
 	line = f.readline()
+	min_value = float(line)
+	min_x = 0
+	min_y = 0
+	current_x = 0
+	current_y = 0
 	while line:
 		
 		i += 1
 		
 		temp.append(float(line))
 		
+		if min_value > float(line):
+			min_value = float(line)
+			min_x = current_x
+			min_y = current_y
+			print("New min", min_value, min_x, min_y)
+			
 		if i%N == 0:
 			a.append(temp)
 			temp = []
+			current_y += 1
+			current_x = 0
+		else:
+			current_x += 1
 		
 		line = f.readline()
 f.close()
 
 print(a)
 
-# ~ plt.imshow(a, cmap='hot', interpolation='nearest')
-ax = sns.heatmap(a, linewidth=0.5)
+cmap = sns.cm.rocket_r
 
-plt.xticks(range(N))
-plt.yticks(range(N))
-plt.title("Flow stretch ratio")
-plt.ylabel(sys.argv[5])
+
+ax = sns.heatmap(a,
+                 annot=True, # Pour écrire les valuers
+                 fmt = '.2f',
+                 # ~ fmt=".3f",
+                 # ~ xticklabels=print_categories,
+                 # ~ yticklabels=print_categories,
+                 # ~ vmin=-0.05,
+                 cmap = cmap)
+
+ax.add_patch(plt.Rectangle((min_x, min_y), 1, 1, fc='none', ec='gold', lw=5, clip_on=False))
+
+# ~ short_cols = [0, 1, 2, 3, 4, 15000, 30000, 45000, 60000]
+# ~ ax.set_xticklabels(short_cols)
+# ~ ax.set_yticklabels(short_cols)
+
+plt.xticks()
+plt.yticks()
+plt.title("Mean Flow(J)/Flow on empty cluster(J)")
+plt.ylabel(sys.argv[3])
 plt.xlabel(sys.argv[4])
 # ~ plt.legend()
 plt.savefig("plot.pdf")

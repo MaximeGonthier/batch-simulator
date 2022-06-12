@@ -155,7 +155,9 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 					
 					# 2.4. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node
 					if j.data == 0:
+					# ~ if j.data == 0 or multiplier_file_to_load == 0: No don't do that
 						time_to_load_file = 0
+						# ~ is_being
 					else:
 						time_to_load_file, is_being_loaded = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j.data, j.data_size)
 						
@@ -164,13 +166,17 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 						# 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course
 						# ~ if j.data != 0 and time_to_load_file == 0
 							# ~ size_files_ended = size_files_ended_at_certain_time(earliest_available_time, n, j.data)
-						size_files_ended = size_files_ended_at_before_certain_time(earliest_available_time, n.data, j.data, j.cores/20)
-						time_to_reload_evicted_files = size_files_ended/n.bandwidth
+						if multiplier_file_evicted == 0:
+							size_files_ended = 0
+							time_to_reload_evicted_files = 0
+						else:
+							size_files_ended = size_files_ended_at_before_certain_time(earliest_available_time, n.data, j.data, j.cores/20)
+							time_to_reload_evicted_files = size_files_ended/n.bandwidth
 					
 						if min_score == -1 or earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files < min_score:
 					
 							# 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node.
-							if time_to_load_file != 0 and is_being_loaded == False:
+							if time_to_load_file != 0 and is_being_loaded == False and multiplier_nb_copy != 0:
 								nb_copy_file_to_load = 0
 								if (earliest_available_time not in time_checked_for_nb_copy):
 									
