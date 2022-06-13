@@ -19,7 +19,7 @@ input_node_file = sys.argv[2]
 scheduler = sys.argv[3]
 # ~ filling_strategy = sys.argv[4]
 write_all_jobs = int(sys.argv[4]) # 1 for gantt charts, 2 for distribution of queue times, 3 for cluster usage
-constraint_on_sizes = int(sys.argv[5]) # To add or remove the constraint that some jobs can't be executed on certain nodes. 0 or 1.
+constraint_on_sizes = int(sys.argv[5]) # To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don not consider transfer time
 
 # Global structs and input files
 @dataclass

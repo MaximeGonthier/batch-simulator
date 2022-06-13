@@ -462,60 +462,85 @@ Jobs requiring a big node are scheduled before other available jobs.
 from previous workloads. If the nodes of size $x$ can fit all the jobs of size $x$ without exceeding the predicted makespan,
 we can schedule jobs of size $x - 1$ on this node size.
 
-We compute statistics previous workloads:
+We compute statistics from previous workloads:
 \begin{itemize}
 	\item For each job we compute it's usage area with $Area(J_i) = \core(J_i) \times \walltime(J_i)$
 	\item $Area(\jobset) \gets \sum_{i=0}^{|\jobset|} Area(J_i)$
-	\item $T_{max} \gets \frac{Area(\jobset)}{K}$
-	\item For each size $x$, compute: $Area\_Jobs(x) = \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) == x$
-%~ For each size $x$, compute: $Area\_ratio(x) = \frac{Area(x)}{Area(\mathbb{J})}$.
-%~ $Area\_ratio(x)$ is a number between 0 and 1 and gives us information about the use of a certain node's size.
+	\item $T_{max} \gets \frac{Area(\jobset)}{K}$, with $K$ the total number of nodes
+	\item For each size $x$, compute: $Area\_Jobs(x) \gets \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) = x$
 \end{itemize}
 
 We compute for each size: $Area(x) \gets \frac{Area\_Jobs(x)}{k_x}$ which correspond
 to the area jobs of size $x$ will occupy if they are scheduled only on nodes of size $x$.
+We want to compute for each node size $Planned\_Area(x)$, a tab that will indicate which area
+of each job size can be computed on nodes of size $x$.
 For each size $x$ we make the following decision, starting with the biggest node size.
+
 For each $x$ in decreasing order:
 \begin{itemize}
-	\item If $Area(x) > T_{max}$: Jobs of size $x$ will only be scheduled on nodes of size $x$. $Area(x)$ is the percentage of time reserved to jobs of size $x$.
-	%~ \item Else: $Planned\_Area(x) = Area(x)$
-				%~ If $Area(x - 1) + Area(x) < T_{max}$: $Planned\_area(x) += Area(x - 1)$
-				%~ Else: $Planned\_area(x) += Subset\_Area(x - 1)$ such as $Subset\_Area(x - 1) = T_{max} - Planned\_area(x)$
-				%~ Nodes of size $x$ will be filled proportionnaly to jobs size in $Planned\_Area(x)$
+	\item $Planned\_Area(x)[x] = \infty$ 
+	\item If $Area(x) < T_{max}$:
+	\begin{itemize}
+		\item For $i$ in range $(x - 1, 0)$
+		\begin{itemize}
+			\item If $Area(x) + Area(x-1) + ... + Area(i) < T_{max}$:
+			\begin{itemize}
+				\item $Planned\_Area(x)[i] = Area(i)$
+			\end{itemize}
+			\item Else
+			\begin{itemize}
+				\item $Planned\_Area(x)[i] = T_{max} - (Area(x) + Area(x-1) + ... + Area(i+1))$
+				\item break
+			\end{itemize}		
+		\end{itemize}
+	\end{itemize}
 \end{itemize}
 
-Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ and $M_3$, each having $k_1 = 5, k_2 = 3$ and $k_3 = 2$ nodes.
+Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ and $M_3$, each having $k_1 = 5, k_2 = 3$ and $k_3 = 2$ nodes:
 \begin{enumerate}
 	\item From previous workloads we get:
 	\begin{enumerate}
-		\item $Area\_Jobs(1) = 15$ core time
-		\item $Area\_Jobs(2) = 30$ core time
-		\item $Area\_Jobs(3) = 2$ core time
+		\item $Area\_Jobs(M_1) = 15$ core time
+		\item $Area\_Jobs(M_2) = 30$ core time
+		\item $Area\_Jobs(M_3) = 2$ core time
 		\item $Area(\jobset) = 47$
 		\item $T_{max} = \frac{Area(\jobset)}{k_1 + k_2 + k_3} = 4,7$
 	\end{enumerate}
-	\item $Area(1) = \frac{Area\_Jobs(1)}{k_1} = 3$
-	\item $Area(2) = \frac{Area\_Jobs(2)}{k_2} = 10$
-	\item $Area(3) = \frac{Area\_Jobs(3)}{k_3} = 1$
-	\item $Area(3) < T_{max}$ so we do:
+	\item $Area(M_1) = \frac{Area\_Jobs(M_1)}{k_1} = 3$
+	\item $Area(M_2) = \frac{Area\_Jobs(M_2)}{k_2} = 10$
+	\item $Area(M_3) = \frac{Area\_Jobs(M_3)}{k_3} = 1$
+	\item $Area(M_3) < T_{max}$ so we do:
 	\begin{enumerate}
-		\item $Area(3) + Area(2) > T_{max}$, so all jobs of size $3$ will be scheduled on nodes of size $3$ and an area of size $T_{max} - Area(3) = 3,7$ can be jobs of size $2$ on nodes of size $3$. If this area is filled by jobs of size $2$ or $3$, we stop scheduling jobs of size $2$ on nodes of size $3$. So we can write: $Planned\_Area(3) = [ 0, 3.7, \infty ]$.
+		\item $Area(M_3) + Area(M_2) > T_{max}$, so all jobs of size $M_3$ will be scheduled on nodes of size $M_3$ and an area of size $T_{max} - Area(M_3) = 3,7$ can be jobs of size $M_2$ on nodes of size $M_3$. If this area is filled by jobs of size $M_2$ or $M_3$, we stop scheduling jobs of size $M_2$ on nodes of size $M_3$. So we can write: $Planned\_Area(M_3) = [ 0, 3.7, \infty ]$.
 	\end{enumerate}
-	\item $Area(2) - 3,7 > T_{max}$, so only jobs of size $2$ can be scheduled on nodes of size $2$.
-	\item $Area(1) <  T_{max}$ but there are no space on nodes of size $2$ and $3$, so jobs of size $1$ will only be scheduled on nodes of size $1$.
+	\item $Area(M_2) - 3,7 > T_{max}$, so only jobs of size $M_2$ can be scheduled on nodes of size $M_2$.
+	\item $Area(M_1) <  T_{max}$ but there are no space on nodes of size $M_2$ and $M_3$, so jobs of size $M_1$ will only be scheduled on nodes of size $M_1$.
 \end{enumerate}
-	
-\begin{enumerate}
-	\item Sort available job list by size of required node (biggest to smallest) and then by submission time
-	\item Need to schedule job $J_i$, requiring a node of size $x$
-	\begin{enumerate}
-		\item If $J_i$ can start immediately on a $x$ node, start it there
-		\item Else if $J_i$ can start immediately on a $x+1$ node \textbf{and $Planned\_Area(x+1)[x] > 0$}, start it there and $Planned\_Area(x+1)[x] \gets Planned\_Area(x+1)[x] > 0 - Area(J_i)$. \todo[inline]{Do we keep this immediatly with our new method ?}
-		\item Else if $J_i$ can start immediately on a $x+2$ node \textbf{and $Planned\_Area(x+1)[x] > 0$}, start it there and $Planned\_Area(x+2)[x] \gets Planned\_Area(x+1)[x] > 0 - Area(J_i)$.
-		\item ...
-		\item Else schedule $J_i$ on a $x$ node
-	\end{enumerate}
-\end{enumerate}
+
+\todo[inline]{Hard to write general case}
+\todo[inline]{We keep this immediatly thing ?}
+Here is the pseudo-code for our algorithm after computing statistics from previous workloads:
+\begin{algorithm}[H]
+\caption{Area filling}
+\begin{algorithmic}[1]
+\State Sort $\jobset$ by size of required node (biggest to smallest) and then by submission time
+\State Need to schedule job $J_i$, requiring a node of size $x$
+\If {$J_i$ can start immediately on a node of size $x$}
+	\State Start $J$ on a node of size $x$
+	\State return
+\Else
+	\For {$next\_size$ in range $(x+1, l)$}
+		\If {$Planned\_area(next\_size)[x] - Area(J_i) > 0$ \& $J_i$ can start immediatly on a node of size $next\_size$}
+			\State Start $J_i$ on a node of size $next\_size$
+			\State $Planned\_area(next\_size)[x] \gets Planned\_area(next\_size)[x] - Area(J_i)$
+			\State return
+		\EndIf
+	\EndFor
+	\State Schedule $J_i$ on a node of size $x$
+	\State return
+\EndIf		
+\end{algorithmic}
+\end{algorithm}
 
 %~ \section{Stats on workloads for Rackham}
 %~ \begin{figure}[H] 

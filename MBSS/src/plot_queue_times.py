@@ -1,4 +1,4 @@
-# python3 plot_queue_times algo_reference algo_to_compare
+# python3 plot_queue_times algo_to_compare algo_reference Stretch_or_time(1 or 0)
 
 # Imports
 import matplotlib.pyplot as plt
@@ -63,5 +63,5 @@ plt.xlabel("Jobs ids")
 if type_label == 1:
 	plt.ylabel("Stretch of flow ratio difference from FCFS")
 else:
-	plt.ylabel("Time (seconds) difference from FCFS")
+	plt.ylabel("Queue time (seconds) difference from FCFS")
 plt.savefig("plot.pdf")
