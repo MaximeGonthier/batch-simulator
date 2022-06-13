@@ -479,17 +479,17 @@ For each size $x$ we make the following decision, starting with the biggest node
 For each $x$ in decreasing order:
 \begin{itemize}
 	\item $Planned\_Area(x)[x] = \infty$ 
-	\item If $Area(x) < T_{max}$:
+	\item If $Area(x) - Planned\_Area(x+1)[x] < T_{max}$: \todo[inline]{Hard to write general case}
 	\begin{itemize}
 		\item For $i$ in range $(x - 1, 0)$
 		\begin{itemize}
-			\item If $Area(x) + Area(x-1) + ... + Area(i) < T_{max}$:
+			\item If $Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i) \leq T_{max}$:
 			\begin{itemize}
 				\item $Planned\_Area(x)[i] = Area(i)$
 			\end{itemize}
 			\item Else
 			\begin{itemize}
-				\item $Planned\_Area(x)[i] = T_{max} - (Area(x) + Area(x-1) + ... + Area(i+1))$
+				\item $Planned\_Area(x)[i] = max(0, T_{max} - (Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i+1)))$
 				\item break
 			\end{itemize}		
 		\end{itemize}
@@ -509,15 +509,14 @@ Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ a
 	\item $Area(M_1) = \frac{Area\_Jobs(M_1)}{k_1} = 3$
 	\item $Area(M_2) = \frac{Area\_Jobs(M_2)}{k_2} = 10$
 	\item $Area(M_3) = \frac{Area\_Jobs(M_3)}{k_3} = 1$
-	\item $Area(M_3) < T_{max}$ so we do:
+	\item $Area(M_3) \leq T_{max}$ so we do:
 	\begin{enumerate}
 		\item $Area(M_3) + Area(M_2) > T_{max}$, so all jobs of size $M_3$ will be scheduled on nodes of size $M_3$ and an area of size $T_{max} - Area(M_3) = 3,7$ can be jobs of size $M_2$ on nodes of size $M_3$. If this area is filled by jobs of size $M_2$ or $M_3$, we stop scheduling jobs of size $M_2$ on nodes of size $M_3$. So we can write: $Planned\_Area(M_3) = [ 0, 3.7, \infty ]$.
 	\end{enumerate}
 	\item $Area(M_2) - 3,7 > T_{max}$, so only jobs of size $M_2$ can be scheduled on nodes of size $M_2$.
-	\item $Area(M_1) <  T_{max}$ but there are no space on nodes of size $M_2$ and $M_3$, so jobs of size $M_1$ will only be scheduled on nodes of size $M_1$.
+	\item $Area(M_1) \leq T_{max}$ but it's the smallest node size so it can only fit jobs from it's own size.
 \end{enumerate}
 
-\todo[inline]{Hard to write general case}
 \todo[inline]{We keep this immediatly thing ?}
 Here is the pseudo-code for our algorithm after computing statistics from previous workloads:
 \begin{algorithm}[H]
@@ -530,7 +529,7 @@ Here is the pseudo-code for our algorithm after computing statistics from previo
 	\State return
 \Else
 	\For {$next\_size$ in range $(x+1, l)$}
-		\If {$Planned\_area(next\_size)[x] - Area(J_i) > 0$ \& $J_i$ can start immediatly on a node of size $next\_size$}
+		\If {$Planned\_area(next\_size)[x] - Area(J_i) \geq 0$ \& $J_i$ can start immediatly on a node of size $next\_size$}
 			\State Start $J_i$ on a node of size $next\_size$
 			\State $Planned\_area(next\_size)[x] \gets Planned\_area(next\_size)[x] - Area(J_i)$
 			\State return

@@ -135,10 +135,9 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 			# For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
 			total_queue_time += j.start_time - j.subtime
 			
-			
 			transfer_time = 0
 			waiting_for_a_load_time = 0
-			if (j.data != 0):
+			if (j.data != 0 and constraint_on_sizes != 2):
 				# Let's look if a data transfer is needed
 				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.end_time)
 			j.transfer_time = transfer_time
@@ -450,17 +449,8 @@ if scheduler[0:19] == "Fcfs_with_a_score_x":
 
 # Variant for backfill big nodes
 if (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-	# Get mode and data from previous workloads
-	# 0 = don't compute anything, 1 = compute mean queue time 2 = compute mean queue time and walltime multiplied by area ratio
+	# 0 = don't compute anything, 1 = compute mean queue time
 	backfill_big_node_mode = int(scheduler[24])
-	f = open("inputs/file_size_requirement/Ratio_area_2022-03-25->2022-03-25.txt", "r")
-	ratio_sizes = []
-	line = f.readline()
-	while line:
-		r1, r2, r3, r4 = line.split()
-		ratio_sizes.append(float(r4))
-		line = f.readline()
-	f.close
 	
 # For constraint on node sizes
 total_queue_time = 0
@@ -539,8 +529,6 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 			scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
 			
 		elif (scheduler == "Fcfs"):
-			# ~ fcfs_scheduler(available_job_list, node_list, t)
-			# ~ scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
 			scheduled_job_list = fcfs_scheduler(new_job_list, node_list, t)
 			
 		elif (scheduler == "Fcfs_no_use_bigger_nodes"):
@@ -550,14 +538,17 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 			# Order new jobs list and append them in order (depending on the size they need) in available job list
 			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
 			available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			
 			scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
+		
+		elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area_1, Planned_Area_2, Planned_Area_3)
 			
 		elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
 			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
 			available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			
-			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs, ratio_sizes)
+			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
 				
 		elif (scheduler == "Fcfs_easybf"):
 			if (first_job_in_queue == None):
@@ -631,7 +622,10 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 			scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
 			
 		elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs, ratio_sizes)
+			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
+			
+		elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+			scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area_1, Planned_Area_2, Planned_Area_3)
 			
 		elif (scheduler == "Maximum_use_single_file"):
 			reset_cores(affected_node_list, t)

@@ -2,4 +2,4 @@
 { id: 2 subtime: 0 delay: 36000 walltime: 36000 cores: 20 user: torsteng data: 1 data_size: 128 workload: 0 }
 { id: 3 subtime: 0 delay: 833744 walltime: 36000 cores: 20 user: torsteng data: 1 data_size: 128 workload: 0 }
 { id: 4 subtime: 0 delay: 10000 walltime: 36000 cores: 20 user: torsteng data: 2 data_size: 256 workload: 1 }
-{ id: 5 subtime: 101280 delay: 10000 walltime: 36000 cores: 20 user: torsteng data: 2 data_size: 256 workload: 1 }
+{ id: 5 subtime: 101280 delay: 10000 walltime: 36000 cores: 20 user: torsteng data: 2 data_size: 1024 workload: 1 }

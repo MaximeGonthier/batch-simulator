@@ -15,7 +15,7 @@ def return_node_sublist_specific_sizes(node_list, size):
 # Can not delay a scheduled job
 # backfill_big_node_mode = 0 : If I can start immediatly
 # backfill_big_node_mode = 1 : If I can start immediatly and can't start on a smaller node before t + mean queue time - queue time (j)
-def start_job_immediatly_specific_node_size(job, node_sublist, current_time, backfill_big_node_mode, total_queue_time, finished_jobs, nb_non_available_cores, ratio_sizes):
+def start_job_immediatly_specific_node_size(job, node_sublist, current_time, backfill_big_node_mode, total_queue_time, finished_jobs, nb_non_available_cores):
 	
 	if finished_jobs == 0:
 		mean_queue_time = 0
@@ -30,12 +30,8 @@ def start_job_immediatly_specific_node_size(job, node_sublist, current_time, bac
 			threshold_for_a_start = current_time
 		elif backfill_big_node_mode == 1:
 			threshold_for_a_start = current_time + max(0, mean_queue_time - (current_time - job.subtime))
-		elif backfill_big_node_mode == 2:
-			if __debug__:
-				print("Use ratio", ratio_sizes[job.index_node_list], "for job", job.unique_id)
-			threshold_for_a_start = current_time + max(0, mean_queue_time - (current_time - job.subtime)) + job.walltime*ratio_sizes[job.index_node_list]
 		else:
-			print("Error on backfill_big_node_mode, must be 0, 1 or 2")
+			print("Error on backfill_big_node_mode, must be 0 or 1 ")
 			exit(1)
 		if __debug__:
 			print("Thresolhd is:", threshold_for_a_start, "| T =", current_time)

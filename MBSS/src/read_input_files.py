@@ -89,7 +89,7 @@ def read_workload(input_job_file, constraint_on_sizes, write_all_jobs):
 			r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20 = line.split() # split it by whitespace
 			
 			# Getting index of node_list depending on size if constraint is enabled
-			if (constraint_on_sizes == 1):
+			if (constraint_on_sizes != 0):
 				if ((float(r17)*10)/(float(r11)*10) == 0.0):
 					index_node = 0
 				elif ((float(r17)*10)/(float(r11)*10) == 6.4):
