@@ -146,7 +146,7 @@
 	\end{block}
 	\successbox{\textbf{How can we minimize the amount of transfers between the shared file system and the nodes ?}}
 
-	\includegraphics[scale=1]{../MBSS/plot/Gantt_charts/Fcfs800.png}
+	\center\includegraphics[scale=0.19]{../MBSS/plot/Gantt_charts/Fcfs800.png}
 \end{frame}
 
 %~ Fcfs800.png
@@ -156,7 +156,7 @@
 \begin{frame}{Framework}
 	\begin{block}{Jobset \jobset}
 		\begin{itemize}
-			\item Set of jobs from Rackham's history with an added input file
+			\item Set of jobs from Rackham's history with an added input file on each job
 			\item A file is shared by consecutive jobs submitted by the same user
 			\item Each job require only one node and between $1$ and $20$ cores.
 		\end{itemize}
@@ -176,56 +176,34 @@
 \subsection{Two different constraints}
 \begin{frame}{Two different constraints}
 
-\begin{block}{\bf Constraint 1: Dealing with file re-use}
-	Maximize file re-use
+\begin{block}{\bf Constraint 1: Maximize file re-use}
+	A file is re-used if it's used by consecutive or parallel jobs on the same node
 \end{block}
 
-\begin{block}{\bf Constraint 2: Dealing with different input files sizes}
-	Allow smaller jobs to be computed on bigger nodes
+\begin{block}{\bf Constraint 2: Allow smaller jobs to be computed on bigger nodes}
+For example we want to allow 128 GB jobs on 256 and 1024 GB nodes. It is not the case
+currently on Rackham.
 \end{block}
-
+\end{frame}
+\begin{frame}{Metrics}
 		We define the \flow{J_i} of a job as:
 		$$
 			\flow{J_i} = \completiontime(J_i) - \submissiontime(J_i)
-			\textbf{Obj.}: \quad \mathit{minimize}~\sum_{i=0}^{|\jobset|}\flow{J_i}
 		$$
-		\textbf{Objective: Minimize the mean \flow{} stretch}
 		$$
-			\textbf{Obj.}: \quad \mathit{minimize}~\frac{\sum_{i=0}^{|\jobset|}\frac{\flow{J_i}}{\duration(J_i) + \frac{\memory(\inputs(J_i))}{\bandwidth}}}{|\jobset|}
+			\textbf{Obj. 1 Minimize total flow}: \quad \mathit{minimize}~\sum_{i=0}^{|\jobset|}\flow{J_i}
+		$$
+		%~ \textbf{Objective: Minimize the mean \flow{} stretch}
+		$$
+			\textbf{Obj. 2 Minimize flow stretch}: \quad \mathit{minimize}~\frac{\sum_{i=0}^{|\jobset|}\frac{\flow{J_i}}{\duration(J_i) + \frac{\memory(\inputs(J_i))}{\bandwidth}}}{|\jobset|}
 		$$
 A secondary objective is to minimize the amount of file load.
 
 
 \end{frame}
 
-%% ---------------------------------------------------------------------------
-\section{Algorithms}
-%~ \begin{frame}{Algorithms}
-%~ \begin{block}{2 schedulers from $\starpu$}
-	%~ \begin{itemize}
-		%~ \item EAGER (our baseline)
-		%~ \item Deque Model Data Aware Ready (DMDAR)
-	%~ \end{itemize}
-%~ \end{block}
-%~ \begin{block}{1 algorithm adapted from the literature}
-	%~ \begin{itemize}
-		%~ \item hMETIS
-	%~ \end{itemize}
-%~ \end{block}
-%~ \begin{block}{Novel algorithm}
-	%~ \begin{itemize}
-		%~ \item Data-Aware Reactive Task Scheduling (DARTS)
-	%~ \end{itemize}
-%~ \end{block}
-%~ \end{frame}
 
-\begin{frame}{FCFS with a score}
-	\begin{block}{2 schedulers from $\starpu$}
-		
-	\end{block}
-\end{frame}
-
-%% ---------------------------------------------------------------------------
+%~ %% ---------------------------------------------------------------------------
 \section{Experimental evaluation}
 \subsection{Experimental settings}
 \begin{frame}{Experimental settings}
@@ -247,38 +225,98 @@ A secondary objective is to minimize the amount of file load.
 			\end{block}
 \end{frame}
 
+%% ---------------------------------------------------------------------------
+\section{Algorithms}
+
+\begin{frame}{Algorithms}
+\begin{block}{To focus on data locality}
+FCFS with a score
+\end{block}
+\begin{block}{To focus on the size constraint}
+Area filling\\
+Backfill on bigger nodes
+\end{block}
+\end{frame}
+
+\section{Data Locality}
+\begin{frame}{To focus on data locality: FCFS with a score}
+	\begin{block}{We want to schedule job $J_i$}
+		For each node do:
+		\begin{enumerate}
+			\item A = Earliest available time to host job $J_i$
+			\item B = Time to load $J_i$ input not yet in memory
+			\item C = Time to re-load evicted files
+			\item D = Time to load copies of $J_i$ input on other nodes
+			\item $Score = A + B + C+ D$ (with some multipliers)
+		\end{enumerate}
+		Schedule $J_i$ on the node with the lowest score
+	\end{block}
+\end{frame}
+
+
 \begin{frame}{Flow stretch of FCFS with a score compared to FCFS on the file sharing constraint}
 	\center\includegraphics[scale=0.6]{../MBSS/plot/2022-02-08->2022-02-08_very_reduced_95_128_4_256_1_1024_FCFS_Score_x10_x7000_x0VSFCFS_stretch.pdf}
 \end{frame}
 \begin{frame}{Queue times of FCFS with a score compared to FCFS on the file sharing constraint}
 	\center\includegraphics[scale=0.6]{../MBSS/plot/2022-02-08->2022-02-08_very_reduced_95_128_4_256_1_1024_FCFS_Score_x10_x7000_x0VSFCFS.pdf}
 \end{frame}
-\begin{frame}{Total Flow on the size constraint}
+
+\section{Size constraint}
+\begin{frame}{To focus on the size constraint: Backfill on bigger nodes}
+\begin{block}{Intuition: Only schedule jobs that can be started immediately on big nodes.}
+	\begin{enumerate}
+		\item Sort job list by size of required node (biggest to smallest) and then by submission time
+		\item Need to schedule job $J_i$, requiring a node of size $x$
+		\begin{enumerate}
+			\item If $J_i$ can start immediately on a node of size $x$, start it there
+			\item Else if $J_i$ can start immediately on a node of size $x+1$, start it there
+			\item ...
+			\item Else schedule $J_i$ on a node of size $x$
+		\end{enumerate}
+	\end{enumerate}
+\end{block}
+\end{frame}
+
+\begin{frame}{To focus on the size constraint: Area filling}
+	\begin{block}{}
+
+We compute statistics from previous workloads:
+\begin{itemize}
+	\item For each job we compute it's usage area with $Area(J_i) = \core(J_i) \times \walltime(J_i)$
+	\item $Area(\jobset) \gets \sum_{i=0}^{|\jobset|} Area(J_i)$
+	\item $T_{max} \gets \frac{Area(\jobset)}{K}$, with $K$ the total number of nodes
+	\item For each size $x$, compute: $Area\_Jobs(x) \gets \sum_{i=0}^{n} Area(J_i)~such~that~input~size~of~J_i = x$
+\end{itemize}
+
+We compute for each size: $Area(x) \gets \frac{Area\_Jobs(x)}{Nb~of~nodes~of~size~x}$ which correspond
+to the area jobs of size $x$ will occupy if they are scheduled only on nodes of size $x$.\\
+We can then compute $Planned\_Area(x)$, that will indicate which area
+of each job size can be computed on nodes of size $x$.
+	\end{block}
+	If $Planned\_Area(x) < T_{max}$ \MVRightarrow{} jobs of size $x-1$ can be scheduled on nodes of size $x$
+\end{frame}
+
+\begin{frame}{Total flow}
 	\center\includegraphics[scale=0.48]{../MBSS/plot/Size_Constraint_2022-02-08->2022-02-08_very_reduced_Total_flow_95_128_4_256_1_1024.pdf}
 \end{frame}
 
 
-%% ---------------------------------------------------------------------------
+%~ %% ---------------------------------------------------------------------------
 \section{Conclusion and future work}
 \begin{frame}{Conclusion and future work}
-\begin{block}{Limiting data movements is crucial to extract the most out of GPUs}
-	Our contribution \MVRightarrow{}
-	\emph{DARTS+LUF, focused on data locality}
-\end{block}
-%~ \begin{exampleblock}{Str}
-		%~ \begin{itemize}
-			%~ \item \textbf{Limits data transfers} thanks to the finding of an optimal data and an adapted eviction policy 
-			%~ \item \textbf{Overlaps} communication and computations by distributing transfers over time
-			%~ \item Can be used with a \textbf{reduced complexity}
-		%~ \end{itemize}
-%~ \end{exampleblock}		
+	\begin{block}{Building strategies that focus on file re-use can reduce the flow of each job}
+		Our contribution \MVRightarrow{}
+		\emph{FCFS with a score and a strategy that allows smaller jobs to use bigger nodes}
+	\end{block}
+
 	\begin{exampleblock}{Future work}
 		\begin{itemize}
-		\item Combine the 2 constraints
-		\item Add backfilling
-		\item Compare against FCFS EASY Backfilling
-		\item Reduce complexity to test on full scale workloads and cluster
-		\item Try implementation on SLURM ?
+			\item Continue working on Area filling
+			\item Combine the 2 constraints
+			\item Add backfilling
+			\item Compare against FCFS EASY Backfilling
+			\item Reduce complexity to test on full scale workloads and cluster
+			\item Try our algorithms on SLURM ?
 		\end{itemize}
 	\end{exampleblock}
 \end{frame}
