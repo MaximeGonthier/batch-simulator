@@ -17,7 +17,7 @@ echo ${CLUSTER_TP}
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-for ((i=0; i<6; i++))
+for ((i=0; i<=6; i++))
 do
 	#~ # Schedulers
 	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
@@ -25,12 +25,13 @@ do
 	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_big_job_first"
 	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
-	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_backfill_big_nodes_2"
+	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_area_filling"
+	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_area_filling_omniscient"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	echo "${SCHEDULER}"
-	python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 1
+	python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 2
 	echo "Results ${SCHEDULER} are:"
 	head outputs/Results_${SCHEDULER}.csv
 	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv

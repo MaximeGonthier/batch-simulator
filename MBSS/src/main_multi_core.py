@@ -416,6 +416,37 @@ running_jobs = []
 running_cores = 0
 running_nodes = 0
 
+if (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+	Planned_Area = []
+	if (scheduler == "Fcfs_area_filling"):
+		with open("inputs/file_size_requirement/Ratio_area_2022-02-02->2022-02-02.txt") as f:
+			line = f.readline()
+			r1, r2, r3, r4,= line.split()
+			Planned_Area.append([float(r2), float(r3), float(r4)])
+			line = f.readline()
+			r1, r2, r3, r4,= line.split()
+			Planned_Area.append([float(r2), float(r3), float(r4)])
+			line = f.readline()
+			r1, r2, r3, r4,= line.split()
+			Planned_Area.append([float(r2), float(r3), float(r4)])
+		f.close
+	elif (scheduler == "Fcfs_area_filling_omniscient"):
+		with open("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_very_reduced.txt") as f:
+			line = f.readline()
+			r1, r2, r3, r4,= line.split()
+			Planned_Area.append([float(r2), float(r3), float(r4)])
+			line = f.readline()
+			r1, r2, r3, r4,= line.split()
+			Planned_Area.append([float(r2), float(r3), float(r4)])
+			line = f.readline()
+			r1, r2, r3, r4,= line.split()
+			Planned_Area.append([float(r2), float(r3), float(r4)])
+		f.close
+	else:
+		print("Wrong scheduler area filling")
+		exit(1)
+
+
 if (write_all_jobs == 3):
 	title = "outputs/Stats_" + scheduler + ".csv"
 	f_stats = open(title, "w")
@@ -543,7 +574,7 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 		elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
 			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
 			available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area_1, Planned_Area_2, Planned_Area_3)
+			scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area)
 			
 		elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
 			new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
@@ -625,7 +656,7 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 			scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
 			
 		elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-			scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area_1, Planned_Area_2, Planned_Area_3)
+			scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area)
 			
 		elif (scheduler == "Maximum_use_single_file"):
 			reset_cores(affected_node_list, t)

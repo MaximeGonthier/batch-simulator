@@ -653,27 +653,47 @@ def fcfs_scheduler_big_job_first(l, node_list, t):
 	return scheduled_job_list
 	
 # Area filling
-def fcfs_scheduler_area_filling(l, node_list, t, Planned_Area_1, Planned_Area_2, Planned_Area_3):
+def fcfs_scheduler_area_filling(l, node_list, t, Planned_Area):
 	scheduled_job_list = []
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
-		
+	number_of_nodes_sub_list = len(node_list)
+	
+	if __debug__:
+		print("number_of_nodes_sub_list", number_of_nodes_sub_list)
+		print("Planned areas:", Planned_Area)
+	
 	for j in l:
 		if nb_non_available_cores < nb_cores:
 			if __debug__:
-				print("Scheduling job", j.unique_id)
+				print("Scheduling job", j.unique_id, "with data of size", j.index_node_list)
 			scheduled_job_list.append(j)
 			result = False
-			i = j.index_node_list
-			while (result == False and i != number_of_nodes_sub_list):
-				if __debug__:
-					print("Try to start immedialy on node of size", i)
-				result, nb_non_available_cores = start_job_immediatly_specific_node_size(j, node_list[i], t, backfill_big_node_mode, total_queue_time, finished_jobs, nb_non_available_cores)
-				i += 1
+			
+			# First try to start immedtialy on your node size
+			if __debug__:
+				print("Try to start immedialy on my node of size", j.index_node_list)
+			result, nb_non_available_cores = start_job_immediatly_specific_node_size(j, node_list[j.index_node_list], t, 0, 0, 0, nb_non_available_cores)
+			
+			# If it failed, try to schedule it on a bigger node
+			i = j.index_node_list + 1
+			if (result == False):
+				while (result == False and i != number_of_nodes_sub_list):	
+					if __debug__:
+						print("Try to start immedialy on next node of size", i)
+						print("Planned_Area[i][j.index_node_list] - (j.cores*j.walltime):", Planned_Area[i][j.index_node_list], (j.cores*j.walltime))
+					if (Planned_Area[i][j.index_node_list] - (j.cores*j.walltime) >= 0):
+						if __debug__:
+							print("i can try")
+						result, nb_non_available_cores = start_job_immediatly_specific_node_size(j, node_list[i], t, 0, 0, 0, nb_non_available_cores)
+						# TODO
+					i += 1
+			
+			# Need to schedule it for later on my size
 			if (result == False):
 				if __debug__:
-					print("Just schedule job", j.unique_id)
-				# If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits)
+					print("Just schedule job", j.unique_id, "later")
 				nb_non_available_cores = schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, node_list[j.index_node_list], t, nb_non_available_cores)
+				
 		else:
 			if __debug__:
 				print("Cluster full break.")
