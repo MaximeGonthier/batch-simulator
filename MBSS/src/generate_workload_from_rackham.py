@@ -1,7 +1,7 @@
 # Read job history files from /sw/share/slurm/rackham/accounting in the Rackham cluster
 # Create jobs copying exactly these data
 # Add data inputs depending on the arguments given by the user
-# Divide in three the jobs sorted by submission time so you have 3 phases and can ignore phases 1 and 3.
+# 2nd version, day -1 started like history if they started before day 0, other jobs scheduled and only day 1 evaluated
 
 # Imports
 import sys
@@ -20,13 +20,16 @@ class Job:
     data: int
     data_size: float
     workload: int
+    start_time_from_history: int
+    start_node_from_history: int
     
 # Args
 FILENAME = sys.argv[1] # FILE 1
 PROBABILITY_OF_USING_256GB = int(sys.argv[2]) # 0-100
 PROBABILITY_OF_USING_1TB = int(sys.argv[3]) # 0-100
 DATA_ON_ALL_JOBS = int(sys.argv[4]) # 0 or 1
-
+VERSION = int(sys.argv[5]) # 1 or 2
+    
 # Get start of first and last job times that will be considered in terms of submission times
 f_start_end = open("outputs/start_end_date_evaluated_jobs.txt", "r")
 line = f_start_end.readline()
@@ -73,7 +76,7 @@ while line:
 			# Similarly walltime must not be 0
 			if (walltime > 0):
 				# ~ # And I don't want failed jobs with long walltimes
-				w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1)
+				w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(str(r10)[7:]))
 				workload.append(w)
 				id_count += 1
 			else:
@@ -85,8 +88,6 @@ f_input.close()
 # Min sub time takes 0
 workload.sort(key = operator.attrgetter("subtime"))
 min_subtime = workload[0].subtime
-# ~ nb_used_jobs = 0
-# ~ nb_ignored_jobs=(int(sys.argv[5])*id_count)/100
 
 # ~ print("There are", id_count - 1, "jobs and", id_count - nb_ignored_jobs*2, "will be evaluated")
 
@@ -104,14 +105,20 @@ if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		size = 51.2
 	workload[0].data_size = size*workload[0].cores
 
-nb_jobs_before_day_0 = 0
+nb_jobs_started_before_day_0 = 0
+nb_jobs_not_started_but_submitted_before_day_0 = 0
 nb_jobs_day_0 = 0
 nb_jobs_day_1 = 0
 nb_jobs_day_2 = 0
 
-if workload[0].subtime < first_time_day_0:
+# ~ print(workload[0].start_time_from_history, first_time_day_0)
+if workload[0].start_time_from_history < first_time_day_0:
+	workload[0].workload = -2
+	nb_jobs_started_before_day_0 += 1
+	# ~ print("here")
+elif workload[0].subtime < first_time_day_0:
 	workload[0].workload = -1
-	nb_jobs_before_day_0 += 1
+	nb_jobs_not_started_but_submitted_before_day_0 += 1
 elif workload[0].subtime >= first_time_day_0 and workload[0].subtime <= last_time_day_0:
 	workload[0].workload = 0
 	nb_jobs_day_0 +=1
@@ -125,7 +132,7 @@ else:
 	print("Error time generation workload")
 	exit(1)
 
-f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size, workload[0].workload))
+f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d start_time_from_history: %d start_node_from_history: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size, workload[0].workload, workload[0].start_time_from_history - min_subtime, workload[0].start_node_from_history))
 last_data = workload[0].data
 last_size = workload[0].data_size
 last_user = workload[0].user
@@ -162,9 +169,12 @@ for i in range (1, id_count - 1):
 		# ~ workload[i].workload = 2
 	# ~ else:
 		# ~ workload[i].workload = 0
-	if workload[i].subtime < first_time_day_0:
+	if workload[i].start_time_from_history < first_time_day_0:
+		workload[i].workload = -2
+		nb_jobs_started_before_day_0 += 1
+	elif workload[i].subtime < first_time_day_0:
 		workload[i].workload = -1
-		nb_jobs_before_day_0 += 1
+		nb_jobs_not_started_but_submitted_before_day_0 += 1
 	elif workload[i].subtime >= first_time_day_0 and workload[i].subtime <= last_time_day_0:
 		workload[i].workload = 0
 		nb_jobs_day_0 +=1
@@ -178,8 +188,8 @@ for i in range (1, id_count - 1):
 		print("Error time generation workload")
 		exit(1)
 	
-	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload))
+	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d start_time_from_history: %d start_node_from_history: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload, workload[i].start_time_from_history - min_subtime, workload[i].start_node_from_history))
 f_output.close()
 
 # ~ print("There are", id_count - 1, "jobs.", nb_used_jobs, "will be evaluated")
-print("There are", id_count - 1, "jobs.", nb_jobs_before_day_0, "before day 0,", nb_jobs_day_0, "at day 0,", nb_jobs_day_1, "evaluated at day 1,", nb_jobs_day_2, "at day 2 and beyond.")
+print("There are", id_count - 1, "jobs.", nb_jobs_started_before_day_0, "started before day 0,", nb_jobs_not_started_but_submitted_before_day_0, "submitted but not started before day 0,", nb_jobs_day_0, "at day 0,", nb_jobs_day_1, "evaluated at day 1,", nb_jobs_day_2, "at day 2 and beyond.")

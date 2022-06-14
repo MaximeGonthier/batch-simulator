@@ -38,6 +38,7 @@ else
 fi
 
 if [ $PRINT == 1 ]; then
+	echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
 	python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
 fi
 if [ $PRINT == 2 ]; then

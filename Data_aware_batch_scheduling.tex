@@ -256,9 +256,18 @@ and real execution time of each job.
 A job is rarely running for more than a week.
 
 Let's say we want to evaluate jobs submitted on day 1.
-In order to do this we first look at all the jobs that ended between day 0 and 8. This should be enough to cover the ending times of most of the jobs submitted on day 1 because most jobs do not last for more than 7 days.
-We sort these jobs by submission time. All the jobs submitted on day 0 and before are scheduled but not considered in our evaluation.
-Job submitted before day 0 gives us the state of the cluster on day 0. Jobs from day 0 are ignored to limit the effect of bulk of jobs we could get with jobs submitted before day 0. Jobs from day 0 to 8 are all scheduled but only jobs from day 1 are evaluated.
+In order to do this we first look at all the jobs that ended between day 0 and 8.
+This should be enough to cover the ending times of most of the jobs submitted on day 1 because most jobs do not last for more than 7 days.
+We sort these jobs by submission time. 
+The jobs can fall in two different cases:
+\begin{itemize}
+	\item From the workload history, it started before day 0. So we start it on the node and at the time written in the workload history
+	\item From the workload history, it started after day 0. So, this job is not schedule beforehand, it's just in the queue of available jobs like all other jobs.
+\end{itemize}
+This gives us a fixed representation of what the cluster would have looked like on the dawn of day 0. The main benefit is that this starting point is the same for all schedulers.
+Jobs from day 0 are ignored to limit the effect of bulk of jobs we could get with jobs submitted before day 0.
+For the same reasons, jobs submitted after day 1 are scheduled but not evaluated.
+Jobs from day 0 to 8 are all scheduled but only jobs from day 1 are evaluated.
 
 In order to evaluate our schedulers focused on file re-use, we need to incorparate input files for each jobs. This information is not know from the workload's history, we must create it as follow:
 \begin{itemize}

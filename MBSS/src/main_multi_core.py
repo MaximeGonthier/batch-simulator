@@ -40,6 +40,8 @@ class Job:
     transfer_time: int
     waiting_for_a_load_time: int
     workload: int
+    start_time_from_history: int
+    node_from_history: int
 @dataclass
 class Node:
     unique_id: int
@@ -79,6 +81,7 @@ class To_print: # Struct used to know what to print later in csv
     data_type: int
    
 job_list = []
+job_list_to_start_from_history = []
 # ~ job_list_0 = []
 # ~ job_list_1 = []
 # ~ job_list_2 = []
@@ -97,7 +100,6 @@ node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
 available_node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
 
 to_print_list = [] # TODO : utilisé ?
-t = 0 # Current time start at 0
 
 # ~ def start_jobs_single_job(t, j, scheduled_job_list, running_jobs):
 def start_jobs_single_job(t, j):
@@ -137,7 +139,7 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 			
 			transfer_time = 0
 			waiting_for_a_load_time = 0
-			if (j.data != 0 and constraint_on_sizes != 2):
+			if (j.data != 0 and constraint_on_sizes != 2 and j.workload != -2): # I also don't want to put transfer time on fix workload occupation jobs
 				# Let's look if a data transfer is needed
 				transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.end_time)
 			j.transfer_time = transfer_time
@@ -159,6 +161,8 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 				
 			if __debug__:
 				print("Job", j.unique_id, "start at", t, "on node", j.node_used.unique_id, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime, "transfer time is", transfer_time, "data was", j.data)
+			if j.unique_id == 1362:
+				print("Job", j.unique_id, "start at", t, "on node", j.node_used.unique_id, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime, "transfer time is", transfer_time, "data was", j.data)
 			
 			for c in j.cores_used:
 				c.running_job = j
@@ -171,7 +175,7 @@ def start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, ru
 		available_job_list = remove_jobs_from_list(available_job_list, jobs_to_remove)
 	return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list
 
-def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate):
+def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0):
 	jobs_to_remove = []
 	for j in running_jobs:
 		if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
@@ -188,6 +192,9 @@ def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, 
 			if __debug__:	
 				print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
 			
+			if j.unique_id == 1362:
+				print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
+			
 			finished_job_list.append(j)
 			
 			if (write_all_jobs == 3):
@@ -200,7 +207,11 @@ def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, 
 			end_times.remove(j.end_time)
 			
 			core_ids = []
+			# ~ if j.unique_id == 1362:
+				# ~ print("Try to remove", j.unique_id)
 			for i in range (0, len(j.cores_used)):
+				# ~ if j.unique_id == 1362:
+					# ~ print("Try to remove", j.unique_id, "from core", j.cores_used[i])
 				j.cores_used[i].job_queue.remove(j)
 				j.cores_used[i].running_job = None
 								
@@ -209,10 +220,12 @@ def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, 
 					
 				core_ids.append(j.cores_used[i].unique_id)
 			
-			to_print_job_csv(j, j.node_used.unique_id, core_ids, t)
+			to_print_job_csv(j, j.node_used.unique_id, core_ids, t, first_time_day_0)
 
 			if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
 				affected_node_list.append(j.node_used)
+			
+			# ~ print("Try to remove", j.unique_id)
 			jobs_to_remove.append(j)
 						
 	running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
@@ -359,7 +372,7 @@ def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
 	# ~ return scheduled_job_list
 
 # Print in a csv file the results of this job allocation
-def to_print_job_csv(job, node_used, core_ids, time):	
+def to_print_job_csv(job, node_used, core_ids, time, first_time_day_0):	
 	time_used = job.end_time - job.start_time
 	
 	# Only evaluate jobs from workload 1
@@ -370,7 +383,9 @@ def to_print_job_csv(job, node_used, core_ids, time):
 	if (write_all_jobs == 1): # For gantt charts
 		file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
 		f = open(file_to_open, "a")
-		f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time, time_used, job.end_time, job.start_time, job.end_time, 1))
+		# ~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time, time_used, job.end_time, job.start_time, job.end_time, 1))
+		# ~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time - 1000, time_used, job.end_time - 1000, job.start_time - 1000, job.end_time - 1000, 1))
+		f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, 0, job.cores, job.walltime, job.start_time - first_time_day_0, time_used, job.end_time - first_time_day_0, job.start_time - first_time_day_0, job.end_time - first_time_day_0, 1))
 				
 		if (len(core_ids) > 1):
 			# ~ core_ids.sort()
@@ -400,14 +415,14 @@ node_list, available_node_list = read_cluster(input_node_file, node_list, availa
 # Read workload
 # ~ job_list_0, job_list_1, job_list_2, first_subtime_to_plot, nb_job_to_evaluate = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
 # ~ job_list, first_subtime_to_plot, nb_job_to_evaluate = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
-job_list, nb_job_to_evaluate = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
+job_list, nb_job_to_evaluate, first_time_day_0, job_list_to_start_from_history = read_workload(input_job_file, constraint_on_sizes, write_all_jobs)
 
 total_number_cores = (len(node_list) + 1)*20
 
 finished_jobs = 0
 # ~ total_number_jobs = len(job_list)
 # ~ total_number_jobs = len(job_list_0) + len(job_list_1) + len(job_list_2)
-total_number_jobs = len(job_list)
+total_number_jobs = len(job_list) + len(job_list_to_start_from_history)
 new_job = False
 new_core = False
 running_jobs = []
@@ -491,49 +506,28 @@ first_job_in_queue = None
 
 print("Start with", scheduler)
 
-next_submit_time = 0
+next_submit_time = first_time_day_0
+t = first_time_day_0
+print("First time day 0 is", first_time_day_0)
+# First start jobs from rackham's history
+job_list_to_start_from_history.sort(key = operator.attrgetter("start_time_from_history"))
+scheduled_job_list = get_state_before_day_0_scheduler(job_list_to_start_from_history, node_list, t)
 
 nb_job_to_evaluate_finished = 0
 # ~ nexta = True
 # ~ while(total_number_jobs != finished_jobs):
+
+print("Len scheduled job list before start:", len(scheduled_job_list))
+scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
+
 while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 	# Get the set of available jobs at time t
 	# Jobs are already sorted by subtime so I can simply stop with a break
 	if next_submit_time == t:
-		# ~ to_remove = []
-		# ~ if len(job_list_0) != 0:
-			# ~ for j in job_list_0:
-				# ~ if (j.subtime == t):
-					# ~ new_job_list.append(j)
-					# ~ available_job_list.append(j)
-					# ~ to_remove.append(j)
-				# ~ elif (j.subtime > t):
-					# ~ next_submit_time = j.subtime
-					# ~ break
-			# ~ remove_jobs_from_list(job_list_0, to_remove)
-		# ~ if len(job_list_1) != 0 and len(job_list_0) == 0:
-			# ~ for j in job_list_1:
-				# ~ if (j.subtime == t):
-					# ~ new_job_list.append(j)
-					# ~ available_job_list.append(j)
-					# ~ to_remove.append(j)
-				# ~ elif (j.subtime > t):
-					# ~ next_submit_time = j.subtime
-					# ~ break
-			# ~ remove_jobs_from_list(job_list_1, to_remove)
-		# ~ if len(job_list_2) != 0 and len(job_list_1) == 0:
-			# ~ for j in job_list_2:
-				# ~ if (j.subtime == t):
-					# ~ new_job_list.append(j)
-					# ~ available_job_list.append(j)
-					# ~ to_remove.append(j)
-				# ~ elif (j.subtime > t):
-					# ~ next_submit_time = j.subtime
-					# ~ break
-			# ~ remove_jobs_from_list(job_list_2, to_remove)
 		to_remove = []
 		for j in job_list:
-			if (j.subtime == t):
+			# ~ if (j.subtime == t):
+			if (j.subtime <= t):
 				new_job_list.append(j)
 				available_job_list.append(j)
 				to_remove.append(j)
@@ -617,7 +611,7 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 	old_finished_jobs = finished_jobs
 	
 	if t in end_times:
-		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate)
+		finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0)
 		
 	# Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
 	# Now I deal with it with intevralk it should work like before
@@ -696,9 +690,8 @@ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 	# ~ if len(finished_job_list) > 0:
 		# ~ remove_data_from_node(finished_job_list)
 	
-	# Print cores used
+	# Print cluster usage
 	if write_all_jobs == 3:
-		# ~ if t >= first_subtime_to_plot:
 		f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
 		
 	# Time is advancing
