@@ -520,6 +520,10 @@ nb_job_to_evaluate_finished = 0
 print("Len scheduled job list before start:", len(scheduled_job_list))
 scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
 
+# TODO: delete, just for stats
+f_fcfs_score = open("outputs/Scores_data.txt", "w")
+f_fcfs_score.close()
+
 while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 	# Get the set of available jobs at time t
 	# Jobs are already sorted by subtime so I can simply stop with a break

@@ -146,10 +146,10 @@ def print_csv(to_print_list, scheduler):
 			# ~ makespan = tp.time + tp.time_used
 			makespan = tp.job_end_time
 		
-		# For distribution of flow and queue times on each job
-		f_queue.write("%d %d %d\n" % (tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type))
-		f_flow.write("%d %d %d\n" % (tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type))
-		f_stretch.write("%d %d %d\n" % (tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type))
+		# For distribution of flow and queue times on each job to show VS curves
+		f_queue.write("%d %d %d %d\n" % (tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time))
+		f_flow.write("%d %d %d %d\n" % (tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time))
+		f_stretch.write("%d %d %d %d\n" % (tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type, tp.job_end_time - tp.job_start_time))
 	
 	f_queue.close()
 	f_flow.close()

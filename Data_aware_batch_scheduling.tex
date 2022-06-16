@@ -526,27 +526,44 @@ Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ a
 	\item $Area(M_1) \leq T_{max}$ but it's the smallest node size so it can only fit jobs from it's own size.
 \end{enumerate}
 
-\todo[inline]{We keep this immediatly thing ?}
 Here is the pseudo-code for our algorithm after computing statistics from previous workloads:
+%~ \begin{algorithm}[H]
+%~ \caption{Area filling}
+%~ \begin{algorithmic}[1]
+%~ \State Sort $\jobset$ by size of required node (biggest to smallest) and then by submission time
+%~ \State Need to schedule job $J_i$, requiring a node of size $x$
+%~ \If {$J_i$ can start immediately on a node of size $x$}
+	%~ \State Start $J$ on a node of size $x$
+	%~ \State return
+%~ \Else
+	%~ \For {$next\_size$ in range $(x+1, l)$}
+		%~ \If {$Planned\_area(next\_size)[x] - Area(J_i) \geq 0$ \& $J_i$ can start immediatly on a node of size $next\_size$}
+			%~ \State Start $J_i$ on a node of size $next\_size$
+			%~ \State $Planned\_area(next\_size)[x] \gets Planned\_area(next\_size)[x] - Area(J_i)$
+			%~ \State return
+		%~ \EndIf
+	%~ \EndFor
+	%~ \State Schedule $J_i$ on a node of size $x$
+	%~ \State return
+%~ \EndIf		
+%~ \end{algorithmic}
+%~ \end{algorithm}
 \begin{algorithm}[H]
 \caption{Area filling}
 \begin{algorithmic}[1]
 \State Sort $\jobset$ by size of required node (biggest to smallest) and then by submission time
 \State Need to schedule job $J_i$, requiring a node of size $x$
-\If {$J_i$ can start immediately on a node of size $x$}
-	\State Start $J$ on a node of size $x$
-	\State return
-\Else
-	\For {$next\_size$ in range $(x+1, l)$}
-		\If {$Planned\_area(next\_size)[x] - Area(J_i) \geq 0$ \& $J_i$ can start immediatly on a node of size $next\_size$}
-			\State Start $J_i$ on a node of size $next\_size$
-			\State $Planned\_area(next\_size)[x] \gets Planned\_area(next\_size)[x] - Area(J_i)$
-			\State return
+\For {$j$ in range $(x, l)$}
+	\If {$Planned\_area(next\_size)[x] - Area(J_i) \geq 0$ or $j == x$}
+		\State $EAT \gets$ earliest available time to start $J_i$ on a node of size $j$
+		\If {$EAT < min$}
+			\State $min \gets EAT$
+			\State $Choosen\_size = j$
 		\EndIf
-	\EndFor
-	\State Schedule $J_i$ on a node of size $x$
-	\State return
-\EndIf		
+	\EndIf
+\EndFor
+\State Start $J_i$ on a node of size $Choosen\_size$
+\State $Planned\_area(Choosen\_size)[x] \gets Planned\_area(Choosen\_size)[x] - Area(J_i)$
 \end{algorithmic}
 \end{algorithm}
 
@@ -712,5 +729,16 @@ Here is the pseudo-code for our algorithm after computing statistics from previo
 	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_Total_flow_95_128_4_256_1_1024.pdf}\caption{Total flow}\end{subfigure}
 	\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-03-26->2022-03-26_Total_waiting_for_a_load_time_and_transfer_time_95_128_4_256_1_1024.pdf}\caption{Waiting for a load and transfer time}\end{subfigure}\caption{Workload 2022-03-26 - Performance on FCFS with constraint on files sizes - 1/4 cluster - May 30}\end{figure}
 
+
+\section{Meeting 16/06/22}
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs.png}\caption{FCFS}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_with_a_score_x0_x70000_x0.png}\caption{FCFS with a score}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/plot_1.pdf}\caption{FCFS}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-02-08->2022-02-08_very_reduced_Total_flow_95_128_4_256_1_1024.pdf}\caption{Size constraint}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_Expe_V2/Heatmap_FCFS_Score_Time_to_evict_file_Nb_copy_2022-02-08->2022-02-08_very_reduced_95_128_4_256_1_1024.pdf}\caption{Heatmap FCFS with a score}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_Expe_V2/Heatmap_FCFS_Score_Time_to_load_file_Nb_copy_2022-02-08->2022-02-08_very_reduced_95_128_4_256_1_1024.pdf}\caption{}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_Expe_V2/Heatmap_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-02-08->2022-02-08_very_reduced_95_128_4_256_1_1024.pdf}\caption{}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFRSvsfcfsscore.pdf}\caption{}\end{figure}
 
 \end{document}

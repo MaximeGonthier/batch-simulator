@@ -100,6 +100,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 			# ~ if d.nb_task_using_it > 0:
 				# ~ print(d.unique_id, ":", d.temp_interval_usage_time[0])
 	
+	
 	# Test interval
 	get_current_intervals(node_list[0] + node_list[1] + node_list[2], t)
 	
@@ -112,7 +113,9 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 	
 	# ~ # Simplified method
 	# ~ nb_copy_of_files = get_nb_valid_copy_of_each_file(node_list[0] + node_list[1] + node_list[2])
-		
+	
+	f_fcfs_score = open("outputs/Scores_data.txt", "a")
+
 	# 1. Declare a list of job to remove and loop on available jobs
 	for j in l:
 		
@@ -214,7 +217,9 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 								min_score = score
 								choosen_node = n
 								choosen_time_to_load_file = time_to_load_file
-				
+					
+				f_fcfs_score.write("Node: %d EAT: %d C: %d CxX: %d Score: %d\n" % (n.unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files))
+					
 			j.transfer_time = choosen_time_to_load_file
 					
 			# 3. Choose a core
@@ -260,11 +265,13 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 										
 			if __debug__:
 				print_decision_in_scheduler(choosen_core, j, choosen_node)
-				
+						
 		else:
 			# print("Break")
 			break
-		
+	
+	f_fcfs_score.close()
+
 	return scheduled_job_list
 
 # Just return choosen node and cores

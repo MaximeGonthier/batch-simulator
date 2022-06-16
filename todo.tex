@@ -81,12 +81,13 @@
 %~ \tableofcontents
 \newpage
 
+%~ /data-aware-batch-scheduling/MBSS$ oarsub -p orion -l core=2,walltime=08:00:00 -r '2022-06-14 19:00:00' "bash Stats_single_workload.sh inputs/workloads/converted/test-11 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0"
+
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
 		\item When computing area, bigger jobs fill completly their sizes (0, 0 -1) for all
-		\item New workload generation: written but not coded
-		\item It goes down before day 0 because it's job with huge walltime that failed and lastes a few seconds even tho they have the COMPLETED state. Should I remove them ?
+		\item New workload generation fixed state: written and coded
 		\item Heatmaps of stretch
 		\item Test constraint size workload normal
 	\end{enumerate}
@@ -94,7 +95,6 @@
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item Budget poster
 		\item PDSEC et mailing list HPC ?
 		\item Voir new algo area. Pb taille que je regarde et taille de mon futur workload différent ?
 		\item Soumettre abstract ce soir. Poster ?
@@ -103,29 +103,24 @@
 
 \section{Todo}
 	\subsection{General}
-		\begin{enumerate}	
+		\begin{enumerate}
+			\item demande de cumul TP
+			\item imprimer poster
 			\item pour area filling utiliser les stats et test avec cluster de 1/3 de gros nodes mais aussi vrai test plus gros ou je devrais pas voir de différences
 			\item A la place de immedialy est ce que ca finir a plus tot sur le noeud de taille x + 1 et comparer aussi avec x + 2 ... x + n.
 			\item essayer avec plus de gros noeuds pour size constraint
 			\item Courbe en fixant 1 paramèrte
 			\item Rajouter un max au dénominateur du stretch pour que la durée ne sois pas moins de 3 min. div max (flow parfait, 3min)
 			\item Refaire heatmap
-			\iem Voir rapport avec A
-			\item voir uantité de petits jobs
-			\item représenter taille du job sur meme courbe
-			faire ratio au lieu de difference dans comparaison avec fcfs	
-				
-			\item Soumettre abstract et poster ce soir
+			\item Voir rapport avec A
+			\item voir quantité de petits jobs
+			\item comprendre param eiction	
 			\item Envoyer param hMETIS a Bora
-			\item coder new workload fix state
 			\item ajouter easy bf a fcfs avec un score si on le valide
-						
-			\item Ré écrire abstract et poster: Envoyer mail
-		
+								
 			\item flow stretch courbe de points triée par walltime ou par delay au lieu de trier par job ids.
 						
 			\item tracer terminaison de ces jobs sur courbes usgae des nodes
-			
 			
 			\item Soumettre abstract avant le 15 et le ré écrire un peu
 		
