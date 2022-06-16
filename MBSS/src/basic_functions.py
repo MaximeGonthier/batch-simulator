@@ -119,12 +119,20 @@ def print_csv(to_print_list, scheduler):
 	total_waiting_for_a_load_time_and_transfer_time = 0
 	makespan = 0
 	total_flow_stretch = 0
+	total_flow_stretch_with_a_minimum = 0
 	mean_flow_stretch = 0
+	mean_flow_stretch_with_a_minimum = 0
 	core_time_used = 0
+	job_exceeding_minimum = 0
 	for tp in to_print_list:
 		
 		# Flow stretch
 		total_flow_stretch += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time
+		
+		if tp.job_end_time - tp.job_start_time >= 300: # Ignore jobs of delay less that 5 minutes
+			total_flow_stretch_with_a_minimum += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time
+			job_exceeding_minimum += 1
+		
 		# ~ print((tp.job_end_time - tp.job_subtime), tp.empty_cluster_time)
 		
 		# ~ print("print", tp.job_unique_id)
@@ -147,9 +155,9 @@ def print_csv(to_print_list, scheduler):
 			makespan = tp.job_end_time
 		
 		# For distribution of flow and queue times on each job to show VS curves
-		f_queue.write("%d %d %d %d\n" % (tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time))
-		f_flow.write("%d %d %d %d\n" % (tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time))
-		f_stretch.write("%d %d %d %d\n" % (tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type, tp.job_end_time - tp.job_start_time))
+		f_queue.write("%d %d %d %d %d\n" % (tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime))
+		f_flow.write("%d %d %d %d %d\n" % (tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime))
+		f_stretch.write("%d %d %d %d %d\n" % (tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime))
 	
 	f_queue.close()
 	f_flow.close()
@@ -159,6 +167,7 @@ def print_csv(to_print_list, scheduler):
 	mean_queue_time = total_queue_time/len(to_print_list)
 	mean_flow = total_flow/len(to_print_list)
 	mean_flow_stretch = total_flow_stretch/len(to_print_list)
+	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/job_exceeding_minimum
 	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
 	
@@ -173,10 +182,22 @@ def print_csv(to_print_list, scheduler):
 	f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time), str(mean_flow_stretch)))
 	f.close()
 	
-	# For flow heat map
+	# For flow stretch heat map
 	file_to_open = "outputs/Stretch_" + scheduler + ".txt"
 	f = open(file_to_open, "w")
 	f.write("%s" % (str(mean_flow_stretch)))
+	f.close()
+	
+	# For flow stretch with a minimum heat map
+	file_to_open = "outputs/Stretch_with_a_minimum_" + scheduler + ".txt"
+	f = open(file_to_open, "w")
+	f.write("%s" % (str(mean_flow_stretch_with_a_minimum)))
+	f.close()
+	
+	# For total flow heat map
+	file_to_open = "outputs/Total_flow_" + scheduler + ".txt"
+	f = open(file_to_open, "w")
+	f.write("%s" % (str(total_flow)))
 	f.close()
 
 def get_start_time_and_update_avail_times_of_cores(t, choosen_core, walltime, nb_non_available_cores):

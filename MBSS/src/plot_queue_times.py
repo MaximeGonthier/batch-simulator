@@ -14,6 +14,7 @@ class Job:
     time: float
     data_type: int
     size: int
+    subtime: int
 
 x = []
 y = []
@@ -27,8 +28,8 @@ type_label = int(sys.argv[3])
 with open(sys.argv[1]) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4 = line.split() 
-		j = Job(int(r1), int(r2), int(r3), int(r4))
+		r1, r2, r3, r4, r5= line.split() 
+		j = Job(int(r1), int(r2), int(r3), int(r4), int(r5))
 		job_list_algo_reference.append(j)
 		line = f.readline()
 f.close()
@@ -37,8 +38,8 @@ job_list_algo_reference.sort(key = operator.attrgetter("unique_id"))
 with open(sys.argv[2]) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4 = line.split() 
-		j = Job(int(r1), int(r2), int(r3), int(r4))
+		r1, r2, r3, r4, r5 = line.split() 
+		j = Job(int(r1), int(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -52,10 +53,11 @@ for i in range (0, len(job_list_algo_compare)):
 	# ~ diff = job_list_algo_reference[i].time - job_list_algo_compare[i].time
 	# ~ job_list_algo_reference[i].time = (diff*100)/
 	
-	print("Job id:", job_list_algo_reference[i].unique_id, "% diff:", job_list_algo_reference[i].time)
+	# ~ print("Job id:", job_list_algo_reference[i].unique_id, "% diff:", job_list_algo_reference[i].time)
 	
 for i in range (0, len(job_list_algo_compare)):
-	x.append(job_list_algo_reference[i].unique_id)
+	# ~ x.append(job_list_algo_reference[i].unique_id)
+	x.append(job_list_algo_reference[i].subtime)
 	y.append(job_list_algo_reference[i].time)
 	data_size.append(job_list_algo_reference[i].data_type)	
 	sizes.append(job_list_algo_reference[i].size/1000)	
@@ -69,7 +71,7 @@ custom_lines = [Line2D([0], [0], color="darkblue", lw=4),
                 Line2D([0], [0], color="yellow", lw=4)]
 plt.legend(custom_lines, ['128', '256', '1024'])
 
-plt.xlabel("Jobs ids")
+plt.xlabel("Submission times (sec)")
 if type_label == 1:
 	plt.ylabel("% of flow stretch difference from FCFS")
 else:

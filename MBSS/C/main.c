@@ -1,0 +1,624 @@
+//~ #define PRINT
+//~ #define PRINT_GANTT_CHART
+//~ #define PRINT_DISTRIBUTION_QUEUE_TIMES
+//~ #define PRINT_CLUSTER_USAGE
+#include <main.h>
+
+//~ from read_input_files import *
+//~ from print_functions import *
+//~ from basic_functions import *
+//~ from scheduler import *
+//~ from filling_strategy import *
+//~ write_all_jobs = int(sys.argv[4]) # 1 for gantt charts, 2 for distribution of queue times, 3 for cluster usage
+
+void main(int argc, char *argv[])
+{
+	char* input_job_file = argv[1];
+	char* input_node_file = argv[2];
+	char* scheduler = argv[3];
+	int constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
+	
+	#ifdef PRINT
+	printf("Workloads: %s\n", input_job_file);
+	printf("Cluster: %s\n", input_node_file);
+	printf("Scheduler: %s\n", scheduler);
+	printf("Size constraint: %d\n", constraint_on_sizes);
+	#endif
+	
+	/* Set of nodes */
+	
+	
+	/* Read cluster */
+	struct Node *node_list = read_cluster(input_node_file);
+	#ifdef PRINT
+	print_node_list(node_list);
+	#endif
+	
+	/* Read workload */
+	int nb_job_to_evaluate = 0;
+	int first_time_day_0 = 0;
+	struct Job *job_list = read_workload(input_job_file, constraint_on_sizes);
+	struct Job *job_list = read_workload(input_job_file, constraint_on_sizes);
+	#ifdef PRINT
+	printf("Number of jobs to evaluate: %d\n", nb_job_to_evaluate);
+	printf("First time day 0: %d\n", first_time_day_0);
+	print_job_list(job_list);
+	#endif
+
+//~ total_number_cores = (len(node_list) + 1)*20
+
+//~ finished_jobs = 0
+//~ # ~ total_number_jobs = len(job_list)
+//~ # ~ total_number_jobs = len(job_list_0) + len(job_list_1) + len(job_list_2)
+//~ total_number_jobs = len(job_list) + len(job_list_to_start_from_history)
+//~ new_job = False
+//~ new_core = False
+//~ running_jobs = []
+
+//~ # Just for stats
+//~ running_cores = 0
+//~ running_nodes = 0
+
+	
+	return;
+}
+
+//~ void start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
+//~ {
+	//~ jobs_to_remove = []
+	//~ for j in scheduled_job_list:
+		//~ if (j.start_time == t):
+			
+			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
+			//~ total_queue_time += j.start_time - j.subtime
+			
+			//~ transfer_time = 0
+			//~ waiting_for_a_load_time = 0
+			//~ if (j.data != 0 and constraint_on_sizes != 2 and j.workload != -2): # I also don't want to put transfer time on fix workload occupation jobs
+				//~ # Let's look if a data transfer is needed
+				//~ transfer_time, waiting_for_a_load_time = add_data_in_node(j.data, j.data_size, j.node_used, t, j.end_time)
+			//~ j.transfer_time = transfer_time
+						
+			//~ j.waiting_for_a_load_time = waiting_for_a_load_time
+			//~ j.end_time = j.start_time + min(j.delay + transfer_time, j.walltime) # Attention le j.end time est mis a jour la!
+			
+			//~ end_times.append(j.end_time)
+			
+			//~ if (write_all_jobs == 3):
+				//~ # Just for stats
+				//~ running_cores += j.cores
+				//~ if (j.node_used.n_available_cores == 20):
+					//~ running_nodes += 1
+				//~ j.node_used.n_available_cores -= j.cores
+
+			//~ if (j.delay + transfer_time < j.walltime):
+				//~ j.end_before_walltime = True
+				
+			//~ if __debug__:
+				//~ print("Job", j.unique_id, "start at", t, "on node", j.node_used.unique_id, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime, "transfer time is", transfer_time, "data was", j.data)
+			//~ if j.unique_id == 1362:
+				//~ print("Job", j.unique_id, "start at", t, "on node", j.node_used.unique_id, "and will end at", j.end_time,  "before walltime:", j.end_before_walltime, "transfer time is", transfer_time, "data was", j.data)
+			
+			//~ for c in j.cores_used:
+				//~ c.running_job = j
+			//~ jobs_to_remove.append(j)
+			//~ running_jobs.append(j)
+		//~ # ~ else: # dans le cas où on a trié la liste par start times
+			//~ # ~ break
+	//~ if len(jobs_to_remove) > 0:
+		//~ scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
+		//~ available_job_list = remove_jobs_from_list(available_job_list, jobs_to_remove)
+	//~ return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list
+//~ }
+
+//~ def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0):
+	//~ jobs_to_remove = []
+	//~ for j in running_jobs:
+		//~ if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
+			
+			//~ if j.workload == 1:
+				//~ nb_job_to_evaluate_finished += 1
+				
+			//~ finished_jobs += 1
+			//~ # Just printing, can remove
+			//~ # ~ if (finished_jobs%5 == 0):
+			//~ if (finished_jobs%100 == 0):
+				//~ print("Evaluated jobs:", nb_job_to_evaluate_finished, "/", nb_job_to_evaluate, "| All jobs:", finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs))
+			
+			//~ if __debug__:	
+				//~ print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
+			
+			//~ if j.unique_id == 1362:
+				//~ print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
+			
+			//~ finished_job_list.append(j)
+			
+			//~ if (write_all_jobs == 3):
+				//~ # Just for stats
+				//~ running_cores -= j.cores
+				//~ j.node_used.n_available_cores += j.cores
+				//~ if (j.node_used.n_available_cores == 20):
+					//~ running_nodes -= 1
+			
+			//~ end_times.remove(j.end_time)
+			
+			//~ core_ids = []
+			//~ # ~ if j.unique_id == 1362:
+				//~ # ~ print("Try to remove", j.unique_id)
+			//~ for i in range (0, len(j.cores_used)):
+				//~ # ~ if j.unique_id == 1362:
+					//~ # ~ print("Try to remove", j.unique_id, "from core", j.cores_used[i])
+				//~ j.cores_used[i].job_queue.remove(j)
+				//~ j.cores_used[i].running_job = None
+								
+				//~ # ~ if (j.end_before_walltime == True):
+					//~ # ~ j.cores_used[i].available_time = t
+					
+				//~ core_ids.append(j.cores_used[i].unique_id)
+			
+			//~ to_print_job_csv(j, j.node_used.unique_id, core_ids, t, first_time_day_0)
+
+			//~ if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
+				//~ affected_node_list.append(j.node_used)
+			
+			//~ # ~ print("Try to remove", j.unique_id)
+			//~ jobs_to_remove.append(j)
+						
+	//~ running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
+						
+	//~ return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished
+
+//~ # Try to schedule immediatly in FCFS order without delaying first_job_in_queue
+//~ def easy_backfill_no_return(first_job_in_queue, t, node_list, l):
+	//~ # ~ print("Début de Easy BackFilling...")
+	//~ # ~ job_to_remove = []
+	//~ # ~ print_job_info_from_list(available_job_list, t)
+	
+	//~ # ~ tab = [0] * (len(node_list) + 1)
+	//~ # ~ i = 0
+	//~ # ~ for n in node_list[0] + node_list[1] + node_list[2]:
+		//~ # ~ tab[i] = n.n_available_cores
+		//~ # ~ for c in n:
+			//~ # ~ for j in c.job_queue:
+				//~ # ~ if 
+		//~ # ~ i += 1
+	//~ # ~ print(tab[2])
+	
+	//~ for j in l:
+		//~ if j != first_job_in_queue and j.start_time != t:
+			//~ if __debug__:
+				//~ print("Try to backfill", j.unique_id, "at time", t, "first job is", first_job_in_queue.unique_id)
+			//~ # ~ choosen_node = None
+			//~ # ~ nb_possible_cores = 0
+			//~ # ~ choosen_core = []
+			//~ if (j.index_node_list == 0): # Je peux choisir dans la liste entière
+				//~ nodes_to_choose_from = node_list[0] + node_list[1] + node_list[2]
+			//~ elif (j.index_node_list == 1): # Je peux choisir dans la 1 et la 2
+				//~ nodes_to_choose_from = node_list[1] + node_list[2]
+			//~ elif (j.index_node_list == 2): # Je peux choisir que dans la 2
+				//~ nodes_to_choose_from = node_list[2]
+			//~ for n in nodes_to_choose_from:
+				//~ choosen_node = None
+				//~ choosen_core = []
+				//~ # ~ nb_possible_cores = 0
+
+				//~ # OLD
+				//~ # ~ nb = nb_available_cores(n, t)
+				//~ # ~ if nb >= j.cores: 
+					//~ # ~ print("On node", n.unique_id, "there are:", nb, "available cores and I use", j.cores) 
+					//~ # ~ # Need to make sure it won't delay first_job_in_queue
+					//~ # ~ # If it's the same node and the job is longer that start time of first_job_in_queue it might cause problems
+					//~ # ~ if (n == first_job_in_queue.node_used and t + j.walltime > first_job_in_queue.start_time):
+						//~ # ~ # Careful, you can't choose the same cores!
+						//~ # ~ for c in n.cores:
+							//~ # ~ if c.available_time <= t and c not in first_job_in_queue.cores_used:
+								//~ # ~ nb_possible_cores += 1
+						//~ # ~ if (nb_possible_cores >= j.cores): # Ok you can!
+							//~ # ~ choosen_node = n
+							
+							//~ # ~ for c in choosen_node.cores:
+								//~ # ~ if c.available_time <= t and c not in first_job_in_queue.cores_used:
+									//~ # ~ choosen_core.append(c)
+									
+									
+									//~ # ~ c.job_queue.append(j)
+									//~ # ~ if (len(choosen_core) == j.cores):
+										//~ # ~ break
+														
+					//~ # ~ else: # You can choose any free core
+						//~ # ~ choosen_node = n
+						//~ # ~ choosen_node.cores.sort(key = operator.attrgetter("available_time"))
+						//~ # ~ choosen_core = choosen_node.cores[0:j.cores]
+						//~ # ~ for c in choosen_core:
+													
+							//~ # ~ c.job_queue.append(j)
+							
+							//~ # ~ # Fix en carton
+							//~ # ~ # c.available_time = t
+				
+				//~ # NEW			
+				//~ # ~ nb = nb_available_cores(n, t)
+				//~ # ~ if nb >= j.cores: 
+					//~ # ~ print("On node", n.unique_id, "there are:", nb, "available cores and I use", j.cores) 
+					//~ # Need to make sure it won't delay first_job_in_queue
+					//~ # If it's the same node and the job is longer that start time of first_job_in_queue it might cause problems
+				//~ same_node = False
+				//~ success = False
+				//~ if (n == first_job_in_queue.node_used and t + j.walltime > first_job_in_queue.start_time):
+					//~ same_node = True
+					
+				//~ choosen_core, success = return_cores_not_running_a_job(n, j.cores, t, same_node, first_job_in_queue.cores_used)
+						//~ # ~ # Careful, you can't choose the same cores!
+						//~ # ~ for c in n.cores:
+							//~ # ~ if c.available_time <= t and c not in first_job_in_queue.cores_used:
+								//~ # ~ nb_possible_cores += 1
+						//~ # ~ if (nb_possible_cores >= j.cores): # Ok you can!
+							//~ # ~ choosen_node = n
+							
+							//~ # ~ for c in choosen_node.cores:
+								//~ # ~ if c.available_time <= t and c not in first_job_in_queue.cores_used:
+									//~ # ~ choosen_core.append(c)
+									
+									
+									//~ # ~ c.job_queue.append(j)
+									//~ # ~ if (len(choosen_core) == j.cores):
+										//~ # ~ break
+														
+					//~ # ~ else: # You can choose any free core
+				//~ if success == True:
+					//~ choosen_node = n
+					//~ # ~ choosen_node.cores.sort(key = operator.attrgetter("available_time"))
+					//~ # ~ choosen_core = choosen_node.cores[0:j.cores]
+					//~ for c in choosen_core:
+													
+						//~ c.job_queue.append(j)
+							
+						//~ # Fix en carton
+						//~ c.available_time = t
+					
+					//~ # OLD
+					//~ # ~ if choosen_node != None:
+					//~ start_time = get_start_time_and_update_avail_times_of_cores(t, choosen_core, j.walltime) 
+					//~ j.node_used = choosen_node
+					//~ j.cores_used = choosen_core
+					//~ j.start_time = start_time
+					//~ j.end_time = start_time + j.walltime	
+						
+					//~ for c in choosen_core:
+						//~ for j2 in c.job_queue:
+							//~ if j != j2:
+								//~ j2.start_time = c.available_time
+								//~ j2.end_time = j2.start_time + j.walltime	
+								//~ c.available_time = j2.end_time
+									
+						//~ # ~ choosen_node.n_available_cores -= j.cores
+						//~ # ~ tab[n.unique_id] += j.cores
+												
+						//~ # ~ available_job_list.remove(j)
+						//~ # ~ job_to_remove.append(j)
+						//~ # ~ scheduled_job_list.append(j)
+					//~ if __debug__:
+						//~ print_decision_in_scheduler(choosen_core, j, choosen_node)
+						//~ # ~ start_jobs_single_job(t, j)
+						//~ # ~ tab[n.unique_id] -= j.cores
+						//~ # ~ print_job_info_from_list(available_job_list, t)
+					//~ break
+	//~ # ~ available_job_list = remove_jobs_from_list(available_job_list, job_to_remove)
+	//~ # ~ print("Fin de Easy BackFilling...")
+	//~ # ~ return scheduled_job_list
+
+//~ # Print in a csv file the results of this job allocation
+//~ def to_print_job_csv(job, node_used, core_ids, time, first_time_day_0):	
+	//~ time_used = job.end_time - job.start_time
+	
+	//~ # Only evaluate jobs from workload 1
+	//~ if (job.workload == 1):	
+		//~ tp = To_print(job.unique_id, job.subtime, node_used, core_ids, time, time_used, job.transfer_time, job.start_time, job.end_time, job.cores, job.waiting_for_a_load_time, job.delay + job.data_size/0.1, job.index_node_list)
+		//~ to_print_list.append(tp)
+		
+	//~ if (write_all_jobs == 1): # For gantt charts
+		//~ file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
+		//~ f = open(file_to_open, "a")
+		//~ # ~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time, time_used, job.end_time, job.start_time, job.end_time, 1))
+		//~ # ~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, job.subtime, job.cores, job.walltime, job.start_time - 1000, time_used, job.end_time - 1000, job.start_time - 1000, job.end_time - 1000, 1))
+		//~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (job.unique_id, job.unique_id, 0, job.cores, job.walltime, job.start_time - first_time_day_0, time_used, job.end_time - first_time_day_0, job.start_time - first_time_day_0, job.end_time - first_time_day_0, 1))
+				
+		//~ if (len(core_ids) > 1):
+			//~ # ~ core_ids.sort()
+			//~ for i in range (0, len(core_ids)):
+			//~ # ~ for i in core_ids:
+				//~ if (i == len(core_ids) - 1):
+					//~ f.write("%d" % (node_used*20 + core_ids[i]))
+				//~ else:
+					//~ # ~ print(node_used)
+					//~ # ~ print(len(core_ids))
+					//~ # ~ print(i)
+					//~ # ~ f.write("%d-" % (node_used*20 + core_ids[i]))
+					//~ f.write("%d " % (node_used*20 + core_ids[i]))
+		//~ else:
+			//~ f.write("%d" % (node_used*20 + core_ids[0]))
+		//~ f.write(",-1,\"\"\n")
+		//~ f.close()
+	//~ elif (write_all_jobs == 2): # For distribution of queue times
+		//~ file_to_open = "outputs/Distribution_queue_times_" + scheduler + ".txt"
+		//~ f = open(file_to_open, "a")
+		//~ f.write("%d\n" % (job.start_time - job.subtime))
+		//~ f.close()
+
+
+//~ if (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+	//~ Planned_Area = []
+	//~ if (scheduler == "Fcfs_area_filling"):
+		//~ with open("inputs/file_size_requirement/Ratio_area_2022-02-02->2022-02-02.txt") as f:
+			//~ line = f.readline()
+			//~ r1, r2, r3, r4,= line.split()
+			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ line = f.readline()
+			//~ r1, r2, r3, r4,= line.split()
+			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ line = f.readline()
+			//~ r1, r2, r3, r4,= line.split()
+			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+		//~ f.close
+	//~ elif (scheduler == "Fcfs_area_filling_omniscient"):
+		//~ with open("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_very_reduced.txt") as f:
+			//~ line = f.readline()
+			//~ r1, r2, r3, r4,= line.split()
+			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ line = f.readline()
+			//~ r1, r2, r3, r4,= line.split()
+			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ line = f.readline()
+			//~ r1, r2, r3, r4,= line.split()
+			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+		//~ f.close
+	//~ else:
+		//~ print("Wrong scheduler area filling")
+		//~ exit(1)
+
+
+//~ if (write_all_jobs == 3):
+	//~ title = "outputs/Stats_" + scheduler + ".csv"
+	//~ f_stats = open(title, "w")
+	//~ f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
+
+//~ # Variant for FCFS with a score
+//~ if scheduler[0:19] == "Fcfs_with_a_score_x":
+	//~ i = 19
+	//~ j = 19
+	//~ while scheduler[i] != "_":
+		//~ i+= 1
+	//~ multiplier_file_to_load = int(scheduler[j:i])
+	//~ j = i + 2
+	//~ i = i + 1
+	//~ while scheduler[i] != "_":
+		//~ i+= 1
+	//~ multiplier_file_evicted = int(scheduler[j:i])
+	//~ j = i + 2
+	//~ multiplier_nb_copy = int(scheduler[j:len(scheduler)])
+	
+	
+	//~ # ~ if len(scheduler) == 26:
+	//~ # ~ elif len(scheduler) == 27:
+	//~ # ~ else:
+		//~ # ~ print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM. Or I haven't dealt with this number for multipliers :/")
+		//~ # ~ exit(1)
+	//~ # ~ multiplier_file_to_load = int(scheduler[19])
+	//~ # ~ multiplier_file_evicted = int(scheduler[22])
+	//~ # ~ multiplier_nb_copy = int(scheduler[25])
+	//~ print("Multiplier file to load:", multiplier_file_to_load, "| Multiplier file evicted:", multiplier_file_evicted, "| Multiplier nb of copy:", multiplier_nb_copy)
+
+//~ # Variant for backfill big nodes
+//~ if (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+	//~ # 0 = don't compute anything, 1 = compute mean queue time
+	//~ backfill_big_node_mode = int(scheduler[24])
+	
+//~ # For constraint on node sizes
+//~ total_queue_time = 0
+	
+//~ # Start of simulation
+//~ first_job_in_queue = None
+
+//~ print("Start with", scheduler)
+
+//~ next_submit_time = first_time_day_0
+//~ t = first_time_day_0
+//~ print("First time day 0 is", first_time_day_0)
+//~ # First start jobs from rackham's history
+//~ job_list_to_start_from_history.sort(key = operator.attrgetter("start_time_from_history"))
+//~ scheduled_job_list = get_state_before_day_0_scheduler(job_list_to_start_from_history, node_list, t)
+
+//~ nb_job_to_evaluate_finished = 0
+//~ # ~ nexta = True
+//~ # ~ while(total_number_jobs != finished_jobs):
+
+//~ print("Len scheduled job list before start:", len(scheduled_job_list))
+//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
+
+//~ # TODO: delete, just for stats
+//~ f_fcfs_score = open("outputs/Scores_data.txt", "w")
+//~ f_fcfs_score.close()
+
+//~ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
+	//~ # Get the set of available jobs at time t
+	//~ # Jobs are already sorted by subtime so I can simply stop with a break
+	//~ if next_submit_time == t:
+		//~ to_remove = []
+		//~ for j in job_list:
+			//~ # ~ if (j.subtime == t):
+			//~ if (j.subtime <= t):
+				//~ new_job_list.append(j)
+				//~ available_job_list.append(j)
+				//~ to_remove.append(j)
+			//~ elif (j.subtime > t):
+				//~ next_submit_time = j.subtime
+				//~ break
+		//~ remove_jobs_from_list(job_list, to_remove)
+	
+	//~ # New jobs are available! Schedule them
+	//~ # ~ if (len(available_job_list) > 0):
+	//~ if (len(new_job_list) > 0):
+	//~ # ~ if (new_job == True):
+		//~ if __debug__:
+			//~ # ~ print(len(available_job_list), "new jobs at time", t)
+			//~ print(len(new_job_list), "new jobs at time", t)
+			
+		//~ if (scheduler == "Random"):
+			//~ random.shuffle(available_job_list)
+			//~ scheduled_job_list = random_scheduler(new_job_list, node_list, t)
+			
+		//~ # ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+		//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
+			//~ # ~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			//~ scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
+			
+		//~ elif (scheduler == "Fcfs"):
+			//~ scheduled_job_list = fcfs_scheduler(new_job_list, node_list, t)
+			
+		//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
+			//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(new_job_list, node_list, t)
+			
+		//~ elif (scheduler == "Fcfs_big_job_first"):
+			//~ # Order new jobs list and append them in order (depending on the size they need) in available job list
+			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			//~ scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
+		
+		//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			//~ scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area)
+			
+		//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+			//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
+				
+		//~ elif (scheduler == "Fcfs_easybf"):
+			//~ if (first_job_in_queue == None):
+				//~ first_job_in_queue = available_job_list[0]
+			//~ else:
+				//~ first_job_in_queue = scheduled_job_list[0]
+			//~ fcfs_scheduler(available_job_list, node_list, t)
+			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
+
+		//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+			//~ if (first_job_in_queue == None):
+				//~ first_job_in_queue = available_job_list[0]
+			//~ else:
+				//~ first_job_in_queue = scheduled_job_list[0]
+			//~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
+			
+		//~ elif (scheduler == "Common_file_packages_with_a_score"):
+			//~ common_file_packages_with_a_score(available_job_list, node_list, t, total_number_cores)
+				
+		//~ elif (scheduler == "Maximum_use_single_file"):
+			//~ while(len(available_job_list) > 0):
+				//~ # ~ print(len(available_job_list))
+				//~ available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
+		//~ else:
+			//~ print("Wrong scheduler in arguments")
+			//~ exit(1)
+			
+		//~ # ~ available_job_list.clear()
+		//~ new_job_list.clear()
+	
+	//~ # Get ended job. Inform if a filing is needed. Compute file transfers needed.	
+	//~ affected_node_list = []	
+	//~ finished_job_list = []	
+	//~ old_finished_jobs = finished_jobs
+	
+	//~ if t in end_times:
+		//~ finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0)
+		
+	//~ # Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+	//~ # Now I deal with it with intevralk it should work like before
+	//~ if len(finished_job_list) > 0:
+		//~ remove_data_from_node(finished_job_list, t)
+	
+	//~ # ~ if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
+	//~ if (old_finished_jobs < finished_jobs and len(available_job_list) > 0):
+		//~ # ~ print("Core liberated")
+		//~ # Reset all cores and jobs
+		//~ if (scheduler != "Maximum_use_single_file"):
+			//~ reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+		
+		//~ if __debug__:
+			//~ print("Reschedule. Nb of job available:", len(available_job_list))
+			
+		//~ if (scheduler == "Random"):
+			//~ scheduled_job_list = random_scheduler(available_job_list, node_list, t)
+			
+		//~ # ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+		//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
+			//~ # ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			//~ scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
+			
+		//~ elif (scheduler == "Fcfs"):
+			//~ # ~ fcfs_scheduler(scheduled_job_list, node_list, t)
+			//~ scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
+			
+		//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
+			//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(available_job_list, node_list, t)
+
+		//~ elif (scheduler == "Fcfs_big_job_first"):
+			//~ scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
+			
+		//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+			//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
+			
+		//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+			//~ scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area)
+			
+		//~ elif (scheduler == "Maximum_use_single_file"):
+			//~ reset_cores(affected_node_list, t)
+			//~ maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
+			
+		//~ elif (scheduler == "Common_file_packages_with_a_score"):
+			//~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
+			
+		//~ if __debug__:
+			//~ print("End of reschedule")
+	
+	//~ # Ones with backfill
+	//~ # ~ if (old_finished_jobs < finished_jobs):
+		//~ if (scheduler == "Fcfs_easybf"):
+			//~ if (len(scheduled_job_list) > 0):
+				//~ first_job_in_queue = scheduled_job_list[0]
+				//~ # ~ print("First job is", first_job_in_queue.unique_id)
+				//~ if len(affected_node_list) > 0:
+					//~ fcfs_scheduler(scheduled_job_list, node_list, t)
+			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
+			
+		//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+			//~ if (len(scheduled_job_list) > 0):
+				//~ first_job_in_queue = scheduled_job_list[0]
+				//~ # ~ print("First job is", first_job_in_queue.unique_id)
+				//~ if len(affected_node_list) > 0:
+					//~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
+			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
+			
+	//~ # Get started jobs
+	//~ if (len(scheduled_job_list) > 0):
+		//~ # ~ scheduled_job_list.sort(key = operator.attrgetter("start_time"))
+		//~ # ~ if (scheduled_job_list[0].start_time == t):
+		//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
+	
+	//~ # ~ # Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+	//~ # ~ if len(finished_job_list) > 0:
+		//~ # ~ remove_data_from_node(finished_job_list)
+	
+	//~ # Print cluster usage
+	//~ if write_all_jobs == 3:
+		//~ f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
+		
+	//~ # Time is advancing
+	//~ t += 1
+
+//~ if (write_all_jobs == 3):
+	//~ f_stats.close()
+
+//~ # Print results in a csv file
+//~ print("Computing and writing results...")
+//~ print_csv(to_print_list, scheduler)

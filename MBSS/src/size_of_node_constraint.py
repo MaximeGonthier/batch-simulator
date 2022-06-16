@@ -33,12 +33,8 @@ def start_job_immediatly_specific_node_size(job, node_sublist, current_time, bac
 		else:
 			print("Error on backfill_big_node_mode, must be 0 or 1 ")
 			exit(1)
-		if __debug__:
-			print("Thresolhd is:", threshold_for_a_start, "| T =", current_time)
 			
 		if earliest_available_time <= threshold_for_a_start: # Ok I can start immediatly, schedule job and return true
-			if __debug__:
-				print("Can start imediatly job", job.unique_id)
 			start_time = earliest_available_time
 			job.node_used = n
 			job.cores_used = choosen_core
@@ -53,7 +49,5 @@ def start_job_immediatly_specific_node_size(job, node_sublist, current_time, bac
 				
 				c.available_time = start_time + job.walltime
 			
-			if __debug__:
-				print_decision_in_scheduler(choosen_core, job, n)
 			return True, nb_non_available_cores
 	return False, nb_non_available_cores

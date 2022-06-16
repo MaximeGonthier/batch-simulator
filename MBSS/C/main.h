@@ -1,0 +1,103 @@
+#define PRINT
+#define PRINT_GANTT_CHART
+#define PRINT_DISTRIBUTION_QUEUE_TIMES
+#define PRINT_CLUSTER_USAGE
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+struct Job {
+	struct Job *next;
+	int unique_id;
+    int subtime;
+    int delay;
+    int walltime;
+    int cores;
+    int data;
+    float data_size;
+    int index_node_list;
+    int start_time;
+    int end_time;
+    bool end_before_walltime;
+    int node_used; /* None */
+    int* cores_used; /* list */
+    int transfer_time;
+    int waiting_for_a_load_time;
+    int workload;
+    int start_time_from_history;
+    int node_from_history;
+};
+
+struct Node {
+	struct Node *next;
+    int unique_id;
+    int memory;
+    float bandwidth;
+    struct Node* data;
+    struct Core* cores;
+    int n_available_cores;
+};
+
+struct Data {
+    int unique_id;
+    int start_time;
+    int end_time;
+    int nb_task_using_it;
+    //~ temp_interval_usage_time: list;
+    int size;
+};
+
+struct Core {
+    int unique_id;
+    struct Job* job_queue;
+    int available_time;
+    struct Job running_job;
+};
+
+/* From read_input_files.c */
+struct Node* read_cluster(char* input_node_file);
+struct Job* read_workload(char* input_job_file, int constraint_on_sizes);
+
+/* From print_functions.c */
+void print_node_list(struct Node* list);
+void print_job_list(struct Job* list);
+
+//~ # Ce sont des listes de listes
+//~ # ~ sub_list = []
+//~ node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
+//~ available_node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
+
+//~ to_print_list = [] # TODO : utilisé ?
+
+//~ job_list = []
+//~ job_list_to_start_from_history = []
+//~ # ~ job_list_0 = []
+//~ # ~ job_list_1 = []
+//~ # ~ job_list_2 = []
+//~ available_job_list = []
+//~ new_job_list = []
+//~ scheduled_job_list = []
+//~ to_print_list = []
+//~ end_times = []
+//~ # ~ nstart: int
+//~ # ~ node_list = []
+//~ # ~ available_node_list = [] # Contient aussi les coeurs disponibles
+
+
+//~ @dataclass
+//~ class To_print: # Struct used to know what to print later in csv
+    //~ job_unique_id: int
+    //~ job_subtime: int
+    //~ node_unique_id: int
+    //~ core_unique_id: list
+    //~ time: int
+    //~ time_used: int
+    //~ transfer_time: int
+    //~ job_start_time: int
+    //~ job_end_time: int
+    //~ job_cores: int
+    //~ waiting_for_a_load_time: int
+    //~ empty_cluster_time: float
+    //~ data_type: int
