@@ -1,5 +1,4 @@
 #include <main.h>
-//~ #include <sys/stat.h>
 
 struct Node* read_cluster(char* input_node_file)
 {
@@ -48,9 +47,18 @@ struct Node* read_cluster(char* input_node_file)
 	return list;
 }
 
-struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
+//~ struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
+void read_workload(char* input_job_file, int constraint_on_sizes)
 {
-	struct Job *job_list = NULL;
+	job_list = malloc(sizeof(*job_list));
+	job_list->head = NULL;
+	job_list->tail = NULL;
+	job_list_to_start_from_history = malloc(sizeof(*job_list_to_start_from_history));
+	job_list_to_start_from_history->head = NULL;
+	job_list_to_start_from_history->tail = NULL;
+	scheduled_job_list = malloc(sizeof(*scheduled_job_list));
+	scheduled_job_list->head = NULL;
+	scheduled_job_list->tail = NULL;
 	
 	FILE *f = fopen(input_job_file, "r");
 	if (!f)
@@ -117,131 +125,119 @@ struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
 		}
 		new->index_node_list = index_node;
 		
-		/* To get number of jobs to evaluate */
-		if (atoi(workload) == 1)
-		{
-			//~ printf("HER\n");
-			nb_job_to_evaluate += 1;
-		}
+		new->start_time = 0; 
+		new->end_time = 0; 
+		new->end_before_walltime = false;
+		new->node_used = NULL;
+		new->cores_used= NULL;
+		new->transfer_time = 0;
+		new->waiting_for_a_load_time = 0;
+		new->next = NULL;
 		
-		/* Add in job list */
-		if (job_list == NULL)
+		/* Add in job list or job to start from history */
+		if (new->workload != -2)
 		{
-			job_list = new;
+			insert_tail_job_list(job_list, new);
 		}
 		else
 		{
-			struct Job *lastNode = job_list;
-			while(lastNode->next != NULL)
+			if (job_list_to_start_from_history->head == NULL)
 			{
-				lastNode = lastNode->next;
+				job_list_to_start_from_history->head = new;
+				job_list_to_start_from_history->tail = new;
 			}
-			lastNode->next = new;
+			else
+			{
+				/* Want to insert it so the start time are sorted. */
+				struct Job *temp = job_list_to_start_from_history->head;
+				/* Is it our new head ? */
+				if(temp->start_time_from_history > new->start_time_from_history)
+				{
+					new->next = job_list_to_start_from_history->head;
+					job_list_to_start_from_history->head = new;
+				}
+				else
+				{
+					while(temp != NULL)
+					{
+						if(temp->next->start_time_from_history > new->start_time_from_history)
+						{
+							new->next = temp->next;
+							temp->next = new;
+							break;
+						}
+						temp = temp->next;
+					}
+				}
+			}		
 		}
 	}
-
 	fclose(f);
-	return job_list;
+	printf("Read of workload done!\n");
 }
 
-//~ def read_workload(input_job_file, constraint_on_sizes, write_all_jobs):
+int get_nb_job_to_evaluate(struct Job* l)
+{
+	struct Job *j = l;
+	int count = 0;
+	while (j != NULL)
+	{
+		if (j->workload == 1)
+		{
+			count += 1;
+		}
+		j = j->next;
+		//~ printf("here\n");
+	}
+	return count;
+}
+
+int get_first_time_day_0(struct Job* l)
+{
+	struct Job *j = l;
+	while (j->workload != 0)
+	{
+		j = j->next;
+	}
+	return j->subtime;
+}
+
+void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0)
+{
+	struct Job *j = l;
+	bool first_before_0 = false;
+	bool first_day_1 = false;
+	bool first_day_2 = false;
+	int first_subtime_before_0 = 0;
+	int first_subtime_day_1 = 0;
+	int first_subtime_day_2 = 0;
 	
-	//~ nb_job_to_evaluate = 0
+	while (j != NULL)
+	{
+		if (j->workload == -1 && first_before_0 == false)
+		{
+			first_before_0 = true;
+			first_subtime_before_0 = j->subtime;
+		}
+		else if (j->workload == 1 && first_day_1 == false)
+		{
+			first_day_1 = true;
+			first_subtime_day_1 = j->subtime - first_subtime_day_0;
+		}
+		else if (j->workload == 2 && first_day_2 == false)
+		{
+			first_day_2 = true;
+			first_subtime_day_2 = j->subtime - first_subtime_day_0;
+		}
+		j = j->next;
+	}
 	
-	//~ job_list = []
-	//~ job_list_to_start_from_history = []
-	//~ # ~ job_list_0 = []
-	//~ # ~ job_list_1 = []
-	//~ # ~ job_list_2 = []
-	
-	//~ # ~ if (write_all_jobs == 3):
-	//~ first_before_0 = False
-	//~ first_day_0 = False
-	//~ first_day_1 = False
-	//~ first_day_2 = False
-	//~ first_subtime_before_0 = 0
-	//~ first_subtime_day_0 = 0
-	//~ first_subtime_day_1 = 0
-	//~ first_subtime_day_2 = 0
-	
-	//~ # ~ first_subtime_to_plot = 0
-	//~ # ~ last_subtime_to_plot = 0
-	
-	//~ with open(input_job_file) as f:
-		//~ line = f.readline()
-		//~ while line:
-			//~ r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24 = line.split() # split it by whitespace
-			
-			//~ # Getting index of node_list depending on size if constraint is enabled
-			//~ if (constraint_on_sizes != 0):
-				//~ if ((float(r17)*10)/(float(r11)*10) == 0.0):
-					//~ index_node = 0
-				//~ elif ((float(r17)*10)/(float(r11)*10) == 6.4):
-					//~ index_node = 0
-				//~ elif ((float(r17)*10)/(float(r11)*10) == 12.8):
-					//~ index_node = 1
-				//~ elif ((float(r17)*10)/(float(r11)*10) == 51.2):
-					//~ index_node = 2
-				//~ else:
-					//~ print("Error", (float(r17)*10)/(float(r11)*10), "is a wrong input job data size. Line is:", line)
-					//~ exit
-			//~ else:
-				//~ index_node = 0
-			
-			//~ # To get number of jobs to evaluate
-			//~ if (int(r19) == 1):
-				//~ nb_job_to_evaluate += 1
-				
-			//~ # ~ # To compute stats on cluster usage
-			//~ # ~ if (write_all_jobs == 3 and (first_job_slice_to_evaluate == 0 or first_job_slice_to_evaluate == 1)):
-				//~ # ~ if (int(r19) == -1 and first_job_slice_to_evaluate == 0):
-					//~ # ~ first_job_slice_to_evaluate = 1
-					//~ # ~ first_subtime_to_plot = int(r5)
-				//~ # ~ elif (int(r19) == 1 and first_job_slice_to_evaluate == 1):
-					//~ # ~ last_subtime_to_plot = int(r5)
-				//~ # ~ elif (int(r19) == 2 and first_job_slice_to_evaluate == 1):
-					//~ # ~ first_job_slice_to_evaluate = 2
-			//~ # To compute stats on cluster usage
-			//~ # ~ if write_all_jobs == 3:
-			//~ if int(r19) == -1 and first_before_0 == False:
-				//~ first_before_0 = True
-				//~ first_subtime_before_0 = int(r5)
-			//~ elif int(r19) == 0 and first_day_0 == False:
-				//~ first_day_0 = True
-				//~ first_subtime_day_0 = int(r5)
-			//~ elif int(r19) == 1 and first_day_1 == False:
-				//~ first_day_1 = True
-				//~ first_subtime_day_1 = int(r5)
-			//~ elif int(r19) == 2 and first_day_2 == False:
-				//~ first_day_2 = True
-				//~ first_subtime_day_2 = int(r5)
-			
-			//~ j = Job(int(r3), int(r5), int(r7), int(r9), int(r11), int(r15), float(r17), index_node, 0, 0, False, None, list(), 0, 0, int(r19), int(r21), int(r23))
-			
-			//~ # ~ if int(r19) == 0:
-				//~ # ~ job_list_0.append(j)
-			//~ # ~ elif int(r19) == 1:
-				//~ # ~ job_list_1.append(j)
-			//~ # ~ elif int(r19) == 2:
-				//~ # ~ job_list_2.append(j)
-			//~ # ~ else:
-				//~ # ~ print("Error read")
-				//~ # ~ exit(1)
-			
-			//~ if (int(r19) == -2):
-				//~ job_list_to_start_from_history.append(j)
-			//~ else:
-				//~ job_list.append(j)
-			
-			//~ line = f.readline()	
-			
-		//~ f.close
-	
-	//~ if write_all_jobs == 3:
-		//~ f = open("outputs/Start_end_evaluated_slice.txt", "w")
-		//~ f.write("%d %d %d %d" %(first_subtime_before_0, first_subtime_day_0 - first_subtime_day_0, first_subtime_day_1 - first_subtime_day_0, first_subtime_day_2 - first_subtime_day_0))
-		//~ f.close()
-	
-	//~ return job_list, nb_job_to_evaluate, first_subtime_day_0, job_list_to_start_from_history
-	//~ # ~ return job_list, first_subtime_to_plot, nb_job_to_evaluate
-	//~ # ~ return job_list_0, job_list_1, job_list_2, first_subtime_to_plot, nb_job_to_evaluate
+	FILE *f = fopen("../outputs/Start_end_evaluated_slice.txt", "w");
+	if (!f)
+	{
+		perror("fopen");
+        exit(EXIT_FAILURE);
+	}
+	fprintf(f, "%d %d %d %d", first_subtime_before_0, 0, first_subtime_day_1, first_subtime_day_2);
+	fclose(f);
+}

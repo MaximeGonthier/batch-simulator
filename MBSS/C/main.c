@@ -13,6 +13,12 @@
 
 void main(int argc, char *argv[])
 {
+	/* Init global variables */
+	int finished_jobs = 0;
+	int total_number_jobs = 0;
+	int running_cores = 0;
+	int running_nodes = 0;
+	
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
 	char* scheduler = argv[3];
@@ -23,43 +29,54 @@ void main(int argc, char *argv[])
 	printf("Cluster: %s\n", input_node_file);
 	printf("Scheduler: %s\n", scheduler);
 	printf("Size constraint: %d\n", constraint_on_sizes);
-	#endif
-	
-	/* Set of nodes */
-	
+	#endif	
 	
 	/* Read cluster */
 	struct Node *node_list = read_cluster(input_node_file);
+	//~ struct Node *head_node_list = node_list;
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
 	
 	/* Read workload */
-	int nb_job_to_evaluate = 0;
-	int first_time_day_0 = 0;
-	struct Job *job_list = read_workload(input_job_file, constraint_on_sizes);
-	struct Job *job_list = read_workload(input_job_file, constraint_on_sizes);
+	read_workload(input_job_file, constraint_on_sizes);
+	int nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
+	int first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	#ifdef PRINT
 	printf("Number of jobs to evaluate: %d\n", nb_job_to_evaluate);
-	printf("First time day 0: %d\n", first_time_day_0);
-	print_job_list(job_list);
+	printf("First time day 0: %d\n", first_subtime_day_0);
+	printf("\nJobs to start before:\n");
+	print_job_list(job_list_to_start_from_history->head);
+	printf("\nJobs for simulation:\n");
+	print_job_list(job_list->head);
+	#endif
+	#ifdef PRINT_CLUSTER_USAGE
+	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
 	#endif
 
-//~ total_number_cores = (len(node_list) + 1)*20
+	bool new_job = false;
+	int next_submit_time = first_subtime_day_0;
+	int t = first_subtime_day_0;
 
-//~ finished_jobs = 0
-//~ # ~ total_number_jobs = len(job_list)
-//~ # ~ total_number_jobs = len(job_list_0) + len(job_list_1) + len(job_list_2)
-//~ total_number_jobs = len(job_list) + len(job_list_to_start_from_history)
-//~ new_job = False
-//~ new_core = False
-//~ running_jobs = []
+	/* First start jobs from rackham's history. First need to sort it by start time */
+	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
+	printf("\nJob list from history after start from history.\n");
+	print_job_list(job_list_to_start_from_history->head);
+	printf("\nScheduled job list after starting jobs from history.\n");
+	print_job_list(scheduled_job_list->head);
 
-//~ # Just for stats
-//~ running_cores = 0
-//~ running_nodes = 0
+//~ nb_job_to_evaluate_finished = 0
+//~ # ~ nexta = True
+//~ # ~ while(total_number_jobs != finished_jobs):
 
-	
+//~ print("Len scheduled job list before start:", len(scheduled_job_list))
+//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
+
+//~ # TODO: delete, just for stats
+//~ f_fcfs_score = open("outputs/Scores_data.txt", "w")
+//~ f_fcfs_score.close()
+
+
 	return;
 }
 
@@ -418,26 +435,6 @@ void main(int argc, char *argv[])
 	
 //~ # Start of simulation
 //~ first_job_in_queue = None
-
-//~ print("Start with", scheduler)
-
-//~ next_submit_time = first_time_day_0
-//~ t = first_time_day_0
-//~ print("First time day 0 is", first_time_day_0)
-//~ # First start jobs from rackham's history
-//~ job_list_to_start_from_history.sort(key = operator.attrgetter("start_time_from_history"))
-//~ scheduled_job_list = get_state_before_day_0_scheduler(job_list_to_start_from_history, node_list, t)
-
-//~ nb_job_to_evaluate_finished = 0
-//~ # ~ nexta = True
-//~ # ~ while(total_number_jobs != finished_jobs):
-
-//~ print("Len scheduled job list before start:", len(scheduled_job_list))
-//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
-
-//~ # TODO: delete, just for stats
-//~ f_fcfs_score = open("outputs/Scores_data.txt", "w")
-//~ f_fcfs_score.close()
 
 //~ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
 	//~ # Get the set of available jobs at time t
