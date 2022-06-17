@@ -743,4 +743,17 @@ If I look into the past I get: Planned Area (3) : [ 0, 0, infinite ]
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_Expe_V2/Heatmap_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-02-08->2022-02-08_very_reduced_95_128_4_256_1_1024.pdf}\caption{}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFRSvsfcfsscore.pdf}\caption{}\end{figure}
 
+\section{Meeting 23/06/22}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Stretch_times_Fcfs_Fcfs_with_a_score_x0_x70000_x0_2022-02-08->2022-02-08_reduced_95_128_4_256_1_1024.pdf}\caption{Stretch}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Flow_times_Fcfs_Fcfs_with_a_score_x0_x70000_x0_2022-02-08->2022-02-08_reduced_95_128_4_256_1_1024.pdf}\caption{Flow}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Queue_times_Fcfs_Fcfs_with_a_score_x0_x70000_x0_2022-02-08->2022-02-08_reduced_95_128_4_256_1_1024.pdf}\caption{Queue}\end{subfigure}\caption{FCFS VS FCFS with a score x0 x7000 x0 - June 17 - New plots for percentage difference ($percentage~difference = 100 * |a - b| / ((a + b) / 2)$) with 200\% if one value is at 0. FCFS VS FCFS with a score.}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_backfill_big_nodes_0.png}\caption{FCFS backfill big nodes}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_no_use_bigger_nodes.png}\caption{FCFS no use bigger nodes}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Flow_times_Fcfs_no_use_bigger_nodes_Fcfs_backfill_big_nodes_0_2022-02-08->2022-02-08_reduced_95_128_4_256_1_1024.pdf}\caption{Flow}\end{subfigure}
+\caption{Size constraint - June 17 - Trace size constraint to understand big total flow difference (192903568 VS 139565444).}\end{figure}
+
 \end{document}

@@ -1,4 +1,4 @@
-# python3 plot_queue_times algo_to_compare algo_reference Stretch_or_time(1 or 0)
+# python3 plot_queue_times algo_reference (FCFS) algo_to_compare type (stretch, flow, queue)
 
 # Imports
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ sizes = []
 job_list_algo_reference = []
 job_list_algo_compare = []
 
-type_label = int(sys.argv[3])
+# ~ type_label = int(sys.argv[3])
 
 with open(sys.argv[1]) as f:
 	line = f.readline()
@@ -46,10 +46,19 @@ f.close()
 job_list_algo_compare.sort(key = operator.attrgetter("unique_id"))
 
 for i in range (0, len(job_list_algo_compare)):
-	if job_list_algo_compare[i].time == 0:
-		job_list_algo_compare[i].time = 1
-	# ~ print("(job_list_algo_reference[i].time*100)/job_list_algo_compare[i].time - 100", job_list_algo_reference[i].time, job_list_algo_compare[i].time)
-	job_list_algo_reference[i].time = (job_list_algo_reference[i].time*100)/job_list_algo_compare[i].time - 100
+	if job_list_algo_compare[i].time == 0 and job_list_algo_reference[i].time == 0: 
+		percentage_difference = 0
+	elif job_list_algo_compare[i].time == 0 or job_list_algo_reference[i].time == 0: 
+		percentage_difference = 200
+	else:
+		percentage_difference = 100 * ( abs(job_list_algo_reference[i].time - job_list_algo_compare[i].time) / ( (job_list_algo_reference[i].time + job_list_algo_compare[i].time) / 2 ) )
+		
+	if job_list_algo_reference[i].time > job_list_algo_compare[i].time:
+		percentage_difference = percentage_difference*-1
+	
+	print("Job:", job_list_algo_reference[i].unique_id, "FCFS:", job_list_algo_reference[i].time, "Algo1:", job_list_algo_compare[i].time, "%:", percentage_difference)
+	
+	job_list_algo_reference[i].time = percentage_difference
 	# ~ diff = job_list_algo_reference[i].time - job_list_algo_compare[i].time
 	# ~ job_list_algo_reference[i].time = (diff*100)/
 	
@@ -62,9 +71,11 @@ for i in range (0, len(job_list_algo_compare)):
 	data_size.append(job_list_algo_reference[i].data_type)	
 	sizes.append(job_list_algo_reference[i].size/1000)	
 	
-plt.axhline(y = 0, color = 'black', linestyle = '-')
+plt.axhline(y = 0, color = 'black', linestyle = '-', alpha=0.2)
+plt.axhline(y = -200, color = 'black', linestyle = '-', alpha=0.2)
+plt.axhline(y = 200, color = 'black', linestyle = '-', alpha=0.2)
 
-plt.scatter(x, y, c=data_size, label=data_size, s=sizes)
+plt.scatter(x, y, c=data_size, label=data_size, s=sizes, alpha=0.3)
 
 custom_lines = [Line2D([0], [0], color="darkblue", lw=4),
                 Line2D([0], [0], color="green", lw=4),
@@ -72,8 +83,13 @@ custom_lines = [Line2D([0], [0], color="darkblue", lw=4),
 plt.legend(custom_lines, ['128', '256', '1024'])
 
 plt.xlabel("Submission times (sec)")
-if type_label == 1:
+if sys.argv[3] == "stretch":
 	plt.ylabel("% of flow stretch difference from FCFS")
+elif sys.argv[3] == "queue":
+	plt.ylabel("% of queue time difference from FCFS")
+elif sys.argv[3] == "flow":
+	plt.ylabel("% of flow time difference from FCFS")
 else:
-	plt.ylabel("Queue time (seconds) difference from FCFS")
+	print("Error type")
+	exit(1)
 plt.savefig("plot.pdf")
