@@ -1,8 +1,15 @@
 #include <main.h>
 
-struct Node* read_cluster(char* input_node_file)
+void read_cluster(char* input_node_file)
 {
-	struct Node *list = NULL;
+	node_list = malloc(3*sizeof(*node_list));
+	for (int i = 0; i < 3; i++)
+	{
+		node_list[i] = malloc(sizeof(*node_list));
+		node_list[i]->head = NULL;
+		node_list[i]->tail = NULL;
+	}
+	total_number_nodes = 0;
 	
 	FILE *f = fopen(input_node_file, "r");
 
@@ -27,24 +34,26 @@ struct Node* read_cluster(char* input_node_file)
 		new->data = NULL;
 		new->cores = NULL;
 		new->next = NULL;
-		
-		if (list == NULL)
+		if (new->memory == 128)
 		{
-			list = new;
+			insert_tail_node_list(node_list[0], new);
+		}
+		else if (new->memory == 256)
+		{
+			insert_tail_node_list(node_list[1], new);
+		}
+		else if (new->memory == 1024)
+		{
+			insert_tail_node_list(node_list[2], new);
 		}
 		else
 		{
-			struct Node *lastNode = list;
-			while(lastNode->next != NULL)
-			{
-				lastNode = lastNode->next;
-			}
-			lastNode->next = new;
+			printf("Error cluster\n");
+			exit(EXIT_FAILURE);
 		}
+		total_number_nodes += 1;
 	}
  	fclose(f);
-	
-	return list;
 }
 
 //~ struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
@@ -173,7 +182,6 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		}
 	}
 	fclose(f);
-	printf("Read of workload done!\n");
 }
 
 int get_nb_job_to_evaluate(struct Job* l)

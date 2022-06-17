@@ -1,17 +1,29 @@
 #include <main.h>
 
-void print_node_list(struct Node* list)
+void print_node_list(struct Node_List** list)
 {
-	struct Node* n = list;
-	while (n != NULL)
+	for (int i = 0; i < 3; i++)
 	{
-		printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores);
-		n = n->next;
+		struct Node* n = list[i]->head;
+		while (n != NULL)
+		{
+			printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores);
+			n = n->next;
+		}
 	}
+}
+
+void print_single_node(struct Node* n)
+{
+	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores);
 }
 
 void print_job_list(struct Job* list)
 {
+	//~ if (list == NULL)
+	//~ {
+		//~ return;
+	//~ }
 	struct Job* j = list;
 	while (j != NULL)
 	{

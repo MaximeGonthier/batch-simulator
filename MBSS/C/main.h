@@ -11,9 +11,11 @@
 /* Global variables */
 int finished_jobs;
 int total_number_jobs;
+int total_number_nodes;
 struct Job_List* job_list;
 struct Job_List* job_list_to_start_from_history;
 struct Job_List* scheduled_job_list;
+struct Node_List** node_list;
 int running_cores;
 int running_nodes;
 
@@ -22,8 +24,18 @@ struct Job_List {
 	struct Job* tail;
 };
 
+struct Node_List {
+	struct Node* head;
+	struct Node* tail;
+};
+
+struct Core_List {
+	struct Core* head;
+	struct Core* tail;
+};
+
 struct Job {
-	struct Job *next;
+	struct Job* next;
 	int unique_id;
     int subtime;
     int delay;
@@ -49,8 +61,8 @@ struct Node {
     int unique_id;
     int memory;
     float bandwidth;
-    struct Node* data;
-    struct Core* cores;
+    struct Data* data;
+    struct Core_List* cores;
     int n_available_cores;
 };
 
@@ -65,13 +77,13 @@ struct Data {
 
 struct Core {
     int unique_id;
-    struct Job* job_queue;
+    struct Job_List* job_queue;
     int available_time;
-    struct Job running_job;
+    struct Job* running_job;
 };
 
 /* From read_input_files.c */
-struct Node* read_cluster(char* input_node_file);
+void read_cluster(char* input_node_file);
 void read_workload(char* input_job_file, int constraint_on_sizes);
 int get_nb_job_to_evaluate(struct Job* l);
 int get_first_time_day_0(struct Job* l);
@@ -79,18 +91,21 @@ int get_first_times_all_day(struct Job* l);
 void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0);
 
 /* From print_functions.c */
-void print_node_list(struct Node* list);
+void print_node_list(struct Node_List** list);
 void print_job_list(struct Job* list);
+void print_single_node(struct Node* n);
 
 /* From basic_functions.c */
 //~ void insert_tail_linked_list(struct Job* tail, struct Job* job_to_add);
 
 /* From linked_list_functions.c */
-void insert_head_job_list(struct Job_List *liste, struct Job* j);
-void insert_tail_job_list(struct Job_List *liste, struct Job* j);
+void insert_head_job_list(struct Job_List* liste, struct Job* j);
+void insert_tail_job_list(struct Job_List* liste, struct Job* j);
+void insert_tail_node_list(struct Node_List* liste, struct Node* n);
+//~ void free_job_list(struct Job* head);
 
 /* From scheduler.c */
-void get_state_before_day_0_scheduler(struct Job* jl, struct Node* nl, int t);
+void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

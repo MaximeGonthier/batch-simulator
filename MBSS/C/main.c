@@ -32,8 +32,8 @@ void main(int argc, char *argv[])
 	#endif	
 	
 	/* Read cluster */
-	struct Node *node_list = read_cluster(input_node_file);
-	//~ struct Node *head_node_list = node_list;
+	read_cluster(input_node_file);
+	printf("Read cluster done!\n");
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
@@ -43,8 +43,9 @@ void main(int argc, char *argv[])
 	int nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 	int first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	#ifdef PRINT
-	printf("Number of jobs to evaluate: %d\n", nb_job_to_evaluate);
+	printf("\nNumber of jobs to evaluate: %d\n", nb_job_to_evaluate);
 	printf("First time day 0: %d\n", first_subtime_day_0);
+	printf("Number of nodes: %d\n", total_number_nodes);
 	printf("\nJobs to start before:\n");
 	print_job_list(job_list_to_start_from_history->head);
 	printf("\nJobs for simulation:\n");
@@ -60,11 +61,11 @@ void main(int argc, char *argv[])
 
 	/* First start jobs from rackham's history. First need to sort it by start time */
 	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
-	printf("\nJob list from history after start from history.\n");
-	print_job_list(job_list_to_start_from_history->head);
 	printf("\nScheduled job list after starting jobs from history.\n");
 	print_job_list(scheduled_job_list->head);
-
+	printf("\n Node list after:\n");
+	print_node_list(node_list);
+	
 //~ nb_job_to_evaluate_finished = 0
 //~ # ~ nexta = True
 //~ # ~ while(total_number_jobs != finished_jobs):
