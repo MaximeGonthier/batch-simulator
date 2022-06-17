@@ -61,7 +61,7 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 		}
 		printf("Choosen node is: ");
 		print_single_node(choosen_node);
-		choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(j->cores, choosen_node, t)
+		//~ choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(j->cores, choosen_node, t)
 		
 		//~ start_time = earliest_available_time
 		//~ j->node_used = choosen_node
