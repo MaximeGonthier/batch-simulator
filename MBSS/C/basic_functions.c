@@ -48,8 +48,70 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
   }
 }
 
+void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
+{
+	printf("Adding %d.\n", data_unique_id);
+	bool data_is_on_node = false;
+	/* Let's try to find it in the node */
+	struct Data* d = node_used->data->head;
+	while (d != NULL)
+	{
+		printf("Testing %d.\n", d->unique_id);
+		if (data_unique_id == d->unique_id) /* It is already on node */
+		{
+			if (d->nb_task_using_it > 0 || d->end_time == t) /* And is still valid! */
+			{
+				if (d->start_time > t) /* The job will have to wait for the data to be loaded by another job before starting */
+				{
+					printf("Will need to wait.\n");
+					//~ *transfer_time = d->start_time - t; /* I commented this from python code will it changes things ? */
+					*waiting_for_a_load_time = d->start_time - t;
+				}
+				else
+				{
+					*transfer_time = 0; /* No need to wait to start the job, data is already fully loaded */
+				}
+			}
+			else /* Need to reload it */
+			{
+				printf("Data %d is not on node anymore need to reload it.\n", data_unique_id);
+				*transfer_time = data_size/node_used->bandwidth;
+				d->start_time = t + *transfer_time;
+			}
+			
+			data_is_on_node = true;
+			d->nb_task_using_it += 1;
+			
+			if (d->end_time < end_time)
+			{
+				d->end_time = end_time;
+			}
+			break;
+		}
+		d = d->next;
+	}
+	if (data_is_on_node == false) /* Need to load it */
+	{
+		printf("Data %d, is not on node %d at all need to create it.\n", data_unique_id, node_used->unique_id);
+		*transfer_time = data_size/node_used->bandwidth;
+		/* Create a class Data for this node */
+		struct Data* new = (struct Data*) malloc(sizeof(struct Data));
+		new->unique_id = data_unique_id;
+		new->start_time = t + *transfer_time;
+		new->end_time = end_time;
+		new->nb_task_using_it = 1;
+		new->size = data_size;
+		new->next = NULL;
+		//~ node_used->data->head = new;
+		insert_tail_data_list(node_used->data, new);
+		printf("%d\n", node_used->data->head->unique_id);
+	}	
+	//~ return transfer_time, waiting_for_a_load_time
+}
+
 void start_jobs(int t, struct Job* j)
 {
+	printf("Start of start_jobs at time %d.\n", t);
 	//~ jobs_to_remove = []
 	while (j != NULL)
 	{ 
@@ -60,11 +122,16 @@ void start_jobs(int t, struct Job* j)
 			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
 			total_queue_time += j->start_time - j->subtime;
 			
-			int transfer_time = 0
-			int waiting_for_a_load_time = 0
-			if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2): /* I also don't want to put transfer time on fix workload occupation jobs */
+			int transfer_time = 0;
+			int waiting_for_a_load_time = 0;
+			/* True version to use */
+			//~ if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2) /* I also don't want to put transfer time on fix workload occupation jobs */
+			/* False, just to test while coding */
+			if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -20) /* I also don't want to put transfer time on fix workload occupation jobs */
+			{
 				/* Let's look if a data transfer is needed */
-				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time)
+				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
+			}
 			j->transfer_time = transfer_time;
 			j->waiting_for_a_load_time = waiting_for_a_load_time;
 			

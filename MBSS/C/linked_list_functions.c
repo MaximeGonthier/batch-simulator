@@ -48,6 +48,21 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	}
 }
 
+void insert_tail_data_list(struct Data_List* liste, struct Data* d)
+{
+	if (liste->head == NULL)
+	{
+		//~ printf("Added %d.\n",1);
+		liste->head = d;
+		liste->tail = d;
+	}
+	else
+	{
+		liste->tail->next = d;
+		liste->tail = d;
+	}
+}
+
 /* Attention might need to malloc here for Data and other struct !!! */
 void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j)
 {

@@ -25,7 +25,7 @@ void main(int argc, char *argv[])
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
 	char* scheduler = argv[3];
-	int constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
+	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
 	
 	#ifdef PRINT
 	printf("Workloads: %s\n", input_job_file);
@@ -78,6 +78,8 @@ void main(int argc, char *argv[])
 //~ f_fcfs_score = open("outputs/Scores_data.txt", "w")
 //~ f_fcfs_score.close()
 
+
+	/* TODO : use next start and end time to trigger start jobs and end jobs */
 
 	return;
 }

@@ -9,6 +9,7 @@
 #include <stdbool.h>
 
 /* Global variables */
+int constraint_on_sizes;
 int finished_jobs;
 int total_number_jobs;
 int total_number_nodes;
@@ -21,6 +22,7 @@ struct Node_List** node_list;
 int running_cores;
 int running_nodes;
 int total_queue_time;
+int next_start_time;
 int next_end_time;
 int nb_job_to_evaluate_finished;
 
@@ -62,7 +64,7 @@ struct Job {
 };
 
 struct Node {
-	struct Node *next;
+	struct Node* next;
     int unique_id;
     int memory;
     float bandwidth;
@@ -72,6 +74,7 @@ struct Node {
 };
 
 struct Data {
+	struct Data* next;
     int unique_id;
     int start_time;
     int end_time;
@@ -106,12 +109,14 @@ void print_cores_in_specific_node(struct Node* n);
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
 void sort_cores_by_available_time_in_specific_node(struct Node* n);
 void start_jobs(int t, struct Job* scheduled);
+void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_node_list(struct Node_List* liste, struct Node* n);
 void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j);
+void insert_tail_data_list(struct Data_List* liste, struct Data* d);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

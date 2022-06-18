@@ -31,7 +31,9 @@ void read_cluster(char* input_node_file)
 		new->memory = atoi(memory);
 		new->bandwidth = atof(bandwidth);
 		new->n_available_cores = atoi(core);
-		new->data = NULL;
+		new->data = malloc(sizeof(*new->data));
+		new->data->head = NULL;
+		new->data->tail = NULL;
 		
 		new->cores = malloc(20*sizeof(*new->cores));
 		for (int i = 0; i < 20; i++)
