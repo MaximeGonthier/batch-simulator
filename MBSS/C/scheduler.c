@@ -28,7 +28,6 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 		int time_since_start = t - j->start_time_from_history;
 		j->delay -= time_since_start;
 		j->walltime -= time_since_start;
-		j->start_time = t;
 		
 		struct Node *choosen_node = (struct Node*) malloc(sizeof(struct Node));
 		int index_node = (j->node_from_history - 1)%(nb_node[0] + nb_node[1] + nb_node[2]);
@@ -61,24 +60,9 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 		}
 		printf("Choosen node is: ");
 		print_single_node(choosen_node);
-		//~ choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(j->cores, choosen_node, t)
-		
-		//~ start_time = earliest_available_time
-		//~ j->node_used = choosen_node
-		//~ j->cores_used = choosen_core
-		//~ j->start_time = start_time
-		//~ j->end_time = start_time + j->walltime			
-		//~ for c in choosen_core:
-			//~ c.job_queue.append(j)			
-			//~ c.available_time = start_time + j->walltime
-				
-		//~ if __debug__:
-			//~ print_decision_in_scheduler(choosen_core, j, choosen_node)
-		//~ if j->unique_id == 1362:
-			//~ print_decision_in_scheduler(choosen_core, j, choosen_node)
-			
+		schedule_job_specific_node_at_earliest_available_time(j, choosen_node, t);
+					
 		j = j->next;
-		//~ free(choosen_node);
 	}
 	free(nb_node);
 }

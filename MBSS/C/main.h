@@ -29,9 +29,9 @@ struct Node_List {
 	struct Node* tail;
 };
 
-struct Core_List {
-	struct Core* head;
-	struct Core* tail;
+struct Data_List {
+	struct Data* head;
+	struct Data* tail;
 };
 
 struct Job {
@@ -61,8 +61,8 @@ struct Node {
     int unique_id;
     int memory;
     float bandwidth;
-    struct Data* data;
-    struct Core_List* cores;
+    struct Data_List* data;
+    struct Core** cores;
     int n_available_cores;
 };
 
@@ -94,9 +94,11 @@ void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0);
 void print_node_list(struct Node_List** list);
 void print_job_list(struct Job* list);
 void print_single_node(struct Node* n);
+void print_decision_in_scheduler(struct Job* j);
 
 /* From basic_functions.c */
-//~ void insert_tail_linked_list(struct Job* tail, struct Job* job_to_add);
+void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
+void sort_cores_by_available_time_in_specific_node(struct Node* n);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);

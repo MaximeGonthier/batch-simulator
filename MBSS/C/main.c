@@ -63,8 +63,6 @@ void main(int argc, char *argv[])
 	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 	printf("\nScheduled job list after starting jobs from history.\n");
 	print_job_list(scheduled_job_list->head);
-	printf("\n Node list after:\n");
-	print_node_list(node_list);
 	
 //~ nb_job_to_evaluate_finished = 0
 //~ # ~ nexta = True

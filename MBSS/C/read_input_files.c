@@ -32,7 +32,19 @@ void read_cluster(char* input_node_file)
 		new->bandwidth = atof(bandwidth);
 		new->n_available_cores = atoi(core);
 		new->data = NULL;
-		new->cores = NULL;
+		
+		new->cores = malloc(20*sizeof(*new->cores));
+		for (int i = 0; i < 20; i++)
+		{
+			new->cores[i] = malloc(sizeof(*new->cores));
+			new->cores[i]->unique_id = i;
+			new->cores[i]->job_queue = malloc(sizeof(struct Job_List*));
+			new->cores[i]->job_queue->head = NULL;
+			new->cores[i]->job_queue->tail = NULL;
+			new->cores[i]->available_time = 0;
+			new->cores[i]->running_job = malloc(sizeof(struct Job*));
+		}
+
 		new->next = NULL;
 		if (new->memory == 128)
 		{
@@ -137,8 +149,8 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->start_time = 0; 
 		new->end_time = 0; 
 		new->end_before_walltime = false;
-		new->node_used = NULL;
-		new->cores_used= NULL;
+		new->node_used = malloc(sizeof(struct Node*));
+		new->cores_used = malloc(new->cores*sizeof(int));
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
 		new->next = NULL;

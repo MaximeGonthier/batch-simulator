@@ -32,9 +32,13 @@ void print_job_list(struct Job* list)
 	}
 }
 
-//~ def print_decision_in_scheduler(choosen_core, j, choosen_node):
-	//~ core_ids = []
-	//~ for i in range (0, len(choosen_core)):
-		//~ core_ids.append(choosen_core[i].unique_id)
-	//~ core_ids.sort()
-	//~ print("Job", j.unique_id, "using file", j.data, "category", j.index_node_list, "workload", j.workload, "will be computed on node", choosen_node.unique_id, "core(s)", core_ids, "start at time", j.start_time, "and is predicted to finish at time", j.end_time)
+void print_decision_in_scheduler(struct Job* j)
+{
+	printf("Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id);
+	for (int i = 0; i < j->cores - 1; i++)
+	{
+		printf("%d,", j->cores_used[i]);
+	}
+	printf("%d", j->cores_used[j->cores - 1]);
+	printf(" start at time %d and is predicted to finish at time %d.", j->start_time, j->end_time);
+}
