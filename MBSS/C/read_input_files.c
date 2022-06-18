@@ -38,7 +38,8 @@ void read_cluster(char* input_node_file)
 		{
 			new->cores[i] = malloc(sizeof(*new->cores));
 			new->cores[i]->unique_id = i;
-			new->cores[i]->job_queue = malloc(sizeof(struct Job_List*));
+			//~ new->cores[i]->job_queue = malloc(sizeof(struct Job_List*));
+			new->cores[i]->job_queue = malloc(sizeof(*new->cores[i]->job_queue));
 			new->cores[i]->job_queue->head = NULL;
 			new->cores[i]->job_queue->tail = NULL;
 			new->cores[i]->available_time = 0;

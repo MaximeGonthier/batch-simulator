@@ -105,12 +105,13 @@ void print_cores_in_specific_node(struct Node* n);
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
 void sort_cores_by_available_time_in_specific_node(struct Node* n);
+void start_jobs(int t, struct Job* scheduled);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_node_list(struct Node_List* liste, struct Node* n);
-//~ void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j);
+void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

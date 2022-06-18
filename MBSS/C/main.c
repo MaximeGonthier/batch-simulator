@@ -66,12 +66,12 @@ void main(int argc, char *argv[])
 	//~ struct Job a = malloc(sizeof(struct Job));
 
 	/* First start jobs from rackham's history. First need to sort it by start time */
-	printf("Before\n");	print_job_list(scheduled_job_list->head);
 	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 	printf("\nScheduled job list after starting jobs from history.\n");
 	print_job_list(scheduled_job_list->head);
+	//~ print_job_list(scheduled_job_list->tail->next);
 	
-//~ print("Len scheduled job list before start:", len(scheduled_job_list))
+	start_jobs(t, scheduled_job_list->head);
 	//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
 
 //~ # TODO: delete, just for stats
