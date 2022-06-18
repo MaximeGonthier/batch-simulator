@@ -1,6 +1,6 @@
 #include <main.h>
 
-void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t)
+void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int t)
 {
 	int i = 0;
 			
@@ -20,9 +20,11 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 	printf("%d nodes of size 128, %d of size 256 and %d of size 1024.\n", nb_node[0], nb_node[1], nb_node[2]);
 	free(temp);
 
+	struct Job* j = j2;
 	while (j != NULL)
 	{
 		/* Insert in scheduled_job_list */
+		//~ copy_job_and_insert_tail_job_list(scheduled_job_list, j);
 		insert_tail_job_list(scheduled_job_list, j);
 		
 		int time_since_start = t - j->start_time_from_history;
@@ -65,4 +67,5 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 		j = j->next;
 	}
 	free(nb_node);
+	//~ j = scheduled_job_list->head;
 }

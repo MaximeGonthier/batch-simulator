@@ -40,5 +40,15 @@ void print_decision_in_scheduler(struct Job* j)
 		printf("%d,", j->cores_used[i]);
 	}
 	printf("%d", j->cores_used[j->cores - 1]);
-	printf(" start at time %d and is predicted to finish at time %d.", j->start_time, j->end_time);
+	printf(" start at time %d and is predicted to finish at time %d.\n", j->start_time, j->end_time);
+}
+
+void print_cores_in_specific_node(struct Node* n)
+{
+	printf("Cores in node %d are: ", n->unique_id);
+	for (int i = 0; i < 19; i++)
+	{
+		printf("%d(%d),", n->cores[i]->unique_id, n->cores[i]->available_time);
+	}
+	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time);
 }

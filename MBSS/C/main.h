@@ -13,11 +13,16 @@ int finished_jobs;
 int total_number_jobs;
 int total_number_nodes;
 struct Job_List* job_list;
+struct Job_List* available_job_list;
 struct Job_List* job_list_to_start_from_history;
 struct Job_List* scheduled_job_list;
+struct Job_List* running_jobs;
 struct Node_List** node_list;
 int running_cores;
 int running_nodes;
+int total_queue_time;
+int next_end_time;
+int nb_job_to_evaluate_finished;
 
 struct Job_List {
 	struct Job* head;
@@ -95,6 +100,7 @@ void print_node_list(struct Node_List** list);
 void print_job_list(struct Job* list);
 void print_single_node(struct Node* n);
 void print_decision_in_scheduler(struct Job* j);
+void print_cores_in_specific_node(struct Node* n);
 
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
@@ -104,7 +110,7 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n);
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_node_list(struct Node_List* liste, struct Node* n);
-//~ void free_job_list(struct Job* head);
+//~ void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

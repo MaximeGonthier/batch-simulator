@@ -80,6 +80,12 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 	scheduled_job_list = malloc(sizeof(*scheduled_job_list));
 	scheduled_job_list->head = NULL;
 	scheduled_job_list->tail = NULL;
+	running_jobs = malloc(sizeof(*running_jobs));
+	running_jobs->head = NULL;
+	running_jobs->tail = NULL;
+	available_job_list = malloc(sizeof(*available_job_list));
+	available_job_list->head = NULL;
+	available_job_list->tail = NULL;
 	
 	FILE *f = fopen(input_job_file, "r");
 	if (!f)
