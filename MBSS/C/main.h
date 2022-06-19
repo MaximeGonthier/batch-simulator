@@ -24,9 +24,18 @@ struct Node_List** node_list;
 int running_cores;
 int running_nodes;
 int total_queue_time;
-//~ int next_end_time; /* TODO do a list or something to not go through everything. */
+struct Next_Time_List* end_times;
 //~ int next_start_time; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
 int nb_job_to_evaluate_finished;
+
+struct Next_Time_List {
+	struct Next_Time* head;
+};
+
+struct Next_Time {
+	struct Next_Time* next;
+	int time;
+};
 
 struct Job_List {
 	struct Job* head;
@@ -107,6 +116,7 @@ void print_job_list(struct Job* list);
 void print_single_node(struct Node* n);
 void print_decision_in_scheduler(struct Job* j);
 void print_cores_in_specific_node(struct Node* n);
+void print_time_list(struct Next_Time* list, int end_or_start);
 
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
@@ -127,6 +137,8 @@ void insert_tail_data_list(struct Data_List* liste, struct Data* d);
 void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete);
 void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j);
 int get_length_job_list(struct Job* head);
+void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert);
+void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

@@ -32,6 +32,29 @@ void print_job_list(struct Job* list)
 	}
 }
 
+void print_time_list(struct Next_Time* list, int end_or_start)
+{
+	if (list == NULL)
+	{
+		return;
+	}
+	if (end_or_start == 1)
+	{
+		printf("Next ending times are:");
+	}
+	else
+	{
+		printf("Next starting times are:");
+	}
+	struct Next_Time* nt = list;
+	while (nt != NULL)
+	{
+		printf(" %d", nt->time);
+		nt = nt->next;
+	}
+	printf("\n");
+}
+
 void print_decision_in_scheduler(struct Job* j)
 {
 	printf("Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id);
@@ -53,22 +76,22 @@ void print_cores_in_specific_node(struct Node* n)
 	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time);
 }
 
-//~ /* Print in a csv file the results of this job allocation. */
+/* Print in a csv file the results of this job allocation. If we finished all jobs it call the final printing function. */
 //~ void to_print_job_csv(struct Job* j, node_used, core_ids, time, first_time_day_0)
 //~ {
-	//~ int time_used = j->end_time - j->start_time
+	//~ int time_used = j->end_time - j->start_time;
 	
-	//~ /* Only evaluate jobs from workload 1. */
+	/* Only evaluate jobs from workload 1. */
 	//~ if (j->workload == 1)
 	//~ {
 		//~ // tp = To_print(j->unique_id, j->subtime, node_used, core_ids, time, time_used, j->transfer_time, j->start_time, j->end_time, j->cores, j->waiting_for_a_load_time, j->delay + j->data_size/0.1, j->index_node_list)
-		//~ /* Update values */
 		
-		//~ if (fini all jobs)
+		/* Update values */
+		
+		//~ if (nb_job_to_evaluate == nb_job_to_evaluate_finished)
 		//~ {
 			//~ print_csv();
 		//~ }
-		
 	//~ }
 		
 	//~ #ifdef PRINT_GANTT_CHART
@@ -104,7 +127,7 @@ void print_cores_in_specific_node(struct Node* n)
 	//~ #endif
 //~ }
 
-//~ void def print_csv(to_print_list, scheduler)
+//~ void print_csv(scheduler)
 //~ {
 	//~ # For distribution of flow and queue times on each job
 	//~ f_queue = open("outputs/Queue_times_" + scheduler + ".txt", "w")

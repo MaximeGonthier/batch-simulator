@@ -226,10 +226,12 @@ void remove_data_from_node(struct Job* j, int t)
 	}
 }
 
+/* Go through schedule jobs to find finished jobs. */
 void start_jobs(int t, struct Job* j)
 {
 	int i = 0;
 	int k = 0;
+	int overhead_of_load = 0;
 	int min_between_delay_and_walltime = 0;
 	printf("Start of start_jobs at time %d.\n", t);
 	//~ jobs_to_remove = []
@@ -243,7 +245,8 @@ void start_jobs(int t, struct Job* j)
 			
 			int transfer_time = 0;
 			int waiting_for_a_load_time = 0;
-			if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2) /* I also don't want to put transfer time on fix workload occupation jobs */
+			//~ if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2) /* I also don't want to put transfer time on fix workload occupation jobs */
+			if (j->data != 0 && constraint_on_sizes != 2) /* I also don't want to put transfer time on fix workload occupation jobs */
 			{
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
@@ -251,11 +254,25 @@ void start_jobs(int t, struct Job* j)
 			j->transfer_time = transfer_time;
 			j->waiting_for_a_load_time = waiting_for_a_load_time;
 			
+			if (transfer_time == 0)
+			{
+				overhead_of_load = waiting_for_a_load_time;
+			}
+			else if (waiting_for_a_load_time == 0)
+			{
+				overhead_of_load = transfer_time;
+			}
+			else
+			{
+				printf("Error calcul transfer time.\n");
+				exit(EXIT_FAILURE);
+			}
+			
 			printf("For job %d: %d transfer time and %d waiting for a load time.\n", j->unique_id, transfer_time, waiting_for_a_load_time);
 			
-			if (j->delay + transfer_time < j->walltime)
+			if (j->delay + overhead_of_load < j->walltime)
 			{
-				min_between_delay_and_walltime = j->delay + transfer_time;
+				min_between_delay_and_walltime = j->delay + overhead_of_load;
 				j->end_before_walltime = true;
 			}
 			else
@@ -264,6 +281,13 @@ void start_jobs(int t, struct Job* j)
 				j->end_before_walltime = false;
 			}
 			j->end_time = j->start_time + min_between_delay_and_walltime; /* Attention le j->end time est mis a jour la! */
+			
+			/* Add in list of end times. */
+			printf("Before adding ending time %d.\n", j->end_time);
+			print_time_list(end_times->head, 1);
+			insert_next_time_in_sorted_list(end_times, j->end_time);
+			printf("After adding ending time %d.\n", j->end_time);
+			print_time_list(end_times->head, 1);
 			
 			/* Use next min end time from global variable here :) */
 			//~ if (next_end_time > j->end_time || next_end_time == -1)
@@ -317,15 +341,17 @@ void start_jobs(int t, struct Job* j)
 			j = j->next;
 		}
 	}
+	printf("End of start_jobs at time %d.\n", t);
 	//~ if len(jobs_to_remove) > 0:
 		//~ scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
 		//~ available_job_list = remove_jobs_from_list(available_job_list, jobs_to_remove)
 	//~ return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list
 }
 
-//~ def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0):
+/* Go through running jobs to find finished jobs. */
 void end_jobs(struct Job* job_list_head, int t)
 {
+	printf("Start of end_jobs at time %d.\n", t);
 	int i = 0;
 	int k = 0;
 	struct Job* j= job_list_head;
@@ -333,6 +359,12 @@ void end_jobs(struct Job* job_list_head, int t)
 	{
 		if (j->end_time == t) /* A job has finished, let's remove it from the cores, write its results and figure out if we need to fill */
 		{
+			/* Remove from list of ending times. */
+			printf("Before deleting ending time %d.\n", t);
+			print_time_list(end_times->head, 1);
+			delete_next_time_linked_list(end_times, t);
+			printf("After deleting ending time %d.\n", t);
+			print_time_list(end_times->head, 1);
 			
 			if (j->workload == 1)
 			{
@@ -341,10 +373,14 @@ void end_jobs(struct Job* job_list_head, int t)
 				
 			finished_jobs += 1;
 			
+			#ifdef PRINT
+			printf("Job %d finished at time %d on node %d.\n", j->unique_id, t, j->node_used->unique_id); fflush(stdout);
+			#endif
+			
 			/* Just printing, can remove */
 			if (finished_jobs%1 == 0)
 			{
-				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t);
+				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
 									
 			#ifdef PRINT_CLUSTER_USAGE
@@ -384,7 +420,7 @@ void end_jobs(struct Job* job_list_head, int t)
 		}
 		j = j->next;
 	}				
-
+	
 	
 	/* Delete from running jobs. */
 	j = job_list_head;
@@ -392,16 +428,20 @@ void end_jobs(struct Job* job_list_head, int t)
 	{
 		if (j->end_time == t)
 		{
+			//~ printf("Before:\n");
+			//~ print_job_list(running_jobs->head);
+			//~ printf("Deletion of job %d.\n", j->unique_id); fflush(stdout);
 			struct Job* temp = j->next;
-			delete_job_linked_list(running_jobs, temp->unique_id);
+			delete_job_linked_list(running_jobs, j->unique_id);
 			j = temp;
+			//~ print_job_list(running_jobs->head);
 		}
 		else
 		{
 			j = j->next;
 		}
 	}
-					
+	printf("End of end_jobs at time %d.\n", t);	fflush(stdout);	
 	//~ return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished
 }
 

@@ -24,6 +24,9 @@ void main(int argc, char *argv[])
 	struct Job* job_pointer = NULL;
 	struct Job* temp = NULL;
 	
+	end_times = malloc(sizeof(*end_times));
+	end_times->head = NULL;
+	
 	int old_finished_jobs = 0;
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
@@ -76,9 +79,9 @@ void main(int argc, char *argv[])
 	/* Just for -2 jobs here */
 	start_jobs(t, scheduled_job_list->head);
 
-	printf("\nSchedule job list after starts - 2. Muste be less full.\n");
+	printf("\nSchedule job list after schedule - 2. Must be less full.\n");
 	print_job_list(scheduled_job_list->head);
-	printf("\nRunning job list after starts -2. Must be filled with jobs from scheduled job list previously started at time t = %d.\n", t);
+	printf("\nRunning job list after schedule -2. Must be filled with jobs from scheduled job list previously started at time t = %d.\n", t);
 	print_job_list(running_jobs->head);
 
 	#ifdef PRINT
@@ -103,6 +106,7 @@ void main(int argc, char *argv[])
 	}
 	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
 	#endif
+	
 	/* Start of simulation. */
 	while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
 	{
@@ -126,7 +130,15 @@ void main(int argc, char *argv[])
 					break;
 				}
 			}
-			next_submit_time = job_pointer->subtime; /* TODO ptet crash au dernier jbo la ? */
+			//~ printf("héhé\n"); fflush(stdout);
+			if (job_pointer != NULL)
+			{
+				next_submit_time = job_pointer->subtime;
+			}
+			else
+			{
+				next_submit_time = -1;
+			}
 			
 			printf("\nJob list after new jobs, must be less full.\n");
 			print_job_list(job_list->head);
@@ -217,14 +229,14 @@ void main(int argc, char *argv[])
 		//~ finished_job_list = []	
 		old_finished_jobs = finished_jobs;
 		
-		//~ if (next_end_time == t)
-		//~ {
+		if (end_times->head->time == t)
+		{
 			//~ printf("Job(s) ended.\n");
 			//~ finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0);
 			end_jobs(running_jobs->head, t);
 			/* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice. */
 			//~ remove_data_from_node(finished_job_list->head, t); /* I do it in end_jobs directly! */
-		//~ }
+		}
 		
 		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
 		{
@@ -292,7 +304,7 @@ void main(int argc, char *argv[])
 		}
 		
 		/* Get started jobs. */
-		if (scheduled_job_list->head != NULL) /* TODO : me faudrait cette condition ? */
+		if (scheduled_job_list->head != NULL) /* TODO : me faudrait cette condition ? Crash possible ?*/
 		{
 			start_jobs(t, scheduled_job_list->head);
 		}

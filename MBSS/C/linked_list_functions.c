@@ -63,6 +63,81 @@ void insert_tail_data_list(struct Data_List* liste, struct Data* d)
 	}
 }
 
+/* Insert so it's sorted by growing times. */
+void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert)
+{
+	if (liste->head == NULL)
+	{
+		struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+		new->next = NULL;
+		new->time = time_to_insert;
+		liste->head = new;
+	}
+	else
+	{
+		struct Next_Time* temp = liste->head;
+		struct Next_Time* prev = liste->head;
+		while (temp->time < time_to_insert && temp->next != NULL)
+		{
+			prev = temp;
+			temp = temp->next;
+		}
+		if (temp->time == time_to_insert)
+		{
+			return;
+		}
+		struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+		new->next = temp->next;
+		new->time = time_to_insert;
+		prev = new;
+	}
+}
+
+/* Delete all time corresponding to this time. The list is sorted so it should be easy. */
+void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete)
+{
+    if (liste == NULL)
+    {
+		printf("Error list empty.\n");
+        exit(EXIT_FAILURE);
+    }
+
+	struct Next_Time* temp = liste->head;
+	struct Next_Time* prev = liste->head;
+	
+	// If head node itself holds the key to be deleted
+    if (temp != NULL && temp->time == time_to_delete) 
+    {
+		liste->head = temp->next; // Changed head
+        free(temp); // free old head
+        temp = liste->head;
+        while (temp->time == time_to_delete)
+		{
+			liste->head = temp->next; // Changed head
+			free(temp); // free old head
+			temp = liste->head;
+		}
+        return;
+    }
+	
+	while (temp->time != time_to_delete && temp != NULL)
+	{
+		prev = temp;
+		temp = temp->next;
+	}
+	if (temp == NULL)
+	{
+		printf("Deletion of job %d failed.\n", time_to_delete);
+		exit(EXIT_FAILURE);
+	}
+	while (temp->time == time_to_delete)
+	{
+		prev->next = temp->next;
+		free(temp);
+		temp = prev;
+	}
+}
+
 //~ /* Attention might need to malloc here for Data and other struct !!! */
 //~ void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j)
 //~ {
