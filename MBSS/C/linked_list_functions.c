@@ -75,19 +75,41 @@ void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_i
 	}
 	else
 	{
+		if (liste->head->time == time_to_insert)
+		{
+			return;
+		}
+		else if (liste->head->time > time_to_insert) /* Need to insert at head. */
+		{
+			struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+			new->next = liste->head;
+			new->time = time_to_insert;
+			liste->head = new;
+			return;
+		}
+		printf("In insert time 0.\n");
 		struct Next_Time* temp = liste->head;
 		struct Next_Time* prev = liste->head;
-		while (temp->time < time_to_insert && temp->next != NULL)
+		while (temp->time < time_to_insert && temp != NULL)
 		{
 			prev = temp;
 			temp = temp->next;
 		}
+		if (temp == NULL) /* We are at the end. */
+		{
+			struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+			new->next = NULL;
+			new->time = time_to_insert;
+			temp = new;
+			return;
+		}
+		printf("In insert time 1.\n");
 		if (temp->time == time_to_insert)
 		{
 			return;
 		}
 		struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
-		new->next = temp->next;
+		new->next = temp;
 		new->time = time_to_insert;
 		prev = new;
 	}
@@ -105,18 +127,10 @@ void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_dele
 	struct Next_Time* temp = liste->head;
 	struct Next_Time* prev = liste->head;
 	
-	// If head node itself holds the key to be deleted
-    if (temp != NULL && temp->time == time_to_delete) 
-    {
-		liste->head = temp->next; // Changed head
+	 // If head node itself holds the key to be deleted
+    if (temp != NULL && temp->time == time_to_delete) {
+        liste->head = temp->next; // Changed head
         free(temp); // free old head
-        temp = liste->head;
-        while (temp->time == time_to_delete)
-		{
-			liste->head = temp->next; // Changed head
-			free(temp); // free old head
-			temp = liste->head;
-		}
         return;
     }
 	
@@ -127,15 +141,11 @@ void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_dele
 	}
 	if (temp == NULL)
 	{
-		printf("Deletion of job %d failed.\n", time_to_delete);
+		printf("Deletion of time %d failed.\n", time_to_delete);
 		exit(EXIT_FAILURE);
 	}
-	while (temp->time == time_to_delete)
-	{
-		prev->next = temp->next;
-		free(temp);
-		temp = prev;
-	}
+	prev->next = temp->next;
+	free(temp);
 }
 
 //~ /* Attention might need to malloc here for Data and other struct !!! */
@@ -205,9 +215,6 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	}
 	prev->next = temp->next;
 	free(temp);
-    //~ struct Job* aSupprimer = temp;
-    //~ liste->premier = liste->premier->suivant;
-        //~ free(aSupprimer);
 }
 
 /* Copy a job, delete it from list 1 and add it in tail of list 2. */
