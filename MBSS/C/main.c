@@ -20,7 +20,9 @@ void main(int argc, char *argv[])
 	running_nodes = 0;
 	nb_job_to_evaluate_finished = 0;
 	total_queue_time = 0;
-
+	struct Job* first_job_in_queue = NULL; /* TODO: need to malloc ? Just if I use backfill. Useless else. */
+	struct Job* job_pointer = NULL;
+	struct Job* temp = NULL;
 	
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
@@ -61,25 +63,258 @@ void main(int argc, char *argv[])
 	bool new_job = false;
 	int next_submit_time = first_subtime_day_0;
 	int t = first_subtime_day_0;
-	next_end_time = t;
-	
-	//~ struct Job a = malloc(sizeof(struct Job));
-
+	next_end_time = -1; /* I set it in start_jobs */
+		
 	/* First start jobs from rackham's history. First need to sort it by start time */
 	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
-	printf("\nScheduled job list after starting jobs from history.\n");
+	printf("\njob_list_to_start_from_history after schedule. Must be empty.\n");
+	print_job_list(job_list_to_start_from_history->head);
+	printf("\nScheduled job list after starting jobs from history. Must be full.\n");
 	print_job_list(scheduled_job_list->head);
-	//~ print_job_list(scheduled_job_list->tail->next);
-	
+
+	/* Just for -2 jobs here */
 	start_jobs(t, scheduled_job_list->head);
-	//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
 
-//~ # TODO: delete, just for stats
-//~ f_fcfs_score = open("outputs/Scores_data.txt", "w")
-//~ f_fcfs_score.close()
+	printf("\nSchedule job list after starts - 2. Muste be less full.\n");
+	print_job_list(scheduled_job_list->head);
+	printf("\nRunning job list after starts -2. Must be filled with jobs from scheduled job list previously started at time t = %d.\n", t);
+	print_job_list(running_jobs->head);
 
+	#ifdef PRINT
+	FILE* f_fcfs_score = fopen("../outputs/Scores_data.txt", "w");
+	if (!f_fcfs_score)
+	{
+		perror("fopen in main");
+        exit(EXIT_FAILURE);
+	}
+	fclose(f_fcfs_score);
+	#endif
+	#ifdef PRINT_CLUSTER_USAGE
+	char* title = malloc(100*sizeof(char));
+	strcpy(title, "outputs/Stats_");
+	strcpy(title, scheduler);
+	strcpy(title, ".csv");
+	FILE* f_stats = fopen(title, "w");
+	if (!f_stats)
+	{
+		perror("fopen in main");
+        exit(EXIT_FAILURE);
+	}
+	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
+	#endif
+	/* Start of simulation. */
+	while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
+	{
+		/* Get the set of available jobs at time t */
+		/* Jobs are already sorted by subtime so I can simply stop with a break */
+		if (next_submit_time == t) /* We have new jobs need to schedule them. */
+		{
+			printf("We have new jobs at time %d.\n", t);
+			/* Copy in new jobs and delete from job_list. */
+			job_pointer = job_list->head;
+			while (job_pointer != NULL)
+			{
+				if (job_pointer->subtime <= t)
+				{
+					temp = job_pointer->next;
+					copy_delete_insert_job_list(job_list, new_job_list, job_pointer);
+					job_pointer = temp;
+				}
+				else
+				{
+					break;
+				}
+			}
+			next_submit_time = job_pointer->subtime; /* TODO ptet crash au dernier jbo la ? */
+			
+			printf("\nJob list after new jobs, must be less full.\n");
+			print_job_list(job_list->head);
+			printf("\nNew jobs after new jobs, must be a bit filled.\n");
+			print_job_list(new_job_list->head);
 
-	/* TODO : use next start and end time to trigger start jobs and end jobs */
+			/* New jobs are available! Schedule them. */
+			if (strcmp(scheduler, "Random") == 0)
+			{
+				//~ random.shuffle(available_job_list);
+				//~ scheduled_job_list = random_scheduler(new_job_list, node_list, t);
+			}
+				
+			//~ /* ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+			//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
+				//~ /* ~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+				//~ scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
+				
+			else if (strcmp(scheduler, "Fcfs") == 0)
+			{
+				fcfs_scheduler(new_job_list->head, node_list, t);
+			}
+				
+			//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
+				//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(new_job_list, node_list, t)
+				
+			//~ elif (scheduler == "Fcfs_big_job_first"):
+				//~ /* Order new jobs list and append them in order (depending on the size they need) in available job list
+				//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+				//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+				//~ scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
+			
+			//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+				//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+				//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+				//~ scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area)
+				
+			//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+				//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+				//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
+				//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
+					
+			//~ elif (scheduler == "Fcfs_easybf"):
+				//~ if (first_job_in_queue == None):
+					//~ first_job_in_queue = available_job_list[0]
+				//~ else:
+					//~ first_job_in_queue = scheduled_job_list[0]
+				//~ fcfs_scheduler(available_job_list, node_list, t)
+				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
+
+			//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+				//~ if (first_job_in_queue == None):
+					//~ first_job_in_queue = available_job_list[0]
+				//~ else:
+					//~ first_job_in_queue = scheduled_job_list[0]
+				//~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
+				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
+				
+			//~ elif (scheduler == "Common_file_packages_with_a_score"):
+				//~ common_file_packages_with_a_score(available_job_list, node_list, t, total_number_cores)
+					
+			//~ elif (scheduler == "Maximum_use_single_file"):
+				//~ while(len(available_job_list) > 0):
+					//~ /* ~ print(len(available_job_list))
+					//~ available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
+			else
+			{
+				printf("Wrong scheduler in arguments");
+				exit(EXIT_FAILURE);
+			}
+			
+			/* Empty new job list and put all in scheduled job */
+			job_pointer = new_job_list->head;
+			while (job_pointer != NULL)
+			{
+				temp = job_pointer->next;
+				copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
+				job_pointer = temp;
+			}
+			printf("\nNew job list after schedule of new jobs. Must be empty.\n");
+			print_job_list(new_job_list->head);
+			printf("\nSchedule job list after schedule of new jobs. Must be a bit more full.\n");
+			print_job_list(scheduled_job_list->head);
+		}
+		
+		//~ /* Get ended job. Inform if a filing is needed. Compute file transfers needed.	 */
+		//~ affected_node_list = []	
+		//~ finished_job_list = []	
+		//~ old_finished_jobs = finished_jobs
+		
+		if (next_end_time == t)
+		{
+			printf("Job(s) ended.\n");
+			//~ finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0);
+		}
+		exit(1);
+		//~ /* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+		//~ /* Now I deal with it with intevralk it should work like before
+		//~ if len(finished_job_list) > 0:
+			//~ remove_data_from_node(finished_job_list, t)
+		
+		//~ /* ~ if (len(affected_node_list) > 0): /* A core has been liberated earlier so go schedule everything
+		//~ if (old_finished_jobs < finished_jobs and len(available_job_list) > 0):
+			//~ /* ~ print("Core liberated")
+			//~ /* Reset all cores and jobs
+			//~ if (scheduler != "Maximum_use_single_file"):
+				//~ reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+			
+			//~ if __debug__:
+				//~ print("Reschedule. Nb of job available:", len(available_job_list))
+				
+			//~ if (scheduler == "Random"):
+				//~ scheduled_job_list = random_scheduler(available_job_list, node_list, t)
+				
+			//~ /* ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
+			//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
+				//~ /* ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
+				//~ scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
+				
+			//~ elif (scheduler == "Fcfs"):
+				//~ /* ~ fcfs_scheduler(scheduled_job_list, node_list, t)
+				//~ scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
+				
+			//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
+				//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(available_job_list, node_list, t)
+
+			//~ elif (scheduler == "Fcfs_big_job_first"):
+				//~ scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
+				
+			//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
+				//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
+				
+			//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
+				//~ scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area)
+				
+			//~ elif (scheduler == "Maximum_use_single_file"):
+				//~ reset_cores(affected_node_list, t)
+				//~ maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
+				
+			//~ elif (scheduler == "Common_file_packages_with_a_score"):
+				//~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
+				
+			//~ if __debug__:
+				//~ print("End of reschedule")
+		
+		//~ /* Ones with backfill
+		//~ /* ~ if (old_finished_jobs < finished_jobs):
+			//~ if (scheduler == "Fcfs_easybf"):
+				//~ if (len(scheduled_job_list) > 0):
+					//~ first_job_in_queue = scheduled_job_list[0]
+					//~ /* ~ print("First job is", first_job_in_queue.unique_id)
+					//~ if len(affected_node_list) > 0:
+						//~ fcfs_scheduler(scheduled_job_list, node_list, t)
+				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
+				
+			//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
+				//~ if (len(scheduled_job_list) > 0):
+					//~ first_job_in_queue = scheduled_job_list[0]
+					//~ /* ~ print("First job is", first_job_in_queue.unique_id)
+					//~ if len(affected_node_list) > 0:
+						//~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
+				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
+				
+		//~ /* Get started jobs
+		//~ if (len(scheduled_job_list) > 0):
+			//~ /* ~ scheduled_job_list.sort(key = operator.attrgetter("start_time"))
+			//~ /* ~ if (scheduled_job_list[0].start_time == t):
+			//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
+		
+		//~ /* ~ /* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
+		//~ /* ~ if len(finished_job_list) > 0:
+			//~ /* ~ remove_data_from_node(finished_job_list)
+		
+		//~ /* Print cluster usage
+		//~ if write_all_jobs == 3:
+			//~ f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
+			
+		//~ /* Time is advancing
+		//~ t += 1
+
+	}
+	
+	#ifdef PRINT_CLUSTER_USAGE
+	fclose(f_stats);
+	#endif
+
+	/* Print results in a csv file */
+	printf("Computing and writing results...\n");
+	//~ print_csv(to_print_list, scheduler);
 
 	return;
 }
@@ -292,12 +527,6 @@ void main(int argc, char *argv[])
 		//~ print("Wrong scheduler area filling")
 		//~ exit(1)
 
-
-//~ if (write_all_jobs == 3):
-	//~ title = "outputs/Stats_" + scheduler + ".csv"
-	//~ f_stats = open(title, "w")
-	//~ f_stats.write("Used cores,Used nodes,Scheduled jobs\n")
-
 //~ # Variant for FCFS with a score
 //~ if scheduler[0:19] == "Fcfs_with_a_score_x":
 	//~ i = 19
@@ -328,193 +557,4 @@ void main(int argc, char *argv[])
 //~ if (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
 	//~ # 0 = don't compute anything, 1 = compute mean queue time
 	//~ backfill_big_node_mode = int(scheduler[24])
-	
-//~ # For constraint on node sizes
-//~ total_queue_time = 0
-	
-//~ # Start of simulation
-//~ first_job_in_queue = None
-
-//~ while(nb_job_to_evaluate != nb_job_to_evaluate_finished):
-	//~ # Get the set of available jobs at time t
-	//~ # Jobs are already sorted by subtime so I can simply stop with a break
-	//~ if next_submit_time == t:
-		//~ to_remove = []
-		//~ for j in job_list:
-			//~ # ~ if (j.subtime == t):
-			//~ if (j.subtime <= t):
-				//~ new_job_list.append(j)
-				//~ available_job_list.append(j)
-				//~ to_remove.append(j)
-			//~ elif (j.subtime > t):
-				//~ next_submit_time = j.subtime
-				//~ break
-		//~ remove_jobs_from_list(job_list, to_remove)
-	
-	//~ # New jobs are available! Schedule them
-	//~ # ~ if (len(available_job_list) > 0):
-	//~ if (len(new_job_list) > 0):
-	//~ # ~ if (new_job == True):
-		//~ if __debug__:
-			//~ # ~ print(len(available_job_list), "new jobs at time", t)
-			//~ print(len(new_job_list), "new jobs at time", t)
-			
-		//~ if (scheduler == "Random"):
-			//~ random.shuffle(available_job_list)
-			//~ scheduled_job_list = random_scheduler(new_job_list, node_list, t)
-			
-		//~ # ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
-		//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
-			//~ # ~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
-			//~ scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
-			
-		//~ elif (scheduler == "Fcfs"):
-			//~ scheduled_job_list = fcfs_scheduler(new_job_list, node_list, t)
-			
-		//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
-			//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(new_job_list, node_list, t)
-			
-		//~ elif (scheduler == "Fcfs_big_job_first"):
-			//~ # Order new jobs list and append them in order (depending on the size they need) in available job list
-			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
 		
-		//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area)
-			
-		//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
-				
-		//~ elif (scheduler == "Fcfs_easybf"):
-			//~ if (first_job_in_queue == None):
-				//~ first_job_in_queue = available_job_list[0]
-			//~ else:
-				//~ first_job_in_queue = scheduled_job_list[0]
-			//~ fcfs_scheduler(available_job_list, node_list, t)
-			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
-
-		//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
-			//~ if (first_job_in_queue == None):
-				//~ first_job_in_queue = available_job_list[0]
-			//~ else:
-				//~ first_job_in_queue = scheduled_job_list[0]
-			//~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
-			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
-			
-		//~ elif (scheduler == "Common_file_packages_with_a_score"):
-			//~ common_file_packages_with_a_score(available_job_list, node_list, t, total_number_cores)
-				
-		//~ elif (scheduler == "Maximum_use_single_file"):
-			//~ while(len(available_job_list) > 0):
-				//~ # ~ print(len(available_job_list))
-				//~ available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
-		//~ else:
-			//~ print("Wrong scheduler in arguments")
-			//~ exit(1)
-			
-		//~ # ~ available_job_list.clear()
-		//~ new_job_list.clear()
-	
-	//~ # Get ended job. Inform if a filing is needed. Compute file transfers needed.	
-	//~ affected_node_list = []	
-	//~ finished_job_list = []	
-	//~ old_finished_jobs = finished_jobs
-	
-	//~ if t in end_times:
-		//~ finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0)
-		
-	//~ # Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
-	//~ # Now I deal with it with intevralk it should work like before
-	//~ if len(finished_job_list) > 0:
-		//~ remove_data_from_node(finished_job_list, t)
-	
-	//~ # ~ if (len(affected_node_list) > 0): # A core has been liberated earlier so go schedule everything
-	//~ if (old_finished_jobs < finished_jobs and len(available_job_list) > 0):
-		//~ # ~ print("Core liberated")
-		//~ # Reset all cores and jobs
-		//~ if (scheduler != "Maximum_use_single_file"):
-			//~ reset_cores(node_list[0] + node_list[1] + node_list[2], t)
-		
-		//~ if __debug__:
-			//~ print("Reschedule. Nb of job available:", len(available_job_list))
-			
-		//~ if (scheduler == "Random"):
-			//~ scheduled_job_list = random_scheduler(available_job_list, node_list, t)
-			
-		//~ # ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
-		//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
-			//~ # ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
-			//~ scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
-			
-		//~ elif (scheduler == "Fcfs"):
-			//~ # ~ fcfs_scheduler(scheduled_job_list, node_list, t)
-			//~ scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
-			
-		//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
-			//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(available_job_list, node_list, t)
-
-		//~ elif (scheduler == "Fcfs_big_job_first"):
-			//~ scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
-			
-		//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-			//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
-			
-		//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-			//~ scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area)
-			
-		//~ elif (scheduler == "Maximum_use_single_file"):
-			//~ reset_cores(affected_node_list, t)
-			//~ maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
-			
-		//~ elif (scheduler == "Common_file_packages_with_a_score"):
-			//~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
-			
-		//~ if __debug__:
-			//~ print("End of reschedule")
-	
-	//~ # Ones with backfill
-	//~ # ~ if (old_finished_jobs < finished_jobs):
-		//~ if (scheduler == "Fcfs_easybf"):
-			//~ if (len(scheduled_job_list) > 0):
-				//~ first_job_in_queue = scheduled_job_list[0]
-				//~ # ~ print("First job is", first_job_in_queue.unique_id)
-				//~ if len(affected_node_list) > 0:
-					//~ fcfs_scheduler(scheduled_job_list, node_list, t)
-			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-			
-		//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
-			//~ if (len(scheduled_job_list) > 0):
-				//~ first_job_in_queue = scheduled_job_list[0]
-				//~ # ~ print("First job is", first_job_in_queue.unique_id)
-				//~ if len(affected_node_list) > 0:
-					//~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
-			//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-			
-	//~ # Get started jobs
-	//~ if (len(scheduled_job_list) > 0):
-		//~ # ~ scheduled_job_list.sort(key = operator.attrgetter("start_time"))
-		//~ # ~ if (scheduled_job_list[0].start_time == t):
-		//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
-	
-	//~ # ~ # Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
-	//~ # ~ if len(finished_job_list) > 0:
-		//~ # ~ remove_data_from_node(finished_job_list)
-	
-	//~ # Print cluster usage
-	//~ if write_all_jobs == 3:
-		//~ f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
-		
-	//~ # Time is advancing
-	//~ t += 1
-
-//~ if (write_all_jobs == 3):
-	//~ f_stats.close()
-
-//~ # Print results in a csv file
-//~ print("Computing and writing results...")
-//~ print_csv(to_print_list, scheduler)

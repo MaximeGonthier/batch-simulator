@@ -3,7 +3,7 @@
 void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int t)
 {
 	int i = 0;
-			
+	int nb_job_to_delete = 0;		
 	/* Get number of node in each size category */
 	struct Node *temp = (struct Node*) malloc(sizeof(struct Node));
 	int* nb_node = malloc(3*sizeof(int));
@@ -25,7 +25,7 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 	{
 		/* Insert in scheduled_job_list */
 		//~ copy_job_and_insert_tail_job_list(scheduled_job_list, j);
-		insert_tail_job_list(scheduled_job_list, j);
+		//~ insert_tail_job_list(scheduled_job_list, j);
 		
 		int time_since_start = t - j->start_time_from_history;
 		j->delay -= time_since_start;
@@ -63,9 +63,39 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 		printf("Choosen node is: ");
 		print_single_node(choosen_node);
 		schedule_job_specific_node_at_earliest_available_time(j, choosen_node, t);
-					
+		nb_job_to_delete += 1;
 		j = j->next;
 	}
+	
+	/* Remove from job list to start and put it in scheduled job list. */
+	for (i = 0; i < nb_job_to_delete; i++)
+	{
+		j = job_list_to_start_from_history->head;
+		copy_delete_insert_job_list(job_list_to_start_from_history, scheduled_job_list, j);
+	}
+	//~ print_job_list(scheduled_job_list->head);
+	//~ print_job_list(job_list_to_start_from_history->head);
+	//~ exit(1);
 	free(nb_node);
 	//~ j = scheduled_job_list->head;
+}
+
+void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+{
+	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+	struct Job* j = head_job;
+	while (j != NULL)
+	{
+		if (nb_non_available_cores < nb_cores)
+		{
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores);
+		}
+		else
+		{
+			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
+			break;
+		}
+		j = j->next;
+	}
 }

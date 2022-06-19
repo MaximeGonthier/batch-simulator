@@ -45,7 +45,7 @@ void read_cluster(char* input_node_file)
 			new->cores[i]->job_queue->head = NULL;
 			new->cores[i]->job_queue->tail = NULL;
 			new->cores[i]->available_time = 0;
-			new->cores[i]->running_job = malloc(sizeof(struct Job*));
+			//~ new->cores[i]->running_job = false;
 		}
 
 		new->next = NULL;
@@ -67,6 +67,8 @@ void read_cluster(char* input_node_file)
 			exit(EXIT_FAILURE);
 		}
 		total_number_nodes += 1;
+		
+		nb_cores += 20;
 	}
  	fclose(f);
 }
@@ -86,9 +88,12 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 	running_jobs = malloc(sizeof(*running_jobs));
 	running_jobs->head = NULL;
 	running_jobs->tail = NULL;
-	available_job_list = malloc(sizeof(*available_job_list));
-	available_job_list->head = NULL;
-	available_job_list->tail = NULL;
+	//~ available_job_list = malloc(sizeof(*available_job_list));
+	//~ available_job_list->head = NULL;
+	//~ available_job_list->tail = NULL;
+	new_job_list = malloc(sizeof(*new_job_list));
+	new_job_list->head = NULL;
+	new_job_list->tail = NULL;
 	
 	FILE *f = fopen(input_job_file, "r");
 	if (!f)

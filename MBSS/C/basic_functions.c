@@ -1,6 +1,102 @@
 #include <main.h>
 
-/* PB is here */
+/* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
+int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
+{
+	int i = 0;	
+	int min_time = -1;
+	int earliest_available_time = 0;
+	int first_node_size_to_choose_from = 0;
+	int last_node_size_to_choose_from = 0;
+	
+	/* In which node size I can pick. */
+	if (j->index_node_list == 0)
+	{
+		first_node_size_to_choose_from = 0;
+		last_node_size_to_choose_from = 2;
+	}
+	else if (j->index_node_list == 1)
+	{
+		first_node_size_to_choose_from = 1;
+		last_node_size_to_choose_from = 2;
+	}
+	else if (j->index_node_list == 2)
+	{
+		first_node_size_to_choose_from = 2;
+		last_node_size_to_choose_from = 2;
+	}
+	else
+	{
+		printf("Error index value in schedule_job_on_earliest_available_cores.\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	/* Finding the node with the earliest available time. */
+	for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+		if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
+		{
+			earliest_available_time = t;
+		}
+		printf("EAT is: %d\n", earliest_available_time);
+		if (min_time == -1 || min_time > earliest_available_time)
+		{
+			min_time = earliest_available_time;
+			j->node_used = n;
+		}
+	}
+	
+	/* Update infos on the job and on cores. */
+	j->start_time = min_time;
+	j->end_time = min_time + j->walltime;
+	for (i = 0; i < j->cores; i++)
+	{
+		j->cores_used[i] = j->node_used->cores[i]->unique_id;
+		if (j->node_used->cores[i]->available_time <= t)
+		{
+			nb_non_available_cores += 1;
+		}
+		j->node_used->cores[i]->available_time = min_time + j->walltime;
+		
+		/* Maybe I need job queue or not not sure. TODO. */
+		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
+	}
+		
+	#ifdef PRINT
+	print_decision_in_scheduler(j);
+	#endif
+	
+	/* Need to sort cores after each schedule of a job. */
+	sort_cores_by_available_time_in_specific_node(j->node_used);
+		
+	return nb_non_available_cores;
+}
+
+int get_nb_non_available_cores(struct Node_List** n, int t)
+{
+	int nb_non_available_cores = 0;
+	int i = 0;
+	int j = 0;
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* temp = n[i]->head;
+		while (temp != NULL)
+		{
+			for (j = 0; j < 20; j++)
+			{
+				if (temp->cores[j]->available_time > t)
+				{
+					nb_non_available_cores += 1;
+				}
+			}
+			temp = temp->next;
+		}
+	}
+	return nb_non_available_cores;
+}
+
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t)
 {
 	int i = 0;
@@ -15,21 +111,23 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	// choosen_core = node.cores[0:cores_asked]		
 
 	j->node_used = n;
+	j->start_time = earliest_available_time;
+	j->end_time = earliest_available_time + j->walltime;
 	for (i = 0; i < j->cores; i++)
 	{
 		j->cores_used[i] = n->cores[i]->unique_id;
-		j->start_time = earliest_available_time;
-		j->end_time = earliest_available_time + j->walltime;
 		n->cores[i]->available_time = earliest_available_time + j->walltime;
 		
-		//~ insert_tail_job_list(n->cores[i]->job_queue, j);
-		copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
-
+		/* Maybe I need job queue or not, not sure. TODO. */
+		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
-	print_decision_in_scheduler(j);
 	
+	#ifdef PRINT
+	print_decision_in_scheduler(j);
+	#endif
+	
+	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(n);
-
 }
 
 void sort_cores_by_available_time_in_specific_node(struct Node* n)
@@ -111,6 +209,8 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 
 void start_jobs(int t, struct Job* j)
 {
+	int i = 0;
+	int min_between_delay_and_walltime = 0;
 	printf("Start of start_jobs at time %d.\n", t);
 	//~ jobs_to_remove = []
 	while (j != NULL)
@@ -118,16 +218,12 @@ void start_jobs(int t, struct Job* j)
 	//~ for j in scheduled_job_list:
 		if (j->start_time == t)
 		{
-			
 			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
 			total_queue_time += j->start_time - j->subtime;
 			
 			int transfer_time = 0;
 			int waiting_for_a_load_time = 0;
-			/* True version to use */
-			//~ if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2) /* I also don't want to put transfer time on fix workload occupation jobs */
-			/* False, just to test while coding */
-			if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -20) /* I also don't want to put transfer time on fix workload occupation jobs */
+			if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2) /* I also don't want to put transfer time on fix workload occupation jobs */
 			{
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
@@ -137,32 +233,63 @@ void start_jobs(int t, struct Job* j)
 			
 			printf("For job %d: %d transfer time and %d waiting for a load time.\n", j->unique_id, transfer_time, waiting_for_a_load_time);
 			
+			if (j->delay + transfer_time < j->walltime)
+			{
+				min_between_delay_and_walltime = j->delay + transfer_time;
+				j->end_before_walltime = true;
+			}
+			else
+			{
+				min_between_delay_and_walltime = j->walltime;
+				j->end_before_walltime = false;
+			}
+			j->end_time = j->start_time + min_between_delay_and_walltime; /* Attention le j->end time est mis a jour la! */
+			
 			/* Use next min end time from global variable here :) */
-			//~ j->end_time = j->start_time + min(j->delay + transfer_time, j->walltime) # Attention le j->end time est mis a jour la!
+			if (next_end_time > j->end_time || next_end_time == -1)
+			{
+				next_end_time = j->end_time;
+			}
 			
-			//~ end_times.append(j->end_time)
-			
-			//~ if (write_all_jobs == 3):
-				//~ # Just for stats
-				//~ running_cores += j->cores
-				//~ if (j->node_used.n_available_cores == 20):
-					//~ running_nodes += 1
-				//~ j->node_used.n_available_cores -= j->cores
-
-			//~ if (j->delay + transfer_time < j->walltime):
-				//~ j->end_before_walltime = True
+			#ifdef PRINT_CLUSTER_USAGE
+			running_cores += j->cores;
+			if (j->node_used->n_available_cores == 20)
+			{
+				running_nodes += 1;
+			}
+			j->node_used->n_available_cores -= j->cores;
+			#endif
 				
-			//~ if __debug__:
-				//~ print("Job", j->unique_id, "start at", t, "on node", j->node_used.unique_id, "and will end at", j->end_time,  "before walltime:", j->end_before_walltime, "transfer time is", transfer_time, "data was", j->data)
-			//~ if j->unique_id == 1362:
-				//~ print("Job", j->unique_id, "start at", t, "on node", j->node_used.unique_id, "and will end at", j->end_time,  "before walltime:", j->end_before_walltime, "transfer time is", transfer_time, "data was", j->data)
+			printf("Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
 			
-			//~ for c in j->cores_used:
-				//~ c.running_job = j
+			/* TODO: et besoin de running job ? */
+			//~ for (i = 0; i < j->cores; i++)
+			//~ {
+				//~ j->cores[i]->running_job = j;
+				//~ j->cores_used[i]->running_job = true;
+			//~ }
 			//~ jobs_to_remove.append(j)
-			//~ running_jobs.append(j)
+			//~ insert_tail_job_list(running_jobs, j);
+			//~ copy_job_and_insert_tail_job_list(running_jobs, j);
+			
 		}
 		j = j->next;
+	}
+	
+	/* Copy and delete. */
+	j = scheduled_job_list->head;
+	while (j != NULL)
+	{
+		if (j->start_time == t)
+		{
+			struct Job* temp = j->next;
+			copy_delete_insert_job_list(scheduled_job_list, running_jobs, j);
+			j = temp;
+		}
+		else
+		{
+			j = j->next;
+		}
 	}
 	//~ if len(jobs_to_remove) > 0:
 		//~ scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)

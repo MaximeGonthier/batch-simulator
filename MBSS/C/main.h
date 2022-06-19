@@ -10,19 +10,19 @@
 
 /* Global variables */
 int constraint_on_sizes;
+int nb_cores;
 int finished_jobs;
 int total_number_jobs;
 int total_number_nodes;
-struct Job_List* job_list;
-struct Job_List* available_job_list;
-struct Job_List* job_list_to_start_from_history;
-struct Job_List* scheduled_job_list;
-struct Job_List* running_jobs;
+struct Job_List* job_list; /* All jobs not available yet */
+struct Job_List* new_job_list; /* New available jobs */
+struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
+struct Job_List* scheduled_job_list; /* Scheduled or available */
+struct Job_List* running_jobs; /* Started */
 struct Node_List** node_list;
 int running_cores;
 int running_nodes;
 int total_queue_time;
-int next_start_time;
 int next_end_time;
 int nb_job_to_evaluate_finished;
 
@@ -54,7 +54,7 @@ struct Job {
     int start_time;
     int end_time;
     bool end_before_walltime;
-    struct Node* node_used; /* None */
+    struct Node* node_used;
     int* cores_used; /* list */
     int transfer_time;
     int waiting_for_a_load_time;
@@ -87,7 +87,7 @@ struct Core {
     int unique_id;
     struct Job_List* job_queue;
     int available_time;
-    struct Job* running_job;
+    bool running_job; /* TODO a mettre a jour dans end jobs et start jobs!!!! And in reset_cores it will mean that I should not touch the next available time. */
 };
 
 /* From read_input_files.c */
@@ -110,16 +110,20 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 void sort_cores_by_available_time_in_specific_node(struct Node* n);
 void start_jobs(int t, struct Job* scheduled);
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
+int get_nb_non_available_cores(struct Node_List** n, int t);
+int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_node_list(struct Node_List* liste, struct Node* n);
-void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j);
 void insert_tail_data_list(struct Data_List* liste, struct Data* d);
+void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete);
+void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
+void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

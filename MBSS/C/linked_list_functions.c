@@ -63,11 +63,90 @@ void insert_tail_data_list(struct Data_List* liste, struct Data* d)
 	}
 }
 
-/* Attention might need to malloc here for Data and other struct !!! */
-void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j)
-{
-	struct Job* new = (struct Job*) malloc(sizeof(struct Job));
+//~ /* Attention might need to malloc here for Data and other struct !!! */
+//~ void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j)
+//~ {
+	//~ struct Job* new = (struct Job*) malloc(sizeof(struct Job));
 	
+	//~ new->next = NULL;
+	//~ new->unique_id = j->unique_id;
+	//~ new->subtime = j->subtime;
+	//~ new->delay = j->delay;
+	//~ new->walltime = j->walltime;
+	//~ new->cores = j->cores;
+	//~ new->data = j->data;
+	//~ new->data_size = j->data_size;
+	//~ new->index_node_list = j->index_node_list;
+	//~ new->start_time = j->start_time;
+	//~ new->end_time = j->end_time;
+	//~ new->end_before_walltime = j->end_before_walltime;
+	//~ new->node_used = j->node_used;
+	//~ new->cores_used = j->cores_used;
+	//~ new->transfer_time = j->transfer_time;
+	//~ new->waiting_for_a_load_time = j->waiting_for_a_load_time;
+	//~ new->workload = j->workload;
+	//~ new->start_time_from_history = j->start_time_from_history;
+	//~ new->node_from_history = j->node_from_history;
+   
+	//~ if (liste->head == NULL)
+	//~ {
+		//~ liste->head = new;
+		//~ liste->tail = new;
+	//~ }
+	//~ else
+	//~ {
+		//~ liste->tail->next = new;
+		//~ liste->tail = new;
+	//~ }
+//~ }
+
+void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
+{
+    if (liste == NULL)
+    {
+		printf("Error list empty.\n");
+        exit(EXIT_FAILURE);
+    }
+
+	struct Job* temp = liste->head;
+	struct Job* prev = liste->head;
+	
+	 // If head node itself holds the key to be deleted
+    if (temp != NULL && temp->unique_id == unique_id_to_delete) {
+        liste->head = temp->next; // Changed head
+        free(temp); // free old head
+        return;
+    }
+	
+	while (temp->unique_id != unique_id_to_delete && temp != NULL)
+	{
+		prev = temp;
+		temp = temp->next;
+	}
+	if (temp == NULL)
+	{
+		printf("Deletion of job %d failed.\n", unique_id_to_delete);
+		exit(EXIT_FAILURE);
+	}
+	prev->next = temp->next;
+	free(temp);
+    //~ struct Job* aSupprimer = temp;
+    //~ liste->premier = liste->premier->suivant;
+        //~ free(aSupprimer);
+}
+
+/* Copy a job, delete it from list 1 and add it in tail of list 2. */
+void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j)
+{
+	/* If empty can't delete. */
+	if (to_delete_from == NULL)
+    {
+		printf("Error list empty.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    /* New copy from j */
+	struct Job* new = (struct Job*) malloc(sizeof(struct Job));
 	new->next = NULL;
 	new->unique_id = j->unique_id;
 	new->subtime = j->subtime;
@@ -87,25 +166,10 @@ void copy_job_and_insert_tail_job_list(struct Job_List* liste, struct Job* j)
 	new->workload = j->workload;
 	new->start_time_from_history = j->start_time_from_history;
 	new->node_from_history = j->node_from_history;
-   
-	if (liste->head == NULL)
-	{
-		liste->head = new;
-		liste->tail = new;
-	}
-	else
-	{
-		liste->tail->next = new;
-		liste->tail = new;
-	}
-}
 
-//~ void free_job_list(struct Job* head)
-//~ {
-	//~ struct Job *n = head;
-	//~ while(n){
-	   //~ struct Job *n1 = n;
-	   //~ n = n->next;
-	   //~ free(n1);
-	//~ }
-//~ }
+	/* Delete */
+	delete_job_linked_list(to_delete_from, j->unique_id);
+	
+	/* Add in new list */
+	insert_tail_job_list(to_append_to, new);
+}
