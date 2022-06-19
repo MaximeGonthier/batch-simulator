@@ -24,6 +24,7 @@ void main(int argc, char *argv[])
 	struct Job* job_pointer = NULL;
 	struct Job* temp = NULL;
 	
+	int old_finished_jobs = 0;
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
 	char* scheduler = argv[3];
@@ -45,7 +46,7 @@ void main(int argc, char *argv[])
 	
 	/* Read workload */
 	read_workload(input_job_file, constraint_on_sizes);
-	int nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
+	nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 	int first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	#ifdef PRINT
 	printf("\nNumber of jobs to evaluate: %d\n", nb_job_to_evaluate);
@@ -63,7 +64,7 @@ void main(int argc, char *argv[])
 	bool new_job = false;
 	int next_submit_time = first_subtime_day_0;
 	int t = first_subtime_day_0;
-	next_end_time = -1; /* I set it in start_jobs */
+	//~ next_end_time = -1; /* TODO: enable it here if use it I set it in start_jobs */
 		
 	/* First start jobs from rackham's history. First need to sort it by start time */
 	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
@@ -214,41 +215,40 @@ void main(int argc, char *argv[])
 		//~ /* Get ended job. Inform if a filing is needed. Compute file transfers needed.	 */
 		//~ affected_node_list = []	
 		//~ finished_job_list = []	
-		//~ old_finished_jobs = finished_jobs
+		old_finished_jobs = finished_jobs;
 		
-		if (next_end_time == t)
-		{
-			printf("Job(s) ended.\n");
+		//~ if (next_end_time == t)
+		//~ {
+			//~ printf("Job(s) ended.\n");
 			//~ finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0);
-		}
-		exit(1);
-		//~ /* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
-		//~ /* Now I deal with it with intevralk it should work like before
-		//~ if len(finished_job_list) > 0:
-			//~ remove_data_from_node(finished_job_list, t)
+			end_jobs(running_jobs->head, t);
+			/* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice. */
+			//~ remove_data_from_node(finished_job_list->head, t); /* I do it in end_jobs directly! */
+		//~ }
 		
-		//~ /* ~ if (len(affected_node_list) > 0): /* A core has been liberated earlier so go schedule everything
-		//~ if (old_finished_jobs < finished_jobs and len(available_job_list) > 0):
-			//~ /* ~ print("Core liberated")
-			//~ /* Reset all cores and jobs
-			//~ if (scheduler != "Maximum_use_single_file"):
-				//~ reset_cores(node_list[0] + node_list[1] + node_list[2], t)
+		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
+		{
+			printf("Core(s) liberated. Need to free them.\n");
 			
-			//~ if __debug__:
-				//~ print("Reschedule. Nb of job available:", len(available_job_list))
-				
-			//~ if (scheduler == "Random"):
-				//~ scheduled_job_list = random_scheduler(available_job_list, node_list, t)
+			/* Reset all cores and jobs. */
+			reset_cores(node_list, t);
+			
+			printf("Reschedule.\n");
+			
+			if (strcmp(scheduler, "Random") == 0)
+			{
+				//~ scheduled_job_list = random_scheduler(available_job_list, node_list, t);
+			}				
+			else if (strcmp(scheduler, "Fcfs") == 0)
+			{
+				fcfs_scheduler(scheduled_job_list->head, node_list, t);
+			}
 				
 			//~ /* ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
 			//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
 				//~ /* ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
 				//~ scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
-				
-			//~ elif (scheduler == "Fcfs"):
-				//~ /* ~ fcfs_scheduler(scheduled_job_list, node_list, t)
-				//~ scheduled_job_list = fcfs_scheduler(available_job_list, node_list, t)
-				
+								
 			//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
 				//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(available_job_list, node_list, t)
 
@@ -267,9 +267,10 @@ void main(int argc, char *argv[])
 				
 			//~ elif (scheduler == "Common_file_packages_with_a_score"):
 				//~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
-				
-			//~ if __debug__:
-				//~ print("End of reschedule")
+			
+			#ifdef PRINT	
+			printf("End of reschedule.\n");
+			#endif
 		
 		//~ /* Ones with backfill
 		//~ /* ~ if (old_finished_jobs < finished_jobs):
@@ -288,34 +289,26 @@ void main(int argc, char *argv[])
 					//~ if len(affected_node_list) > 0:
 						//~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
 				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
+		}
+		
+		/* Get started jobs. */
+		if (scheduled_job_list->head != NULL) /* TODO : me faudrait cette condition ? */
+		{
+			start_jobs(t, scheduled_job_list->head);
+		}
 				
-		//~ /* Get started jobs
-		//~ if (len(scheduled_job_list) > 0):
-			//~ /* ~ scheduled_job_list.sort(key = operator.attrgetter("start_time"))
-			//~ /* ~ if (scheduled_job_list[0].start_time == t):
-			//~ scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list = start_jobs(t, scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list)
-		
-		//~ /* ~ /* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice
-		//~ /* ~ if len(finished_job_list) > 0:
-			//~ /* ~ remove_data_from_node(finished_job_list)
-		
-		//~ /* Print cluster usage
-		//~ if write_all_jobs == 3:
-			//~ f_stats.write("%d,%d,%d\n" % (running_cores, running_nodes, len(available_job_list)))
+		#ifdef PRINT_CLUSTER_USAGE
+		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
+		#endif
 			
-		//~ /* Time is advancing
-		//~ t += 1
-
+		/* Time is advancing. */
+		t += 1;
 	}
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	fclose(f_stats);
 	#endif
-
-	/* Print results in a csv file */
-	printf("Computing and writing results...\n");
-	//~ print_csv(to_print_list, scheduler);
-
+	
 	return;
 }
 

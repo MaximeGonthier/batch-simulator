@@ -40,10 +40,9 @@ void read_cluster(char* input_node_file)
 		{
 			new->cores[i] = malloc(sizeof(*new->cores));
 			new->cores[i]->unique_id = i;
-			//~ new->cores[i]->job_queue = malloc(sizeof(struct Job_List*));
-			new->cores[i]->job_queue = malloc(sizeof(*new->cores[i]->job_queue));
-			new->cores[i]->job_queue->head = NULL;
-			new->cores[i]->job_queue->tail = NULL;
+			//~ new->cores[i]->job_queue = malloc(sizeof(*new->cores[i]->job_queue));
+			//~ new->cores[i]->job_queue->head = NULL;
+			//~ new->cores[i]->job_queue->tail = NULL;
 			new->cores[i]->available_time = 0;
 			//~ new->cores[i]->running_job = false;
 		}
@@ -117,6 +116,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, s, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
 	{
+		total_number_jobs += 1;
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
 		new->unique_id = atoi(id);
 		new->subtime = atoi(subtime);
@@ -164,7 +164,14 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->end_time = 0; 
 		new->end_before_walltime = false;
 		new->node_used = malloc(sizeof(struct Node*));
+		
 		new->cores_used = malloc(new->cores*sizeof(int));
+		//~ new->cores_used = malloc(new->cores*sizeof(struct Core*));
+		//~ for (int i = 0; i < new->cores; i++)
+		//~ {
+			//~ new->cores_used[i] = malloc(sizeof(struct Core*));
+		//~ }
+
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
 		new->next = NULL;

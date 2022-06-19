@@ -207,9 +207,29 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 	//~ return transfer_time, waiting_for_a_load_time
 }
 
+void remove_data_from_node(struct Job* j, int t)
+{
+	struct Data* d = j->node_used->data->head;
+	while (d != NULL)
+	{
+		if (j->data == d->unique_id)
+		{
+			d->nb_task_using_it -= 1;
+				
+			if (d->nb_task_using_it == 0)
+			{
+				d->end_time = t;
+			}
+			break;
+		}	
+		d = d->next;
+	}
+}
+
 void start_jobs(int t, struct Job* j)
 {
 	int i = 0;
+	int k = 0;
 	int min_between_delay_and_walltime = 0;
 	printf("Start of start_jobs at time %d.\n", t);
 	//~ jobs_to_remove = []
@@ -246,10 +266,10 @@ void start_jobs(int t, struct Job* j)
 			j->end_time = j->start_time + min_between_delay_and_walltime; /* Attention le j->end time est mis a jour la! */
 			
 			/* Use next min end time from global variable here :) */
-			if (next_end_time > j->end_time || next_end_time == -1)
-			{
-				next_end_time = j->end_time;
-			}
+			//~ if (next_end_time > j->end_time || next_end_time == -1)
+			//~ {
+				//~ next_end_time = j->end_time;
+			//~ }
 			
 			#ifdef PRINT_CLUSTER_USAGE
 			running_cores += j->cores;
@@ -262,12 +282,18 @@ void start_jobs(int t, struct Job* j)
 				
 			printf("Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
 			
-			/* TODO: et besoin de running job ? */
-			//~ for (i = 0; i < j->cores; i++)
-			//~ {
-				//~ j->cores[i]->running_job = j;
-				//~ j->cores_used[i]->running_job = true;
-			//~ }
+			for (i = 0; i < j->cores; i++)
+			{
+				for (k = 0; k < 20; k++)
+				{
+					if (j->node_used->cores[k]->unique_id == j->cores_used[i])
+					{
+						//~ j->cores[i]->running_job = j;
+						j->node_used->cores[k]->running_job = true;
+						break;
+					}
+				}
+			}
 			//~ jobs_to_remove.append(j)
 			//~ insert_tail_job_list(running_jobs, j);
 			//~ copy_job_and_insert_tail_job_list(running_jobs, j);
@@ -298,59 +324,107 @@ void start_jobs(int t, struct Job* j)
 }
 
 //~ def end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0):
-	//~ jobs_to_remove = []
-	//~ for j in running_jobs:
-		//~ if (j.end_time == t): # A job has finished, let's remove it from the cores, write its results and figure out if we need to fill
+void end_jobs(struct Job* job_list_head, int t)
+{
+	int i = 0;
+	int k = 0;
+	struct Job* j= job_list_head;
+	while(j != NULL)
+	{
+		if (j->end_time == t) /* A job has finished, let's remove it from the cores, write its results and figure out if we need to fill */
+		{
 			
-			//~ if j.workload == 1:
-				//~ nb_job_to_evaluate_finished += 1
+			if (j->workload == 1)
+			{
+				nb_job_to_evaluate_finished += 1;
+			}
 				
-			//~ finished_jobs += 1
-			//~ # Just printing, can remove
-			//~ # ~ if (finished_jobs%5 == 0):
-			//~ if (finished_jobs%100 == 0):
-				//~ print("Evaluated jobs:", nb_job_to_evaluate_finished, "/", nb_job_to_evaluate, "| All jobs:", finished_jobs, "/", total_number_jobs, "| T =", t, "| Running =", len(running_jobs))
+			finished_jobs += 1;
 			
-			//~ if __debug__:	
-				//~ print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
+			/* Just printing, can remove */
+			if (finished_jobs%1 == 0)
+			{
+				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t);
+			}
+									
+			#ifdef PRINT_CLUSTER_USAGE
+			running_cores -= j->cores;
+			j->node_used->n_available_cores += j->cores;
+			if (j->node_used->n_available_cores == 20)
+			{
+				running_nodes -= 1;
+			}
+			#endif
 			
-			//~ if j.unique_id == 1362:
-				//~ print("Job", j.unique_id, "finished at time", t, "|", finished_jobs, "finished jobs")
+			for (i = 0; i < j->cores; i++)
+			{
+				for (k = 0; k < 20; k++)
+				{
+					if (j->node_used->cores[k]->unique_id == j->cores_used[i])
+					{
+						//~ j->cores[i]->running_job = j;
+						j->node_used->cores[k]->running_job = false;
+						break;
+					}
+				}
+			}
 			
-			//~ finished_job_list.append(j)
+			if (j->data != 0)
+			{
+				remove_data_from_node(j, t);
+			}
 			
-			//~ if (write_all_jobs == 3):
-				//~ # Just for stats
-				//~ running_cores -= j.cores
-				//~ j.node_used.n_available_cores += j.cores
-				//~ if (j.node_used.n_available_cores == 20):
-					//~ running_nodes -= 1
-			
-			//~ end_times.remove(j.end_time)
-			
-			//~ core_ids = []
-			//~ # ~ if j.unique_id == 1362:
-				//~ # ~ print("Try to remove", j.unique_id)
-			//~ for i in range (0, len(j.cores_used)):
-				//~ # ~ if j.unique_id == 1362:
-					//~ # ~ print("Try to remove", j.unique_id, "from core", j.cores_used[i])
-				//~ j.cores_used[i].job_queue.remove(j)
-				//~ j.cores_used[i].running_job = None
-								
-				//~ # ~ if (j.end_before_walltime == True):
-					//~ # ~ j.cores_used[i].available_time = t
+			//~ for (i = 0; i < j->cores; i++)
+			//~ {
+				// j->cores_used[i].job_queue.remove(j)
+				//~ j->cores_used[i].running_job = None					
+				//~ core_ids.append(j->cores_used[i].unique_id)
+			//~ }
+			//~ to_print_job_csv(j, j->node_used.unique_id, core_ids, t, first_time_day_0) /* TODO a coder */
+		}
+		j = j->next;
+	}				
+
+	
+	/* Delete from running jobs. */
+	j = job_list_head;
+	while (j != NULL)
+	{
+		if (j->end_time == t)
+		{
+			struct Job* temp = j->next;
+			delete_job_linked_list(running_jobs, temp->unique_id);
+			j = temp;
+		}
+		else
+		{
+			j = j->next;
+		}
+	}
 					
-				//~ core_ids.append(j.cores_used[i].unique_id)
-			
-			//~ to_print_job_csv(j, j.node_used.unique_id, core_ids, t, first_time_day_0)
-
-			//~ if (j.end_before_walltime == True and j.node_used not in affected_node_list): # Need to backfill or shiftleft depending on the strategy OLD
-				//~ affected_node_list.append(j.node_used)
-			
-			//~ # ~ print("Try to remove", j.unique_id)
-			//~ jobs_to_remove.append(j)
-						
-	//~ running_jobs = remove_jobs_from_list(running_jobs, jobs_to_remove)
-						
 	//~ return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished
+}
 
+/* Reset available times by going through the cores in each node. */
+void reset_cores(struct Node_List** l, int t)
+{
+	int i = 0;
+	int j = 0;
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* n = l[i]->head;
+		for (j = 0; j < 20; j++)
+		{
+			//~ c.job_queue.clear()
+			if (n->cores[j]->running_job == false)
+			{
+				n->cores[j]->available_time = t;
+			}
+			else
+			{
+				//~ n[i]->cores[j]->available_time = c.running_job.start_time + c.running_job.walltime;
+				//~ c.job_queue.append(c.running_job);
+			}
+		}
+	}
+}

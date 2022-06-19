@@ -173,3 +173,15 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 	/* Add in new list */
 	insert_tail_job_list(to_append_to, new);
 }
+
+int get_length_job_list(struct Job* head)
+{
+	int length = 0;
+	struct Job* j = head;
+	while (j != NULL)
+	{
+		length += 1;
+		j = j->next;
+	}
+	return length;
+}
