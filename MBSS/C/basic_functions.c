@@ -428,7 +428,9 @@ void end_jobs(struct Job* job_list_head, int t)
 				//~ j->cores_used[i].running_job = None					
 				//~ core_ids.append(j->cores_used[i].unique_id)
 			//~ }
-			//~ to_print_job_csv(j, j->node_used.unique_id, core_ids, t, first_time_day_0) /* TODO a coder */
+			
+			/* Adding in a struct the data needed for statistics. */
+			to_print_job_csv(j, t);
 		}
 		j = j->next;
 	}				

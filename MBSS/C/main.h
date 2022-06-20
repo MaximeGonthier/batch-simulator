@@ -21,9 +21,11 @@ struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
 struct Job_List* scheduled_job_list; /* Scheduled or available */
 struct Job_List* running_jobs; /* Started */
 struct Node_List** node_list;
+struct To_Print_List* jobs_to_print_list;
 int running_cores;
 int running_nodes;
 int total_queue_time;
+int first_subtime_day_0;
 
 /* To only call these functions when I need it. */
 struct Next_Time_List* end_times;
@@ -105,6 +107,26 @@ struct Core {
     bool running_job;
 };
 
+struct To_Print_List {
+	struct To_Print* head;
+	struct To_Print* tail;
+};
+
+struct To_Print {
+	struct To_Print* next;
+	int job_unique_id;
+    int job_subtime;
+    int time;
+    int time_used;
+    int transfer_time;
+    int job_start_time;
+    int job_end_time;
+    int job_cores;
+    int waiting_for_a_load_time;
+    float empty_cluster_time;
+    int data_type;
+};
+
 /* From read_input_files.c */
 void read_cluster(char* input_node_file);
 void read_workload(char* input_job_file, int constraint_on_sizes);
@@ -120,6 +142,8 @@ void print_single_node(struct Node* n);
 void print_decision_in_scheduler(struct Job* j);
 void print_cores_in_specific_node(struct Node* n);
 void print_time_list(struct Next_Time* list, int end_or_start);
+void to_print_job_csv(struct Job* job, int time);
+void print_csv(struct To_Print* head_to_print, char* scheduler);
 
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
@@ -143,6 +167,7 @@ int get_length_job_list(struct Job* head);
 void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert);
 void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete);
 void free_next_time_linked_list(struct Next_Time** head_ref);
+void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

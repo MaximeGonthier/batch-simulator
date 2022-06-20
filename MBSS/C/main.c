@@ -28,6 +28,9 @@ void main(int argc, char *argv[])
 	end_times->head = NULL;
 	start_times = malloc(sizeof(*start_times));
 	start_times->head = NULL;
+	jobs_to_print_list = malloc(sizeof(*jobs_to_print_list));
+	jobs_to_print_list->head = NULL;
+	jobs_to_print_list->tail = NULL;
 	
 	int old_finished_jobs = 0;
 	char* input_job_file = argv[1];
@@ -52,7 +55,7 @@ void main(int argc, char *argv[])
 	/* Read workload */
 	read_workload(input_job_file, constraint_on_sizes);
 	nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
-	int first_subtime_day_0 = get_first_time_day_0(job_list->head);
+	first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	#ifdef PRINT
 	printf("\nNumber of jobs to evaluate: %d\n", nb_job_to_evaluate);
 	printf("First time day 0: %d\n", first_subtime_day_0);
@@ -97,7 +100,7 @@ void main(int argc, char *argv[])
 	#endif
 	#ifdef PRINT_CLUSTER_USAGE
 	char* title = malloc(100*sizeof(char));
-	strcpy(title, "outputs/Stats_");
+	strcpy(title, "../outputs/Stats_");
 	strcpy(title, scheduler);
 	strcpy(title, ".csv");
 	FILE* f_stats = fopen(title, "w");
@@ -331,6 +334,9 @@ void main(int argc, char *argv[])
 	#ifdef PRINT_CLUSTER_USAGE
 	fclose(f_stats);
 	#endif
+	
+	printf("Computing and writing results...\n");
+	print_csv(jobs_to_print_list->head, scheduler);
 	
 	return;
 }

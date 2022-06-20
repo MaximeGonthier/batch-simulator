@@ -48,6 +48,20 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	}
 }
 
+void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp)
+{
+	if (liste->head == NULL)
+	{
+		liste->head = tp;
+		liste->tail = tp;
+	}
+	else
+	{
+		liste->tail->next = tp;
+		liste->tail = tp;
+	}
+}
+
 void insert_tail_data_list(struct Data_List* liste, struct Data* d)
 {
 	if (liste->head == NULL)

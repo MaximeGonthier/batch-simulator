@@ -1,11 +1,1 @@
-Ce qui crash la: surement l'entrée dans start et end_jobs car je ne sais pas quand les listes sont vide ou non
 
-Idée pour pas lancer tt le temps strat et end:
-
-Pour end times:
-	Update en min a chaque start
-	A chaque end, apres le end, trouver le min dans running jobs.
-	
-Pour start times:
-	Update min a chaque schedule de jobs
-	A chaque start, apres le start, trouver le min dans scheduled jobs

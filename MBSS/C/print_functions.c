@@ -76,153 +76,196 @@ void print_cores_in_specific_node(struct Node* n)
 	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time);
 }
 
-/* Print in a csv file the results of this job allocation. If we finished all jobs it call the final printing function. */
-//~ void to_print_job_csv(struct Job* j, node_used, core_ids, time, first_time_day_0)
-//~ {
-	//~ int time_used = j->end_time - j->start_time;
+/* Print in a csv file the results of this job allocation */
+void to_print_job_csv(struct Job* job, int time)
+{
+	int time_used = job->end_time - job->start_time;
 	
-	/* Only evaluate jobs from workload 1. */
-	//~ if (j->workload == 1)
-	//~ {
-		//~ // tp = To_print(j->unique_id, j->subtime, node_used, core_ids, time, time_used, j->transfer_time, j->start_time, j->end_time, j->cores, j->waiting_for_a_load_time, j->delay + j->data_size/0.1, j->index_node_list)
+	/* Only evaluate jobs from workload 1 */
+	if (job->workload == 1)
+	{
+		struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));
+		new->next = NULL;
+		new->job_unique_id = job->unique_id;
+		new->job_subtime = job->subtime;
+		new->time = time;
+		new->time_used = time_used;
+		new->transfer_time = job->transfer_time;
+		new->job_start_time = job->start_time;
+		new->job_end_time = job->end_time;
+		new->job_cores = job->cores;
+		new->waiting_for_a_load_time = job->waiting_for_a_load_time;
+		new->empty_cluster_time = (job->delay + job->data_size)/0.1;
+		new->data_type = job->index_node_list;
+		insert_tail_to_print_list(jobs_to_print_list, new);
+	}
 		
-		/* Update values */
-		
-		//~ if (nb_job_to_evaluate == nb_job_to_evaluate_finished)
-		//~ {
-			//~ print_csv();
-		//~ }
-	//~ }
-		
-	//~ #ifdef PRINT_GANTT_CHART
-		//~ file_to_open = "outputs/Results_all_jobs_" + scheduler + ".csv"
-		//~ f = open(file_to_open, "a")
-		//~ # ~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (j->unique_id, j->unique_id, j->subtime, j->cores, j->walltime, j->start_time, time_used, j->end_time, j->start_time, j->end_time, 1))
-		//~ # ~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (j->unique_id, j->unique_id, j->subtime, j->cores, j->walltime, j->start_time - 1000, time_used, j->end_time - 1000, j->start_time - 1000, j->end_time - 1000, 1))
-		//~ f.write("%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f," % (j->unique_id, j->unique_id, 0, j->cores, j->walltime, j->start_time - first_time_day_0, time_used, j->end_time - first_time_day_0, j->start_time - first_time_day_0, j->end_time - first_time_day_0, 1))
-				
-		//~ if (len(core_ids) > 1):
-			//~ # ~ core_ids.sort()
-			//~ for i in range (0, len(core_ids)):
-			//~ # ~ for i in core_ids:
-				//~ if (i == len(core_ids) - 1):
-					//~ f.write("%d" % (node_used*20 + core_ids[i]))
-				//~ else:
-					//~ # ~ print(node_used)
-					//~ # ~ print(len(core_ids))
-					//~ # ~ print(i)
-					//~ # ~ f.write("%d-" % (node_used*20 + core_ids[i]))
-					//~ f.write("%d " % (node_used*20 + core_ids[i]))
-		//~ else:
-			//~ f.write("%d" % (node_used*20 + core_ids[0]))
-		//~ f.write(",-1,\"\"\n")
-		//~ f.close()
-	//~ #endif
+	#ifdef PRINT_GANTT_CHART
+	int i = 0;
+	char* file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Results_all_jobs_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".csv");
+	FILE* f = fopen(file_to_open, "a");
+	fprintf(f, "%d,%d,delay,%f,%d,%f,1,COMPLETED_SUCCESSFULLY,%f,%f,%f,%f,%f,%f,", job->unique_id, job->unique_id, 0, job->cores, job->walltime, job->start_time - first_subtime_day_0, time_used, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
+	/* Printing the cores used. */
+	if (job->cores > 1)
+	{
+		for (i = 0; i < job->cores; i++)
+		{
+			if (i == job->cores - 1)
+			{
+				fprintf("%d", job->node_used->unique_id*20 + job->cores_used[i]);
+			}
+			else
+			{
+				fprintf("%d ", node_used*20 + job->cores_used[i]);
+			}
+		 }
+	}
+	else
+	{
+		fprintf(f, "%d", job->node_used->unique_id*20 + job->cores_used[0]));
+	}
+	fprintf(f, ",-1,\"\"\n");
+	fclose(f);
+	free(file_to_open);
+	#endif
 	
-	//~ #ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
-		// file_to_open = "outputs/Distribution_queue_times_" + scheduler + ".txt"
-		// f = open(file_to_open, "a")
-		// f.write("%d\n" % (j->start_time - j->subtime))
-		// f.close()
-	//~ #endif
-//~ }
+	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
+	char* file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Distribution_queue_times_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f = fopen(file_to_open, "a");
+	fprintf("%d\n", job->start_time - job->subtime);
+	fclose(f);
+	free(file_to_open);
+	#endif
+}
 
-//~ void print_csv(scheduler)
-//~ {
-	//~ # For distribution of flow and queue times on each job
-	//~ f_queue = open("outputs/Queue_times_" + scheduler + ".txt", "w")
-	//~ f_flow = open("outputs/Flow_times_" + scheduler + ".txt", "w")
-	//~ f_stretch= open("outputs/Stretch_times_" + scheduler + ".txt", "w")
+/* Print in a file the final results. Only called once at the end of the simulation. */
+void print_csv(struct To_Print* head_to_print, char* scheduler)
+{
+	/* For distribution of flow and queue times on each job. */
+	char* file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Queue_times_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f_queue = fopen(file_to_open, "w");
 	
-	//~ max_queue_time = 0
-	//~ mean_queue_time = 0
-	//~ total_queue_time = 0
-	//~ max_flow = 0
-	//~ mean_flow = 0
-	//~ total_flow = 0
-	//~ total_transfer_time = 0
-	//~ total_waiting_for_a_load_time = 0
-	//~ total_waiting_for_a_load_time_and_transfer_time = 0
-	//~ makespan = 0
-	//~ total_flow_stretch = 0
-	//~ total_flow_stretch_with_a_minimum = 0
-	//~ mean_flow_stretch = 0
-	//~ mean_flow_stretch_with_a_minimum = 0
-	//~ core_time_used = 0
-	//~ job_exceeding_minimum = 0
-	//~ for tp in to_print_list:
+	file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Flow_times_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f_flow = fopen(file_to_open, "w");
+	
+	file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Stretch_times_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f_stretch = fopen(file_to_open, "w");
+	
+	/* Values evaluated. */
+	float max_queue_time = 0;
+	float mean_queue_time = 0;
+	float total_queue_time = 0;
+	float max_flow = 0;
+	float mean_flow = 0;
+	float total_flow = 0;
+	float total_transfer_time = 0;
+	float total_waiting_for_a_load_time = 0;
+	float total_waiting_for_a_load_time_and_transfer_time = 0;
+	float makespan = 0;
+	float total_flow_stretch = 0;
+	float total_flow_stretch_with_a_minimum = 0;
+	float mean_flow_stretch = 0;
+	float mean_flow_stretch_with_a_minimum = 0;
+	float core_time_used = 0;
+	int job_exceeding_minimum = 0;
+	
+	
+	while (head_to_print != NULL)
+	{
+		/* Flow stretch */
+		total_flow_stretch += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time;
 		
-		//~ # Flow stretch
-		//~ total_flow_stretch += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time
+		if (tp.job_end_time - tp.job_start_time >= 300) /* Ignore jobs of delay less that 5 minutes */
+		{
+			total_flow_stretch_with_a_minimum += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time;
+			job_exceeding_minimum += 1;
+		}
+				
+		core_time_used += tp.time_used*tp.job_cores;
+		total_queue_time += tp.job_start_time - tp.job_subtime;
+		if (max_queue_time < tp.job_start_time - tp.job_subtime)
+		{
+			max_queue_time = tp.job_start_time - tp.job_subtime;
+		}
+		total_flow += tp.job_end_time - tp.job_subtime;
+		if (max_flow < tp.job_end_time - tp.job_subtime)
+		{
+			max_flow = tp.job_end_time - tp.job_subtime;
+		}
+		total_transfer_time += tp.transfer_time - tp.waiting_for_a_load_time;
+		total_waiting_for_a_load_time += tp.waiting_for_a_load_time;
+		total_waiting_for_a_load_time_and_transfer_time += tp.transfer_time;
+		if (makespan < tp.job_end_time)
+		{
+			makespan = tp.job_end_time;
+		}
 		
-		//~ if tp.job_end_time - tp.job_start_time >= 300: # Ignore jobs of delay less that 5 minutes
-			//~ total_flow_stretch_with_a_minimum += (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time
-			//~ job_exceeding_minimum += 1
+		/* For distribution of flow and queue times on each job to show VS curves */
+		fprintf(f_queue, "%d %d %d %d %d\n", tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime);
+		fprintf(f_flow, "%d %d %d %d %d\n", tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime);
+		fprintf(f_stretch, "%d %d %d %d %d\n", tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime);
+		head_to_print = head_to_print->next;
+	}
+	fclose(f_queue);
+	fclose(f_flow);
+	fclose(f_stretch);
 		
-		//~ # ~ print((tp.job_end_time - tp.job_subtime), tp.empty_cluster_time)
-		
-		//~ # ~ print("print", tp.job_unique_id)
-		//~ core_time_used += tp.time_used*tp.job_cores
-		//~ # ~ total_queue_time += tp.time - tp.job_subtime
-		//~ total_queue_time += tp.job_start_time - tp.job_subtime
-		//~ # ~ print("Job", tp.job_unique_id, "waited", tp.job_start_time - tp.job_subtime)
-		//~ if (max_queue_time < tp.job_start_time - tp.job_subtime):
-			//~ max_queue_time = tp.job_start_time - tp.job_subtime
-		//~ # ~ total_flow += tp.time - tp.job_subtime + tp.time_used
-		//~ total_flow += tp.job_end_time - tp.job_subtime
-		//~ if (max_flow < tp.job_end_time - tp.job_subtime):
-			//~ max_flow = tp.job_end_time - tp.job_subtime
-		//~ total_transfer_time += tp.transfer_time - tp.waiting_for_a_load_time
-		//~ total_waiting_for_a_load_time += tp.waiting_for_a_load_time
-		//~ total_waiting_for_a_load_time_and_transfer_time += tp.transfer_time
-		//~ # ~ if (makespan < tp.time + tp.time_used):
-		//~ if (makespan < tp.job_end_time):
-			//~ # ~ makespan = tp.time + tp.time_used
-			//~ makespan = tp.job_end_time
-		
-		//~ # For distribution of flow and queue times on each job to show VS curves
-		//~ f_queue.write("%d %d %d %d %d\n" % (tp.job_unique_id, tp.job_start_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime))
-		//~ f_flow.write("%d %d %d %d %d\n" % (tp.job_unique_id, tp.job_end_time - tp.job_subtime, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime))
-		//~ f_stretch.write("%d %d %d %d %d\n" % (tp.job_unique_id, (tp.job_end_time - tp.job_subtime)/tp.empty_cluster_time, tp.data_type, tp.job_end_time - tp.job_start_time, tp.job_subtime))
+	/* Compute mean values */
+	mean_queue_time = total_queue_time/nb_job_to_evaluate;
+	mean_flow = total_flow/nb_job_to_evaluate;
+	mean_flow_stretch = total_flow_stretch/nb_job_to_evaluate;
+	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/job_exceeding_minimum;
 	
-	//~ f_queue.close()
-	//~ f_flow.close()
-	//~ f_stretch.close()
-		
-	//~ # Compute mean values
-	//~ mean_queue_time = total_queue_time/len(to_print_list)
-	//~ mean_flow = total_flow/len(to_print_list)
-	//~ mean_flow_stretch = total_flow_stretch/len(to_print_list)
-	//~ mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/job_exceeding_minimum
-	//~ file_to_open = "outputs/Results_" + scheduler + ".csv"
-	//~ f = open(file_to_open, "a")
+	file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Results_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".csv");
+	FILE* f = fopen(file_to_open, "a");
+			
+	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch);
+	fclose(f);
 	
-	//~ # Simplify alorithms names
-	//~ if (scheduler == "Fcfs_with_a_score"):
-		//~ scheduler = "Fcfs-Score"
-	//~ elif (scheduler == "Fcfs_easybf"):
-		//~ scheduler = "Fcfs-EasyBf"
-	//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
-		//~ scheduler = "Fcfs-Score-EasyBf"
+	/* For flow stretch heat map */
+	file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Stretch_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f = fopen(file_to_open, "w");
+	fprintf("%f", mean_flow_stretch);
+	fclose(f);
 	
-	//~ f.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (scheduler, str(len(to_print_list)), str(max_queue_time), str(mean_queue_time), str(total_queue_time), str(max_flow), str(mean_flow), str(total_flow), str(total_transfer_time), str(makespan), str(core_time_used), str(total_waiting_for_a_load_time), str(total_waiting_for_a_load_time_and_transfer_time), str(mean_flow_stretch)))
-	//~ f.close()
+	/* For flow stretch with a minimum heat map */
+	file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Stretch_with_a_minimum_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f = fopen(file_to_open, "w");
+	fprintf("%f", mean_flow_stretch_with_a_minimum);
+	fclose(f);
 	
-	//~ # For flow stretch heat map
-	//~ file_to_open = "outputs/Stretch_" + scheduler + ".txt"
-	//~ f = open(file_to_open, "w")
-	//~ f.write("%s" % (str(mean_flow_stretch)))
-	//~ f.close()
+	/* For total flow heat map */
+	file_to_open = malloc(100*sizeof(char));
+	strcmp(file_to_open, "../outputs/Total_flow_");
+	strcmp(file_to_open, scheduler);
+	strcp(file_to_open, ".txt");
+	FILE* f = fopen(file_to_open, "w");
+	fprintf("%f", total_flow);
+	fclose(f);
 	
-	//~ # For flow stretch with a minimum heat map
-	//~ file_to_open = "outputs/Stretch_with_a_minimum_" + scheduler + ".txt"
-	//~ f = open(file_to_open, "w")
-	//~ f.write("%s" % (str(mean_flow_stretch_with_a_minimum)))
-	//~ f.close()
-	
-	//~ # For total flow heat map
-	//~ file_to_open = "outputs/Total_flow_" + scheduler + ".txt"
-	//~ f = open(file_to_open, "w")
-	//~ f.write("%s" % (str(total_flow)))
-	//~ f.close()
-//~ }
+	free(file_to_open);
+}
