@@ -26,6 +26,8 @@ void main(int argc, char *argv[])
 	
 	end_times = malloc(sizeof(*end_times));
 	end_times->head = NULL;
+	start_times = malloc(sizeof(*start_times));
+	start_times->head = NULL;
 	
 	int old_finished_jobs = 0;
 	char* input_job_file = argv[1];
@@ -130,7 +132,7 @@ void main(int argc, char *argv[])
 					break;
 				}
 			}
-			//~ printf("héhé\n"); fflush(stdout);
+
 			if (job_pointer != NULL)
 			{
 				next_submit_time = job_pointer->subtime;
@@ -229,6 +231,8 @@ void main(int argc, char *argv[])
 		//~ finished_job_list = []	
 		old_finished_jobs = finished_jobs;
 		
+		printf("T = %d\n", t);
+		
 		if (end_times->head->time == t)
 		{
 			//~ printf("Job(s) ended.\n");
@@ -244,6 +248,10 @@ void main(int argc, char *argv[])
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
+			
+			/* Reset planned starting times. */
+			free_next_time_linked_list(&start_times->head);
+			print_time_list(start_times->head, 0);
 			
 			printf("Reschedule.\n");
 			
@@ -304,11 +312,14 @@ void main(int argc, char *argv[])
 		}
 		
 		/* Get started jobs. */
-		if (scheduled_job_list->head != NULL) /* TODO : me faudrait cette condition ? Crash possible ?*/
+		//~ if (scheduled_job_list->head != NULL) /* TODO : me faudrait cette condition ? Crash possible ?*/
+		if (start_times->head != NULL)
 		{
-			start_jobs(t, scheduled_job_list->head);
+			if (start_times->head->time == t) /* TODO : me faudrait cette condition ? Crash possible ?*/
+			{
+				start_jobs(t, scheduled_job_list->head);
+			}
 		}
-				
 		#ifdef PRINT_CLUSTER_USAGE
 		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
 		#endif

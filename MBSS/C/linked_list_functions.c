@@ -66,53 +66,105 @@ void insert_tail_data_list(struct Data_List* liste, struct Data* d)
 /* Insert so it's sorted by growing times. */
 void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert)
 {
-	if (liste->head == NULL)
-	{
+	//~ void sortedInsert(struct Node** head_ref,
+                  //~ struct Node* new_node)
+//~ {
+    struct Next_Time* current;
+    /* Special case for the head end */
+    if (liste->head == NULL || liste->head->time >= time_to_insert) {
+		
+		/* I don't want the same time twice. So I addthis condition. */
+		if (liste->head != NULL)
+		{
+			if (liste->head->time == time_to_insert)
+			{
+				printf("equal\n");
+				return;
+			}
+		}
+		
 		struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
-		new->next = NULL;
+		new->next = liste->head;
 		new->time = time_to_insert;
-		liste->head = new;
-	}
-	else
-	{
-		if (liste->head->time == time_to_insert)
-		{
-			return;
+        //~ new_node->next = *head_ref;
+        liste->head = new;
+    }
+    else {
+        /* Locate the node before
+the point of insertion */
+        current = liste->head;
+        while (current->next != NULL && current->next->time <= time_to_insert) {
+            current = current->next;
+        }
+        
+ 		/* I don't want the same time twice. So I addthis condition. */
+ 		if (current != NULL)
+ 		{
+			if (current->time == time_to_insert)
+			{
+				return;
+			}   
 		}
-		else if (liste->head->time > time_to_insert) /* Need to insert at head. */
-		{
-			struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
-			new->next = liste->head;
-			new->time = time_to_insert;
-			liste->head = new;
-			return;
-		}
-		printf("In insert time 0.\n");
-		struct Next_Time* temp = liste->head;
-		struct Next_Time* prev = liste->head;
-		while (temp->time < time_to_insert && temp != NULL)
-		{
-			prev = temp;
-			temp = temp->next;
-		}
-		if (temp == NULL) /* We are at the end. */
-		{
-			struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
-			new->next = NULL;
-			new->time = time_to_insert;
-			temp = new;
-			return;
-		}
-		printf("In insert time 1.\n");
-		if (temp->time == time_to_insert)
-		{
-			return;
-		}
-		struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
-		new->next = temp;
-		new->time = time_to_insert;
-		prev = new;
-	}
+		printf("Add %d.\n", time_to_insert);
+        
+        struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+        new->time = time_to_insert;
+        new->next = current->next;
+        current->next = new;
+    }
+//~ }
+	//~ if (liste->head == NULL)
+	//~ {
+		//~ struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+		//~ new->next = NULL;
+		//~ new->time = time_to_insert;
+		//~ liste->head = new;
+	//~ }
+	//~ else
+	//~ {
+		//~ if (liste->head->time == time_to_insert)
+		//~ {
+			//~ return;
+		//~ }
+		//~ else if (liste->head->time > time_to_insert) /* Need to insert at head. */
+		//~ {
+			//~ printf("Dans le else.\n");
+			//~ struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+			//~ new->next = liste->head;
+			//~ new->time = time_to_insert;
+			//~ liste->head = new;
+			//~ return;
+		//~ }
+		//~ printf("In insert time 0. Head is %d\n", liste->head->time);
+		//~ struct Next_Time* temp = liste->head;
+		//~ struct Next_Time* prev = liste->head;
+		//~ while (temp->time < time_to_insert && temp != NULL)
+		//~ {
+			//~ printf("Next.\n");
+			//~ prev = temp;
+			//~ temp = temp->next;
+			//~ printf("Next ok.\n");
+			//~ if (temp == NULL) { printf("Temp is null.\n"); break; }
+		//~ }
+		//~ printf("In insert time 0.5.\n"); fflush(stdout);
+		//~ if (temp == NULL) /* We are at the end. */
+		//~ {
+			//~ struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+			//~ new->next = NULL;
+			//~ new->time = time_to_insert;
+			//~ temp = new;
+			//~ return;
+		//~ }
+		//~ printf("In insert time 1.\n");
+		//~ if (temp->time == time_to_insert)
+		//~ {
+			//~ return;
+		//~ }
+		//~ struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
+		//~ new->next = temp;
+		//~ new->time = time_to_insert;
+		//~ prev = new;
+	//~ }
 }
 
 /* Delete all time corresponding to this time. The list is sorted so it should be easy. */
@@ -266,4 +318,23 @@ int get_length_job_list(struct Job* head)
 		j = j->next;
 	}
 	return length;
+}
+
+void free_next_time_linked_list(struct Next_Time** head_ref)
+{
+	printf("Free next start times.\n");
+ /* deref head_ref to get the real head */
+   struct Next_Time* current = *head_ref;
+   struct Next_Time* next;
+ 
+   while (current != NULL)
+   {
+       next = current->next;
+       free(current);
+       current = next;
+   }
+   
+   /* deref head_ref to affect the real head back
+      in the caller. */
+   *head_ref = NULL;
 }

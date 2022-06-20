@@ -202,7 +202,6 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		new->next = NULL;
 		//~ node_used->data->head = new;
 		insert_tail_data_list(node_used->data, new);
-		printf("%d\n", node_used->data->head->unique_id);
 	}	
 	//~ return transfer_time, waiting_for_a_load_time
 }
@@ -236,10 +235,20 @@ void start_jobs(int t, struct Job* j)
 	printf("Start of start_jobs at time %d.\n", t);
 	//~ jobs_to_remove = []
 	while (j != NULL)
-	{ 
+	{
 	//~ for j in scheduled_job_list:
 		if (j->start_time == t)
 		{
+			/* Remove from list of starting times. */
+			if (start_times->head->time == t)
+			{
+				printf("Before deleting starting time %d:\n", t);
+				print_time_list(start_times->head, 0);
+				delete_next_time_linked_list(start_times, t);
+				printf("After deleting starting time %d:\n", t);
+				print_time_list(start_times->head, 0);
+			}
+			
 			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
 			total_queue_time += j->start_time - j->subtime;
 			
@@ -283,10 +292,10 @@ void start_jobs(int t, struct Job* j)
 			j->end_time = j->start_time + min_between_delay_and_walltime; /* Attention le j->end time est mis a jour la! */
 			
 			/* Add in list of end times. */
-			printf("Before adding ending time %d.\n", j->end_time);
+			printf("Before adding ending time %d:\n", j->end_time);
 			print_time_list(end_times->head, 1);
 			insert_next_time_in_sorted_list(end_times, j->end_time);
-			printf("After adding ending time %d.\n", j->end_time);
+			printf("After adding ending time %d:\n", j->end_time);
 			print_time_list(end_times->head, 1);
 			
 			/* Use next min end time from global variable here :) */
@@ -304,7 +313,7 @@ void start_jobs(int t, struct Job* j)
 			j->node_used->n_available_cores -= j->cores;
 			#endif
 				
-			printf("Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
+			printf("==> Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
 			
 			for (i = 0; i < j->cores; i++)
 			{
@@ -360,11 +369,14 @@ void end_jobs(struct Job* job_list_head, int t)
 		if (j->end_time == t) /* A job has finished, let's remove it from the cores, write its results and figure out if we need to fill */
 		{
 			/* Remove from list of ending times. */
-			printf("Before deleting ending time %d.\n", t);
-			print_time_list(end_times->head, 1);
-			delete_next_time_linked_list(end_times, t);
-			printf("After deleting ending time %d.\n", t);
-			print_time_list(end_times->head, 1);
+			if (end_times->head->time == t)
+			{
+				printf("Before deleting ending time %d:\n", t);
+				print_time_list(end_times->head, 1);
+				delete_next_time_linked_list(end_times, t);
+				printf("After deleting ending time %d:\n", t);
+				print_time_list(end_times->head, 1);
+			}
 			
 			if (j->workload == 1)
 			{
@@ -374,7 +386,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			finished_jobs += 1;
 			
 			#ifdef PRINT
-			printf("Job %d finished at time %d on node %d.\n", j->unique_id, t, j->node_used->unique_id); fflush(stdout);
+			printf("==> Job %d finished at time %d on node %d.\n", j->unique_id, t, j->node_used->unique_id); fflush(stdout);
 			#endif
 			
 			/* Just printing, can remove */

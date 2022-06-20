@@ -64,6 +64,14 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 		print_single_node(choosen_node);
 		schedule_job_specific_node_at_earliest_available_time(j, choosen_node, t);
 		nb_job_to_delete += 1;
+		
+		/* Add in list of starting times. */
+		printf("Before adding starting time %d:\n", j->start_time);
+		print_time_list(start_times->head, 0);
+		insert_next_time_in_sorted_list(start_times, j->start_time);
+		printf("After adding starting time %d:\n", j->start_time);
+		print_time_list(start_times->head, 0);
+		
 		j = j->next;
 	}
 	
@@ -77,6 +85,7 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 	//~ print_job_list(job_list_to_start_from_history->head);
 	//~ exit(1);
 	free(nb_node);
+
 	//~ j = scheduled_job_list->head;
 }
 
@@ -96,6 +105,14 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
 			break;
 		}
+		
+		/* Add in list of starting times. */
+		printf("Before adding starting time %d:\n", j->start_time);
+		print_time_list(start_times->head, 0);
+		insert_next_time_in_sorted_list(start_times, j->start_time);
+		printf("After adding starting time %d:\n", j->start_time);
+		print_time_list(start_times->head, 0);
+			
 		j = j->next;
 	}
 }

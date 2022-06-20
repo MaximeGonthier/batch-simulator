@@ -24,8 +24,11 @@ struct Node_List** node_list;
 int running_cores;
 int running_nodes;
 int total_queue_time;
+
+/* To only call these functions when I need it. */
 struct Next_Time_List* end_times;
-//~ int next_start_time; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
+struct Next_Time_List* start_times; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
+
 int nb_job_to_evaluate_finished;
 
 struct Next_Time_List {
@@ -139,6 +142,7 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 int get_length_job_list(struct Job* head);
 void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert);
 void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete);
+void free_next_time_linked_list(struct Next_Time** head_ref);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
