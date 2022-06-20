@@ -26,6 +26,7 @@ int running_cores;
 int running_nodes;
 int total_queue_time;
 int first_subtime_day_0;
+char* scheduler;
 
 /* To only call these functions when I need it. */
 struct Next_Time_List* end_times;
@@ -143,7 +144,7 @@ void print_decision_in_scheduler(struct Job* j);
 void print_cores_in_specific_node(struct Node* n);
 void print_time_list(struct Next_Time* list, int end_or_start);
 void to_print_job_csv(struct Job* job, int time);
-void print_csv(struct To_Print* head_to_print, char* scheduler);
+void print_csv(struct To_Print* head_to_print);
 
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);

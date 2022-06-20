@@ -1,7 +1,7 @@
-//~ #define PRINT
-//~ #define PRINT_GANTT_CHART
-//~ #define PRINT_DISTRIBUTION_QUEUE_TIMES
-//~ #define PRINT_CLUSTER_USAGE
+#define PRINT
+#define PRINT_GANTT_CHART
+#define PRINT_DISTRIBUTION_QUEUE_TIMES
+#define PRINT_CLUSTER_USAGE
 #include <main.h>
 
 //~ from read_input_files import *
@@ -13,6 +13,9 @@
 
 void main(int argc, char *argv[])
 {
+	#ifdef a
+	exit(1);
+	#endif
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
@@ -35,7 +38,8 @@ void main(int argc, char *argv[])
 	int old_finished_jobs = 0;
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
-	char* scheduler = argv[3];
+	//~ scheduler = malloc ?
+	scheduler = argv[3];
 	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
 	
 	#ifdef PRINT
@@ -336,7 +340,7 @@ void main(int argc, char *argv[])
 	#endif
 	
 	printf("Computing and writing results...\n");
-	print_csv(jobs_to_print_list->head, scheduler);
+	print_csv(jobs_to_print_list->head);
 	
 	return;
 }
