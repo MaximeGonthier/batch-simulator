@@ -100,6 +100,7 @@ void to_print_job_csv(struct Job* job, int time)
 		new->data_type = job->index_node_list;
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
+	
 	#ifdef PRINT_GANTT_CHART
 	int i = 0;
 	file_to_open = malloc(100*sizeof(char));
@@ -136,7 +137,7 @@ void to_print_job_csv(struct Job* job, int time)
 	fclose(f);
 	free(file_to_open);
 	#endif
-	printf("2.\n");	
+	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "../outputs/Distribution_queue_times_");
@@ -152,7 +153,6 @@ void to_print_job_csv(struct Job* job, int time)
 	fclose(f);
 	free(file_to_open);
 	#endif
-	printf("3.\n");	
 }
 
 /* Print in a file the final results. Only called once at the end of the simulation. */

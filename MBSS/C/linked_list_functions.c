@@ -92,7 +92,6 @@ void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_i
 		{
 			if (liste->head->time == time_to_insert)
 			{
-				printf("equal\n");
 				return;
 			}
 		}
@@ -119,7 +118,6 @@ the point of insertion */
 				return;
 			}   
 		}
-		printf("Add %d.\n", time_to_insert);
         
         struct Next_Time* new = (struct Next_Time*) malloc(sizeof(struct Next_Time));
         new->time = time_to_insert;
@@ -336,7 +334,6 @@ int get_length_job_list(struct Job* head)
 
 void free_next_time_linked_list(struct Next_Time** head_ref)
 {
-	printf("Free next start times.\n");
  /* deref head_ref to get the real head */
    struct Next_Time* current = *head_ref;
    struct Next_Time* next;

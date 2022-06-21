@@ -1,7 +1,7 @@
-#define PRINT
-#define PRINT_GANTT_CHART
-#define PRINT_DISTRIBUTION_QUEUE_TIMES
-#define PRINT_CLUSTER_USAGE
+//~ #define PRINT
+//~ #define PRINT_GANTT_CHART
+//~ #define PRINT_DISTRIBUTION_QUEUE_TIMES
+//~ #define PRINT_CLUSTER_USAGE
 #include <main.h>
 
 //~ from read_input_files import *
@@ -13,9 +13,6 @@
 
 void main(int argc, char *argv[])
 {
-	#ifdef a
-	exit(1);
-	#endif
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
@@ -51,7 +48,7 @@ void main(int argc, char *argv[])
 	
 	/* Read cluster */
 	read_cluster(input_node_file);
-	printf("Read cluster done!\n");
+
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
@@ -80,18 +77,23 @@ void main(int argc, char *argv[])
 		
 	/* First start jobs from rackham's history. First need to sort it by start time */
 	get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
+	
+	#ifdef PRINT
 	printf("\njob_list_to_start_from_history after schedule. Must be empty.\n");
 	print_job_list(job_list_to_start_from_history->head);
 	printf("\nScheduled job list after starting jobs from history. Must be full.\n");
 	print_job_list(scheduled_job_list->head);
-
+	#endif
+	
 	/* Just for -2 jobs here */
 	start_jobs(t, scheduled_job_list->head);
-
+	
+	#ifdef PRINT
 	printf("\nSchedule job list after schedule - 2. Must be less full.\n");
 	print_job_list(scheduled_job_list->head);
 	printf("\nRunning job list after schedule -2. Must be filled with jobs from scheduled job list previously started at time t = %d.\n", t);
 	print_job_list(running_jobs->head);
+	#endif
 
 	#ifdef PRINT
 	FILE* f_fcfs_score = fopen("../outputs/Scores_data.txt", "w");
@@ -102,6 +104,7 @@ void main(int argc, char *argv[])
 	}
 	fclose(f_fcfs_score);
 	#endif
+	
 	#ifdef PRINT_CLUSTER_USAGE
 	char* title = malloc(100*sizeof(char));
 	strcpy(title, "../outputs/Stats_");
@@ -123,7 +126,10 @@ void main(int argc, char *argv[])
 		/* Jobs are already sorted by subtime so I can simply stop with a break */
 		if (next_submit_time == t) /* We have new jobs need to schedule them. */
 		{
+			#ifdef PRINT
 			printf("We have new jobs at time %d.\n", t);
+			#endif
+			
 			/* Copy in new jobs and delete from job_list. */
 			job_pointer = job_list->head;
 			while (job_pointer != NULL)
@@ -149,10 +155,12 @@ void main(int argc, char *argv[])
 				next_submit_time = -1;
 			}
 			
+			#ifdef PRINT
 			printf("\nJob list after new jobs, must be less full.\n");
 			print_job_list(job_list->head);
 			printf("\nNew jobs after new jobs, must be a bit filled.\n");
 			print_job_list(new_job_list->head);
+			#endif
 
 			/* New jobs are available! Schedule them. */
 			if (strcmp(scheduler, "Random") == 0)
@@ -227,19 +235,20 @@ void main(int argc, char *argv[])
 				copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
 				job_pointer = temp;
 			}
+			
+			#ifdef PRINT
 			printf("\nNew job list after schedule of new jobs. Must be empty.\n");
 			print_job_list(new_job_list->head);
 			printf("\nSchedule job list after schedule of new jobs. Must be a bit more full.\n");
 			print_job_list(scheduled_job_list->head);
+			#endif
 		}
 		
 		//~ /* Get ended job. Inform if a filing is needed. Compute file transfers needed.	 */
 		//~ affected_node_list = []	
 		//~ finished_job_list = []	
 		old_finished_jobs = finished_jobs;
-		
-		printf("T = %d\n", t);
-		
+				
 		if (end_times->head->time == t)
 		{
 			//~ printf("Job(s) ended.\n");
@@ -251,7 +260,9 @@ void main(int argc, char *argv[])
 		
 		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
 		{
+			#ifdef PRINT
 			printf("Core(s) liberated. Need to free them.\n");
+			#endif
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
@@ -260,7 +271,9 @@ void main(int argc, char *argv[])
 			free_next_time_linked_list(&start_times->head);
 			print_time_list(start_times->head, 0);
 			
+			#ifdef PRINT
 			printf("Reschedule.\n");
+			#endif
 			
 			if (strcmp(scheduler, "Random") == 0)
 			{
@@ -327,6 +340,7 @@ void main(int argc, char *argv[])
 				start_jobs(t, scheduled_job_list->head);
 			}
 		}
+		
 		#ifdef PRINT_CLUSTER_USAGE
 		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
 		#endif
@@ -339,7 +353,9 @@ void main(int argc, char *argv[])
 	fclose(f_stats);
 	#endif
 	
+	#ifdef PRINT
 	printf("Computing and writing results...\n");
+	#endif
 	print_csv(jobs_to_print_list->head);
 	
 	return;

@@ -17,7 +17,11 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 			nb_node[i] += 1;
 		}
 	}
+	
+	#ifdef PRINT
 	printf("%d nodes of size 128, %d of size 256 and %d of size 1024.\n", nb_node[0], nb_node[1], nb_node[2]);
+	#endif
+	
 	free(temp);
 
 	struct Job* j = j2;
@@ -60,17 +64,28 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 				choosen_node = choosen_node->next;
 			}
 		}
+		
+		#ifdef PRINT
 		printf("Choosen node is: ");
 		print_single_node(choosen_node);
+		#endif
+		
 		schedule_job_specific_node_at_earliest_available_time(j, choosen_node, t);
 		nb_job_to_delete += 1;
 		
 		/* Add in list of starting times. */
+		
+		#ifdef PRINT
 		printf("Before adding starting time %d:\n", j->start_time);
 		print_time_list(start_times->head, 0);
+		#endif
+		
 		insert_next_time_in_sorted_list(start_times, j->start_time);
+		
+		#ifdef PRINT
 		printf("After adding starting time %d:\n", j->start_time);
 		print_time_list(start_times->head, 0);
+		#endif
 		
 		j = j->next;
 	}
@@ -97,21 +112,33 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	{
 		if (nb_non_available_cores < nb_cores)
 		{
+			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
 			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores);
 		}
 		else
 		{
+			#ifdef PRINT
 			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
 			break;
 		}
 		
 		/* Add in list of starting times. */
+		#ifdef PRINT
 		printf("Before adding starting time %d:\n", j->start_time);
 		print_time_list(start_times->head, 0);
+		#endif
+		
 		insert_next_time_in_sorted_list(start_times, j->start_time);
+		
+		#ifdef PRINT
 		printf("After adding starting time %d:\n", j->start_time);
 		print_time_list(start_times->head, 0);
+		#endif
 			
 		j = j->next;
 	}

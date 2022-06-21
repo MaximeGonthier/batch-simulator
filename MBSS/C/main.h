@@ -1,7 +1,7 @@
-#define PRINT
-#define PRINT_GANTT_CHART
-#define PRINT_DISTRIBUTION_QUEUE_TIMES
-#define PRINT_CLUSTER_USAGE
+//~ #define PRINT
+//~ #define PRINT_GANTT_CHART
+//~ #define PRINT_DISTRIBUTION_QUEUE_TIMES
+//~ #define PRINT_CLUSTER_USAGE
 
 #include <stdio.h>
 #include <string.h>
