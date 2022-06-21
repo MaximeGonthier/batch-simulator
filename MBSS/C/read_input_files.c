@@ -2,10 +2,12 @@
 
 void read_cluster(char* input_node_file)
 {
-	node_list = malloc(3*sizeof(*node_list));
+	//~ node_list = malloc(3*sizeof(*node_list));
+	node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
 	for (int i = 0; i < 3; i++)
 	{
-		node_list[i] = malloc(sizeof(*node_list));
+		//~ node_list[i] = malloc(sizeof(*node_list));
+		node_list[i] = (struct Node_List*) malloc(sizeof(struct Node_List));
 		node_list[i]->head = NULL;
 		node_list[i]->tail = NULL;
 	}
@@ -35,10 +37,12 @@ void read_cluster(char* input_node_file)
 		new->data->head = NULL;
 		new->data->tail = NULL;
 		
-		new->cores = malloc(20*sizeof(*new->cores));
+		//~ new->cores = malloc(20*sizeof(*new->cores));
+		new->cores = (struct Core**) malloc(20*sizeof(struct Core));
 		for (int i = 0; i < 20; i++)
 		{
-			new->cores[i] = malloc(sizeof(*new->cores));
+			//~ new->cores[i] = malloc(sizeof(*new->cores));
+			new->cores[i] = (struct Core*) malloc(sizeof(struct Core));
 			new->cores[i]->unique_id = i;
 			//~ new->cores[i]->job_queue = malloc(sizeof(*new->cores[i]->job_queue));
 			//~ new->cores[i]->job_queue->head = NULL;
@@ -51,14 +55,17 @@ void read_cluster(char* input_node_file)
 		if (new->memory == 128)
 		{
 			insert_tail_node_list(node_list[0], new);
+			//~ node_list[0]->number_of_node += 1;
 		}
 		else if (new->memory == 256)
 		{
 			insert_tail_node_list(node_list[1], new);
+			//~ node_list[1]->number_of_node += 1;
 		}
 		else if (new->memory == 1024)
 		{
 			insert_tail_node_list(node_list[2], new);
+			//~ node_list[2]->number_of_node += 1;
 		}
 		else
 		{
@@ -75,22 +82,28 @@ void read_cluster(char* input_node_file)
 //~ struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
 void read_workload(char* input_job_file, int constraint_on_sizes)
 {
-	job_list = malloc(sizeof(*job_list));
+	#ifdef PRINT
+	printf("Start of read workload.\n");
+	#endif
+	
+	//~ job_list = malloc(sizeof(*job_list));
+	job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	job_list->head = NULL;
 	job_list->tail = NULL;
-	job_list_to_start_from_history = malloc(sizeof(*job_list_to_start_from_history));
+	//~ job_list_to_start_from_history = malloc(sizeof(*job_list_to_start_from_history));
+	job_list_to_start_from_history = (struct Job_List*) malloc(sizeof(struct Job_List));
 	job_list_to_start_from_history->head = NULL;
 	job_list_to_start_from_history->tail = NULL;
-	scheduled_job_list = malloc(sizeof(*scheduled_job_list));
+	//~ scheduled_job_list = malloc(sizeof(*scheduled_job_list));
+	scheduled_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	scheduled_job_list->head = NULL;
 	scheduled_job_list->tail = NULL;
-	running_jobs = malloc(sizeof(*running_jobs));
+	//~ running_jobs = malloc(sizeof(*running_jobs));
+	running_jobs = (struct Job_List*) malloc(sizeof(struct Job_List));
 	running_jobs->head = NULL;
 	running_jobs->tail = NULL;
-	//~ available_job_list = malloc(sizeof(*available_job_list));
-	//~ available_job_list->head = NULL;
-	//~ available_job_list->tail = NULL;
-	new_job_list = malloc(sizeof(*new_job_list));
+	//~ new_job_list = malloc(sizeof(*new_job_list));
+	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
 	
@@ -128,7 +141,6 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->workload = atoi(workload);
 		new->start_time_from_history = atoi(start_time_from_history);
 		new->node_from_history = atoi(start_node_from_history);
-		
 		/* Get index_node */
 		if (constraint_on_sizes != 0)
 		{
@@ -163,7 +175,8 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->start_time = 0; 
 		new->end_time = 0; 
 		new->end_before_walltime = false;
-		new->node_used = malloc(sizeof(struct Node*));
+		new->node_used = (struct Node*) malloc(sizeof(struct Node));
+		new->node_used = NULL;
 		
 		new->cores_used = malloc(new->cores*sizeof(int));
 		//~ new->cores_used = malloc(new->cores*sizeof(struct Core*));
@@ -171,7 +184,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		//~ {
 			//~ new->cores_used[i] = malloc(sizeof(struct Core*));
 		//~ }
-
+		//~ printf("Mallocs ok.\n"); fflush(stdout);
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
 		new->next = NULL;
@@ -179,42 +192,58 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		/* Add in job list or job to start from history */
 		if (new->workload != -2)
 		{
+			//~ printf("Insert.\n"); fflush(stdout);
 			insert_tail_job_list(job_list, new);
+			//~ printf("Insert Ok.\n"); fflush(stdout);
 		}
 		else
 		{
-			if (job_list_to_start_from_history->head == NULL)
-			{
-				job_list_to_start_from_history->head = new;
-				job_list_to_start_from_history->tail = new;
-			}
-			else
-			{
-				/* Want to insert it so the start time are sorted. */
-				struct Job *temp = job_list_to_start_from_history->head;
-				/* Is it our new head ? */
-				if(temp->start_time_from_history > new->start_time_from_history)
-				{
-					new->next = job_list_to_start_from_history->head;
-					job_list_to_start_from_history->head = new;
-				}
-				else
-				{
-					while(temp != NULL)
-					{
-						if(temp->next->start_time_from_history > new->start_time_from_history)
-						{
-							new->next = temp->next;
-							temp->next = new;
-							break;
-						}
-						temp = temp->next;
-					}
-				}
-			}		
+			//~ printf("Insert -2.\n"); fflush(stdout);
+			
+			// NEW
+			insert_job_in_sorted_list(job_list_to_start_from_history, new);
+			
+			// OLD
+			//~ if (job_list_to_start_from_history->head == NULL)
+			//~ {
+				//~ job_list_to_start_from_history->head = new;
+				//~ job_list_to_start_from_history->tail = new;
+			//~ }
+			//~ else
+			//~ {
+				//~ /* Want to insert it so the start time are sorted. */
+				//~ struct Job *temp = job_list_to_start_from_history->head;
+				//~ /* Is it our new head ? */
+				//~ if(temp->start_time_from_history > new->start_time_from_history)
+				//~ {
+					//~ printf("New head.\n"); fflush(stdout);
+					//~ new->next = job_list_to_start_from_history->head;
+					//~ job_list_to_start_from_history->head = new;
+				//~ }
+				//~ else
+				//~ {
+					//~ printf("Not new head.\n"); fflush(stdout);
+					//~ while(temp != NULL)
+					//~ {
+						//~ if(temp->next->start_time_from_history > new->start_time_from_history)
+						//~ {
+							//~ new->next = temp->next;
+							//~ temp->next = new;
+							//~ printf("Inserted -2.\n");
+							//~ break;
+						//~ }
+						//~ temp = temp->next;
+					//~ }
+				//~ }
+			//~ }
+			//~ printf("Insert -2 Ok.\n"); fflush(stdout);	
 		}
+		//~ printf("Added job %d.\n", new->unique_id); fflush(stdout);
 	}
 	fclose(f);
+	#ifdef PRINT
+	printf("End of read workload.\n");
+	#endif
 }
 
 int get_nb_job_to_evaluate(struct Job* l)
@@ -273,7 +302,7 @@ void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0)
 		j = j->next;
 	}
 	
-	FILE *f = fopen("../outputs/Start_end_evaluated_slice.txt", "w");
+	FILE *f = fopen("outputs/Start_end_evaluated_slice.txt", "w");
 	if (!f)
 	{
 		perror("fopen");

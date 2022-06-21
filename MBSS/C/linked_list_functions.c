@@ -18,17 +18,13 @@ void insert_tail_job_list(struct Job_List* liste, struct Job* j)
 {
 	if (liste->head == NULL)
 	{
+		//~ liste->head = (struct Job*) malloc(sizeof(struct Job));
 		liste->head = j;
+		//~ liste->tail = (struct Job*) malloc(sizeof(struct Job));
 		liste->tail = j;
 	}
 	else
 	{
-		//~ struct Job* tmp = liste->head;
-		//~ while (tmp != NULL)
-		//~ {
-			//~ tmp = tmp->next;
-		//~ }
-		//~ tmp = j;
 		liste->tail->next = j;
 		liste->tail = j;
 	}
@@ -179,6 +175,28 @@ the point of insertion */
 	//~ }
 }
 
+/* Insert so it's sorted by start times from history. */
+void insert_job_in_sorted_list(struct Job_List* liste, struct Job* j)
+{
+    struct Job* current;
+    /* Special case for the head end */
+    if (liste->head == NULL || liste->head->start_time_from_history >= j->start_time_from_history) {	
+		j->next = liste->head;
+        liste->head = j;
+    }
+    else {
+        /* Locate the node before
+the point of insertion */
+        current = liste->head;
+        while (current->next != NULL && current->next->start_time_from_history <= j->start_time_from_history) {
+            current = current->next;
+        }
+        
+        j->next = current->next;
+        current->next = j;
+    }
+}
+
 /* Delete all time corresponding to this time. The list is sorted so it should be easy. */
 void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete)
 {
@@ -253,7 +271,7 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 {
     if (liste == NULL)
     {
-		printf("Error list empty.\n");
+		printf("Error list empty.\n"); fflush(stdout);
         exit(EXIT_FAILURE);
     }
 
@@ -274,7 +292,7 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	}
 	if (temp == NULL)
 	{
-		printf("Deletion of job %d failed.\n", unique_id_to_delete);
+		printf("Error, deletion of job %d failed.\n", unique_id_to_delete); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 	prev->next = temp->next;
@@ -305,13 +323,19 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 	new->start_time = j->start_time;
 	new->end_time = j->end_time;
 	new->end_before_walltime = j->end_before_walltime;
-	new->node_used = j->node_used;
-	new->cores_used = j->cores_used;
+	//~ new->node_used = j->node_used;
+	//~ new->cores_used = j->cores_used;
 	new->transfer_time = j->transfer_time;
 	new->waiting_for_a_load_time = j->waiting_for_a_load_time;
 	new->workload = j->workload;
 	new->start_time_from_history = j->start_time_from_history;
 	new->node_from_history = j->node_from_history;
+
+	new->node_used = (struct Node*) malloc(sizeof(struct Node));
+	new->node_used = j->node_used;
+	
+	new->cores_used = malloc(new->cores*sizeof(int));
+	new->cores_used = j->cores_used;
 
 	/* Delete */
 	delete_job_linked_list(to_delete_from, j->unique_id);

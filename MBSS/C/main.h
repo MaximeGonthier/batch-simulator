@@ -49,6 +49,7 @@ struct Job_List {
 };
 
 struct Node_List {
+	//~ int number_of_node;
 	struct Node* head;
 	struct Node* tail;
 };
@@ -169,6 +170,7 @@ void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_i
 void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete);
 void free_next_time_linked_list(struct Next_Time** head_ref);
 void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp);
+void insert_job_in_sorted_list(struct Job_List* liste, struct Job* j);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

@@ -128,17 +128,17 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 		}
 		
 		/* Add in list of starting times. */
-		#ifdef PRINT
-		printf("Before adding starting time %d:\n", j->start_time);
-		print_time_list(start_times->head, 0);
-		#endif
+		//~ #ifdef PRINT
+		//~ printf("Before adding starting time %d:\n", j->start_time);
+		//~ print_time_list(start_times->head, 0);
+		//~ #endif
 		
 		insert_next_time_in_sorted_list(start_times, j->start_time);
 		
-		#ifdef PRINT
-		printf("After adding starting time %d:\n", j->start_time);
-		print_time_list(start_times->head, 0);
-		#endif
+		//~ #ifdef PRINT
+		//~ printf("After adding starting time %d:\n", j->start_time);
+		//~ print_time_list(start_times->head, 0);
+		//~ #endif
 			
 		j = j->next;
 	}

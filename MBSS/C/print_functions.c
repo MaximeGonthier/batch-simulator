@@ -7,7 +7,7 @@ void print_node_list(struct Node_List** list)
 		struct Node* n = list[i]->head;
 		while (n != NULL)
 		{
-			printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores);
+			printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); fflush(stdout);
 			n = n->next;
 		}
 	}
@@ -15,7 +15,7 @@ void print_node_list(struct Node_List** list)
 
 void print_single_node(struct Node* n)
 {
-	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores);
+	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); fflush(stdout);
 }
 
 void print_job_list(struct Job* list)
@@ -27,7 +27,7 @@ void print_job_list(struct Job* list)
 	struct Job* j = list;
 	while (j != NULL)
 	{
-		printf("Id: %d Subtime: %d Delay: %d Walltime: %d Cores: %d Data: %d Data_size: %f Data_category: %d Workload: %d Start_time_from_history: %d Node_from_history: %d\n", j->unique_id, j->subtime, j->delay, j->walltime, j->cores, j->data, j->data_size, j->index_node_list, j->workload, j->start_time_from_history, j->node_from_history);
+		printf("Id: %d Subtime: %d Delay: %d Walltime: %d Cores: %d Data: %d Data_size: %f Data_category: %d Workload: %d Start_time_from_history: %d Node_from_history: %d\n", j->unique_id, j->subtime, j->delay, j->walltime, j->cores, j->data, j->data_size, j->index_node_list, j->workload, j->start_time_from_history, j->node_from_history); fflush(stdout);
 		j = j->next;
 	}
 }
@@ -40,40 +40,40 @@ void print_time_list(struct Next_Time* list, int end_or_start)
 	}
 	if (end_or_start == 1)
 	{
-		printf("Next ending times are:");
+		printf("Next ending times are:"); fflush(stdout);
 	}
 	else
 	{
-		printf("Next starting times are:");
+		printf("Next starting times are:"); fflush(stdout);
 	}
 	struct Next_Time* nt = list;
 	while (nt != NULL)
 	{
-		printf(" %d", nt->time);
+		printf(" %d", nt->time); fflush(stdout);
 		nt = nt->next;
 	}
-	printf("\n");
+	printf("\n"); fflush(stdout);
 }
 
 void print_decision_in_scheduler(struct Job* j)
 {
-	printf("Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id);
+	printf("Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id); fflush(stdout);
 	for (int i = 0; i < j->cores - 1; i++)
 	{
-		printf("%d,", j->cores_used[i]);
+		printf("%d,", j->cores_used[i]); fflush(stdout);
 	}
-	printf("%d", j->cores_used[j->cores - 1]);
-	printf(" start at time %d and is predicted to finish at time %d.\n", j->start_time, j->end_time);
+	printf("%d", j->cores_used[j->cores - 1]); fflush(stdout);
+	printf(" start at time %d and is predicted to finish at time %d.\n", j->start_time, j->end_time); fflush(stdout);
 }
 
 void print_cores_in_specific_node(struct Node* n)
 {
-	printf("Cores in node %d are: ", n->unique_id);
+	printf("Cores in node %d are: ", n->unique_id); fflush(stdout);
 	for (int i = 0; i < 19; i++)
 	{
-		printf("%d(%d),", n->cores[i]->unique_id, n->cores[i]->available_time);
+		printf("%d(%d),", n->cores[i]->unique_id, n->cores[i]->available_time); fflush(stdout);
 	}
-	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time);
+	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time); fflush(stdout);
 }
 
 /* Print in a csv file the results of this job allocation */
@@ -96,7 +96,7 @@ void to_print_job_csv(struct Job* job, int time)
 		new->job_end_time = job->end_time;
 		new->job_cores = job->cores;
 		new->waiting_for_a_load_time = job->waiting_for_a_load_time;
-		new->empty_cluster_time = (job->delay + job->data_size)/0.1;
+		new->empty_cluster_time = job->delay + (job->data_size)/0.1;
 		new->data_type = job->index_node_list;
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
@@ -104,9 +104,9 @@ void to_print_job_csv(struct Job* job, int time)
 	#ifdef PRINT_GANTT_CHART
 	int i = 0;
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Results_all_jobs_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".csv");
+	strcpy(file_to_open, "outputs/Results_all_jobs_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".csv");
 	FILE* f = fopen(file_to_open, "a");
 	if (!f)
 	{
@@ -160,9 +160,9 @@ void print_csv(struct To_Print* head_to_print)
 {
 	/* For distribution of flow and queue times on each job. */
 	char* file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Queue_times_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Queue_times_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	FILE* f_queue = fopen(file_to_open, "w");
 	if (!f_queue)
 	{
@@ -171,9 +171,9 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Flow_times_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Flow_times_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	FILE* f_flow = fopen(file_to_open, "w");
 	if (!f_flow)
 	{
@@ -182,9 +182,9 @@ void print_csv(struct To_Print* head_to_print)
 	}
 		
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Stretch_times_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Stretch_times_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	FILE* f_stretch = fopen(file_to_open, "w");
 	if (!f_stretch)
 	{
@@ -208,7 +208,6 @@ void print_csv(struct To_Print* head_to_print)
 	float mean_flow_stretch = 0;
 	float mean_flow_stretch_with_a_minimum = 0;
 	float core_time_used = 0;
-	int job_exceeding_minimum = 0;
 	
 	
 	while (head_to_print != NULL)
@@ -216,10 +215,21 @@ void print_csv(struct To_Print* head_to_print)
 		/* Flow stretch */
 		total_flow_stretch += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
 		
-		if (head_to_print->job_end_time - head_to_print->job_start_time >= 300) /* Ignore jobs of delay less that 5 minutes */
+		if (head_to_print->job_end_time - head_to_print->job_start_time < 300) /* For jobs less than 5 min long. */
+		{
+			/* calculer stretch et tronquer a 1 pour les petits jobs. */
+			if ((head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time < 1)
+			{
+				total_flow_stretch_with_a_minimum += 1;
+			}
+			else
+			{
+				total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+			}
+		}
+		else
 		{
 			total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
-			job_exceeding_minimum += 1;
 		}
 				
 		core_time_used += head_to_print->time_used*head_to_print->job_cores;
@@ -233,9 +243,11 @@ void print_csv(struct To_Print* head_to_print)
 		{
 			max_flow = head_to_print->job_end_time - head_to_print->job_subtime;
 		}
-		total_transfer_time += head_to_print->transfer_time - head_to_print->waiting_for_a_load_time;
+		//~ total_transfer_time += head_to_print->transfer_time - head_to_print->waiting_for_a_load_time;
+		total_transfer_time += head_to_print->transfer_time;
 		total_waiting_for_a_load_time += head_to_print->waiting_for_a_load_time;
-		total_waiting_for_a_load_time_and_transfer_time += head_to_print->transfer_time;
+		//~ total_waiting_for_a_load_time_and_transfer_time += head_to_print->transfer_time;
+		total_waiting_for_a_load_time_and_transfer_time += head_to_print->transfer_time + head_to_print->waiting_for_a_load_time;
 		if (makespan < head_to_print->job_end_time)
 		{
 			makespan = head_to_print->job_end_time;
@@ -255,12 +267,13 @@ void print_csv(struct To_Print* head_to_print)
 	mean_queue_time = total_queue_time/nb_job_to_evaluate;
 	mean_flow = total_flow/nb_job_to_evaluate;
 	mean_flow_stretch = total_flow_stretch/nb_job_to_evaluate;
-	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/job_exceeding_minimum;
+	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/nb_job_to_evaluate;
 	
+	/* Main file of reults */
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Results_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".csv");
+	strcpy(file_to_open, "outputs/Results_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".csv");
 	FILE* f = fopen(file_to_open, "a");
 	if (!f)
 	{
