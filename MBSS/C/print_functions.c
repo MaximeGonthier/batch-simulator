@@ -136,9 +136,9 @@ void to_print_job_csv(struct Job* job, int time)
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Distribution_queue_times_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Distribution_queue_times_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	f = fopen(file_to_open, "a");
 	if (!f)
 	{
@@ -281,9 +281,9 @@ void print_csv(struct To_Print* head_to_print)
 	
 	/* For flow stretch heat map */
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Stretch_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Stretch_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	f = fopen(file_to_open, "w");
 	if (!f)
 	{
@@ -295,9 +295,9 @@ void print_csv(struct To_Print* head_to_print)
 	
 	/* For flow stretch with a minimum heat map */
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Stretch_with_a_minimum_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Stretch_with_a_minimum_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	f = fopen(file_to_open, "w");
 	if (!f)
 	{
@@ -309,9 +309,9 @@ void print_csv(struct To_Print* head_to_print)
 	
 	/* For total flow heat map */
 	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "../outputs/Total_flow_");
-	strcpy(file_to_open, scheduler);
-	strcpy(file_to_open, ".txt");
+	strcpy(file_to_open, "outputs/Total_flow_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
 	f = fopen(file_to_open, "w");
 	if (!f)
 	{

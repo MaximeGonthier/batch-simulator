@@ -167,7 +167,10 @@ def print_csv(to_print_list, scheduler):
 	mean_queue_time = total_queue_time/len(to_print_list)
 	mean_flow = total_flow/len(to_print_list)
 	mean_flow_stretch = total_flow_stretch/len(to_print_list)
-	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/job_exceeding_minimum
+	if job_exceeding_minimum == 0:
+		mean_flow_stretch_with_a_minimum = 0
+	else:
+		mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/job_exceeding_minimum
 	file_to_open = "outputs/Results_" + scheduler + ".csv"
 	f = open(file_to_open, "a")
 	
