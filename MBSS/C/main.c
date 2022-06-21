@@ -95,7 +95,7 @@ void main(int argc, char *argv[])
 	//~ print_job_list(running_jobs->head);
 	#endif
 
-	#ifdef PRINT
+	#ifdef PRINT_SCORES_DATA
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "w");
 	if (!f_fcfs_score)
 	{
@@ -119,31 +119,43 @@ void main(int argc, char *argv[])
 	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
 	#endif
 	
+	int i = 0;
+	int j = 0;
+	int multiplier_file_to_load = 0;
+	int multiplier_file_evicted = 0;
+	int multiplier_nb_copy = 0;
+	
 	/* Getting informations for certain schedulers. */
-	if scheduler[0:19] == "Fcfs_with_a_score_x":
-		i = 19
-		j = 19
-		while scheduler[i] != "_":
-			i+= 1
-		multiplier_file_to_load = int(scheduler[j:i])
-		j = i + 2
-		i = i + 1
-		while scheduler[i] != "_":
-			i+= 1
-		multiplier_file_evicted = int(scheduler[j:i])
-		j = i + 2
-		multiplier_nb_copy = int(scheduler[j:len(scheduler)])
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
+	{
+		i = 19;
+		j = 19;
+		while (scheduler[i] != '_')
+		{
+			i += 1;
+		}
+		char *to_copy = malloc(5*sizeof(char));
+		strncpy(to_copy, scheduler + j, i - j);
+		multiplier_file_to_load = atoi(to_copy);
+		j = i + 2;
+		i = i + 1;
+		while (scheduler[i] != '_')
+		{
+			i += 1;
+		}
+		strncpy(to_copy, scheduler + j, i - j);
+		multiplier_file_evicted = atoi(to_copy);
+		j = i + 2;
+		while (scheduler[i])
+		{
+			i += 1;
+		}
+		strncpy(to_copy, scheduler + j, i - j);
+		multiplier_nb_copy = atoi(to_copy);
 		
-		
-		# ~ if len(scheduler) == 26:
-		# ~ elif len(scheduler) == 27:
-		# ~ else:
-			# ~ print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM. Or I haven't dealt with this number for multipliers :/")
-			# ~ exit(1)
-		# ~ multiplier_file_to_load = int(scheduler[19])
-		# ~ multiplier_file_evicted = int(scheduler[22])
-		# ~ multiplier_nb_copy = int(scheduler[25])
-		print("Multiplier file to load:", multiplier_file_to_load, "| Multiplier file evicted:", multiplier_file_evicted, "| Multiplier nb of copy:", multiplier_nb_copy)
+		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+		free(to_copy);
+	}
 
 	/* Start of simulation. */
 	while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
@@ -189,22 +201,20 @@ void main(int argc, char *argv[])
 			//~ #endif
 
 			/* New jobs are available! Schedule them. */
-			if (strcmp(scheduler, "Random") == 0)
+			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 			{
-				//~ random.shuffle(available_job_list);
-				//~ scheduled_job_list = random_scheduler(new_job_list, node_list, t);
+				fcfs_with_a_score_scheduler(new_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
-				
-			//~ /* ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
-			//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
-				//~ /* ~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
-				//~ scheduled_job_list = fcfs_with_a_score_scheduler(new_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
-				
 			else if (strcmp(scheduler, "Fcfs") == 0)
 			{
 				fcfs_scheduler(new_job_list->head, node_list, t);
 			}
-				
+			//~ elif (strcmp(scheduler, "Random") == 0)
+			//~ {
+				//~ printf("Not coded 
+				//~ random.shuffle(available_job_list);
+				//~ scheduled_job_list = random_scheduler(new_job_list, node_list, t);
+			//~ }
 			//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
 				//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(new_job_list, node_list, t)
 				

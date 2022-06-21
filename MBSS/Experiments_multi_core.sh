@@ -36,14 +36,14 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
           #~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES 2>&1 | tee terminal_output.txt
 
 if [ $PRINT == 0 ]; then
-	make -j6 -C C/
+	make -j8 -C C/
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	# make print -C C/
 elif [ $PRINT == 1 ]; then
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
-	make print_gantt_chart -C C/
+	make print_gantt_chart -j8 -C C/
 elif [ $PRINT == 2 ]; then
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES

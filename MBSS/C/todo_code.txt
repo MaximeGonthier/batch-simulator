@@ -1,1 +1,1 @@
-
+Important to sort cores after each schedule in the node you selected.

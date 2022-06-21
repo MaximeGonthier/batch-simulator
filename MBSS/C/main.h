@@ -2,6 +2,7 @@
 //~ #define PRINT_GANTT_CHART
 //~ #define PRINT_DISTRIBUTION_QUEUE_TIMES
 //~ #define PRINT_CLUSTER_USAGE
+//~ #define PRINT_SCORES_DATA
 
 #include <stdio.h>
 #include <string.h>
@@ -175,6 +176,7 @@ void insert_job_in_sorted_list(struct Job_List* liste, struct Job* j);
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

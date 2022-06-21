@@ -4,7 +4,6 @@
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
 {
 	int i = 0;
-	//~ int k = 0;
 	int min_time = -1;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
