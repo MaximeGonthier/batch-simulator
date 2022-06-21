@@ -20,10 +20,6 @@ void print_single_node(struct Node* n)
 
 void print_job_list(struct Job* list)
 {
-	//~ if (list == NULL)
-	//~ {
-		//~ return;
-	//~ }
 	struct Job* j = list;
 	while (j != NULL)
 	{

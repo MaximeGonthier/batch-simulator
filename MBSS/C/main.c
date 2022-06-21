@@ -84,12 +84,12 @@ void main(int argc, char *argv[])
 		start_jobs(t, scheduled_job_list->head);
 	}
 	
-	//~ #ifdef PRINT
-	//~ printf("\nSchedule job list after schedule - 2. Must be less full.\n");
-	//~ print_job_list(scheduled_job_list->head);
+	#ifdef PRINT
+	printf("\nSchedule job list after schedule - 2. Must be less full.\n");
+	print_job_list(scheduled_job_list->head);
 	//~ printf("\nRunning job list after schedule -2. Must be filled with jobs from scheduled job list previously started at time t = %d.\n", t);
 	//~ print_job_list(running_jobs->head);
-	//~ #endif
+	#endif
 
 	#ifdef PRINT
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "w");
@@ -114,6 +114,8 @@ void main(int argc, char *argv[])
 	}
 	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
 	#endif
+	
+	//~ int number_of_new_jobs = 0;
 	
 	/* Start of simulation. */
 	while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
@@ -219,11 +221,11 @@ void main(int argc, char *argv[])
 					//~ available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
 			else
 			{
-				printf("Wrong scheduler in arguments");
+				printf("Wrong scheduler in arguments"); fflush(stdout);
 				exit(EXIT_FAILURE);
 			}
 			
-			/* Empty new job list and put all in scheduled job */
+			/* Copy in scheduled_job and delete from new_jobs */
 			job_pointer = new_job_list->head;
 			while (job_pointer != NULL)
 			{
@@ -232,8 +234,33 @@ void main(int argc, char *argv[])
 				job_pointer = temp;
 			}
 			
+			//~ for (int i = 0; i < number_of_new_jobs; i++)
+			//~ {
+				//~ job_pointer = new_job_list->head;
+				//~ printf("Add %d.\n", job_pointer->unique_id);
+				//~ copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
+			//~ }
+			
+			/* Copy and delete. */
+			//~ job_pointer = new_job_list->head;
+			//~ while (job_pointer != NULL)
+			//~ {
+				//~ if (job_pointer->start_time == t)
+				//~ {
+					//~ printf("Delete job %d from scheduled.\n", j->unique_id); fflush(stdout);
+					//~ struct Job* temp = job_pointer->next;
+					//~ copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
+					//~ job_pointer = temp;
+				//~ }
+				//~ else
+				//~ {
+					//~ job_pointer = job_pointer->next;
+				//~ }
+			//~ }
+			
 			#ifdef PRINT
-			printf("New job list emptied Next start is %d t is %d.\n", start_times->head->time, t); fflush(stdout);
+			printf("New job list emptied. Next start is %d t is %d. New schedule job list is:\n", start_times->head->time, t); fflush(stdout);
+			print_job_list(scheduled_job_list->head);
 			#endif
 			
 			//~ #ifdef PRINT
@@ -244,6 +271,8 @@ void main(int argc, char *argv[])
 			//~ #endif
 			
 		}
+
+		
 		//~ printf("here\n");
 		//~ /* Get ended job. Inform if a filing is needed. Compute file transfers needed.	 */
 		//~ affected_node_list = []	
@@ -346,6 +375,12 @@ void main(int argc, char *argv[])
 		#ifdef PRINT_CLUSTER_USAGE
 		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
 		#endif
+		
+		if (start_times->head != NULL && t > start_times->head->time)
+		{
+			printf("ERROR, next start is %d t is %d.\n", start_times->head->time, t); fflush(stdout);
+			exit(EXIT_FAILURE);
+		}
 		
 		/* Time is advancing. */
 		t += 1;

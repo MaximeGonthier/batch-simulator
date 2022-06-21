@@ -96,12 +96,8 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 		j = job_list_to_start_from_history->head;
 		copy_delete_insert_job_list(job_list_to_start_from_history, scheduled_job_list, j);
 	}
-	//~ print_job_list(scheduled_job_list->head);
-	//~ print_job_list(job_list_to_start_from_history->head);
-	//~ exit(1);
-	free(nb_node);
 
-	//~ j = scheduled_job_list->head;
+	free(nb_node);
 }
 
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)

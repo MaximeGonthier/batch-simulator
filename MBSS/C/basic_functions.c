@@ -165,9 +165,9 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
 {
-	#ifdef PRINT
-	printf("Adding %d.\n", data_unique_id); fflush(stdout);
-	#endif
+	//~ #ifdef PRINT
+	//~ printf("Adding %d.\n", data_unique_id); fflush(stdout);
+	//~ #endif
 	
 	bool data_is_on_node = false;
 	/* Let's try to find it in the node */
@@ -211,14 +211,14 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 	if (data_is_on_node == false) /* Need to load it */
 	{
 		*transfer_time = data_size/node_used->bandwidth;
-		#ifdef PRINT
-		printf("1.2.\n"); fflush(stdout);
-		#endif
+		//~ #ifdef PRINT
+		//~ printf("1.2.\n"); fflush(stdout);
+		//~ #endif
 		/* Create a class Data for this node */
 		struct Data* new = (struct Data*) malloc(sizeof(struct Data));
-		#ifdef PRINT
-		printf("2.\n"); fflush(stdout);
-		#endif
+		//~ #ifdef PRINT
+		//~ printf("2.\n"); fflush(stdout);
+		//~ #endif
 		new->unique_id = data_unique_id;
 		new->start_time = t + *transfer_time;
 		new->end_time = end_time;
@@ -227,9 +227,9 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		new->next = NULL;
 		insert_tail_data_list(node_used->data, new);
 	}
-	#ifdef PRINT
-	printf("%d added.\n", data_unique_id); fflush(stdout);
-	#endif
+	//~ #ifdef PRINT
+	//~ printf("%d added.\n", data_unique_id); fflush(stdout);
+	//~ #endif
 }
 
 void remove_data_from_node(struct Job* j, int t)
@@ -252,7 +252,7 @@ void remove_data_from_node(struct Job* j, int t)
 }
 
 /* Go through schedule jobs to find finished jobs. */
-void start_jobs(int t, struct Job* j)
+void start_jobs(int t, struct Job* head)
 {
 	int i = 0;
 	int k = 0;
@@ -262,26 +262,29 @@ void start_jobs(int t, struct Job* j)
 	#ifdef PRINT
 	printf("Start of start_jobs at time %d.\n", t); fflush(stdout);
 	#endif
-
+	
+	struct Job* j = head;
+	
 	while (j != NULL)
 	{
-	//~ for j in scheduled_job_list:
+		//~ printf("Looking at job %d.\n", j->unique_id); fflush(stdout);
 		if (j->start_time == t)
+		//~ if (j->start_time <= t)
 		{
 			/* Remove from list of starting times. */
 			if (start_times->head != NULL && start_times->head->time == t)
 			{
-				//~ #ifdef PRINT
-				//~ printf("Before deleting starting time %d:\n", t);
-				//~ print_time_list(start_times->head, 0);
-				//~ #endif
+				#ifdef PRINT
+				printf("Before deleting starting time %d:\n", t); fflush(stdout);
+				print_time_list(start_times->head, 0);
+				#endif
 				
 				delete_next_time_linked_list(start_times, t);
 				
-				//~ #ifdef PRINT
-				//~ printf("After deleting starting time %d:\n", t);
-				//~ print_time_list(start_times->head, 0);
-				//~ #endif
+				#ifdef PRINT
+				printf("After deleting starting time %d:\n", t); fflush(stdout);
+				print_time_list(start_times->head, 0);
+				#endif
 			}
 			
 			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
@@ -312,9 +315,9 @@ void start_jobs(int t, struct Job* j)
 				exit(EXIT_FAILURE);
 			}
 			
-			#ifdef PRINT
-			printf("For job %d: %d transfer time and %d waiting for a load time.\n", j->unique_id, transfer_time, waiting_for_a_load_time); fflush(stdout);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("For job %d: %d transfer time and %d waiting for a load time.\n", j->unique_id, transfer_time, waiting_for_a_load_time); fflush(stdout);
+			//~ #endif
 			
 			if (j->delay + overhead_of_load < j->walltime)
 			{
@@ -386,6 +389,7 @@ void start_jobs(int t, struct Job* j)
 	{
 		if (j->start_time == t)
 		{
+			//~ printf("Delete job %d from scheduled.\n", j->unique_id); fflush(stdout);
 			struct Job* temp = j->next;
 			copy_delete_insert_job_list(scheduled_job_list, running_jobs, j);
 			j = temp;
@@ -395,6 +399,7 @@ void start_jobs(int t, struct Job* j)
 			j = j->next;
 		}
 	}
+	//~ print_job_list(scheduled_job_list->head);
 	//~ if len(jobs_to_remove) > 0:
 		//~ scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
 		//~ available_job_list = remove_jobs_from_list(available_job_list, jobs_to_remove)
@@ -443,7 +448,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%1 == 0)
+			if (finished_jobs%100 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
