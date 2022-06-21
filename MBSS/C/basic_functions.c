@@ -91,6 +91,46 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	return nb_non_available_cores;
 }
 
+void get_current_intervals(struct Node_List** head_node, int t)
+{
+	int i = 0;
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		while (n != NULL)
+		{
+			struct Data* d = n->data;
+			while (d != NULL)
+			{
+				d->temp_interval_usage_time.clear()
+				free(d->intervals); ? /* TODO : need to free correctly each node of intervlas with a temp */
+				if (d->nb_task_using_it > 0)
+				{
+					d->temp_interval_usage_time.append(t)
+					if (d->start_time < t)
+					{
+						d->temp_interval_usage_time.append(t);
+					}
+					else
+					{
+						d->temp_interval_usage_time.append(d->start_time);
+					}
+					d->temp_interval_usage_time.append(d->end_time)
+				}
+				else if (d->nb_task_using_it == 0 and d->end_time >= t)
+				{
+					//~ d->temp_interval_usage_time.append(t)
+					//~ d->temp_interval_usage_time.append(t)
+					//~ d->temp_interval_usage_time.append(t)
+					insert_tail_interval_list(d->intervals, struct Interval* i);
+				}
+				d = d->next;
+			}
+			n = n->next;
+		}
+	}
+}
+
 int get_nb_non_available_cores(struct Node_List** n, int t)
 {
 	int nb_non_available_cores = 0;

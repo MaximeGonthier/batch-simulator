@@ -13,6 +13,34 @@ void print_node_list(struct Node_List** list)
 	}
 }
 
+void print_data_intervals(struct Interval_List** list)
+{
+	printf("Intervals are:\n"); fflush(stdout);
+	for (int i = 0; i < 3; i++)
+	{
+		struct Node* n = list[i]->head;
+		while (n != NULL)
+		{
+			printf("Node %d:", n->unique_id); fflush(stdout);
+			struct Data* d = n->data;
+			while (d != NULL)
+			{
+				printf(" %d (", d->unique_id); fflush(stdout);
+				struct Interval* i = d->intervals;
+				while (i != NULL)
+				{
+					printf(" %d", i->time); fflush(stdout);
+					i = i->next;
+				}
+				printf(" )"); fflush(stdout);
+				d = d->next;
+			}
+			n = n->next;
+			printf("\n"); fflush(stdout);
+		}
+	}
+}
+
 void print_single_node(struct Node* n)
 {
 	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); fflush(stdout);

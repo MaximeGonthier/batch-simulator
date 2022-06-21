@@ -14,53 +14,8 @@ void insert_head_job_list(struct Job_List* liste, struct Job* j)
 	}
 }
 
-//~ void addLast(struct node **head, int val)
-//~ {
-    //~ //create a new node
-    //~ struct node *newNode = malloc(sizeof(struct node));
-    //~ newNode->data = val;
-    //~ newNode->next     = NULL;
-
-    //~ //if head is NULL, it is an empty list
-    //~ if(*head == NULL)
-         //~ *head = newNode;
-    //~ //Otherwise, find the last node and add the newNode
-    //~ else
-    //~ {
-        //~ struct node *lastNode = *head;
-        
-
-        //~ //last node's next address will be NULL.
-        //~ while(lastNode->next != NULL)
-        //~ {
-            //~ lastNode = lastNode->next;
-        //~ }
-
-        //~ //add the newNode at the end of the linked list
-        //~ lastNode->next = newNode;
-      
-
-    //~ }
-
-//~ }
-
 void insert_tail_job_list(struct Job_List* liste, struct Job* j)
 {
-	//~ if (liste->head == NULL)
-	//~ {
-		//~ liste->head = j;
-		//~ liste->tail = j;
-	//~ }
-	//~ else
-	//~ {
-		//~ liste->tail->next = j;
-		//~ liste->tail = j;
-	//~ }
-	//create a new node
-    //~ struct node *newNode = malloc(sizeof(struct node));
-    //~ newNode->data = val;
-    //~ newNode->next     = NULL;
-
     //if head is NULL, it is an empty list
     if(liste->head == NULL)
     {
@@ -80,8 +35,6 @@ void insert_tail_job_list(struct Job_List* liste, struct Job* j)
 
         //add the newNode at the end of the linked list
         lastNode->next = j;
-      
-
     }
 }
 
@@ -96,6 +49,20 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	{
 		liste->tail->next = n;
 		liste->tail = n;
+	}
+}
+
+void insert_tail_interval_list(struct Interval_List* liste, struct Interval* i)
+{
+	if (liste->head == NULL)
+	{
+		liste->head = i;
+		liste->tail = i;
+	}
+	else
+	{
+		liste->tail->next = i;
+		liste->tail = i;
 	}
 }
 

@@ -158,12 +158,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	get_current_intervals(node_list[0] + node_list[1] + node_list[2], t)
 	
 	/* For printing intervals on each node. */
-	# Just printing
-	# ~ for n in node_list[0] + node_list[1] + node_list[2]:
-		# ~ print("Node", n.unique_id)
-		# ~ for d in n.data:
-			# ~ if d.nb_task_using_it > 0:
-			# ~ print(d.unique_id, ":", d.temp_interval_usage_time)
+	print_data_intervals(head_node);
 	
 	#ifdef PRINT_SCORES_DATA
 	f_fcfs_score = open("outputs/Scores_data.txt", "a")
@@ -333,9 +328,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(j->node_used);
 										
-			if __debug__:
-				print_decision_in_scheduler(choosen_core, j, choosen_node)
+			#ifdef PRINT
+			print_decision_in_scheduler(j);
+			#endif
 			
+			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			j = j->next;
 		}				
