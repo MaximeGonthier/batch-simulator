@@ -36,7 +36,7 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
           #~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES 2>&1 | tee terminal_output.txt
 
 if [ $PRINT == 0 ]; then
-	make -C C/
+	make -j6 -C C/
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	# make print -C C/

@@ -81,11 +81,7 @@ void read_cluster(char* input_node_file)
 
 //~ struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
 void read_workload(char* input_job_file, int constraint_on_sizes)
-{
-	#ifdef PRINT
-	printf("Start of read workload.\n");
-	#endif
-	
+{	
 	//~ job_list = malloc(sizeof(*job_list));
 	job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	job_list->head = NULL;
@@ -241,9 +237,6 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		//~ printf("Added job %d.\n", new->unique_id); fflush(stdout);
 	}
 	fclose(f);
-	#ifdef PRINT
-	printf("End of read workload.\n");
-	#endif
 }
 
 int get_nb_job_to_evaluate(struct Job* l)

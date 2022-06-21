@@ -36,6 +36,7 @@ void main(int argc, char *argv[])
 	
 	/* Read cluster */
 	read_cluster(input_node_file);
+	printf("Read cluster done.\n"); fflush(stdout);
 
 	#ifdef PRINT
 	print_node_list(node_list);
@@ -43,6 +44,7 @@ void main(int argc, char *argv[])
 	
 	/* Read workload */
 	read_workload(input_job_file, constraint_on_sizes);
+	printf("Read workload done.\n"); fflush(stdout);
 	nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 	first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	
@@ -70,6 +72,7 @@ void main(int argc, char *argv[])
 	{
 		get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 	}
+	printf("State before day 0 done.\n"); fflush(stdout);
 	
 	//~ #ifdef PRINT
 	//~ printf("\njob_list_to_start_from_history after schedule. Must be empty.\n");
@@ -83,6 +86,7 @@ void main(int argc, char *argv[])
 	{
 		start_jobs(t, scheduled_job_list->head);
 	}
+	printf("Start jobs before day 0 done.\n"); fflush(stdout);
 	
 	#ifdef PRINT
 	printf("\nSchedule job list after schedule - 2. Must be less full.\n");
@@ -115,8 +119,32 @@ void main(int argc, char *argv[])
 	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
 	#endif
 	
-	//~ int number_of_new_jobs = 0;
-	
+	/* Getting informations for certain schedulers. */
+	if scheduler[0:19] == "Fcfs_with_a_score_x":
+		i = 19
+		j = 19
+		while scheduler[i] != "_":
+			i+= 1
+		multiplier_file_to_load = int(scheduler[j:i])
+		j = i + 2
+		i = i + 1
+		while scheduler[i] != "_":
+			i+= 1
+		multiplier_file_evicted = int(scheduler[j:i])
+		j = i + 2
+		multiplier_nb_copy = int(scheduler[j:len(scheduler)])
+		
+		
+		# ~ if len(scheduler) == 26:
+		# ~ elif len(scheduler) == 27:
+		# ~ else:
+			# ~ print("ERROR: Your Fcfs_with_a_score_x is written wrong it should be Fcfs_with_a_score_xM_xM_xM. Or I haven't dealt with this number for multipliers :/")
+			# ~ exit(1)
+		# ~ multiplier_file_to_load = int(scheduler[19])
+		# ~ multiplier_file_evicted = int(scheduler[22])
+		# ~ multiplier_nb_copy = int(scheduler[25])
+		print("Multiplier file to load:", multiplier_file_to_load, "| Multiplier file evicted:", multiplier_file_evicted, "| Multiplier nb of copy:", multiplier_nb_copy)
+
 	/* Start of simulation. */
 	while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
 	{
