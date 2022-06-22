@@ -91,6 +91,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	return nb_non_available_cores;
 }
 
+/* Called at the beggining of each callof fcfs with a score. */
 void get_current_intervals(struct Node_List** head_node, int t)
 {
 	int i = 0;
@@ -99,30 +100,30 @@ void get_current_intervals(struct Node_List** head_node, int t)
 		struct Node* n = head_node[i]->head;
 		while (n != NULL)
 		{
-			struct Data* d = n->data;
+			struct Data* d = n->data->head;
 			while (d != NULL)
 			{
-				d->temp_interval_usage_time.clear()
-				free(d->intervals); ? /* TODO : need to free correctly each node of intervlas with a temp */
+				//~ printf("On data %d.\n", d->unique_id);
+				free_interval_linked_list(&d->intervals->head);
 				if (d->nb_task_using_it > 0)
 				{
-					d->temp_interval_usage_time.append(t)
+					create_and_insert_tail_interval_list(d->intervals, t);
 					if (d->start_time < t)
 					{
-						d->temp_interval_usage_time.append(t);
+						create_and_insert_tail_interval_list(d->intervals, t);
 					}
 					else
 					{
-						d->temp_interval_usage_time.append(d->start_time);
+						//~ printf("Insert %d in intervals.\n", d->start_time);
+						create_and_insert_tail_interval_list(d->intervals, d->start_time);
 					}
-					d->temp_interval_usage_time.append(d->end_time)
+					create_and_insert_tail_interval_list(d->intervals, d->end_time);
 				}
-				else if (d->nb_task_using_it == 0 and d->end_time >= t)
+				else if (d->nb_task_using_it == 0 && d->end_time >= t)
 				{
-					//~ d->temp_interval_usage_time.append(t)
-					//~ d->temp_interval_usage_time.append(t)
-					//~ d->temp_interval_usage_time.append(t)
-					insert_tail_interval_list(d->intervals, struct Interval* i);
+					create_and_insert_tail_interval_list(d->intervals, t);
+					create_and_insert_tail_interval_list(d->intervals, t);
+					create_and_insert_tail_interval_list(d->intervals, t);
 				}
 				d = d->next;
 			}
@@ -204,9 +205,9 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
 {
-	//~ #ifdef PRINT
-	//~ printf("Adding %d.\n", data_unique_id); fflush(stdout);
-	//~ #endif
+	#ifdef PRINT
+	printf("Adding data %d on node %d at time %d.\n", data_unique_id, node_used->unique_id, t); fflush(stdout);
+	#endif
 	
 	bool data_is_on_node = false;
 	/* Let's try to find it in the node */
@@ -264,6 +265,7 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		new->nb_task_using_it = 1;
 		new->size = data_size;
 		new->next = NULL;
+		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 		insert_tail_data_list(node_used->data, new);
 	}
 	//~ #ifdef PRINT
@@ -313,17 +315,17 @@ void start_jobs(int t, struct Job* head)
 			/* Remove from list of starting times. */
 			if (start_times->head != NULL && start_times->head->time == t)
 			{
-				#ifdef PRINT
-				printf("Before deleting starting time %d:\n", t); fflush(stdout);
-				print_time_list(start_times->head, 0);
-				#endif
+				//~ #ifdef PRINT
+				//~ printf("Before deleting starting time %d:\n", t); fflush(stdout);
+				//~ print_time_list(start_times->head, 0);
+				//~ #endif
 				
 				delete_next_time_linked_list(start_times, t);
 				
-				#ifdef PRINT
-				printf("After deleting starting time %d:\n", t); fflush(stdout);
-				print_time_list(start_times->head, 0);
-				#endif
+				//~ #ifdef PRINT
+				//~ printf("After deleting starting time %d:\n", t); fflush(stdout);
+				//~ print_time_list(start_times->head, 0);
+				//~ #endif
 			}
 			
 			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
@@ -569,11 +571,43 @@ void reset_cores(struct Node_List** l, int t)
 			{
 				n->cores[j]->available_time = t;
 			}
-			else
-			{
+			//~ else
+			//~ {
 				//~ n[i]->cores[j]->available_time = c.running_job.start_time + c.running_job.walltime;
 				//~ c.job_queue.append(c.running_job);
-			}
+			//~ }
 		}
 	}
+}
+
+void is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded)
+{
+	int j = 0;
+	struct Data* d = n->data->head;
+	while (d != NULL)
+	{
+		printf("Data %d is on node %d.\n", d->unique_id, n.unique_id); fflush(stdout);
+		struct Interval* i = d->intervals->head;
+		if (d->unique_id == current_data && i != NULL)
+		{
+			printf("Interval not empty, but is it on the node at time %d ?\n", predicted_time);
+			j = 0;
+			while (i != NULL)
+			{
+				printf("Checking %d / %d / %d.\n", d->temp_interval_usage_time[j], d->temp_interval_usage_time[j + 1], d->temp_interval_usage_time[j + 2]);
+				if d->temp_interval_usage_time[j] <= predicted_time and d->temp_interval_usage_time[j + 1] <= predicted_time and predicted_time <= d->temp_interval_usage_time[j + 2]:
+					is_being_loaded = false;
+					return 0;
+				else if d->temp_interval_usage_time[j] <= predicted_time and predicted_time <= d->temp_interval_usage_time[j + 2]:
+					is_being_loaded = true;
+					return d->temp_interval_usage_time[j + 1] - current_time;
+				j += 3;
+				i = i->next;
+			}
+			break;
+		}
+		d = d->next;
+	}
+	is_being_loaded = false;
+	return current_data_size/node.bandwidth;
 }

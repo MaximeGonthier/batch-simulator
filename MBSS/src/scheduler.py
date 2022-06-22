@@ -94,12 +94,13 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
 	scheduled_job_list = []
 	
-	# ~ for n in node_list[0] + node_list[1] + node_list[2]:
-		# ~ print("Node", n.unique_id)
-		# ~ for d in n.data:
-			# ~ if d.nb_task_using_it > 0:
-				# ~ print(d.unique_id, ":", d.temp_interval_usage_time[0])
+	for n in node_list[0] + node_list[1] + node_list[2]:
+		print("Node", n.unique_id)
+		for d in n.data:
+			if d.nb_task_using_it > 0:
+				print(d.unique_id, ":", d.temp_interval_usage_time[0])
 	
+	exit(1);
 	
 	# Test interval
 	get_current_intervals(node_list[0] + node_list[1] + node_list[2], t)

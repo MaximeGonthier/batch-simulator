@@ -37,7 +37,7 @@ def remove_jobs_from_list(list_to_update, job_to_remove): # TODO: simplifier en 
 
 # Add data in the node
 def add_data_in_node(data_unique_id, data_size, node_used, t, end_time):
-	# ~ print("Adding", data_unique_id)
+	# ~ print("Adding data %d on node %d at time %d.\n", data_unique_id, node_used->unique_id, t)
 	data_is_on_node = False
 	waiting_for_a_load_time = 0
 	# Let's try to find it in the node

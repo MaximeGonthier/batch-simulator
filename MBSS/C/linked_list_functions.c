@@ -52,8 +52,11 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	}
 }
 
-void insert_tail_interval_list(struct Interval_List* liste, struct Interval* i)
+void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_to_insert)
 {
+	struct Interval* i = (struct Interval*) malloc(sizeof(struct Interval));
+	i->time = time_to_insert;
+	i->next = NULL;
 	if (liste->head == NULL)
 	{
 		liste->head = i;
@@ -380,9 +383,27 @@ int get_length_job_list(struct Job* head)
 
 void free_next_time_linked_list(struct Next_Time** head_ref)
 {
+	/* deref head_ref to get the real head */
+	struct Next_Time* current = *head_ref;
+	struct Next_Time* next;
+ 
+   while (current != NULL)
+   {
+       next = current->next;
+       free(current);
+       current = next;
+   }
+   
+   /* deref head_ref to affect the real head back
+      in the caller. */
+   *head_ref = NULL;
+}
+
+void free_interval_linked_list(struct Interval** head_ref)
+{
  /* deref head_ref to get the real head */
-   struct Next_Time* current = *head_ref;
-   struct Next_Time* next;
+   struct Interval* current = *head_ref;
+   struct Interval* next;
  
    while (current != NULL)
    {

@@ -2,7 +2,6 @@
 
 void read_cluster(char* input_node_file)
 {
-	//~ node_list = malloc(3*sizeof(*node_list));
 	node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
 	for (int i = 0; i < 3; i++)
 	{
@@ -158,7 +157,8 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 			}
 			else
 			{
-				perror("data size");
+				printf("Job %d: %f x 10 divided by %d x 10 = %f\n", atoi(id), atof(data_size), atoi(cores), (atof(data_size)*10)/(atoi(cores)*10)); fflush(stdout);
+				perror("Error data size in read_workload"); fflush(stdout);
 				exit(EXIT_FAILURE);
 			}
 		}

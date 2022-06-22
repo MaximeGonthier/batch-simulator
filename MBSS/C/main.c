@@ -259,7 +259,7 @@ void main(int argc, char *argv[])
 					//~ available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
 			else
 			{
-				printf("Wrong scheduler in arguments"); fflush(stdout);
+				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
 				exit(EXIT_FAILURE);
 			}
 			

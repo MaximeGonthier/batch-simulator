@@ -157,7 +157,7 @@ void print_cores_in_specific_node(struct Node* n);
 void print_time_list(struct Next_Time* list, int end_or_start);
 void to_print_job_csv(struct Job* job, int time);
 void print_csv(struct To_Print* head_to_print);
-void print_data_intervals(struct Interval_List** list);
+void print_data_intervals(struct Node_List** list, int t);
 
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
@@ -170,6 +170,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 void reset_cores(struct Node_List** l, int t);
 void remove_data_from_node(struct Job* j, int t);
 void get_current_intervals(struct Node_List** head_node, int t);
+void is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -184,7 +185,8 @@ void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_dele
 void free_next_time_linked_list(struct Next_Time** head_ref);
 void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp);
 void insert_job_in_sorted_list(struct Job_List* liste, struct Job* j);
-void insert_tail_interval_list(struct Interval_List* liste, struct Interval* i);
+void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_to_insert);
+void free_interval_linked_list(struct Interval** head_ref);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

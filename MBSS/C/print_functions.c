@@ -13,20 +13,20 @@ void print_node_list(struct Node_List** list)
 	}
 }
 
-void print_data_intervals(struct Interval_List** list)
+void print_data_intervals(struct Node_List** list, int t)
 {
-	printf("Intervals are:\n"); fflush(stdout);
+	printf("Intervals at time %d are:\n", t); fflush(stdout);
 	for (int i = 0; i < 3; i++)
 	{
 		struct Node* n = list[i]->head;
 		while (n != NULL)
 		{
 			printf("Node %d:", n->unique_id); fflush(stdout);
-			struct Data* d = n->data;
+			struct Data* d = n->data->head;
 			while (d != NULL)
 			{
 				printf(" %d (", d->unique_id); fflush(stdout);
-				struct Interval* i = d->intervals;
+				struct Interval* i = d->intervals->head;
 				while (i != NULL)
 				{
 					printf(" %d", i->time); fflush(stdout);
