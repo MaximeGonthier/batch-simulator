@@ -11,7 +11,7 @@ fi
 WORKLOAD=$1
 CLUSTER=$2
 SCHEDULER=$3
-PRINT=$4 # 0 = not even printfs
+PRINT=$4
 CONTRAINTES_TAILLES=$5
 DATE=${WORKLOAD:27:30}
 
@@ -35,34 +35,36 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
          #~ --log-file=valgrind-out.txt \
           #~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES 2>&1 | tee terminal_output.txt
 
-if [ $PRINT == 0 ]; then
-	make -j8 -C C/
-	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
+#~ if [ $PRINT == 0 ]; then
+	#~ make print -j8 -C C/
+	#~ # ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	# make print -C C/
-elif [ $PRINT == 1 ]; then
+#~ elif [ $PRINT == 1 ]; then
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
-	make print_gantt_chart -j8 -C C/
-elif [ $PRINT == 2 ]; then
+	make -C C/
+#~ elif [ $PRINT == 2 ]; then
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
-	make print_distribution_queue_times -C C/
-fi
+	#~ make print_distribution_queue_times -C C/
+#~ fi
 
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
+#~ ./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES 2>&1 | tee terminal_output2.txt
+./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES
 
-if [ $PRINT == 1 ]; then
-	echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
-	python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
-fi
-if [ $PRINT == 2 ]; then
-	echo "Plotting distribution of queue times..."
-	python3 src/plot_distribution_queue_times.py outputs/Distribution_queue_times_${SCHEDULER}.txt $SCHEDULER $DATE
-fi
+#~ if [ $PRINT == 1 ]; then
+	#~ echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
+	#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+#~ fi
+#~ if [ $PRINT == 2 ]; then
+	#~ echo "Plotting distribution of queue times..."
+	#~ python3 src/plot_distribution_queue_times.py outputs/Distribution_queue_times_${SCHEDULER}.txt $SCHEDULER $DATE
+#~ fi
 
-echo "Results:"
-head outputs/Results_${SCHEDULER}.csv
+#~ echo "Results:"
+#~ head outputs/Results_${SCHEDULER}.csv
 
 end=`date +%s` 
 runtime=$((end-start))

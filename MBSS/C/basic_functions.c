@@ -85,6 +85,11 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	print_decision_in_scheduler(j);
 	#endif
 	
+	//~ if (j->unique_id == 1382)
+	//~ {
+		//~ print_decision_in_scheduler(j);
+	//~ }
+	
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(j->node_used);
 		
@@ -103,28 +108,48 @@ void get_current_intervals(struct Node_List** head_node, int t)
 			struct Data* d = n->data->head;
 			while (d != NULL)
 			{
-				//~ printf("On data %d.\n", d->unique_id);
-				free_interval_linked_list(&d->intervals->head);
-				if (d->nb_task_using_it > 0)
-				{
-					create_and_insert_tail_interval_list(d->intervals, t);
-					if (d->start_time < t)
+				//~ if (d->intervals->head != NULL)
+				//~ {
+					//~ free_interval_linked_list(&d->intervals->head);
+				//~ }
+				//~ if (d->intervals->head == NULL)
+				//~ {
+					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+					//~ d->intervals->head = NULL;
+					//~ d->intervals->tail = NULL;
+					//~ if (d->nb_task_using_it > 0) { exit(1); }
+					//~ break;
+				//~ }
+				//~ else
+				//~ {
+					//~ free_interval_linked_list(&d->intervals->head);
+					
+					/* TODO : maybe I need to free here each time ? But when I do i get different results from Fcfs with x0_x0_x0. */
+					
+					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+					d->intervals->head = NULL;
+					d->intervals->tail = NULL;
+					
+					if (d->nb_task_using_it > 0)
 					{
 						create_and_insert_tail_interval_list(d->intervals, t);
+						if (d->start_time < t)
+						{
+							create_and_insert_tail_interval_list(d->intervals, t);
+						}
+						else
+						{
+							create_and_insert_tail_interval_list(d->intervals, d->start_time);
+						}
+						create_and_insert_tail_interval_list(d->intervals, d->end_time);
 					}
-					else
+					else if (d->nb_task_using_it == 0 && d->end_time >= t)
 					{
-						//~ printf("Insert %d in intervals.\n", d->start_time);
-						create_and_insert_tail_interval_list(d->intervals, d->start_time);
+						create_and_insert_tail_interval_list(d->intervals, t);
+						create_and_insert_tail_interval_list(d->intervals, t);
+						create_and_insert_tail_interval_list(d->intervals, t);
 					}
-					create_and_insert_tail_interval_list(d->intervals, d->end_time);
-				}
-				else if (d->nb_task_using_it == 0 && d->end_time >= t)
-				{
-					create_and_insert_tail_interval_list(d->intervals, t);
-					create_and_insert_tail_interval_list(d->intervals, t);
-					create_and_insert_tail_interval_list(d->intervals, t);
-				}
+				//~ }
 				d = d->next;
 			}
 			n = n->next;
@@ -341,6 +366,11 @@ void start_jobs(int t, struct Job* head)
 			}
 			j->transfer_time = transfer_time;
 			j->waiting_for_a_load_time = waiting_for_a_load_time;
+						
+			//~ if (j->unique_id <= 1382)
+			//~ {
+				//~ printf("%d and %d.\n", j->transfer_time, j->waiting_for_a_load_time);
+			//~ }
 			
 			if (transfer_time == 0)
 			{
@@ -400,9 +430,10 @@ void start_jobs(int t, struct Job* head)
 			j->node_used->n_available_cores -= j->cores;
 			#endif
 			
-			#ifdef PRINT
-			printf("==> Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); fflush(stdout);
-			#endif
+			//~ #ifdef PRINT
+			//~ if (j->unique_id <= 1382) {
+			//~ printf("==> Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
+			//~ #endif
 			
 			for (i = 0; i < j->cores; i++)
 			{
@@ -420,6 +451,12 @@ void start_jobs(int t, struct Job* head)
 			//~ insert_tail_job_list(running_jobs, j);
 			//~ copy_job_and_insert_tail_job_list(running_jobs, j);
 			
+			/* Test with finish in start jobs instead of end jobs. */
+			if (j->workload == 1)
+			{
+				nb_job_to_evaluate_started += 1;
+			}			
+			to_print_job_csv(j, t);
 		}
 		j = j->next;
 	}
@@ -477,10 +514,11 @@ void end_jobs(struct Job* job_list_head, int t)
 				//~ #endif
 			}
 			
-			if (j->workload == 1)
-			{
-				nb_job_to_evaluate_finished += 1;
-			}
+			//~ if (j->workload == 1)
+			//~ {
+				//~ nb_job_to_evaluate_finished += 1;
+				//~ nb_job_to_evaluate_started += 1;
+			//~ }
 				
 			finished_jobs += 1;
 			
@@ -489,9 +527,11 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%100 == 0)
+			if (finished_jobs%500 == 0)
 			{
-				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
+				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
+				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
+				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t);
 			}
 									
 			#ifdef PRINT_CLUSTER_USAGE
@@ -529,7 +569,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ }
 			
 			/* Adding in a struct the data needed for statistics. */
-			to_print_job_csv(j, t);
+			//~ to_print_job_csv(j, t);
 		}
 		j = j->next;
 	}				
@@ -553,7 +593,6 @@ void end_jobs(struct Job* job_list_head, int t)
 			j = j->next;
 		}
 	}
-	//~ return finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished
 }
 
 /* Reset available times by going through the cores in each node. */

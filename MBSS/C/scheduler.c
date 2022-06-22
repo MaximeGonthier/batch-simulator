@@ -162,7 +162,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	
-	/* Get intervals of data. */
+	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
 	#ifdef PRINT
@@ -170,7 +170,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	#endif
 	
 	#ifdef PRINT_SCORES_DATA
-	f_fcfs_score = open("outputs/Scores_data.txt", "a")
+	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
 	#endif
 	
 	/* 1. Loop on available jobs. */
@@ -333,7 +333,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					}
 					
 					#ifdef PRINT_SCORES_DATA
-					fprintf(f_fcfs_score, "Node: %d EAT: %d C: %d CxX: %d Score: %d\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
+					fprintf(f_fcfs_score, "Node: %d EAT: %d C: %f CxX: %f Score: %f\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
 					#endif
 					
 					n = n->next;
@@ -346,17 +346,16 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			j->start_time = min_time;
 			j->end_time = min_time + j->walltime;
 			
-			for (i = 0; i < j->cores; i++)
+			for (int k = 0; k < j->cores; k++)
 			{
-				j->cores_used[i] = j->node_used->cores[i]->unique_id;
-				if (j->node_used->cores[i]->available_time <= t)
+				j->cores_used[k] = j->node_used->cores[k]->unique_id;
+				if (j->node_used->cores[k]->available_time <= t)
 				{
 					nb_non_available_cores += 1;
 				}
-				j->node_used->cores[i]->available_time = min_time + j->walltime;
+				j->node_used->cores[k]->available_time = min_time + j->walltime;
 				
 				/* Maybe I need job queue or not not sure. TODO. */
-				//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 			}
 
 			/* Need to add here intervals for current scheduling. */
@@ -396,7 +395,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				create_and_insert_tail_interval_list(new->intervals, j->end_time);
 				new->size = j->data_size;
 				insert_tail_data_list(j->node_used->data, new);
-			}
+			}			
 			
 			#ifdef PRINT
 			printf("After add interval are:\n"); fflush(stdout);
@@ -406,10 +405,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(j->node_used);
 										
-			#ifdef PRINT
-			print_decision_in_scheduler(j);
-			#endif
-			
+			// #ifdef PRINT
+			// print_decision_in_scheduler(j);
+			// #endif
+						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			

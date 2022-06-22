@@ -33,7 +33,8 @@ char* scheduler;
 struct Next_Time_List* end_times;
 struct Next_Time_List* start_times; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
 
-int nb_job_to_evaluate_finished;
+//~ int nb_job_to_evaluate_finished;
+int nb_job_to_evaluate_started;
 
 /* For fcfs with a score. Allow me to not compute multiple time the same amount of copy of a file at a certain time when computing the amount of copy. */
 struct Time_Already_Checked_Nb_of_Copy_List {

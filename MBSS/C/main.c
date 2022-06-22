@@ -7,7 +7,8 @@ void main(int argc, char *argv[])
 	total_number_jobs = 0;
 	running_cores = 0;
 	running_nodes = 0;
-	nb_job_to_evaluate_finished = 0;
+	//~ nb_job_to_evaluate_finished = 0;
+	nb_job_to_evaluate_started = 0;
 	total_queue_time = 0;
 	//~ struct Job* first_job_in_queue = NULL; /* TODO: need to malloc ? Just if I use backfill. Useless else. */
 	struct Job* job_pointer = (struct Job*) malloc(sizeof(struct Job));
@@ -27,12 +28,10 @@ void main(int argc, char *argv[])
 	scheduler = argv[3]; /* malloc ? */
 	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
 	
-	#ifdef PRINT
 	printf("Workloads: %s\n", input_job_file);
 	printf("Cluster: %s\n", input_node_file);
 	printf("Scheduler: %s\n", scheduler);
-	printf("Size constraint: %d\n", constraint_on_sizes);
-	#endif	
+	printf("Size constraint: %d\n", constraint_on_sizes);	
 	
 	/* Read cluster */
 	read_cluster(input_node_file);
@@ -44,7 +43,7 @@ void main(int argc, char *argv[])
 	
 	/* Read workload */
 	read_workload(input_job_file, constraint_on_sizes);
-	printf("Read workload done.\n"); fflush(stdout);
+	printf("Read workload done.\n");
 	nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 	first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	
@@ -72,7 +71,6 @@ void main(int argc, char *argv[])
 	{
 		get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 	}
-	printf("State before day 0 done.\n"); fflush(stdout);
 	
 	//~ #ifdef PRINT
 	//~ printf("\njob_list_to_start_from_history after schedule. Must be empty.\n");
@@ -86,13 +84,11 @@ void main(int argc, char *argv[])
 	{
 		start_jobs(t, scheduled_job_list->head);
 	}
-	printf("Start jobs before day 0 done.\n"); fflush(stdout);
+	printf("Start jobs before day 0 done.\n");
 	
 	#ifdef PRINT
-	printf("\nSchedule job list after schedule - 2. Must be less full.\n");
+	printf("\nSchedule job list after schedule - 2. Must be less full.\n"); fflush(stdout);
 	print_job_list(scheduled_job_list->head);
-	//~ printf("\nRunning job list after schedule -2. Must be filled with jobs from scheduled job list previously started at time t = %d.\n", t);
-	//~ print_job_list(running_jobs->head);
 	#endif
 
 	#ifdef PRINT_SCORES_DATA
@@ -158,7 +154,8 @@ void main(int argc, char *argv[])
 	}
 
 	/* Start of simulation. */
-	while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
+	//~ while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
+	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
 		/* Get the set of available jobs at time t */
 		/* Jobs are already sorted by subtime so I can simply stop with a break */

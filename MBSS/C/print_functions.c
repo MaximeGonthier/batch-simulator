@@ -126,6 +126,7 @@ void to_print_job_csv(struct Job* job, int time)
 	}
 	
 	#ifdef PRINT_GANTT_CHART
+	//~ printf("la\n"); fflush(stdout);
 	int i = 0;
 	file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Results_all_jobs_");
@@ -134,7 +135,7 @@ void to_print_job_csv(struct Job* job, int time)
 	FILE* f = fopen(file_to_open, "a");
 	if (!f)
 	{
-		printf("Error opening file Results_all_jobs_scheduler.csv\n");
+		printf("Error opening file Results_all_jobs_scheduler.csv\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 	fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, time_used, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
@@ -160,6 +161,7 @@ void to_print_job_csv(struct Job* job, int time)
 	fprintf(f, ",-1,\"\"\n");
 	fclose(f);
 	free(file_to_open);
+	//~ printf("la2\n"); fflush(stdout);
 	#endif
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
@@ -236,6 +238,7 @@ void print_csv(struct To_Print* head_to_print)
 	
 	while (head_to_print != NULL)
 	{
+		//~ printf("Evaluate job %d.\n", head_to_print->job_unique_id); fflush(stdout);
 		/* Flow stretch */
 		total_flow_stretch += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
 		
@@ -305,6 +308,7 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch);
+	printf("%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch);
 	fclose(f);
 	
 	/* For flow stretch heat map */
