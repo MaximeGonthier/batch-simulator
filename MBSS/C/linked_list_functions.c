@@ -52,6 +52,23 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	}
 }
 
+void create_and_insert_head_time_already_checked_nb_of_copy_list(struct Time_Already_Checked_Nb_of_Copy_List* liste, int time_to_insert, int nb_of_copy_to_insert)
+{
+	struct Time_Already_Checked_Nb_of_Copy* a = (struct Time_Already_Checked_Nb_of_Copy*) malloc(sizeof(struct Time_Already_Checked_Nb_of_Copy));
+	a->time = time_to_insert;
+	a->nb_of_copy = nb_of_copy_to_insert;
+	a->next = NULL;
+	if (liste->head == NULL)
+	{
+		liste->head = a;
+	}
+	else
+	{
+		a->next = liste->head;
+		liste->head = a;
+	}
+}
+
 void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_to_insert)
 {
 	struct Interval* i = (struct Interval*) malloc(sizeof(struct Interval));
@@ -87,7 +104,6 @@ void insert_tail_data_list(struct Data_List* liste, struct Data* d)
 {
 	if (liste->head == NULL)
 	{
-		//~ printf("Added %d.\n",1);
 		liste->head = d;
 		liste->tail = d;
 	}
@@ -248,7 +264,7 @@ void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_dele
 	}
 	if (temp == NULL)
 	{
-		printf("Deletion of time %d failed.\n", time_to_delete);
+		printf("Error, deletion of time %d failed.\n", time_to_delete);
 		exit(EXIT_FAILURE);
 	}
 	prev->next = temp->next;
@@ -404,6 +420,24 @@ void free_interval_linked_list(struct Interval** head_ref)
  /* deref head_ref to get the real head */
    struct Interval* current = *head_ref;
    struct Interval* next;
+ 
+   while (current != NULL)
+   {
+       next = current->next;
+       free(current);
+       current = next;
+   }
+   
+   /* deref head_ref to affect the real head back
+      in the caller. */
+   *head_ref = NULL;
+}
+
+void free_time_already_checked_nb_of_copy_linked_list(struct Time_Already_Checked_Nb_of_Copy** head_ref)
+{
+ /* deref head_ref to get the real head */
+   struct Time_Already_Checked_Nb_of_Copy* current = *head_ref;
+   struct Time_Already_Checked_Nb_of_Copy* next;
  
    while (current != NULL)
    {

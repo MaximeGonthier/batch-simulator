@@ -580,34 +580,152 @@ void reset_cores(struct Node_List** l, int t)
 	}
 }
 
-void is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded)
+int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded)
 {
-	int j = 0;
 	struct Data* d = n->data->head;
+	int* temp_interval_usage_time = malloc(3*sizeof(int));
 	while (d != NULL)
 	{
-		printf("Data %d is on node %d.\n", d->unique_id, n.unique_id); fflush(stdout);
+		#ifdef PRINT
+		printf("Data %d is on node %d.\n", d->unique_id, n->unique_id); fflush(stdout);
+		#endif
+		
 		struct Interval* i = d->intervals->head;
 		if (d->unique_id == current_data && i != NULL)
 		{
+			#ifdef PRINT
 			printf("Interval not empty, but is it on the node at time %d ?\n", predicted_time);
-			j = 0;
+			#endif
+			
 			while (i != NULL)
 			{
-				printf("Checking %d / %d / %d.\n", d->temp_interval_usage_time[j], d->temp_interval_usage_time[j + 1], d->temp_interval_usage_time[j + 2]);
-				if d->temp_interval_usage_time[j] <= predicted_time and d->temp_interval_usage_time[j + 1] <= predicted_time and predicted_time <= d->temp_interval_usage_time[j + 2]:
-					is_being_loaded = false;
+				temp_interval_usage_time[0] = i->time;
+				i = i->next;
+				temp_interval_usage_time[1] = i->time;
+				i = i->next;
+				temp_interval_usage_time[2] = i->time;
+				
+				#ifdef PRINT
+				printf("Checking %d / %d / %d.\n", temp_interval_usage_time[0], temp_interval_usage_time[1], temp_interval_usage_time[2]);
+				#endif
+				
+				if (temp_interval_usage_time[0] <= predicted_time && temp_interval_usage_time[1] <= predicted_time && predicted_time <= temp_interval_usage_time[2])
+				{
+					*is_being_loaded = false;
+					free(temp_interval_usage_time);
 					return 0;
-				else if d->temp_interval_usage_time[j] <= predicted_time and predicted_time <= d->temp_interval_usage_time[j + 2]:
-					is_being_loaded = true;
-					return d->temp_interval_usage_time[j + 1] - current_time;
-				j += 3;
+				}
+				else if (temp_interval_usage_time[0] <= predicted_time && predicted_time <= temp_interval_usage_time[2])
+				{
+					*is_being_loaded = true;
+					int temp = temp_interval_usage_time[1];
+					free(temp_interval_usage_time);
+					return temp - t;
+				}
 				i = i->next;
 			}
 			break;
 		}
 		d = d->next;
 	}
-	is_being_loaded = false;
-	return current_data_size/node.bandwidth;
+	*is_being_loaded = false;
+	free(temp_interval_usage_time);
+	return current_data_size/n->bandwidth;
+}
+
+/* % of space you will take and thus time it will take to reload evicted data. */
+float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied)
+{
+	int size_file_ended = 0;
+	struct Data* d = n->data->head;
+	while (d != NULL)
+	{
+		struct Interval* i = d->intervals->head;
+		if (d->unique_id != current_data && i != NULL)
+		{
+			#ifdef PRINT
+			printf("Checking tail of the interval of data %d: %d->\n", d->unique_id, d->intervals->tail->time);
+			#endif
+			
+			if (predicted_time >= d->intervals->tail->time)
+			{
+				size_file_ended += d->size;
+				
+				#ifdef PRINT
+				printf("Add size %d->\n", d->size); fflush(stdout);
+				#endif
+			}
+		}
+		d = d->next;
+	}
+	
+	#ifdef PRINT
+	printf("Total size of data on node ending before my EAT is: %d but I return (%d*%d)/%f = %f.\n", size_file_ended, percentage_occupied, size_file_ended, n->bandwidth, (size_file_ended*percentage_occupied)/n->bandwidth); fflush(stdout);
+	#endif
+	
+	return (size_file_ended*percentage_occupied)/n->bandwidth;
+}
+
+int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node, int current_data)
+{
+	int nb_of_copy = 0;
+	int j = 0;
+	int* temp_interval_usage_time = malloc(2*sizeof(int));
+	
+	for (j = 0; j < 3; j++)
+	{
+		struct Node* n = head_node[j]->head;
+		while(n != NULL)
+		{
+			struct Data* d = n->data->head;
+			while (d != NULL)
+			{
+				struct Interval* i = d->intervals->head;
+				if (d->unique_id == current_data && i != NULL)
+				{
+					#ifdef PRINT
+					printf("Data %d is on node %d but at predicted time %d?\n", d->unique_id, n->unique_id, predicted_time);
+					#endif
+					
+					while (i != NULL)
+					{
+						temp_interval_usage_time[0] = i->time;
+						i = i->next;
+						i = i->next;
+						temp_interval_usage_time[1] = i->time;
+						
+						#ifdef PRINT
+						printf("Checking %d / %d.\n", temp_interval_usage_time[0], temp_interval_usage_time[1]);
+						#endif
+						
+						if (temp_interval_usage_time[0] <= predicted_time && predicted_time <= temp_interval_usage_time[1])
+						{
+							nb_of_copy += 1;
+							break;
+						}
+						i = i->next;
+					}
+					break;
+				}
+				d = d->next;
+			}
+			n = n->next;
+		}
+	}
+	free(temp_interval_usage_time);
+	return nb_of_copy;
+}
+					
+int was_time_already_checked_for_nb_copy(int t, struct Time_Already_Checked_Nb_of_Copy_List* list)
+{
+	struct Time_Already_Checked_Nb_of_Copy* a = list->head;
+	while (a != NULL)
+	{
+		if (a->time == t)
+		{
+			return a->nb_of_copy;
+		}
+		a = a->next;
+	}
+	return -1;
 }

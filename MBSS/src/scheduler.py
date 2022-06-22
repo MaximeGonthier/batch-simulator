@@ -93,24 +93,18 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 	# Test reduced complexity
 	nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
 	scheduled_job_list = []
-	
-	for n in node_list[0] + node_list[1] + node_list[2]:
-		print("Node", n.unique_id)
-		for d in n.data:
-			if d.nb_task_using_it > 0:
-				print(d.unique_id, ":", d.temp_interval_usage_time[0])
-	
-	exit(1);
+		
+	# ~ exit(1);
 	
 	# Test interval
 	get_current_intervals(node_list[0] + node_list[1] + node_list[2], t)
 	
 	# Just printing
 	# ~ for n in node_list[0] + node_list[1] + node_list[2]:
-		# ~ print("Node", n.unique_id)
+		# ~ print("Before schedule. Node", n.unique_id)
 		# ~ for d in n.data:
 			# ~ if d.nb_task_using_it > 0:
-			# ~ print(d.unique_id, ":", d.temp_interval_usage_time)
+				# ~ print(d.unique_id, ":", d.temp_interval_usage_time)
 	
 	# ~ # Simplified method
 	# ~ nb_copy_of_files = get_nb_valid_copy_of_each_file(node_list[0] + node_list[1] + node_list[2])
@@ -120,6 +114,13 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 	# 1. Declare a list of job to remove and loop on available jobs
 	for j in l:
 		
+		# Just printing
+		for n in node_list[0] + node_list[1] + node_list[2]:
+			print("After schedule. Node", n.unique_id)
+			for d in n.data:
+				if d.nb_task_using_it > 0:
+					print(d.unique_id, ":", d.temp_interval_usage_time)
+	
 		# Reduce complexity a bit ?
 		# ~ print("Nb cores", nb_cores, "Nb non available cores", nb_non_available_cores, "T =", t)
 		if nb_non_available_cores < nb_cores:
@@ -236,7 +237,7 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 			j.start_time = start_time
 			j.end_time = start_time + j.walltime
 			
-			# Test intervals. Need to add here for current scheduling
+			# Test intervals. Need to add here for current scheduling. very important actually.
 			found = False
 			for d in choosen_node.data:
 				if d.unique_id == j.data:
@@ -244,10 +245,10 @@ def fcfs_with_a_score_scheduler(l, node_list, t, multiplier_file_to_load, multip
 					d.temp_interval_usage_time.append(j.start_time)
 					d.temp_interval_usage_time.append(j.start_time + j.transfer_time)
 					d.temp_interval_usage_time.append(j.end_time)
-					# ~ print("After add interval is:", d.temp_interval_usage_time)
+					print("After add interval is:", d.temp_interval_usage_time)
 					break
 			if found == False:
-				# ~ print("Need to create intervals for the node", choosen_node.unique_id, "data", j.data)
+				print("Need to create intervals for the node", choosen_node.unique_id, "data", j.data)
 				# Create a class Data for this node
 				d = Data(j.data, -1, -1, 0, [j.start_time, j.start_time + j.transfer_time, j.end_time], j.data_size)
 				# ~ print("After add interval is:", d.temp_interval_usage_time)

@@ -345,10 +345,10 @@ void main(int argc, char *argv[])
 			printf("Reschedule.\n");
 			#endif
 			
-			if (strcmp(scheduler, "Random") == 0)
+			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 			{
-				//~ scheduled_job_list = random_scheduler(available_job_list, node_list, t);
-			}				
+				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			}
 			else if (strcmp(scheduler, "Fcfs") == 0)
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t);
@@ -428,10 +428,7 @@ void main(int argc, char *argv[])
 	fclose(f_stats);
 	#endif
 	
-	#ifdef PRINT
 	printf("Computing and writing results...\n");
-	#endif
-	
 	print_csv(jobs_to_print_list->head);
 	
 	return;
