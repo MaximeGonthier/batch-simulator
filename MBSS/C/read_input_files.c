@@ -31,7 +31,7 @@ void read_cluster(char* input_node_file)
 		new->unique_id = atoi(id);
 		new->memory = atoi(memory);
 		new->bandwidth = atof(bandwidth);
-		new->n_available_cores = atoi(core);
+		new->n_available_cores = 20;
 		new->data = malloc(sizeof(*new->data));
 		new->data->head = NULL;
 		new->data->tail = NULL;
@@ -47,7 +47,8 @@ void read_cluster(char* input_node_file)
 			//~ new->cores[i]->job_queue->head = NULL;
 			//~ new->cores[i]->job_queue->tail = NULL;
 			new->cores[i]->available_time = 0;
-			//~ new->cores[i]->running_job = false;
+			new->cores[i]->running_job = false;
+			new->cores[i]->running_job_end = -1;
 		}
 
 		new->next = NULL;
@@ -286,11 +287,13 @@ void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0)
 		{
 			first_day_1 = true;
 			first_subtime_day_1 = j->subtime - first_subtime_day_0;
+			//~ first_subtime_day_1 = j->subtime;
 		}
 		else if (j->workload == 2 && first_day_2 == false)
 		{
 			first_day_2 = true;
 			first_subtime_day_2 = j->subtime - first_subtime_day_0;
+			//~ first_subtime_day_2 = j->subtime;
 		}
 		j = j->next;
 	}
@@ -302,5 +305,6 @@ void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0)
         exit(EXIT_FAILURE);
 	}
 	fprintf(f, "%d %d %d %d", first_subtime_before_0, 0, first_subtime_day_1, first_subtime_day_2);
+	printf("%d %d %d %d\n", first_subtime_before_0, 0, first_subtime_day_1, first_subtime_day_2);
 	fclose(f);
 }

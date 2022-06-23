@@ -37,6 +37,17 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		struct Node* n = head_node[i]->head;
 		while (n != NULL)
 		{
+			
+			//~ if (j->unique_id == 1020 && n->unique_id == 0)
+			//~ {
+				//~ for (int k = 0; k < 20; k++)
+				//~ {
+					//~ printf("avail time of core %d = %d.\n", n->cores[k]->unique_id, n->cores[k]->available_time);
+				//~ }
+				//~ print_cores_in_specific_node(n);
+			//~ }
+			
+			
 			//~ struct Node* n = head_node[i]->head;
 			earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 			if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
@@ -65,6 +76,11 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		}
 	}
 	
+	//~ #ifdef PRINT
+	if (j->node_used->unique_id == 183){
+	print_cores_in_specific_node(j->node_used);}
+	//~ #endif
+	
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
@@ -81,9 +97,10 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
 		
-	#ifdef PRINT
-	print_decision_in_scheduler(j);
-	#endif
+	//~ #ifdef PRINT
+	if (j->node_used->unique_id == 183) {
+	print_decision_in_scheduler(j); }
+	//~ #endif
 	
 	//~ if (j->unique_id == 1382)
 	//~ {
@@ -193,6 +210,12 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	// choosen_core = node.cores[0:cores_asked]		
 
 	j->node_used = n;
+	
+	//~ #ifdef PRINT
+	if (j->node_used->unique_id == 183) {
+	print_cores_in_specific_node(j->node_used); }
+	//~ #endif
+	
 	j->start_time = earliest_available_time;
 	j->end_time = earliest_available_time + j->walltime;
 	for (i = 0; i < j->cores; i++)
@@ -204,9 +227,10 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
 	
-	#ifdef PRINT
-	print_decision_in_scheduler(j);
-	#endif
+	//~ #ifdef PRINT
+	if (j->node_used->unique_id == 183) {
+	print_decision_in_scheduler(j); }
+	//~ #endif
 	
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(n);
@@ -420,15 +444,29 @@ void start_jobs(int t, struct Job* head)
 			//~ {
 				//~ next_end_time = j->end_time;
 			//~ }
+			//~ #ifdef PRINT
+			if (j->node_used->unique_id == 183) {
+			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
+			//~ #endif
 			
-			#ifdef PRINT_CLUSTER_USAGE
+			//~ #ifdef PRINT_CLUSTER_USAGE
 			running_cores += j->cores;
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes += 1;
 			}
 			j->node_used->n_available_cores -= j->cores;
-			#endif
+			if (j->node_used->n_available_cores < 0)
+			{
+				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
+				exit(EXIT_FAILURE);
+			}
+			//~ #endif
+			
+			//~ #ifdef PRINT
+			if (j->node_used->unique_id == 183) {
+			printf("n avail cores start_jobs %d.\n", j->node_used->n_available_cores); }
+			//~ #endif
 			
 			//~ #ifdef PRINT
 			//~ if (j->unique_id <= 1382) {
@@ -443,6 +481,7 @@ void start_jobs(int t, struct Job* head)
 					{
 						//~ j->cores[i]->running_job = j;
 						j->node_used->cores[k]->running_job = true;
+						j->node_used->cores[k]->running_job_end = j->start_time + j->walltime;
 						break;
 					}
 				}
@@ -497,6 +536,7 @@ void end_jobs(struct Job* job_list_head, int t)
 	while(j != NULL)
 	{
 		if (j->end_time == t) /* A job has finished, let's remove it from the cores, write its results and figure out if we need to fill */
+		//~ if (j->end_time >= t) /* A job has finished, let's remove it from the cores, write its results and figure out if we need to fill */
 		{
 			/* Remove from list of ending times. */
 			if (end_times->head != NULL && end_times->head->time == t)
@@ -522,27 +562,40 @@ void end_jobs(struct Job* job_list_head, int t)
 				
 			finished_jobs += 1;
 			
-			#ifdef PRINT
-			printf("==> Job %d finished at time %d on node %d.\n", j->unique_id, t, j->node_used->unique_id); fflush(stdout);
-			#endif
+			//~ #ifdef PRINT
+			if (j->node_used->unique_id == 183)
+			{
+			printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
+			}
+			//~ #endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%500 == 0)
+			if (finished_jobs%333 == 0)
 			{
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
-				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t);
+				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
 									
-			#ifdef PRINT_CLUSTER_USAGE
+			//~ #ifdef PRINT_CLUSTER_USAGE
 			running_cores -= j->cores;
 			j->node_used->n_available_cores += j->cores;
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes -= 1;
 			}
-			#endif
-
+			if (j->node_used->n_available_cores > 20)
+			{
+				perror("error n avail jobs");
+				exit(EXIT_FAILURE);
+			}
+			//~ #endif
+			
+			//~ #ifdef PRINT
+			if (j->node_used->unique_id == 183) {
+			printf("n avail cores end_jobs %d.\n", j->node_used->n_available_cores); }
+			//~ #endif
+			
 			for (i = 0; i < j->cores; i++)
 			{
 				for (k = 0; k < 20; k++)
@@ -551,6 +604,7 @@ void end_jobs(struct Job* job_list_head, int t)
 					{
 						//~ j->cores[i]->running_job = j;
 						j->node_used->cores[k]->running_job = false;
+						j->node_used->cores[k]->running_job_end = -1;
 						break;
 					}
 				}
@@ -603,18 +657,29 @@ void reset_cores(struct Node_List** l, int t)
 	for (i = 0; i < 3; i++)
 	{
 		struct Node* n = l[i]->head;
-		for (j = 0; j < 20; j++)
+		while (n != NULL)
 		{
-			//~ c.job_queue.clear()
-			if (n->cores[j]->running_job == false)
+			for (j = 0; j < 20; j++)
 			{
-				n->cores[j]->available_time = t;
+				if (n->cores[j]->running_job == false)
+				{
+					n->cores[j]->available_time = t;
+				}
+				else
+				{
+					if (n->cores[j]->running_job_end == -1)
+					{
+						perror("error reset cores.\n");
+						exit(EXIT_FAILURE);
+					}
+					n->cores[j]->available_time = n->cores[j]->running_job_end;
+				}
 			}
-			//~ else
-			//~ {
-				//~ n[i]->cores[j]->available_time = c.running_job.start_time + c.running_job.walltime;
-				//~ c.job_queue.append(c.running_job);
-			//~ }
+			
+			/* Need to sort cores after each schedule of a job. */
+			sort_cores_by_available_time_in_specific_node(n);
+			
+			n = n->next;
 		}
 	}
 }

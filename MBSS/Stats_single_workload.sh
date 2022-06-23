@@ -22,8 +22,9 @@ CONTRAINTES_TAILLES=$4
 
 # Simulation
 #~ ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_TAILLES
-python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_TAILLES
-
+#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 3 $CONTRAINTES_TAILLES
+make print_cluster_usage -C C/
+./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
 
 read V1 V2 V3 V4 < outputs/Start_end_evaluated_slice.txt
 echo $V1

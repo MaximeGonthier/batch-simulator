@@ -92,18 +92,18 @@ void print_decision_in_scheduler(struct Job* j)
 
 void print_cores_in_specific_node(struct Node* n)
 {
-	printf("Cores in node %d are: ", n->unique_id); fflush(stdout);
+	printf("Cores in node %d are: ", n->unique_id);
 	for (int i = 0; i < 19; i++)
 	{
-		printf("%d(%d),", n->cores[i]->unique_id, n->cores[i]->available_time); fflush(stdout);
+		printf("%d(%d),", n->cores[i]->unique_id, n->cores[i]->available_time);
 	}
-	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time); fflush(stdout);
+	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time);
 }
 
 /* Print in a csv file the results of this job allocation */
 void to_print_job_csv(struct Job* job, int time)
 {
-	char* file_to_open;
+	//~ char* file_to_open;
 	int time_used = job->end_time - job->start_time;
 	
 	/* Only evaluate jobs from workload 1 */
@@ -128,7 +128,7 @@ void to_print_job_csv(struct Job* job, int time)
 	#ifdef PRINT_GANTT_CHART
 	//~ printf("la\n"); fflush(stdout);
 	int i = 0;
-	file_to_open = malloc(100*sizeof(char));
+	char* file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Results_all_jobs_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".csv");
@@ -165,7 +165,7 @@ void to_print_job_csv(struct Job* job, int time)
 	#endif
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
-	file_to_open = malloc(100*sizeof(char));
+	char* file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Distribution_queue_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");

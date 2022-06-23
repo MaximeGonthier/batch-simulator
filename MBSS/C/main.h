@@ -119,6 +119,7 @@ struct Core {
     //~ struct Job_List* job_queue; /* TODO maybe need it ? If yes put it in both read functions */
     int available_time;
     bool running_job;
+    int running_job_end;
 };
 
 struct To_Print_List {

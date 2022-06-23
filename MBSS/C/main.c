@@ -1,6 +1,6 @@
 #include <main.h>
 
-void main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	/* Init global variables */
 	finished_jobs = 0;
@@ -61,7 +61,7 @@ void main(int argc, char *argv[])
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
 	#endif
 
-	bool new_job = false;
+	//~ bool new_job = false;
 	int next_submit_time = first_subtime_day_0;
 	int t = first_subtime_day_0;
 	//~ next_end_time = -1; /* TODO: enable it here if use it I set it in start_jobs */
@@ -154,7 +154,7 @@ void main(int argc, char *argv[])
 	}
 
 	/* Start of simulation. */
-	//~ while(nb_job_to_evaluate != nb_job_to_evaluate_finished)
+	printf("Start simulation.\n");
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
 		/* Get the set of available jobs at time t */
@@ -305,25 +305,36 @@ void main(int argc, char *argv[])
 			//~ print_job_list(scheduled_job_list->head);
 			//~ #endif
 			
+			/* Get started jobs. */
+			if (start_times->head != NULL)
+			{
+				if (start_times->head->time == t)
+				{
+					start_jobs(t, scheduled_job_list->head);
+				}
+			}
+			
 		}
 
+		
+		//~ /* Get started jobs. */
+		//~ if (start_times->head != NULL)
+		//~ {
+			//~ if (start_times->head->time == t)
+			//~ {
+				//~ start_jobs(t, scheduled_job_list->head);
+			//~ }
+		//~ }
 		
 		//~ printf("here\n");
 		//~ /* Get ended job. Inform if a filing is needed. Compute file transfers needed.	 */
 		//~ affected_node_list = []	
 		//~ finished_job_list = []	
 		old_finished_jobs = finished_jobs;
-		//~ printf("here\n");	
-		//~ if (end_times	
+
 		if (end_times->head != NULL && end_times->head->time == t)
 		{
-			//~ printf("here\n");
-			//~ printf("Job(s) ended.\n");
-			//~ finished_jobs, affected_node_list, finished_job_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished = end_jobs(t, finished_jobs, affected_node_list, running_jobs, running_cores, running_nodes, nb_job_to_evaluate_finished, nb_job_to_evaluate, first_time_day_0);
 			end_jobs(running_jobs->head, t);
-			//~ printf("here\n");
-			/* Let's remove finished jobs copy of data but after the start job so the one finishing and starting consecutivly don't load it twice. */
-			//~ remove_data_from_node(finished_job_list->head, t); /* I do it in end_jobs directly! */
 		}
 
 		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
@@ -334,9 +345,20 @@ void main(int argc, char *argv[])
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
+			//~ /* Get started jobs. */
+			//~ if (start_times->head != NULL)
+			//~ {
+				//~ if (start_times->head->time == t)
+				//~ {
+					//~ start_jobs(t, scheduled_job_list->head);
+				//~ }
+			//~ }
+			//~ reset_cores(node_list, t);
 			
 			/* Reset planned starting times. */
 			free_next_time_linked_list(&start_times->head);
+			//~ start_times->head->next = NULL;
+			//~ start_times->head = NULL;
 			
 			#ifdef PRINT
 			printf("Reschedule.\n");
@@ -408,7 +430,10 @@ void main(int argc, char *argv[])
 		}
 		
 		#ifdef PRINT_CLUSTER_USAGE
-		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
+		//~ if (t % 100000 == 0)
+		//~ {
+			fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
+		//~ }
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)
@@ -428,7 +453,7 @@ void main(int argc, char *argv[])
 	printf("Computing and writing results...\n");
 	print_csv(jobs_to_print_list->head);
 	
-	return;
+	return 1;
 }
 
 //~ # Try to schedule immediatly in FCFS order without delaying first_job_in_queue

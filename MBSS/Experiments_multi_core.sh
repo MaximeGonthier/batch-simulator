@@ -40,23 +40,24 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	#~ # ../../pypy3.9-v7.3.9-linux64/bin/pypy3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	# make print -C C/
-#~ elif [ $PRINT == 1 ]; then
+#~ if [ $PRINT == 1 ]; then
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
-	make -C C/
+	#~ make -C C/
 #~ elif [ $PRINT == 2 ]; then
 	# ../../pypy3.9-v7.3.9-linux64/bin/pypy3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ python3 src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER $PRINT $CONTRAINTES_TAILLES
 	#~ make print_distribution_queue_times -C C/
 #~ fi
 
-./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
+#~ ./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES 2>&1 | tee terminal_output2.txt
-./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES
+make print_gantt_chart -C C/
+./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
 
 #~ if [ $PRINT == 1 ]; then
-	#~ echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
-	#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
+python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
 #~ fi
 #~ if [ $PRINT == 2 ]; then
 	#~ echo "Plotting distribution of queue times..."
