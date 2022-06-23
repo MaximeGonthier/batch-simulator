@@ -152,15 +152,36 @@ int main(int argc, char *argv[])
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 		free(to_copy);
 	}
-
+	
+	bool new_jobs = false;
+	
 	/* Start of simulation. */
 	printf("Start simulation.\n");
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
+		/* Get ended job. */
+		old_finished_jobs = finished_jobs;
+		if (end_times->head != NULL && end_times->head->time == t)
+		{
+			end_jobs(running_jobs->head, t);
+		}	
+		/* Get started jobs. */
+		if (start_times->head != NULL)
+		{
+			if (start_times->head->time == t)
+			{
+				start_jobs(t, scheduled_job_list->head);
+			}
+		}			
+		/* Reset all cores and jobs. */
+		//~ reset_cores(node_list, t);
+		
+		new_jobs = false;
 		/* Get the set of available jobs at time t */
 		/* Jobs are already sorted by subtime so I can simply stop with a break */
 		if (next_submit_time == t) /* We have new jobs need to schedule them. */
 		{
+			new_jobs = true;
 			#ifdef PRINT
 			printf("We have new jobs at time %d.\n", t);
 			#endif
@@ -172,7 +193,8 @@ int main(int argc, char *argv[])
 				if (job_pointer->subtime <= t)
 				{
 					temp = job_pointer->next;
-					copy_delete_insert_job_list(job_list, new_job_list, job_pointer);
+					//~ copy_delete_insert_job_list(job_list, new_job_list, job_pointer);
+					copy_delete_insert_job_list(job_list, scheduled_job_list, job_pointer);
 					job_pointer = temp;
 				}
 				else
@@ -198,105 +220,33 @@ int main(int argc, char *argv[])
 			//~ #endif
 
 			/* New jobs are available! Schedule them. */
-			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
-			{
-				fcfs_with_a_score_scheduler(new_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-			}
-			else if (strcmp(scheduler, "Fcfs") == 0)
-			{
-				fcfs_scheduler(new_job_list->head, node_list, t);
-			}
-			//~ elif (strcmp(scheduler, "Random") == 0)
+			//~ if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 			//~ {
-				//~ printf("Not coded 
-				//~ random.shuffle(available_job_list);
-				//~ scheduled_job_list = random_scheduler(new_job_list, node_list, t);
+				//~ fcfs_with_a_score_scheduler(new_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			//~ }
-			//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
-				//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(new_job_list, node_list, t)
-				
-			//~ elif (scheduler == "Fcfs_big_job_first"):
-				//~ /* Order new jobs list and append them in order (depending on the size they need) in available job list
-				//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-				//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-				//~ scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
-			
-			//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-				//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-				//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-				//~ scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area)
-				
-			//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-				//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-				//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-				//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
-					
-			//~ elif (scheduler == "Fcfs_easybf"):
-				//~ if (first_job_in_queue == None):
-					//~ first_job_in_queue = available_job_list[0]
-				//~ else:
-					//~ first_job_in_queue = scheduled_job_list[0]
-				//~ fcfs_scheduler(available_job_list, node_list, t)
-				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
-
-			//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
-				//~ if (first_job_in_queue == None):
-					//~ first_job_in_queue = available_job_list[0]
-				//~ else:
-					//~ first_job_in_queue = scheduled_job_list[0]
-				//~ fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier, multiplier_nb_copy)
-				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, available_job_list)
-				
-			//~ elif (scheduler == "Common_file_packages_with_a_score"):
-				//~ common_file_packages_with_a_score(available_job_list, node_list, t, total_number_cores)
-					
-			//~ elif (scheduler == "Maximum_use_single_file"):
-				//~ while(len(available_job_list) > 0):
-					//~ /* ~ print(len(available_job_list))
-					//~ available_job_list = maximum_use_single_file_scheduler(available_job_list, node_list, t)
-			else
-			{
-				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
-				exit(EXIT_FAILURE);
-			}
+			//~ else if (strcmp(scheduler, "Fcfs") == 0)
+			//~ {
+				//~ fcfs_scheduler(new_job_list->head, node_list, t);
+			//~ }
+			//~ else
+			//~ {
+				//~ printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
+				//~ exit(EXIT_FAILURE);
+			//~ }
 			
 			/* Copy in scheduled_job and delete from new_jobs */
-			job_pointer = new_job_list->head;
-			while (job_pointer != NULL)
-			{
-				temp = job_pointer->next;
-				copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
-				job_pointer = temp;
-			}
-			
-			//~ for (int i = 0; i < number_of_new_jobs; i++)
-			//~ {
-				//~ job_pointer = new_job_list->head;
-				//~ printf("Add %d.\n", job_pointer->unique_id);
-				//~ copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
-			//~ }
-			
-			/* Copy and delete. */
 			//~ job_pointer = new_job_list->head;
 			//~ while (job_pointer != NULL)
 			//~ {
-				//~ if (job_pointer->start_time == t)
-				//~ {
-					//~ printf("Delete job %d from scheduled.\n", j->unique_id); fflush(stdout);
-					//~ struct Job* temp = job_pointer->next;
-					//~ copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
-					//~ job_pointer = temp;
-				//~ }
-				//~ else
-				//~ {
-					//~ job_pointer = job_pointer->next;
-				//~ }
+				//~ temp = job_pointer->next;
+				//~ copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
+				//~ job_pointer = temp;
 			//~ }
-			
-			#ifdef PRINT
-			printf("New job list emptied. Next start is %d t is %d. New schedule job list is:\n", start_times->head->time, t); fflush(stdout);
-			print_job_list(scheduled_job_list->head);
-			#endif
+						
+			//~ #ifdef PRINT
+			//~ printf("New job list emptied. Next start is %d t is %d. New schedule job list is:\n", start_times->head->time, t); fflush(stdout);
+			//~ print_job_list(scheduled_job_list->head);
+			//~ #endif
 			
 			//~ #ifdef PRINT
 			//~ printf("\nNew job list after schedule of new jobs. Must be empty.\n");
@@ -305,14 +255,14 @@ int main(int argc, char *argv[])
 			//~ print_job_list(scheduled_job_list->head);
 			//~ #endif
 			
-			/* Get started jobs. */
-			if (start_times->head != NULL)
-			{
-				if (start_times->head->time == t)
-				{
-					start_jobs(t, scheduled_job_list->head);
-				}
-			}
+			//~ /* Get started jobs. */
+			//~ if (start_times->head != NULL)
+			//~ {
+				//~ if (start_times->head->time == t)
+				//~ {
+					//~ start_jobs(t, scheduled_job_list->head);
+				//~ }
+			//~ }
 			
 		}
 
@@ -326,18 +276,15 @@ int main(int argc, char *argv[])
 			//~ }
 		//~ }
 		
-		//~ printf("here\n");
-		//~ /* Get ended job. Inform if a filing is needed. Compute file transfers needed.	 */
-		//~ affected_node_list = []	
-		//~ finished_job_list = []	
-		old_finished_jobs = finished_jobs;
+		//~ /* Get ended job. */
+		//~ old_finished_jobs = finished_jobs;
+		//~ if (end_times->head != NULL && end_times->head->time == t)
+		//~ {
+			//~ end_jobs(running_jobs->head, t);
+		//~ }
 
-		if (end_times->head != NULL && end_times->head->time == t)
-		{
-			end_jobs(running_jobs->head, t);
-		}
-
-		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
+		//~ if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
+		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
 		{
 			#ifdef PRINT
 			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
@@ -345,20 +292,9 @@ int main(int argc, char *argv[])
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
-			//~ /* Get started jobs. */
-			//~ if (start_times->head != NULL)
-			//~ {
-				//~ if (start_times->head->time == t)
-				//~ {
-					//~ start_jobs(t, scheduled_job_list->head);
-				//~ }
-			//~ }
-			//~ reset_cores(node_list, t);
 			
 			/* Reset planned starting times. */
 			free_next_time_linked_list(&start_times->head);
-			//~ start_times->head->next = NULL;
-			//~ start_times->head = NULL;
 			
 			#ifdef PRINT
 			printf("Reschedule.\n");
@@ -372,62 +308,34 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t);
 			}
-				
-			//~ /* ~ elif (scheduler == "Fcfs_with_a_score" or scheduler == "Fcfs_with_a_score_variant"):
-			//~ elif (scheduler[0:19] == "Fcfs_with_a_score_x"):
-				//~ /* ~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
-				//~ scheduled_job_list = fcfs_with_a_score_scheduler(available_job_list, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy)
-								
-			//~ elif (scheduler == "Fcfs_no_use_bigger_nodes"):
-				//~ scheduled_job_list = fcfs_no_use_bigger_nodes_scheduler(available_job_list, node_list, t)
-
-			//~ elif (scheduler == "Fcfs_big_job_first"):
-				//~ scheduled_job_list = fcfs_scheduler_big_job_first(available_job_list, node_list, t)
-				
-			//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-				//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(available_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
-				
-			//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-				//~ scheduled_job_list = fcfs_scheduler_area_filling(available_job_list, node_list, t, Planned_Area)
-				
-			//~ elif (scheduler == "Maximum_use_single_file"):
-				//~ reset_cores(affected_node_list, t)
-				//~ maximum_use_single_file_re_scheduler(scheduled_job_list, t, affected_node_list)
-				
-			//~ elif (scheduler == "Common_file_packages_with_a_score"):
-				//~ common_file_packages_with_a_score(scheduled_job_list, node_list, t, total_number_cores)
-			
+			else
+			{
+				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
+				exit(EXIT_FAILURE);
+			}
+							
 			#ifdef PRINT	
 			printf("End of reschedule.\n");
 			#endif
-		
-		//~ /* Ones with backfill
-		//~ /* ~ if (old_finished_jobs < finished_jobs):
-			//~ if (scheduler == "Fcfs_easybf"):
-				//~ if (len(scheduled_job_list) > 0):
-					//~ first_job_in_queue = scheduled_job_list[0]
-					//~ /* ~ print("First job is", first_job_in_queue.unique_id)
-					//~ if len(affected_node_list) > 0:
-						//~ fcfs_scheduler(scheduled_job_list, node_list, t)
-				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-				
-			//~ elif (scheduler == "Fcfs_with_a_score_easy_bf"):
-				//~ if (len(scheduled_job_list) > 0):
-					//~ first_job_in_queue = scheduled_job_list[0]
-					//~ /* ~ print("First job is", first_job_in_queue.unique_id)
-					//~ if len(affected_node_list) > 0:
-						//~ fcfs_with_a_score_scheduler(scheduled_job_list, node_list, t, multiplier, multiplier_nb_copy)
-				//~ easy_backfill_no_return(first_job_in_queue, t, node_list, scheduled_job_list)
-		}
-		
-		/* Get started jobs. */
-		if (start_times->head != NULL)
-		{
-			if (start_times->head->time == t)
+			
+			/* Get started jobs. */
+			if (start_times->head != NULL)
 			{
-				start_jobs(t, scheduled_job_list->head);
+				if (start_times->head->time == t)
+				{
+					start_jobs(t, scheduled_job_list->head);
+				}
 			}
 		}
+		
+		//~ /* Get started jobs. */
+		//~ if (start_times->head != NULL)
+		//~ {
+			//~ if (start_times->head->time == t)
+			//~ {
+				//~ start_jobs(t, scheduled_job_list->head);
+			//~ }
+		//~ }
 		
 		#ifdef PRINT_CLUSTER_USAGE
 		//~ if (t % 100000 == 0)

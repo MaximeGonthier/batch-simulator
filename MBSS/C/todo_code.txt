@@ -3,5 +3,4 @@ Important to sort cores after each schedule in the node you selected.
 Diff vient de get_current_intervals(head_node, t);
 
 
-Pb de trie des EAT dnas les cores a checker.
-Need to resort it after a reset maybe ???
+Mettre le reset juste avant le schedule seuelemtn

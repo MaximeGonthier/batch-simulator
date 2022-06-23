@@ -77,8 +77,8 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	}
 	
 	//~ #ifdef PRINT
-	if (j->node_used->unique_id == 183){
-	print_cores_in_specific_node(j->node_used);}
+	//~ if (j->node_used->unique_id == 183){
+	//~ print_cores_in_specific_node(j->node_used);}
 	//~ #endif
 	
 	/* Update infos on the job and on cores. */
@@ -98,8 +98,8 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	}
 		
 	//~ #ifdef PRINT
-	if (j->node_used->unique_id == 183) {
-	print_decision_in_scheduler(j); }
+	//~ if (j->node_used->unique_id == 183) {
+	//~ print_decision_in_scheduler(j); }
 	//~ #endif
 	
 	//~ if (j->unique_id == 1382)
@@ -212,8 +212,8 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	j->node_used = n;
 	
 	//~ #ifdef PRINT
-	if (j->node_used->unique_id == 183) {
-	print_cores_in_specific_node(j->node_used); }
+	//~ if (j->node_used->unique_id == 183) {
+	//~ print_cores_in_specific_node(j->node_used); }
 	//~ #endif
 	
 	j->start_time = earliest_available_time;
@@ -228,8 +228,8 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	}
 	
 	//~ #ifdef PRINT
-	if (j->node_used->unique_id == 183) {
-	print_decision_in_scheduler(j); }
+	//~ if (j->node_used->unique_id == 183) {
+	//~ print_decision_in_scheduler(j); }
 	//~ #endif
 	
 	/* Need to sort cores after each schedule of a job. */
@@ -586,7 +586,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			}
 			if (j->node_used->n_available_cores > 20)
 			{
-				perror("error n avail jobs");
+				printf("error n avail jobs on node %d", j->node_used->unique_id);
 				exit(EXIT_FAILURE);
 			}
 			//~ #endif
@@ -676,7 +676,7 @@ void reset_cores(struct Node_List** l, int t)
 				}
 			}
 			
-			/* Need to sort cores after each schedule of a job. */
+			/* Need to sort cores after a reset as well. */
 			sort_cores_by_available_time_in_specific_node(n);
 			
 			n = n->next;
