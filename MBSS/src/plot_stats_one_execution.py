@@ -31,7 +31,8 @@ if (comparaison == "Used_cores"):
 		print("error")
 		exit(1)
 	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of cores")
-	
+	plt.gca().set_ylim(bottom=0)
+
 elif (comparaison == "Used_nodes"):
 	Y_index = 1
 	plot_title = "Used nodes" + " " + scheduler
@@ -48,7 +49,8 @@ elif (comparaison == "Used_nodes"):
 		print("error")
 		exit(1)
 	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of nodes")
-	
+	plt.gca().set_ylim(bottom=0)
+
 elif (comparaison == "Nb_scheduled_jobs"):
 	Y_index = 2
 	plot_title = "Number of jobs in the queue" + " " + scheduler
@@ -62,11 +64,11 @@ df = pd.DataFrame(data)
   
 # ~ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
-  
+
 # ~ plt.axvline(x = first_job_before_day_0, color = 'yellow', linestyle = '-', label = "Submission time first job before day 0")
 # ~ plt.axvline(x = first_job_day_0, color = 'green', linestyle = '-', label = "Submission time first job day 0")
-# ~ plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
-# ~ plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
+plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
+plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
 
 plt.plot(Y)
 plt.title(plot_title)

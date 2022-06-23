@@ -445,8 +445,8 @@ void start_jobs(int t, struct Job* head)
 				//~ next_end_time = j->end_time;
 			//~ }
 			//~ #ifdef PRINT
-			if (j->node_used->unique_id == 183) {
-			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
+			//~ if (j->node_used->unique_id == 183) {
+			//~ printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
 			//~ #endif
 			
 			//~ #ifdef PRINT_CLUSTER_USAGE
@@ -464,8 +464,8 @@ void start_jobs(int t, struct Job* head)
 			//~ #endif
 			
 			//~ #ifdef PRINT
-			if (j->node_used->unique_id == 183) {
-			printf("n avail cores start_jobs %d.\n", j->node_used->n_available_cores); }
+			//~ if (j->node_used->unique_id == 183) {
+			//~ printf("n avail cores start_jobs %d.\n", j->node_used->n_available_cores); }
 			//~ #endif
 			
 			//~ #ifdef PRINT
@@ -563,10 +563,10 @@ void end_jobs(struct Job* job_list_head, int t)
 			finished_jobs += 1;
 			
 			//~ #ifdef PRINT
-			if (j->node_used->unique_id == 183)
-			{
-			printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
-			}
+			//~ if (j->node_used->unique_id == 183)
+			//~ {
+			//~ printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
+			//~ }
 			//~ #endif
 			
 			/* Just printing, can remove */
@@ -592,8 +592,8 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ #endif
 			
 			//~ #ifdef PRINT
-			if (j->node_used->unique_id == 183) {
-			printf("n avail cores end_jobs %d.\n", j->node_used->n_available_cores); }
+			//~ if (j->node_used->unique_id == 183) {
+			//~ printf("n avail cores end_jobs %d.\n", j->node_used->n_available_cores); }
 			//~ #endif
 			
 			for (i = 0; i < j->cores; i++)

@@ -475,7 +475,7 @@ We compute statistics from previous workloads:
 \begin{itemize}
 	\item For each job we compute it's usage area with $Area(J_i) = \core(J_i) \times \walltime(J_i)$
 	\item $Area(\jobset) \gets \sum_{i=0}^{|\jobset|} Area(J_i)$
-	\item $T_{max} \gets \frac{Area(\jobset)}{K}$, with $K$ the total number of nodes
+	\item $T_{max} \gets max(\frac{Area(J_l)}{K_l}, \frac{Area(J_l) + Area(J_{l - 1})}{K_l + K_{l - 1}}, ..., \frac{Area(\jobset)}{K})$, with $K_x$ the total number of nodes of size $x$.
 	\item For each size $x$, compute: $Area\_Jobs(x) \gets \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) = x$
 \end{itemize}
 
@@ -487,23 +487,54 @@ For each size $x$ we make the following decision, starting with the biggest node
 
 For each $x$ in decreasing order:
 \begin{itemize}
-	\item $Planned\_Area(x)[x] = \infty$ 
-	\item If $Area(x) - Planned\_Area(x+1)[x] < T_{max}$: \todo[inline]{Hard to write general case}
+	\item $Planned\_Area[x][x] \gets Area\_Jobs[x]$
+	\item $Remaining\_Area[x] \gets Tmax \times K_x$
+	\item $Remaining\_Area[x] \gets Remaining\_Area[x] - Area\_Jobs[x]$
+	\item $Area\_Jobs[x] \gets 0$
+	%~ \item If $Area(x) - Planned\_Area(x+1)[x] < T_{max}$:
+	\item $y \gets x - 1$
+	\item While $Remaining\_Area[x]>0$ and $y>=0$
 	\begin{itemize}
-		\item For $i$ in range $(x - 1, 0)$
-		\begin{itemize}
-			\item If $Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i) \leq T_{max}$:
-			\begin{itemize}
-				\item $Planned\_Area(x)[i] = Area(i)$
-			\end{itemize}
-			\item Else
-			\begin{itemize}
-				\item $Planned\_Area(x)[i] = max(0, T_{max} - (Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i+1)))$
-				\item break
-			\end{itemize}		
-		\end{itemize}
+		\item $area\_to\_use \gets min (Remaining\_Area[x], Area\_Jobs[y])$
+		\item $Remaining\_Area[x] \gets Remaining\_Area[x] - area\_to\_use$
+		\item $Planned\_Area[x][y] \gets area\_to\_use$
+		\item $Area\_Jobs[y] \gets - Area\_Jobs[y] - area\_to\_use$
+
+		%~ \item For $i$ in range $(x - 1, 0)$
+		%~ \begin{itemize}
+			%~ \item If $Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i) \leq T_{max}$:
+			%~ \begin{itemize}
+				%~ \item $Planned\_Area(x)[i] = Area(i)$
+			%~ \end{itemize}
+			%~ \item Else
+			%~ \begin{itemize}
+				%~ \item $Planned\_Area(x)[i] = max(0, T_{max} - (Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i+1)))$
+				%~ \item break
+			%~ \end{itemize}		
+		%~ \end{itemize}
 	\end{itemize}
 \end{itemize}
+
+%~ For x = n downto 0
+
+%~ %%% Initialisation
+%~ - Remaining_Area[x] <- Tmax * nb_of_nodes[x]
+
+%~ %%% On met ce qui reste des jobs de type x sur les machines x
+%~ - Remaining_Area[x] <- Remaining_Area[x] - Area_Jobs[x]
+%~ - Planned_Area[x][x] <- Area_Jobs[x]
+%~ - Area_Jobs[x] <- 0
+
+%~ %%% Tant qu'il reste de la place, on met alloue des jobs de type inférieur
+%~ - y <- x-1
+%~ - While Remaining_Area[x]>0 and y>=0:
+  %~ - area\_to\_use <- min (Remaining_Area[x], Area_Jobs[y])
+  %~ - Remaining_Area[x] <- Remaining_Area[x] - area\_to\_use
+  %~ - Planned_Area[x][y] <- area\_to\_use
+  %~ - Area_Jobs[y] <- - Area_Jobs[y] - area\_to\_use
+ %~ (EndWhile)
+
+%~ (EndFor)
 
 Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ and $M_3$, each having $k_1 = 5, k_2 = 3$ and $k_3 = 2$ nodes:
 \begin{enumerate}
