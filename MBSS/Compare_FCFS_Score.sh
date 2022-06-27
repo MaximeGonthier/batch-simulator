@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#~ oarsub -p nova -l core=16,walltime=01:45:00 -r '2022-06-27 17:09:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-02-08-\>2022-02-08 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0"
+
 # bash Compare_FCFS_Score.sh workload cluster contrainte_taille
 start=`date +%s`
 
@@ -184,7 +187,17 @@ make -C C/
 
 # 5. Just testing manually
 # echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-SCHEDULER=$4
+SCHEDULER="Fcfs_with_a_score_x1000_x0_x0"
+truncate -s 0 outputs/Results_${SCHEDULER}.csv
+echo "Starting ${SCHEDULER}"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+cat outputs/Results_${SCHEDULER}.csv >> data/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+SCHEDULER="Fcfs_with_a_score_x2000_x0_x0"
+truncate -s 0 outputs/Results_${SCHEDULER}.csv
+echo "Starting ${SCHEDULER}"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+cat outputs/Results_${SCHEDULER}.csv >> data/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+SCHEDULER="Fcfs_with_a_score_x4000_x0_x0"
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 echo "Starting ${SCHEDULER}"
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
