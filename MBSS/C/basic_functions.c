@@ -128,21 +128,24 @@ void get_current_intervals(struct Node_List** head_node, int t)
 				//~ if (d->intervals->head != NULL)
 				//~ {
 					//~ free_interval_linked_list(&d->intervals->head);
+					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+					//~ d->intervals->head = NULL;
+					//~ d->intervals->tail = NULL;
 				//~ }
-				//~ if (d->intervals->head == NULL)
+				//~ else if (d->intervals->head == NULL)
 				//~ {
 					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 					//~ d->intervals->head = NULL;
 					//~ d->intervals->tail = NULL;
-					//~ if (d->nb_task_using_it > 0) { exit(1); }
-					//~ break;
 				//~ }
 				//~ else
 				//~ {
-					//~ free_interval_linked_list(&d->intervals->head);
+					//~ printf("Error\n");
+					//~ exit(EXIT_FAILURE);
+				//~ }
+				//~ print_data_intervals(head_node, t);
 					
 					/* TODO : maybe I need to free here each time ? But when I do i get different results from Fcfs with x0_x0_x0. */
-					
 					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 					d->intervals->head = NULL;
 					d->intervals->tail = NULL;
@@ -160,13 +163,12 @@ void get_current_intervals(struct Node_List** head_node, int t)
 						}
 						create_and_insert_tail_interval_list(d->intervals, d->end_time);
 					}
-					else if (d->nb_task_using_it == 0 && d->end_time >= t)
+					else if (d->end_time >= t)
 					{
 						create_and_insert_tail_interval_list(d->intervals, t);
 						create_and_insert_tail_interval_list(d->intervals, t);
 						create_and_insert_tail_interval_list(d->intervals, t);
 					}
-				//~ }
 				d = d->next;
 			}
 			n = n->next;
@@ -570,7 +572,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ #endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%250 == 0)
+			if (finished_jobs%1001 == 0)
 			{
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);

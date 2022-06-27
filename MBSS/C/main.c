@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
 	int multiplier_file_to_load = 0;
 	int multiplier_file_evicted = 0;
 	int multiplier_nb_copy = 0;
-	int backfill_big_node_mode = 0;
+	//~ int backfill_big_node_mode = 0;
 	
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)

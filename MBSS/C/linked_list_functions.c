@@ -74,6 +74,7 @@ void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_
 	struct Interval* i = (struct Interval*) malloc(sizeof(struct Interval));
 	i->time = time_to_insert;
 	i->next = NULL;
+	
 	if (liste->head == NULL)
 	{
 		liste->head = i;
@@ -84,6 +85,28 @@ void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_
 		liste->tail->next = i;
 		liste->tail = i;
 	}
+	
+	//~ //if head is NULL, it is an empty list
+    //~ if(liste->head == NULL)
+    //~ {
+         //~ liste->head = i;
+	 //~ }
+    //~ //Otherwise, find the last node and add the newNode
+    //~ else
+    //~ {
+        //~ struct Interval *lastNode = liste->head;
+        
+
+        //~ //last node's next address will be NULL.
+        //~ while(lastNode->next != NULL)
+        //~ {
+            //~ lastNode = lastNode->next;
+        //~ }
+
+        //~ //add the newNode at the end of the linked list
+        //~ lastNode->next = i;
+    //~ }
+
 }
 
 void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp)

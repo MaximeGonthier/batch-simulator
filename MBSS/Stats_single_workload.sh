@@ -26,7 +26,7 @@ CONTRAINTES_TAILLES=$4
 
 
 make print_cluster_usage -C C/
-./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
 
 read V1 V2 V3 V4 < outputs/Start_end_evaluated_slice.txt
 echo $V1

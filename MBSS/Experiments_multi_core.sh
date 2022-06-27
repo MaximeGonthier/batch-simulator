@@ -28,11 +28,11 @@ PRINT=$4
 CONTRAINTES_TAILLES=$5
 DATE=${WORKLOAD:27:30}
 
-if [ $PRINT == 1 ]; then
-echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
-elif [ $PRINT == 2 ]; then
-: > "outputs/Distribution_queue_times_${SCHEDULER}.txt"
-fi
+#~ if [ $PRINT == 1 ]; then
+#~ echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
+#~ elif [ $PRINT == 2 ]; then
+#~ : > "outputs/Distribution_queue_times_${SCHEDULER}.txt"
+#~ fi
 
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 
@@ -66,7 +66,6 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES 2>&1 | tee terminal_output2.txt
 make -j 6 -C C/
-ulimit -S -s 50000
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
 
 #~ if [ $PRINT == 1 ]; then
