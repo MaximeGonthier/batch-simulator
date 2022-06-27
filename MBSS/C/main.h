@@ -10,7 +10,7 @@
 #include <stdbool.h>
 
 /* Global variables */
-int constraint_on_sizes;
+extern int constraint_on_sizes;
 int nb_cores;
 int nb_job_to_evaluate;
 int finished_jobs;

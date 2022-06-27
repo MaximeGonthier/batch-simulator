@@ -1,5 +1,7 @@
 #include <main.h>
 
+int constraint_on_sizes;
+
 int main(int argc, char *argv[])
 {
 	/* Init global variables */
