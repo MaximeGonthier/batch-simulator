@@ -1,6 +1,26 @@
 #include <main.h>
 
 int constraint_on_sizes;
+int nb_cores;
+int nb_job_to_evaluate;
+int finished_jobs;
+int total_number_jobs;
+int total_number_nodes;
+struct Job_List* job_list; /* All jobs not available yet */
+struct Job_List* new_job_list; /* New available jobs */
+struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
+struct Job_List* scheduled_job_list; /* Scheduled or available */
+struct Job_List* running_jobs; /* Started */
+struct Node_List** node_list;
+struct To_Print_List* jobs_to_print_list;
+int running_cores;
+int running_nodes;
+int total_queue_time;
+int first_subtime_day_0;
+char* scheduler;
+struct Next_Time_List* end_times;
+struct Next_Time_List* start_times;
+int nb_job_to_evaluate_started;
 
 int main(int argc, char *argv[])
 {

@@ -11,30 +11,30 @@
 
 /* Global variables */
 extern int constraint_on_sizes;
-int nb_cores;
-int nb_job_to_evaluate;
-int finished_jobs;
-int total_number_jobs;
-int total_number_nodes;
-struct Job_List* job_list; /* All jobs not available yet */
-struct Job_List* new_job_list; /* New available jobs */
-struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
-struct Job_List* scheduled_job_list; /* Scheduled or available */
-struct Job_List* running_jobs; /* Started */
-struct Node_List** node_list;
-struct To_Print_List* jobs_to_print_list;
-int running_cores;
-int running_nodes;
-int total_queue_time;
-int first_subtime_day_0;
-char* scheduler;
+extern int nb_cores;
+extern int nb_job_to_evaluate;
+extern int finished_jobs;
+extern int total_number_jobs;
+extern int total_number_nodes;
+extern struct Job_List* job_list; /* All jobs not available yet */
+extern struct Job_List* new_job_list; /* New available jobs */
+extern struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
+extern struct Job_List* scheduled_job_list; /* Scheduled or available */
+extern struct Job_List* running_jobs; /* Started */
+extern struct Node_List** node_list;
+extern struct To_Print_List* jobs_to_print_list;
+extern int running_cores;
+extern int running_nodes;
+extern int total_queue_time;
+extern int first_subtime_day_0;
+extern char* scheduler;
 
 /* To only call these functions when I need it. */
-struct Next_Time_List* end_times;
-struct Next_Time_List* start_times; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
+extern struct Next_Time_List* end_times;
+extern struct Next_Time_List* start_times; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
 
 //~ int nb_job_to_evaluate_finished;
-int nb_job_to_evaluate_started;
+extern int nb_job_to_evaluate_started;
 
 /* For fcfs with a score. Allow me to not compute multiple time the same amount of copy of a file at a certain time when computing the amount of copy. */
 struct Time_Already_Checked_Nb_of_Copy_List {
