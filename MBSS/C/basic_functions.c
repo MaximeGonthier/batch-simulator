@@ -449,7 +449,7 @@ void start_jobs(int t, struct Job* head)
 			//~ printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
 			//~ #endif
 			
-			//~ #ifdef PRINT_CLUSTER_USAGE
+			#ifdef PRINT_CLUSTER_USAGE
 			running_cores += j->cores;
 			if (j->node_used->n_available_cores == 20)
 			{
@@ -461,7 +461,7 @@ void start_jobs(int t, struct Job* head)
 				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
 				exit(EXIT_FAILURE);
 			}
-			//~ #endif
+			#endif
 			
 			//~ #ifdef PRINT
 			//~ if (j->node_used->unique_id == 183) {
@@ -570,14 +570,14 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ #endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%333 == 0)
+			if (finished_jobs%250 == 0)
 			{
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
 									
-			//~ #ifdef PRINT_CLUSTER_USAGE
+			#ifdef PRINT_CLUSTER_USAGE
 			running_cores -= j->cores;
 			j->node_used->n_available_cores += j->cores;
 			if (j->node_used->n_available_cores == 20)
@@ -589,7 +589,7 @@ void end_jobs(struct Job* job_list_head, int t)
 				printf("error n avail jobs on node %d", j->node_used->unique_id);
 				exit(EXIT_FAILURE);
 			}
-			//~ #endif
+			#endif
 			
 			//~ #ifdef PRINT
 			//~ if (j->node_used->unique_id == 183) {

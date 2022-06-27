@@ -52,12 +52,13 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
 
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES 2>&1 | tee terminal_output2.txt
-make print_gantt_chart -C C/
-./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
+make -j 6 -C C/
+ulimit -S -s 50000
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
 
 #~ if [ $PRINT == 1 ]; then
-echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
-python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+#~ echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
+#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
 #~ fi
 #~ if [ $PRINT == 2 ]; then
 	#~ echo "Plotting distribution of queue times..."

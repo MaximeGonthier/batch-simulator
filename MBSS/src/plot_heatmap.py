@@ -13,6 +13,7 @@ a = []
 i = 0
 temp = []
 N = int(sys.argv[2])
+PAS = int(sys.argv[5])
 with open(sys.argv[1]) as f:
 	line = f.readline()
 	min_value = float(line)
@@ -47,6 +48,11 @@ print(a)
 
 cmap = sns.cm.rocket_r
 
+# ~ num_ticks = N
+# ~ # the index of the position of yticks
+# ~ yticks = np.linspace(0, len(depth_list) - 1, num_ticks, dtype=np.int)
+# ~ # the content of labels of these yticks
+# ~ yticklabels = [depth_list[idx] for idx in yticks]
 
 ax = sns.heatmap(a,
                  annot=True, # Pour écrire les valuers
@@ -55,17 +61,25 @@ ax = sns.heatmap(a,
                  # ~ xticklabels=print_categories,
                  # ~ yticklabels=print_categories,
                  # ~ vmin=-0.05,
+                 # ~ yticklabels=yticklabels,
                  cmap = cmap)
+                 
+# ~ ax.set_yticks(yticks)
 
 ax.add_patch(plt.Rectangle((min_x, min_y), 1, 1, fc='none', ec='gold', lw=5, clip_on=False))
 
-# ~ short_cols = [0, 1, 2, 3, 4, 15000, 30000, 45000, 60000]
-# ~ ax.set_xticklabels(short_cols)
-# ~ ax.set_yticklabels(short_cols)
+short_cols = []
+index = 0
+for i in range(0, N):
+	index = PAS*i
+	short_cols.append(index)
+	# ~ index = PAS*i
+ax.set_xticklabels(short_cols)
+ax.set_yticklabels(short_cols)
 
 plt.xticks()
 plt.yticks()
-plt.title("Mean Flow(J)/Flow on empty cluster(J)")
+# ~ plt.title("Mean Flow(J)/Flow on empty cluster(J)")
 plt.ylabel(sys.argv[3])
 plt.xlabel(sys.argv[4])
 # ~ plt.legend()
