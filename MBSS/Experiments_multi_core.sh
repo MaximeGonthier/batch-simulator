@@ -1,5 +1,8 @@
 #!/bin/bash
 # bash Experiments_multi_core.sh workload cluster scheduler PRINT?(1 for gantt chart, 2 for distrib of queue times)
+
+#~ oarsub -p "network_address in ('nova-1.lyon.grid5000.fr')" -r "2022-06-27 16:07:01" -l walltime=02:00:00
+
 start=`date +%s`
 
 if [ "$#" -ne 5 ]; then
