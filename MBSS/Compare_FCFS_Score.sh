@@ -1,7 +1,4 @@
 #!/bin/bash
-
-#~ oarsub -p nova -l core=16,walltime=01:45:00 -r '2022-06-27 17:09:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-02-08-\>2022-02-08 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0"
-
 # bash Compare_FCFS_Score.sh workload cluster contrainte_taille
 start=`date +%s`
 
