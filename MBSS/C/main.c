@@ -153,37 +153,37 @@ int main(int argc, char *argv[])
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 		free(to_copy);
 	}
-	else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
-	{
-		int** Planned_Area = malloc(3*3*sizeof(int));
-		if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
-		{
-			FILE *f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_omniscient.txt", "r");
-		}
-		else 
-		{
-			FILE *f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08.txt", "r");
-		}
-		if (!f)
-		{
-			perror("fopen error in area filling.\n");
-			exit(EXIT_FAILURE);
-		}
-		i = 0;
-		while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
-		{
-			Planned_Area[i][0] = atof(s2);
-			Planned_Area[i][1] = atof(s3);
-			Planned_Area[i][2] = atof(s4);
-			i += 1;
-		}
-		fclose(f);
-	}
-	else if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
-	{
-		/* 0 = don't compute anything, 1 = compute mean queue time */
-		backfill_big_node_mode = atoi(scheduler[24]);
-	}
+	//~ else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
+	//~ {
+		//~ int** Planned_Area = malloc(3*3*sizeof(int));
+		//~ if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
+		//~ {
+			//~ FILE *f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_omniscient.txt", "r");
+		//~ }
+		//~ else 
+		//~ {
+			//~ FILE *f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08.txt", "r");
+		//~ }
+		//~ if (!f)
+		//~ {
+			//~ perror("fopen error in area filling.\n");
+			//~ exit(EXIT_FAILURE);
+		//~ }
+		//~ i = 0;
+		//~ while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
+		//~ {
+			//~ Planned_Area[i][0] = atof(s2);
+			//~ Planned_Area[i][1] = atof(s3);
+			//~ Planned_Area[i][2] = atof(s4);
+			//~ i += 1;
+		//~ }
+		//~ fclose(f);
+	//~ }
+	//~ else if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
+	//~ {
+		//~ /* 0 = don't compute anything, 1 = compute mean queue time */
+		//~ backfill_big_node_mode = atoi(scheduler[24]);
+	//~ }
 	
 	bool new_jobs = false;
 	
@@ -340,22 +340,22 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t);
 			}
-			else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			}
-			else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			}
-			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, Fcfs_area_filling_omniscient) == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			}
-			else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			}
+			//~ else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
+			//~ {
+				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
+			//~ {
+				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, Fcfs_area_filling_omniscient) == 0)
+			//~ {
+				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
+			//~ {
+				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
+			//~ }
 		//~ elif (scheduler == "Fcfs_big_job_first"):
 			//~ # Order new jobs list and append them in order (depending on the size they need) in available job list
 			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
