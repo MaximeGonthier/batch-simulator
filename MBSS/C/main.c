@@ -320,10 +320,10 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}
-			//~ else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
-			//~ {
-				//~ fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
-			//~ }
+			else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
+			{
+				fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
+			}
 			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
 			//~ {
 				//~ fcfs_scheduler_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);

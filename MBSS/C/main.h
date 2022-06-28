@@ -213,7 +213,7 @@ void sort_job_list_by_file_size(struct Job** head);
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
-
+void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
 
 
 //~ # Ce sont des listes de listes

@@ -825,3 +825,40 @@ int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data
 	}
 	return -1;
 }
+
+int schedule_job_to_start_immediatly_on_specific_node_size(job, node_sublist, current_time, backfill_big_node_mode, total_queue_time, finished_jobs, nb_non_available_cores):
+	
+	if finished_jobs == 0:
+		mean_queue_time = 0
+	else:
+		mean_queue_time = total_queue_time/finished_jobs
+	
+	for n in node_sublist:
+		
+		choosen_core, earliest_available_time = return_earliest_available_cores_and_start_time_specific_node(job.cores, n, current_time)
+		
+		if backfill_big_node_mode == 0:
+			threshold_for_a_start = current_time
+		elif backfill_big_node_mode == 1:
+			threshold_for_a_start = current_time + max(0, mean_queue_time - (current_time - job.subtime))
+		else:
+			print("Error on backfill_big_node_mode, must be 0 or 1 ")
+			exit(1)
+			
+		if earliest_available_time <= threshold_for_a_start: # Ok I can start immediatly, schedule job and return true
+			start_time = earliest_available_time
+			job.node_used = n
+			job.cores_used = choosen_core
+			job.start_time = start_time
+			job.end_time = start_time + job.walltime			
+			for c in choosen_core:
+				c.job_queue.append(job)
+				
+				# Reduced complexity
+				if c.available_time <= current_time:
+					nb_non_available_cores += 1
+				
+				c.available_time = start_time + job.walltime
+			
+			return True, nb_non_available_cores
+	return False, nb_non_available_cores

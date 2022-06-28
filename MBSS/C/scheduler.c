@@ -469,36 +469,46 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 }
 
 /* TODO : pas besoin de sort a chaque fois. Do I do it ? */
-//~ void fcfs_scheduler_backfill_big_nodes(l, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
-//~ {
-	//~ scheduled_job_list = []
-	//~ nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
-	//~ number_of_nodes_sub_list = len(node_list)
-	
-	//~ for j in l:
-		//~ if nb_non_available_cores < nb_cores:
-			//~ if __debug__:
-				//~ print("Scheduling job", j.unique_id)
-			//~ scheduled_job_list.append(j)
-			//~ result = False
-			//~ i = j.index_node_list
-			//~ while (result == False and i != number_of_nodes_sub_list):
-				//~ if __debug__:
-					//~ print("Try to start immedialy on node of size", i)
-				//~ result, nb_non_available_cores = start_job_immediatly_specific_node_size(j, node_list[i], t, backfill_big_node_mode, total_queue_time, finished_jobs, nb_non_available_cores)
-				//~ i += 1
-			//~ if (result == False):
-				//~ if __debug__:
-					//~ print("Just schedule job", j.unique_id)
-				//~ # If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits)
-				//~ nb_non_available_cores = schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, node_list[j.index_node_list], t, nb_non_available_cores)
-		//~ else:
-			//~ if __debug__:
-				//~ print("Cluster full break.")
-			//~ break
+void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs)
+{
+	printf("Start fcfs_scheduler_backfill_big_nodes. Mode is: %d.\n", backfill_big_node_mode);
+	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+	struct Job* j = head_job;
+	while (j != NULL)
+	{
+		if (nb_non_available_cores < nb_cores)
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
 			
-	//~ return scheduled_job_list
-//~ }
+			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
+			
+			insert_next_time_in_sorted_list(start_times, j->start_time);
+			
+			j = j->next;
+		}
+		else
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
+			break;
+		}
+	}
+			result = False
+			i = j.index_node_list
+			while (result == False and i != number_of_nodes_sub_list):
+				printf("Try to start immedialy on node of category %d", i);
+				result, nb_non_available_cores = schedule_job_to_start_immediatly_on_specific_node_size(j, node_list[i], t, backfill_big_node_mode, total_queue_time, nb_finished_jobs, nb_non_available_cores)
+				i += 1
+			if (result == False):
+				if __debug__:
+					print("Just schedule job", j.unique_id)
+				/* If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits). */
+				nb_non_available_cores = schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, node_list[j.index_node_list], t, nb_non_available_cores)
+}
 	
 //~ void fcfs_scheduler_area_filling(l, node_list, t, Planned_Area)(scheduled_job_list->head, node_list, t, Planned_Area);
 //~ {
