@@ -475,8 +475,8 @@ We compute statistics from previous workloads:
 \begin{itemize}
 	\item For each job we compute it's usage area with $Area(J_i) = \core(J_i) \times \walltime(J_i)$
 	\item $Area(\jobset) \gets \sum_{i=0}^{|\jobset|} Area(J_i)$
-	\item $T_{max} \gets max(\frac{Area(J_l)}{K_l}, \frac{Area(J_l) + Area(J_{l - 1})}{K_l + K_{l - 1}}, ..., \frac{Area(\jobset)}{K})$, with $K_x$ the total number of nodes of size $x$.
 	\item For each size $x$, compute: $Area\_Jobs(x) \gets \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) = x$
+	\item $T_{max} \gets max(\frac{Area\_Jobs(J_l)}{K_l}, \frac{Area\_Jobs(J_l) + Area\_Jobs(J_{l - 1})}{K_l + K_{l - 1}}, ..., \frac{Area\_Jobs(\jobset)}{K})$, with $K_x$ the total number of nodes of size $x$ and $K$ the total amount of nodes.
 \end{itemize}
 
 We compute for each size: $Area(x) \gets \frac{Area\_Jobs(x)}{k_x}$ which correspond
@@ -487,8 +487,8 @@ For each size $x$ we make the following decision, starting with the biggest node
 
 For each $x$ in decreasing order:
 \begin{itemize}
-	\item $Planned\_Area[x][x] \gets Area\_Jobs[x]$
-	\item $Remaining\_Area[x] \gets Tmax \times K_x$
+	\item $Planned\_Area[x][x] \gets Area\_Jobs[x]$ \todo[inline]{I would rather write $Planned\_Area[x][x] \gets \infty$}
+	\item $Remaining\_Area[x] \gets T_{max} \times K_x$
 	\item $Remaining\_Area[x] \gets Remaining\_Area[x] - Area\_Jobs[x]$
 	\item $Area\_Jobs[x] \gets 0$
 	%~ \item If $Area(x) - Planned\_Area(x+1)[x] < T_{max}$:
@@ -543,8 +543,11 @@ Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ a
 		\item $Area\_Jobs(M_1) = 15$ core time
 		\item $Area\_Jobs(M_2) = 30$ core time
 		\item $Area\_Jobs(M_3) = 2$ core time
+	\end{enumerate}
+	\item We compute:
+	\begin{enumerate}
 		\item $Area(\jobset) = 47$
-		\item $T_{max} = \frac{Area(\jobset)}{k_1 + k_2 + k_3} = 4,7$
+		\item $T_{max} \gets max(\frac{Area\_Jobs(M_3}{K_3}, \frac{Area\_Jobs(M_3) + Area\_Jobs(M_2)}{K_3 + K_2}, \frac{Area\_Jobs(\jobset)}{K}) = max(\frac{2}{2}, \frac{32}{5}, \frac{47}{10}) = 6,4$
 	\end{enumerate}
 	\item $Area(M_1) = \frac{Area\_Jobs(M_1)}{k_1} = 3$
 	\item $Area(M_2) = \frac{Area\_Jobs(M_2)}{k_2} = 10$
@@ -786,5 +789,12 @@ If I look into the past I get: Planned Area (3) : [ 0, 0, infinite ]
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_no_use_bigger_nodes.png}\caption{FCFS no use bigger nodes}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Flow_times_Fcfs_no_use_bigger_nodes_Fcfs_backfill_big_nodes_0_2022-02-08->2022-02-08_reduced_95_128_4_256_1_1024.pdf}\caption{Flow}\end{subfigure}
 \caption{Size constraint - June 17 - Trace size constraint to understand big total flow difference (192903568 VS 139565444).}\end{figure}
+
+\section{Meeting 30/06/22}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Stretch}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_with_a_minimum_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Stretch with a minimum}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Total_Flow_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Flow}\end{subfigure}\caption{June 28}\end{figure}
 
 \end{document}

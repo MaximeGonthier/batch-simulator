@@ -56,7 +56,7 @@ cmap = sns.cm.rocket_r
 
 ax = sns.heatmap(a,
                  annot=True, # Pour écrire les valuers
-                 fmt = '.2f',
+                 fmt = '.2f', # A ne pas faire pour total flow
                  # ~ fmt=".3f",
                  # ~ xticklabels=print_categories,
                  # ~ yticklabels=print_categories,
