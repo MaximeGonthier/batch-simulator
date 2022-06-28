@@ -232,35 +232,42 @@ void print_csv(struct To_Print* head_to_print)
 	float total_waiting_for_a_load_time_and_transfer_time = 0;
 	float makespan = 0;
 	float total_flow_stretch = 0;
+	float max_flow_stretch = 0;
 	float total_flow_stretch_with_a_minimum = 0;
+	float max_flow_stretch_with_a_minimum = 0;
 	float mean_flow_stretch = 0;
 	float mean_flow_stretch_with_a_minimum = 0;
 	float core_time_used = 0;
-	
+	float denominator_bounded_stretch = 0;
 	
 	while (head_to_print != NULL)
 	{
 		//~ printf("Evaluate job %d.\n", head_to_print->job_unique_id); fflush(stdout);
+		
 		/* Flow stretch */
 		total_flow_stretch += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
 		
-		if (head_to_print->job_end_time - head_to_print->job_start_time < 300) /* For jobs less than 5 min long. */
+		/* Bounded flow stretch */
+		if (head_to_print->empty_cluster_time > 300)
 		{
-			/* calculer stretch et tronquer a 1 pour les petits jobs. */
-			if ((head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time < 1)
-			{
-				total_flow_stretch_with_a_minimum += 1;
-			}
-			else
-			{
-				total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
-			}
+			denominator_bounded_stretch = head_to_print->empty_cluster_time;
 		}
 		else
 		{
-			total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+			denominator_bounded_stretch = 300;
 		}
-				
+		total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
+		
+		/* Maximum in flow stretch */
+		if (max_flow_stretch < (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time)
+		{
+			max_flow_stretch = (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+		}
+		if (max_flow_stretch_with_a_minimum < (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch)
+		{
+			max_flow_stretch_with_a_minimum = (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
+		}
+			
 		core_time_used += head_to_print->time_used*head_to_print->job_cores;
 		total_queue_time += head_to_print->job_start_time - head_to_print->job_subtime;
 		if (max_queue_time < head_to_print->job_start_time - head_to_print->job_subtime)
@@ -304,7 +311,7 @@ void print_csv(struct To_Print* head_to_print)
 	mean_flow_stretch = total_flow_stretch/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/nb_job_to_evaluate;
 	
-	/* Main file of reults */
+	/* Main file of results */
 	char* file_to_open = malloc(100*sizeof(char));
 	file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Results_");
@@ -316,8 +323,8 @@ void print_csv(struct To_Print* head_to_print)
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
 	}
-	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum);
-	printf("%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum);
+	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum);
+	printf("%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum);
 	fclose(f);
 	
 	/* For flow stretch heat map */
@@ -334,6 +341,20 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f, "%f", mean_flow_stretch);
 	fclose(f);
 	
+	/* For max flow stretch heat map */
+	file_to_open = malloc(100*sizeof(char));
+	strcpy(file_to_open, "outputs/Max_Stretch_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
+	f = fopen(file_to_open, "w");
+	if (!f)
+	{
+		perror("Error opening file.\n");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f, "%f", max_flow_stretch);
+	fclose(f);
+	
 	/* For flow stretch with a minimum heat map */
 	file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Stretch_with_a_minimum_");
@@ -348,6 +369,20 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f, "%f", mean_flow_stretch_with_a_minimum);
 	fclose(f);
 	
+	/* For max flow stretch with a minimum heat map */
+	file_to_open = malloc(100*sizeof(char));
+	strcpy(file_to_open, "outputs/Max_Stretch_with_a_minimum_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
+	f = fopen(file_to_open, "w");
+	if (!f)
+	{
+		perror("Error opening file.\n");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f, "%f", max_flow_stretch_with_a_minimum);
+	fclose(f);
+	
 	/* For total flow heat map */
 	file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Total_flow_");
@@ -360,6 +395,20 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 	fprintf(f, "%f", total_flow);
+	fclose(f);
+	
+	/* For max flow heat map */
+	file_to_open = malloc(100*sizeof(char));
+	strcpy(file_to_open, "outputs/Max_flow_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
+	f = fopen(file_to_open, "w");
+	if (!f)
+	{
+		perror("Error opening file.\n");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f, "%f", max_flow);
 	fclose(f);
 	
 	free(file_to_open);

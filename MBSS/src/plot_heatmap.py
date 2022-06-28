@@ -14,6 +14,7 @@ i = 0
 temp = []
 N = int(sys.argv[2])
 PAS = int(sys.argv[5])
+type_plot = sys.argv[6]
 with open(sys.argv[1]) as f:
 	line = f.readline()
 	min_value = float(line)
@@ -54,15 +55,15 @@ cmap = sns.cm.rocket_r
 # ~ # the content of labels of these yticks
 # ~ yticklabels = [depth_list[idx] for idx in yticks]
 
-ax = sns.heatmap(a,
-                 annot=True, # Pour écrire les valuers
-                 fmt = '.2f', # A ne pas faire pour total flow
-                 # ~ fmt=".3f",
-                 # ~ xticklabels=print_categories,
-                 # ~ yticklabels=print_categories,
-                 # ~ vmin=-0.05,
-                 # ~ yticklabels=yticklabels,
-                 cmap = cmap)
+if (type_plot == "Max_Flow" or type_plot == "Total_Flow"):
+	ax = sns.heatmap(a,
+					 annot=True, # Pour écrire les valuers
+					 cmap = cmap)
+else:
+	ax = sns.heatmap(a,
+					 annot=True, # Pour écrire les valuers
+					 fmt = '.3f',
+					 cmap = cmap)
                  
 # ~ ax.set_yticks(yticks)
 
@@ -79,7 +80,7 @@ ax.set_yticklabels(short_cols)
 
 plt.xticks()
 plt.yticks()
-# ~ plt.title("Mean Flow(J)/Flow on empty cluster(J)")
+plt.title(type_plot)
 plt.ylabel(sys.argv[3])
 plt.xlabel(sys.argv[4])
 # ~ plt.legend()
