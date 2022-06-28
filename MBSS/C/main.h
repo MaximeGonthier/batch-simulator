@@ -36,13 +36,13 @@ extern struct Next_Time_List* start_times; /* TODO try to do that with update at
 //~ int nb_job_to_evaluate_finished;
 extern int nb_job_to_evaluate_started;
 
-/* For fcfs with a score. Allow me to not compute multiple time the same amount of copy of a file at a certain time when computing the amount of copy. */
-struct Time_Already_Checked_Nb_of_Copy_List {
-	struct Time_Already_Checked_Nb_of_Copy* head;
+/* For fcfs with a score. Allow me to not compute multiple time the same amount of copy of a file at a certain time when computing the amount of copy. I also use it to see if a data was already checked in the reduced complexity version. */
+struct Time_or_Data_Already_Checked_Nb_of_Copy_List {
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* head;
 };
-struct Time_Already_Checked_Nb_of_Copy {
-	struct Time_Already_Checked_Nb_of_Copy* next;
-	int time;
+struct Time_or_Data_Already_Checked_Nb_of_Copy {
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* next;
+	int time_or_data;
 	int nb_of_copy;
 };
 
@@ -185,7 +185,7 @@ void get_current_intervals(struct Node_List** head_node, int t);
 int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded);
 float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied);
 int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node, int current_data);
-int was_time_already_checked_for_nb_copy(int t, struct Time_Already_Checked_Nb_of_Copy_List* list);
+int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data_Already_Checked_Nb_of_Copy_List* list);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -202,8 +202,9 @@ void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp)
 void insert_job_in_sorted_list(struct Job_List* liste, struct Job* j);
 void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_to_insert);
 void free_interval_linked_list(struct Interval** head_ref);
-void create_and_insert_head_time_already_checked_nb_of_copy_list(struct Time_Already_Checked_Nb_of_Copy_List* liste, int time_to_insert, int nb_of_copy_to_insert);
-void free_time_already_checked_nb_of_copy_linked_list(struct Time_Already_Checked_Nb_of_Copy** head_ref);
+void create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_insert, int nb_of_copy_to_insert);
+void free_time_or_data_already_checked_nb_of_copy_linked_list(struct Time_or_Data_Already_Checked_Nb_of_Copy** head_ref);
+void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_increment);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

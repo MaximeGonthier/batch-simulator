@@ -156,7 +156,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
-	int time_already_checked = 0;
+	int time_or_data_already_checked = 0;
 	int score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
@@ -173,10 +173,14 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
 	#endif
 	
+	/* --- Reduced complexity nb of copy --- */		
+	struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
+	time_or_data_already_checked_nb_of_copy_list->head = NULL;
+
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
 	while (j != NULL)
-	{	
+	{
 		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
@@ -216,10 +220,17 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				exit(EXIT_FAILURE);
 			}
 			
+			/* --- Normal complexity nb of copy --- */		
 			/* For the number of valid copy of a data on other nodes. I add in this list the times I already checked for current job. */
-			struct Time_Already_Checked_Nb_of_Copy_List* time_already_checked_nb_of_copy_list = (struct Time_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_Already_Checked_Nb_of_Copy_List));
-			time_already_checked_nb_of_copy_list->head = NULL;
+			//~ struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
+			//~ time_or_data_already_checked_nb_of_copy_list->head = NULL;
 			
+			/* --- Reduced complexity nb of copy --- */
+			if (multiplier_nb_copy != 0)
+			{
+				time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
+			}
+
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
 				struct Node* n = head_node[i]->head;
@@ -278,22 +289,43 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
 								{
 									/* Did I already try this time with this job ? */
-									time_already_checked = was_time_already_checked_for_nb_copy(earliest_available_time, time_already_checked_nb_of_copy_list);
-									if (time_already_checked == -1)
+									
+									/* --- Normal complexity nb of copy --- */
+									//~ time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(earliest_available_time, time_or_data_already_checked_nb_of_copy_list);								
+									//~ if (time_or_data_already_checked == -1)
+									//~ {
+										//~ #ifdef PRINT
+										//~ printf("Need to compute nb of copy it was never done.\n"); fflush(stdout);
+										//~ #endif
+										//~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, head_node, j->data);
+										//~ create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, earliest_available_time, nb_copy_file_to_load);
+									//~ }
+									//~ else
+									//~ {
+										//~ nb_copy_file_to_load = time_or_data_already_checked;
+										//~ #ifdef PRINT
+										//~ printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, earliest_available_time, nb_copy_file_to_load); fflush(stdout);
+										//~ #endif
+									//~ }
+									
+									/* --- Reduced complexity nb of copy --- */
+									if (time_or_data_already_checked == -1)
 									{
 										#ifdef PRINT
-										printf("Need to compute nb of copy it was never done.\n"); fflush(stdout);
+										printf("Need to compute nb of copy it was never done.\n");
 										#endif
-										
-										nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, head_node, j->data);															
-										create_and_insert_head_time_already_checked_nb_of_copy_list(time_already_checked_nb_of_copy_list, earliest_available_time, nb_copy_file_to_load);
+										nb_copy_file_to_load = get_nb_valid_copy_of_a_file(t, head_node, j->data);
+										create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, j->data, nb_copy_file_to_load);
+										time_or_data_already_checked = nb_copy_file_to_load;
+										#ifdef PRINT
+										printf("Compute nb of copy done, it's %d.\n", nb_copy_file_to_load);
+										#endif
 									}
 									else
 									{
-										nb_copy_file_to_load = time_already_checked;
-										
+										nb_copy_file_to_load = time_or_data_already_checked;
 										#ifdef PRINT
-										printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, earliest_available_time, nb_copy_file_to_load); fflush(stdout);
+										printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, t, nb_copy_file_to_load);
 										#endif
 									}
 								}
@@ -405,16 +437,24 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(j->node_used);
 										
-			// #ifdef PRINT
-			// print_decision_in_scheduler(j);
-			// #endif
+			#ifdef PRINT
+			print_decision_in_scheduler(j);
+			#endif
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			
+			/* --- Normal complexity nb of copy --- */
 			/* Free time already checked. */
-			free_time_already_checked_nb_of_copy_linked_list(&time_already_checked_nb_of_copy_list->head);
-
+			//~ free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
+			
+			/* --- Normal complexity nb of copy --- */
+			/* Increment nb of copy for current file if we scheduled at time t the current job. */
+			if (multiplier_nb_copy != 0 && j->start_time == t)
+			{
+				increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
+			}
+			
 			j = j->next;
 		}				
 		else
@@ -425,6 +465,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			
 			break;
 		}
+	}
+	
+	/* --- Reduced complexity nb of copy --- */
+	/* Free time already checked. */
+	if (multiplier_nb_copy != 0)
+	{
+		free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
 	}
 
 	#ifdef PRINT_SCORES_DATA

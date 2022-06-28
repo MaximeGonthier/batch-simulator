@@ -52,10 +52,10 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	}
 }
 
-void create_and_insert_head_time_already_checked_nb_of_copy_list(struct Time_Already_Checked_Nb_of_Copy_List* liste, int time_to_insert, int nb_of_copy_to_insert)
+void create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_insert, int nb_of_copy_to_insert)
 {
-	struct Time_Already_Checked_Nb_of_Copy* a = (struct Time_Already_Checked_Nb_of_Copy*) malloc(sizeof(struct Time_Already_Checked_Nb_of_Copy));
-	a->time = time_to_insert;
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* a = (struct Time_or_Data_Already_Checked_Nb_of_Copy*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy));
+	a->time_or_data = time_or_data_to_insert;
 	a->nb_of_copy = nb_of_copy_to_insert;
 	a->next = NULL;
 	if (liste->head == NULL)
@@ -456,20 +456,39 @@ void free_interval_linked_list(struct Interval** head_ref)
    *head_ref = NULL;
 }
 
-void free_time_already_checked_nb_of_copy_linked_list(struct Time_Already_Checked_Nb_of_Copy** head_ref)
+void free_time_or_data_already_checked_nb_of_copy_linked_list(struct Time_or_Data_Already_Checked_Nb_of_Copy** head_ref)
 {
- /* deref head_ref to get the real head */
-   struct Time_Already_Checked_Nb_of_Copy* current = *head_ref;
-   struct Time_Already_Checked_Nb_of_Copy* next;
+	/* deref head_ref to get the real head */
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* current = *head_ref;
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* next;
  
-   while (current != NULL)
-   {
-       next = current->next;
-       free(current);
-       current = next;
-   }
+	while (current != NULL)
+	{
+		next = current->next;
+		free(current);
+		current = next;
+	}
    
-   /* deref head_ref to affect the real head back
-      in the caller. */
-   *head_ref = NULL;
+	/* deref head_ref to affect the real head back in the caller. */
+	*head_ref = NULL;
+}
+
+void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_increment)
+{
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* current = liste->head;
+	if (current == NULL)
+	{
+		create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(liste, time_or_data_to_increment, 1);
+		return;
+	}
+	while (current->time_or_data != time_or_data_to_increment && current != NULL)
+	{
+		current = current->next;
+	}
+	if (current == NULL)
+	{
+		perror("Error in increment_time_or_data_nb_of_copy_specific_time_or_data.\n"); fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	current->nb_of_copy += 1;
 }

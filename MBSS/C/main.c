@@ -345,7 +345,10 @@ int main(int argc, char *argv[])
 			#endif
 			
 			/* Reset all cores and jobs. */
-			reset_cores(node_list, t);
+			if (old_finished_jobs < finished_jobs)
+			{
+				reset_cores(node_list, t);
+			}
 			
 			/* Reset planned starting times. */
 			free_next_time_linked_list(&start_times->head);

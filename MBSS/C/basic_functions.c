@@ -572,7 +572,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ #endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%2222 == 0)
+			if (finished_jobs%100 == 0)
 			{
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
@@ -822,12 +822,12 @@ int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node
 	return nb_of_copy;
 }
 					
-int was_time_already_checked_for_nb_copy(int t, struct Time_Already_Checked_Nb_of_Copy_List* list)
+int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data_Already_Checked_Nb_of_Copy_List* list)
 {
-	struct Time_Already_Checked_Nb_of_Copy* a = list->head;
+	struct Time_or_Data_Already_Checked_Nb_of_Copy* a = list->head;
 	while (a != NULL)
 	{
-		if (a->time == t)
+		if (a->time_or_data == t_or_d)
 		{
 			return a->nb_of_copy;
 		}
