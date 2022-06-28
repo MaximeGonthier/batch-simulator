@@ -1,7 +1,7 @@
 #include <main.h>
 
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
-int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
+int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes)
 {
 	int i = 0;
 	int min_time = -1;
@@ -10,25 +10,33 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	int last_node_size_to_choose_from = 0;
 	
 	/* In which node size I can pick. */
-	if (j->index_node_list == 0)
+	if (use_bigger_nodes == true)
 	{
-		first_node_size_to_choose_from = 0;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 1)
-	{
-		first_node_size_to_choose_from = 1;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 2)
-	{
-		first_node_size_to_choose_from = 2;
-		last_node_size_to_choose_from = 2;
+		if (j->index_node_list == 0)
+		{
+			first_node_size_to_choose_from = 0;
+			last_node_size_to_choose_from = 2;
+		}
+		else if (j->index_node_list == 1)
+		{
+			first_node_size_to_choose_from = 1;
+			last_node_size_to_choose_from = 2;
+		}
+		else if (j->index_node_list == 2)
+		{
+			first_node_size_to_choose_from = 2;
+			last_node_size_to_choose_from = 2;
+		}
+		else
+		{
+			printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
-		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-		exit(EXIT_FAILURE);
+		first_node_size_to_choose_from = j->index_node_list;
+		last_node_size_to_choose_from = j->index_node_list;
 	}
 		
 	/* Finding the node with the earliest available time. */

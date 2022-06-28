@@ -141,6 +141,7 @@ int main(int argc, char *argv[])
 	int multiplier_file_evicted = 0;
 	int multiplier_nb_copy = 0;
 	int backfill_big_node_mode = 0;
+	bool use_bigger_nodes = true; /* For FCFS */
 	
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
@@ -209,6 +210,10 @@ int main(int argc, char *argv[])
 		/* 0 = don't compute anything, 1 = compute mean queue time */
 		backfill_big_node_mode = scheduler[24] - '0';
 		printf("backfill big nodes mode is %d.\n", backfill_big_node_mode);
+	}
+	else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
+	{
+		use_bigger_nodes = false;
 	}
 	
 	bool new_jobs = false;
@@ -310,26 +315,22 @@ int main(int argc, char *argv[])
 			{
 				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
-			else if (strcmp(scheduler, "Fcfs") == 0)
+			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0))
 			{
-				fcfs_scheduler(scheduled_job_list->head, node_list, t);
+				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}
-			else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			}
-			else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			}
-			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t, Planned_Area);
-			}
-			else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
-			{
-				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
-			}
+			//~ else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
+			//~ {
+				//~ fcfs_scheduler_big_job_first(scheduled_job_list->head, node_list, t);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
+			//~ {
+				//~ fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+			//~ {
+				//~ fcfs_scheduler_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
+			//~ }
 			else
 			{
 				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);

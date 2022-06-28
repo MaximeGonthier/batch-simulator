@@ -28,11 +28,11 @@ PRINT=$4
 CONTRAINTES_TAILLES=$5
 DATE=${WORKLOAD:27:30}
 
-#~ if [ $PRINT == 1 ]; then
-#~ echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
+if [ $PRINT == 1 ]; then
+echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_${SCHEDULER}.csv"
 #~ elif [ $PRINT == 2 ]; then
 #~ : > "outputs/Distribution_queue_times_${SCHEDULER}.txt"
-#~ fi
+fi
 
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 
@@ -65,20 +65,20 @@ truncate -s 0 outputs/Results_${SCHEDULER}.csv
 
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs $CONTRAINTES_TAILLES
 #~ ./C/main $WORKLOAD $CLUSTER Fcfs_with_a_score_x0_x0_x0 $CONTRAINTES_TAILLES 2>&1 | tee terminal_output2.txt
-make -j 6 -C C/
+make print_print_gantt_chart -j 6 -C C/
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
 
-#~ if [ $PRINT == 1 ]; then
-#~ echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
-#~ python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
-#~ fi
+if [ $PRINT == 1 ]; then
+echo "Launching gantt charts..." outputs/Results_all_jobs_${SCHEDULER}.csv
+python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_${SCHEDULER}.csv ${SCHEDULER}
+fi
 #~ if [ $PRINT == 2 ]; then
 	#~ echo "Plotting distribution of queue times..."
 	#~ python3 src/plot_distribution_queue_times.py outputs/Distribution_queue_times_${SCHEDULER}.txt $SCHEDULER $DATE
 #~ fi
 
-#~ echo "Results:"
-#~ head outputs/Results_${SCHEDULER}.csv
+echo "Results:"
+head outputs/Results_${SCHEDULER}.csv
 
 end=`date +%s` 
 runtime=$((end-start))

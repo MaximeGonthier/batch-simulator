@@ -177,7 +177,7 @@ void start_jobs(int t, struct Job* scheduled);
 void end_jobs(struct Job* job_list_head, int t);
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
 int get_nb_non_available_cores(struct Node_List** n, int t);
-int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
+int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes);
 void reset_cores(struct Node_List** l, int t);
 void remove_data_from_node(struct Job* j, int t);
 void get_current_intervals(struct Node_List** head_node, int t);
@@ -211,7 +211,7 @@ void sort_job_list_by_file_size(struct Job** head);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
-void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 
 
