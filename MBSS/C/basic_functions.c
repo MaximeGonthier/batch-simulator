@@ -105,10 +105,9 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
 		
-	//~ #ifdef PRINT
-	//~ if (j->node_used->unique_id == 183) {
-	//~ print_decision_in_scheduler(j); }
-	//~ #endif
+	#ifdef PRINT
+	print_decision_in_scheduler(j);
+	#endif
 	
 	//~ if (j->unique_id == 1382)
 	//~ {

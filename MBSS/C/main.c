@@ -226,6 +226,7 @@ int main(int argc, char *argv[])
 		printf("Sorting job list by file's size.\n");
 		sort_by_file_size = true;
 		sort_job_list_by_file_size(&scheduled_job_list->head);
+		printf("Job list after sort byt file's size:\n");
 		print_job_list(scheduled_job_list->head);
 	}
 	
@@ -315,14 +316,10 @@ int main(int argc, char *argv[])
 			{
 				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
-			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0))
+			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0))
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}
-			//~ else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
-			//~ {
-				//~ fcfs_scheduler_big_job_first(scheduled_job_list->head, node_list, t);
-			//~ }
 			//~ else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
 			//~ {
 				//~ fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);

@@ -468,20 +468,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	#endif
 }
 
-/* Just sort by size of data before scheduling. */
-//~ void fcfs_scheduler_big_job_first(l, node_list, t)(scheduled_job_list->head, node_list, t);
-//~ {
-	//~ scheduled_job_list = []
-	//~ nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
-		
-	//~ for j in l:
-		//~ if nb_non_available_cores < nb_cores:
-			//~ scheduled_job_list.append(j)
-			//~ nb_non_available_cores = schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores)
-		//~ else:
-			//~ break	
-//~ }
-
 /* TODO : pas besoin de sort a chaque fois. Do I do it ? */
 //~ void fcfs_scheduler_backfill_big_nodes(l, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
 //~ {
