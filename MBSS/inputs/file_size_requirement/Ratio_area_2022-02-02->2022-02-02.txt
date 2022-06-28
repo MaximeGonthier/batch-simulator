@@ -1,3 +1,0 @@
-Planned_Area_1: -1 0 0
-Planned_Area_2: 0 -1 0
-Planned_Area_3: 0 0 -1
