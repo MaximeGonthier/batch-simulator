@@ -238,22 +238,6 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	sort_cores_by_available_time_in_specific_node(n);
 }
 
-void sort_cores_by_available_time_in_specific_node(struct Node* n)
-{
-	for (int step = 0; step < 20 - 1; step++)
-	{
-		for (int i = 0; i < 20 - step - 1; ++i)
-		{
-            if (n->cores[i]->available_time > n->cores[i + 1]->available_time) {
-        
-		struct Core* temp = n->cores[i];
-        n->cores[i] = n->cores[i+1];
-       n->cores[i + 1] = temp;
-      }
-    }
-  }
-}
-
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
 {
 	#ifdef PRINT
@@ -446,10 +430,9 @@ void start_jobs(int t, struct Job* head)
 			//~ {
 				//~ next_end_time = j->end_time;
 			//~ }
-			//~ #ifdef PRINT
-			//~ if (j->node_used->unique_id == 183) {
-			//~ printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
-			//~ #endif
+			#ifdef PRINT
+			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
+			#endif
 			
 			#ifdef PRINT_CLUSTER_USAGE
 			running_cores += j->cores;

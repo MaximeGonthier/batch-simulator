@@ -94,12 +94,10 @@ int main(int argc, char *argv[])
 		get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 	}
 	
-	//~ #ifdef PRINT
-	//~ printf("\njob_list_to_start_from_history after schedule. Must be empty.\n");
-	//~ print_job_list(job_list_to_start_from_history->head);
-	//~ printf("\nScheduled job list after starting jobs from history. Must be full.\n");
-	//~ print_job_list(scheduled_job_list->head);
-	//~ #endif
+	#ifdef PRINT
+	printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
+	print_job_list(scheduled_job_list->head);
+	#endif
 	
 	/* Just for -2 jobs here */
 	if (scheduled_job_list->head != NULL)
@@ -109,7 +107,7 @@ int main(int argc, char *argv[])
 	printf("Start jobs before day 0 done.\n");
 	
 	#ifdef PRINT
-	printf("\nSchedule job list after schedule - 2. Must be less full.\n"); fflush(stdout);
+	printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
 	print_job_list(scheduled_job_list->head);
 	#endif
 
@@ -142,7 +140,7 @@ int main(int argc, char *argv[])
 	int multiplier_file_to_load = 0;
 	int multiplier_file_evicted = 0;
 	int multiplier_nb_copy = 0;
-	//~ int backfill_big_node_mode = 0;
+	int backfill_big_node_mode = 0;
 	
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
@@ -175,39 +173,56 @@ int main(int argc, char *argv[])
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 		free(to_copy);
 	}
-	//~ else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
-	//~ {
-		//~ int** Planned_Area = malloc(3*3*sizeof(int));
-		//~ if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
-		//~ {
-			//~ FILE *f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_omniscient.txt", "r");
-		//~ }
-		//~ else 
-		//~ {
-			//~ FILE *f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08.txt", "r");
-		//~ }
-		//~ if (!f)
-		//~ {
-			//~ perror("fopen error in area filling.\n");
-			//~ exit(EXIT_FAILURE);
-		//~ }
-		//~ i = 0;
-		//~ while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
-		//~ {
-			//~ Planned_Area[i][0] = atof(s2);
-			//~ Planned_Area[i][1] = atof(s3);
-			//~ Planned_Area[i][2] = atof(s4);
-			//~ i += 1;
-		//~ }
-		//~ fclose(f);
-	//~ }
-	//~ else if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
-	//~ {
-		//~ /* 0 = don't compute anything, 1 = compute mean queue time */
-		//~ backfill_big_node_mode = atoi(scheduler[24]);
-	//~ }
+	else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
+	{
+		FILE *f = NULL;
+		int** Planned_Area = malloc(3*3*sizeof(int));
+		char s1[10];
+		char s2[10];
+		char s3[10];
+		char s4[10];
+		if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
+		{
+			f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_omniscient.txt", "r");
+		}
+		else 
+		{
+			f = fopen("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08.txt", "r");
+		}
+		if (!f)
+		{
+			perror("fopen error in area filling.\n");
+			exit(EXIT_FAILURE);
+		}
+		i = 0;
+		while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
+		{
+			Planned_Area[i][0] = atof(s2);
+			Planned_Area[i][1] = atof(s3);
+			Planned_Area[i][2] = atof(s4);
+			i += 1;
+		}
+		fclose(f);
+	}
+	else if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
+	{
+		/* 0 = don't compute anything, 1 = compute mean queue time */
+		backfill_big_node_mode = scheduler[24] - '0';
+		printf("backfill big nodes mode is %d.\n", backfill_big_node_mode);
+	}
 	
 	bool new_jobs = false;
+	
+	/* For the schedulers dealing with size constraint I need to sort scheduled_job_list by file size (biggest to smallest) now but
+	 * also do it when new jobs are added to scheduled_job_list. */
+	bool sort_by_file_size = false;
+	if ((strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0) || (strncmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_big_job_first", 19) == 0))
+	{
+		printf("Sorting job list by file's size.\n");
+		sort_by_file_size = true;
+		sort_job_list_by_file_size(&scheduled_job_list->head);
+		print_job_list(scheduled_job_list->head);
+	}
 	
 	/* Start of simulation. */
 	printf("Start simulation.\n");
@@ -227,8 +242,6 @@ int main(int argc, char *argv[])
 				start_jobs(t, scheduled_job_list->head);
 			}
 		}			
-		/* Reset all cores and jobs. */
-		//~ reset_cores(node_list, t);
 		
 		new_jobs = false;
 		/* Get the set of available jobs at time t */
@@ -240,15 +253,25 @@ int main(int argc, char *argv[])
 			printf("We have new jobs at time %d.\n", t);
 			#endif
 			
-			/* Copy in new jobs and delete from job_list. */
+			/* Copy in scheduled_job_list jobs and delete from job_list. */
 			job_pointer = job_list->head;
 			while (job_pointer != NULL)
 			{
 				if (job_pointer->subtime <= t)
 				{
+					#ifdef PRINT
+					printf("New job %d.\n", job_pointer->unique_id);
+					#endif
+					
 					temp = job_pointer->next;
-					//~ copy_delete_insert_job_list(job_list, new_job_list, job_pointer);
-					copy_delete_insert_job_list(job_list, scheduled_job_list, job_pointer);
+					if (sort_by_file_size == true)
+					{
+						copy_delete_insert_job_list_sorted_by_file_size(job_list, scheduled_job_list, job_pointer);
+					}
+					else
+					{
+						copy_delete_insert_job_list(job_list, scheduled_job_list, job_pointer);
+					}
 					job_pointer = temp;
 				}
 				else
@@ -256,7 +279,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 			}
-
+						
 			if (job_pointer != NULL)
 			{
 				next_submit_time = job_pointer->subtime;
@@ -264,80 +287,9 @@ int main(int argc, char *argv[])
 			else
 			{
 				next_submit_time = -1;
-			}
-			
-			//~ #ifdef PRINT
-			//~ printf("\nJob list after new jobs, must be less full.\n");
-			//~ print_job_list(job_list->head);
-			//~ printf("\nNew jobs after new jobs, must be a bit filled.\n");
-			//~ print_job_list(new_job_list->head);
-			//~ #endif
-
-			/* New jobs are available! Schedule them. */
-			//~ if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
-			//~ {
-				//~ fcfs_with_a_score_scheduler(new_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs") == 0)
-			//~ {
-				//~ fcfs_scheduler(new_job_list->head, node_list, t);
-			//~ }
-			//~ else
-			//~ {
-				//~ printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
-				//~ exit(EXIT_FAILURE);
-			//~ }
-			
-			/* Copy in scheduled_job and delete from new_jobs */
-			//~ job_pointer = new_job_list->head;
-			//~ while (job_pointer != NULL)
-			//~ {
-				//~ temp = job_pointer->next;
-				//~ copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
-				//~ job_pointer = temp;
-			//~ }
-						
-			//~ #ifdef PRINT
-			//~ printf("New job list emptied. Next start is %d t is %d. New schedule job list is:\n", start_times->head->time, t); fflush(stdout);
-			//~ print_job_list(scheduled_job_list->head);
-			//~ #endif
-			
-			//~ #ifdef PRINT
-			//~ printf("\nNew job list after schedule of new jobs. Must be empty.\n");
-			//~ print_job_list(new_job_list->head);
-			//~ printf("\nSchedule job list after schedule of new jobs. Must be a bit more full.\n");
-			//~ print_job_list(scheduled_job_list->head);
-			//~ #endif
-			
-			//~ /* Get started jobs. */
-			//~ if (start_times->head != NULL)
-			//~ {
-				//~ if (start_times->head->time == t)
-				//~ {
-					//~ start_jobs(t, scheduled_job_list->head);
-				//~ }
-			//~ }
-			
+			}			
 		}
 
-		
-		//~ /* Get started jobs. */
-		//~ if (start_times->head != NULL)
-		//~ {
-			//~ if (start_times->head->time == t)
-			//~ {
-				//~ start_jobs(t, scheduled_job_list->head);
-			//~ }
-		//~ }
-		
-		//~ /* Get ended job. */
-		//~ old_finished_jobs = finished_jobs;
-		//~ if (end_times->head != NULL && end_times->head->time == t)
-		//~ {
-			//~ end_jobs(running_jobs->head, t);
-		//~ }
-
-		//~ if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
 		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
 		{
 			#ifdef PRINT
@@ -362,38 +314,22 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t);
 			}
-			//~ else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
-			//~ {
-				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
-			//~ {
-				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, Fcfs_area_filling_omniscient) == 0)
-			//~ {
-				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
-			//~ {
-				//~ fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
-			//~ }
-		//~ elif (scheduler == "Fcfs_big_job_first"):
-			//~ # Order new jobs list and append them in order (depending on the size they need) in available job list
-			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ scheduled_job_list = fcfs_scheduler_big_job_first(new_job_list, node_list, t)
-		
-		//~ elif (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ scheduled_job_list = fcfs_scheduler_area_filling(new_job_list, node_list, t, Planned_Area)
-			
-		//~ elif (scheduler[0:24] == "Fcfs_backfill_big_nodes_"):
-			//~ new_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ available_job_list.sort(key = operator.attrgetter("index_node_list"), reverse = True)
-			//~ scheduled_job_list = fcfs_scheduler_backfill_big_nodes(new_job_list, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs)
-
+			else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
+			{
+				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
+			}
+			else if (strcmp(scheduler, "Fcfs_big_job_first") == 0)
+			{
+				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t);
+			}
+			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+			{
+				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t, Planned_Area);
+			}
+			else if (strcmp(scheduler, "Fcfs_backfill_big_nodes_") == 0)
+			{
+				fcfs_no_use_bigger_nodes_scheduler(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
+			}
 			else
 			{
 				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
@@ -424,10 +360,7 @@ int main(int argc, char *argv[])
 		//~ }
 		
 		#ifdef PRINT_CLUSTER_USAGE
-		//~ if (t % 100000 == 0)
-		//~ {
-			fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
-		//~ }
+		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)
