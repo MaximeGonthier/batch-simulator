@@ -80,7 +80,7 @@ make -C C/
 
 
 # 4. Barplots and heatmap of stretch, stretch with minimum and total flow
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 		
 # To get all combinations of multiplier couples
 for ((i=1; i<=1; i++))
@@ -106,13 +106,14 @@ do
 	
 	# 0 if not choosen
 	M1=0
-	M2=0
+	M1=4000
+	M2=3000
 	M3=0
 	PAS=1000
 		
-	for ((j=0; j<N; j++))
+	for ((j=4; j<N; j++))
 	do
-		for ((k=0; k<N; k++))
+		for ((k=3; k<N; k++))
 		do
 			SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
 			truncate -s 0 outputs/Results_${SCHEDULER}.csv
