@@ -178,7 +178,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	while (j != NULL)
 	{	
 		if (nb_non_available_cores < nb_cores)
-		{	
+		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
 			printf("\nNeed to schedule job %d using file %d.\n", j->unique_id, j->data); fflush(stdout);
@@ -285,7 +285,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 										printf("Need to compute nb of copy it was never done.\n"); fflush(stdout);
 										#endif
 										
-										nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, head_node, j->data);															
+										//~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, head_node, j->data);															
+										nb_copy_file_to_load = 1;														
 										create_and_insert_head_time_already_checked_nb_of_copy_list(time_already_checked_nb_of_copy_list, earliest_available_time, nb_copy_file_to_load);
 									}
 									else
