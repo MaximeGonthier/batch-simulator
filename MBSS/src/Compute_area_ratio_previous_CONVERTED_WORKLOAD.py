@@ -1,11 +1,12 @@
 # The commented code just got area ratio from previous CONVERTED_WORKLOAD of each job size.
 # The new code also compute the area each job can use in other sizes like described in Area filling.
-# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER
+# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER omnisicentornot
 # Attention je considère qu'on a que 3 tailles de nodes par défaut. Ajouter cela à la lecture du cluster si besoin.
 
 # Imports
 import sys
 
+omniscient = int(sys.argv[3])
 # Inputs
 input_job_file = sys.argv[1]
 # get number of nodes of each type
