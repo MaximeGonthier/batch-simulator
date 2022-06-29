@@ -474,44 +474,27 @@ we can schedule jobs of size $x - 1$ on this node size.
 We compute statistics from previous workloads:
 \begin{itemize}
 	\item For each job we compute it's usage area with $Area(J_i) = \core(J_i) \times \walltime(J_i)$
-	\item $Area(\jobset) \gets \sum_{i=0}^{|\jobset|} Area(J_i)$
-	\item For each size $x$, compute: $Area\_Jobs(x) \gets \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) = x$
-	\item $T_{max} \gets max(\frac{Area\_Jobs(J_l)}{K_l}, \frac{Area\_Jobs(J_l) + Area\_Jobs(J_{l - 1})}{K_l + K_{l - 1}}, ..., \frac{Area\_Jobs(\jobset)}{K})$, with $K_x$ the total number of nodes of size $x$ and $K$ the total amount of nodes.
+	%~ \item $Area(\jobset) \gets \sum_{i=0}^{|\jobset|} Area(J_i)$
+	\item For each size $x$, compute: $Area\_Jobs[x] \gets \sum_{i=0}^{n} Area(J_i)~such~that~\memory(\inputs(J_i)) = x$
+	\item $T_{max} \gets max(\frac{Area\_Jobs[J_l]}{K_l}, \frac{Area\_Jobs[J_l] + Area\_Jobs[J_{l - 1}]}{K_l + K_{l - 1}}, ..., \frac{Area\_Jobs[\jobset]}{K})$, with $K_x$ the total number of nodes of size $x$ and $K$ the total amount of nodes.
 \end{itemize}
 
-We compute for each size: $Area(x) \gets \frac{Area\_Jobs(x)}{k_x}$ which correspond
-to the area jobs of size $x$ will occupy if they are scheduled only on nodes of size $x$.
 We want to compute for each node size $Planned\_Area(x)$, a tab that will indicate which area
 of each job size can be computed on nodes of size $x$.
-For each size $x$ we make the following decision, starting with the biggest node size.
 
 For each $x$ in decreasing order:
 \begin{itemize}
-	\item $Planned\_Area[x][x] \gets Area\_Jobs[x]$ \todo[inline]{I would rather write $Planned\_Area[x][x] \gets \infty$}
+	\item $Planned\_Area[x][x] \gets Area\_Jobs[x]$
 	\item $Remaining\_Area[x] \gets T_{max} \times K_x$
 	\item $Remaining\_Area[x] \gets Remaining\_Area[x] - Area\_Jobs[x]$
 	\item $Area\_Jobs[x] \gets 0$
-	%~ \item If $Area(x) - Planned\_Area(x+1)[x] < T_{max}$:
 	\item $y \gets x - 1$
 	\item While $Remaining\_Area[x]>0$ and $y>=0$
 	\begin{itemize}
-		\item $area\_to\_use \gets min (Remaining\_Area[x], Area\_Jobs[y])$
+		\item $area\_to\_use \gets min(Remaining\_Area[x], Area\_Jobs[y])$
 		\item $Remaining\_Area[x] \gets Remaining\_Area[x] - area\_to\_use$
 		\item $Planned\_Area[x][y] \gets area\_to\_use$
 		\item $Area\_Jobs[y] \gets Area\_Jobs[y] - area\_to\_use$
-
-		%~ \item For $i$ in range $(x - 1, 0)$
-		%~ \begin{itemize}
-			%~ \item If $Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i) \leq T_{max}$:
-			%~ \begin{itemize}
-				%~ \item $Planned\_Area(x)[i] = Area(i)$
-			%~ \end{itemize}
-			%~ \item Else
-			%~ \begin{itemize}
-				%~ \item $Planned\_Area(x)[i] = max(0, T_{max} - (Area(x) - Planned\_Area(x+1)[x] + Area(x-1) + ... + Area(i+1)))$
-				%~ \item break
-			%~ \end{itemize}		
-		%~ \end{itemize}
 	\end{itemize}
 \end{itemize}
 
@@ -536,68 +519,83 @@ For each $x$ in decreasing order:
 
 %~ (EndFor)
 
-Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ and $M_3$, each having $k_1 = 5, k_2 = 3$ and $k_3 = 2$ nodes:
+Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ and $M_3$, each having $K_1 = 5, K_2 = 3$ and $K_3 = 2$ nodes with a total of $K = 10$ nodes:
 \begin{enumerate}
 	\item From previous workloads we get:
 	\begin{enumerate}
-		\item $Area\_Jobs(M_1) = 15$ core time
-		\item $Area\_Jobs(M_2) = 30$ core time
-		\item $Area\_Jobs(M_3) = 2$ core time
+		\item $Area\_Jobs[M_1] = 15$ core time
+		\item $Area\_Jobs[M_2] = 30$ core time
+		\item $Area\_Jobs[M_3] = 2$ core time
 	\end{enumerate}
-	\item We compute:
+	\item We then compute:
 	\begin{enumerate}
-		\item $Area(\jobset) = 47$
-		\item $T_{max} \gets max(\frac{Area\_Jobs(M_3}{K_3}, \frac{Area\_Jobs(M_3) + Area\_Jobs(M_2)}{K_3 + K_2}, \frac{Area\_Jobs(\jobset)}{K}) = max(\frac{2}{2}, \frac{32}{5}, \frac{47}{10}) = 6,4$
+		\item $Area\_Jobs[\jobset] = 47$
+		\item $T_{max} \gets max(\frac{Area\_Jobs(M_3)}{K_3}, \frac{Area\_Jobs(M_3) + Area\_Jobs(M_2)}{K_3 + K_2}, \frac{Area\_Jobs(\jobset)}{K}) = max(\frac{2}{2}, \frac{32}{5}, \frac{47}{10}) = 6,4$
 	\end{enumerate}
-	\item $Area(M_1) = \frac{Area\_Jobs(M_1)}{k_1} = 3$
-	\item $Area(M_2) = \frac{Area\_Jobs(M_2)}{k_2} = 10$
-	\item $Area(M_3) = \frac{Area\_Jobs(M_3)}{k_3} = 1$
-	\item $Area(M_3) \leq T_{max}$ so we do:
+	\item For $M_3$ we do:
 	\begin{enumerate}
-		\item $Area(M_3) + Area(M_2) > T_{max}$, so all jobs of size $M_3$ will be scheduled on nodes of size $M_3$ and an area of size $T_{max} - Area(M_3) = 3,7$ can be jobs of size $M_2$ on nodes of size $M_3$. If this area is filled by jobs of size $M_2$ or $M_3$, we stop scheduling jobs of size $M_2$ on nodes of size $M_3$. So we can write: $Planned\_Area(M_3) = [ 0, 3.7, \infty ]$.
+		\item $Planned\_Area[M_3][M_3] \gets Area\_Jobs[M_3] = 2$
+		\item $Planned\_Area[M_3][M_2] \gets 0$
+		\item $Planned\_Area[M_3][M_1] \gets 0$
+		\item $Remaining\_Area[M_3] \gets T_{max} \times K_3 = 12,8$
+		\item $Remaining\_Area[M_3] \gets Remaining\_Area[M_3] - Area\_Jobs[M_3] = 10,8$
+		\item $Area\_Jobs[M_3] \gets 0$
+		\item $y \gets M_3 - 1 = M_2$
+		\item While $Remaining\_Area[M_3]>0$ and $y>=0$
+		\begin{itemize}
+			\item $area\_to\_use \gets min(Remaining\_Area[M_3], Area\_Jobs[M_2]) = 10,8$
+			\item $Remaining\_Area[M_3] \gets Remaining\_Area[M_3] - area\_to\_use = 0$
+			\item $Planned\_Area[M_3][M_2] \gets area\_to\_use = 10,8$
+			\item $Area\_Jobs[M_2] \gets Area\_Jobs[M_2] - area\_to\_use = 19,2$
+			\item $Remaining\_Area[M_3] = 0$, I exit the while loop
+		\end{itemize}
 	\end{enumerate}
-	\item $Area(M_2) - 3,7 > T_{max}$, so only jobs of size $M_2$ can be scheduled on nodes of size $M_2$.
-	\item $Area(M_1) \leq T_{max}$ but it's the smallest node size so it can only fit jobs from it's own size.
+	\item For $M_2$ we do:
+	\begin{enumerate}
+		\item $Planned\_Area[M_2][M_2] \gets Area\_Jobs[M_2] = 19,2$
+		\item $Planned\_Area[M_2][M_3] \gets 0$
+		\item $Planned\_Area[M_2][M_1] \gets 0$
+		\item $Remaining\_Area[M_2] \gets T_{max} \times K_2 = 19,2$
+		\item $Remaining\_Area[M_2] \gets Remaining\_Area[M_2] - Area\_Jobs[M_2] = 0$
+		\item $Area\_Jobs[M_2] \gets 0$
+		\item $y \gets M_2 - 1 = M_1$
+		\item While $Remaining\_Area[M_2]>0$ and $y>=0$
+		\begin{itemize}
+			\item $Remaining\_Area[M_2] = 0$, I exit the while loop
+		\end{itemize}
+	\end{enumerate}
+	\item For $M_1$ we do:
+	\begin{enumerate}
+		\item $Planned\_Area[M_1][M_1] \gets Area\_Jobs[M_1] = 15$
+		\item $Planned\_Area[M_1][M_3] \gets 0$
+		\item $Planned\_Area[M_1][M_2] \gets 0$
+		\item It's the smallest size so I can't put other jobs on it.
+	\end{enumerate}
+	\item In the end the planned areas are:
+	\begin{enumerate}
+		\item $Planned\_Area[M_3] = [[2] [10,8] [0]]$
+		\item $Planned\_Area[M_2] = [[0] [19,2] [0]]$
+		\item $Planned\_Area[M_1] = [[0], [0], [15]]$
+	\end{enumerate}
 \end{enumerate}
 
 Here is the pseudo-code for our algorithm after computing statistics from previous workloads:
-%~ \begin{algorithm}[H]
-%~ \caption{Area filling}
-%~ \begin{algorithmic}[1]
-%~ \State Sort $\jobset$ by size of required node (biggest to smallest) and then by submission time
-%~ \State Need to schedule job $J_i$, requiring a node of size $x$
-%~ \If {$J_i$ can start immediately on a node of size $x$}
-	%~ \State Start $J$ on a node of size $x$
-	%~ \State return
-%~ \Else
-	%~ \For {$next\_size$ in range $(x+1, l)$}
-		%~ \If {$Planned\_area(next\_size)[x] - Area(J_i) \geq 0$ \& $J_i$ can start immediatly on a node of size $next\_size$}
-			%~ \State Start $J_i$ on a node of size $next\_size$
-			%~ \State $Planned\_area(next\_size)[x] \gets Planned\_area(next\_size)[x] - Area(J_i)$
-			%~ \State return
-		%~ \EndIf
-	%~ \EndFor
-	%~ \State Schedule $J_i$ on a node of size $x$
-	%~ \State return
-%~ \EndIf		
-%~ \end{algorithmic}
-%~ \end{algorithm}
 \begin{algorithm}[H]
 \caption{Area filling}
 \begin{algorithmic}[1]
 \State Sort $\jobset$ by size of required node (biggest to smallest) and then by submission time
 \State Need to schedule job $J_i$, requiring a node of size $x$
-\For {$j$ in range $(x, l)$}
-	\If {$Planned\_area(next\_size)[x] - Area(J_i) \geq 0$ or $j == x$}
-		\State $EAT \gets$ earliest available time to start $J_i$ on a node of size $j$
+\For {$next\_size$ in range $(x, l)$} \Comment{By starting at $x$, I assure that in the worst case I'm scheduled on a node of my size}
+	\If {$Planned\_Area[next\_size][x] - Area(J_i) \geq 0~or~next\_size == x$}
+		\State $EAT \gets$ earliest available time to start $J_i$ on a node of size $next\_size$
 		\If {$EAT < min$}
 			\State $min \gets EAT$
-			\State $Choosen\_size = j$
+			\State $choosen\_size = next\_size$
 		\EndIf
 	\EndIf
 \EndFor
-\State Start $J_i$ on a node of size $Choosen\_size$
-\State $Planned\_area(Choosen\_size)[x] \gets Planned\_area(Choosen\_size)[x] - Area(J_i)$
+\State Start $J_i$ on the earliest available node of size $choosen\_size$
+\State $Planned\_Area[choosen\_size][x] \gets Planned\_Area[choosen\_size][x] - Area(J_i)$
 \end{algorithmic}
 \end{algorithm}
 
