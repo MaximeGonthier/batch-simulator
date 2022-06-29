@@ -173,12 +173,11 @@ void print_data_intervals(struct Node_List** list, int t);
 
 /* From basic_functions.c */
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
-void sort_cores_by_available_time_in_specific_node(struct Node* n);
 void start_jobs(int t, struct Job* scheduled);
 void end_jobs(struct Job* job_list_head, int t);
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
 int get_nb_non_available_cores(struct Node_List** n, int t);
-int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
+int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes);
 void reset_cores(struct Node_List** l, int t);
 void remove_data_from_node(struct Job* j, int t);
 void get_current_intervals(struct Node_List** head_node, int t);
@@ -186,6 +185,8 @@ int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, str
 float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied);
 int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node, int current_data);
 int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data_Already_Checked_Nb_of_Copy_List* list);
+int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct Node_List* head_node_size_i, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs, int nb_non_available_cores, bool* result);
+int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j, struct Node_List* head_node_size_i, int t, int nb_non_available_cores);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -194,6 +195,7 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n);
 void insert_tail_data_list(struct Data_List* liste, struct Data* d);
 void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete);
 void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j);
+void copy_delete_insert_job_list_sorted_by_file_size(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j);
 int get_length_job_list(struct Job* head);
 void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert);
 void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete);
@@ -205,11 +207,16 @@ void free_interval_linked_list(struct Interval** head_ref);
 void create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_insert, int nb_of_copy_to_insert);
 void free_time_or_data_already_checked_nb_of_copy_linked_list(struct Time_or_Data_Already_Checked_Nb_of_Copy** head_ref);
 void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_increment);
+void sort_cores_by_available_time_in_specific_node(struct Node* n);
+void insert_job_sorted_by_decreasing_file_size(struct Job** head, struct Job* newNode);
+void sort_job_list_by_file_size(struct Job** head);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
-void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
+void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
+void fcfs_scheduler_area_filling(struct Job* head_job, struct Node_List** head_node, int t, int** Planned_Area);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

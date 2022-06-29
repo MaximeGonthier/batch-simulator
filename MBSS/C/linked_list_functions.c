@@ -408,6 +408,52 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 	insert_tail_job_list(to_append_to, new);
 }
 
+/* Copy a job, delete it from list 1 and add it in tail of list 2 in sorted by decreasing file size order. */
+void copy_delete_insert_job_list_sorted_by_file_size(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j)
+{
+	/* If empty can't delete. */
+	if (to_delete_from == NULL)
+    {
+		printf("Error list empty.\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    /* New copy from j */
+	struct Job* new = (struct Job*) malloc(sizeof(struct Job));
+	new->next = NULL;
+	new->unique_id = j->unique_id;
+	new->subtime = j->subtime;
+	new->delay = j->delay;
+	new->walltime = j->walltime;
+	new->cores = j->cores;
+	new->data = j->data;
+	new->data_size = j->data_size;
+	new->index_node_list = j->index_node_list;
+	new->start_time = j->start_time;
+	new->end_time = j->end_time;
+	new->end_before_walltime = j->end_before_walltime;
+	//~ new->node_used = j->node_used;
+	//~ new->cores_used = j->cores_used;
+	new->transfer_time = j->transfer_time;
+	new->waiting_for_a_load_time = j->waiting_for_a_load_time;
+	new->workload = j->workload;
+	new->start_time_from_history = j->start_time_from_history;
+	new->node_from_history = j->node_from_history;
+
+	new->node_used = (struct Node*) malloc(sizeof(struct Node));
+	new->node_used = j->node_used;
+	
+	new->cores_used = malloc(new->cores*sizeof(int));
+	new->cores_used = j->cores_used;
+
+	/* Delete */
+	delete_job_linked_list(to_delete_from, j->unique_id);
+	
+	/* Add in new list */
+	//~ insert_tail_job_list(to_append_to, new);
+	insert_job_sorted_by_decreasing_file_size(&to_append_to->head, new);
+}
+
 int get_length_job_list(struct Job* head)
 {
 	int length = 0;
@@ -491,4 +537,54 @@ void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data
 		exit(EXIT_FAILURE);
 	}
 	current->nb_of_copy += 1;
+}
+
+void sort_cores_by_available_time_in_specific_node(struct Node* n)
+{
+	for (int step = 0; step < 20 - 1; step++)
+	{
+		for (int i = 0; i < 20 - step - 1; ++i)
+		{
+			if (n->cores[i]->available_time > n->cores[i + 1]->available_time)
+			{
+				struct Core* temp = n->cores[i];
+				n->cores[i] = n->cores[i+1];
+				n->cores[i + 1] = temp;
+			}
+		}
+	}
+}
+
+// Function to insert a given node at its correct sorted position into a given
+// list sorted in decreasing order
+void insert_job_sorted_by_decreasing_file_size(struct Job** head, struct Job* newNode)
+{
+    struct Job dummy;
+    struct Job* current = &dummy;
+    dummy.next = *head;
+ 
+    while (current->next != NULL && current->next->data_size >= newNode->data_size) {
+        current = current->next;
+    }
+    newNode->next = current->next;
+    current->next = newNode;
+    *head = dummy.next;
+}
+ 
+// Given a list, change it to be in decreasing sorted order (using `insert_job_sorted_by_decreasing_file_size()`).
+void sort_job_list_by_file_size(struct Job** head)
+{
+    struct Job* result = NULL;     // build the answer here
+    struct Job* current = *head;   // iterate over the original list
+    struct Job* next;
+ 
+    while (current != NULL)
+    {
+        // tricky: note the next pointer before we change it
+        next = current->next;
+ 
+        insert_job_sorted_by_decreasing_file_size(&result, current);
+        current = next;
+    }
+	*head = result;
 }

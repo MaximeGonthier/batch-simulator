@@ -86,26 +86,28 @@
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
-		\item Some heatmaps (max flow, total flow, max stretch, mean stretch, max bounded stretch, mean bounded stretch)
+		
 		\item Reduced complexity on nb of copy
-		\item stretch with a minimum pour tous les jobs on fais: bounded_stretch = t/max(t_tt_seul, 5min)
+		\item stretch with a minimum I do: bounded_stretch = $t/max(t\_empty\_cluster, 5min)$.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
 		\item Deuxième cumul ?
+		\item Sort also for fcfs and fcfs no use bigger node the job list by file size ? It's not done in real.
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item générer stats omnisicnet et normal area filling
+			\item Some heatmaps (max flow, total flow, max stretch, mean stretch, max bounded stretch, mean bounded stretch) for fcfs with a score
 			\item poser congés
-			\item refaire heatmaps
 			\item dans l'algo area filling ajouter une confditin pour dire pas besoin de test pour x taille x et enlever le infinie. Enlever le paragraphe au dessu de infinie.
-			
+			\item coder area filling en suivant ce qu'il y a dans le .pdf
+			\item test constraint: test normal et test avec workload et cluster particulier comme écris plus bas dans la todo list pour voir si y a un impact
 			\item Paye Enseirb
-			\item coader area filling en suivant ce qu'il y a dans le .pdf
 			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus.
 			
 			\item Check rendu rapports

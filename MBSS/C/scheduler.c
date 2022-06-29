@@ -64,27 +64,15 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 				choosen_node = choosen_node->next;
 			}
 		}
-		
-		#ifdef PRINT
-		printf("Choosen node is: ");
-		print_single_node(choosen_node);
-		#endif
-		
+				
 		schedule_job_specific_node_at_earliest_available_time(j, choosen_node, t);
 		nb_job_to_delete += 1;
 		
-		/* Add in list of starting times. */
-		
-		#ifdef PRINT
-		printf("Before adding starting time %d:\n", j->start_time);
-		print_time_list(start_times->head, 0);
-		#endif
-		
+		/* Add in list of starting times. */		
 		insert_next_time_in_sorted_list(start_times, j->start_time);
 		
 		#ifdef PRINT
-		printf("After adding starting time %d:\n", j->start_time);
-		print_time_list(start_times->head, 0);
+		print_decision_in_scheduler(j);
 		#endif
 		
 		j = j->next;
@@ -100,8 +88,9 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 	free(nb_node);
 }
 
-void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)
 {
+	printf("Start fcfs scheduler. Use bigger nodes: %d.\n", use_bigger_nodes);
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	struct Job* j = head_job;
 	while (j != NULL)
@@ -112,7 +101,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
-			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores);
+			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
 			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			
@@ -126,21 +115,6 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 			
 			break;
 		}
-		
-		/* Add in list of starting times. */
-		//~ #ifdef PRINT
-		//~ printf("Before adding starting time %d:\n", j->start_time);
-		//~ print_time_list(start_times->head, 0);
-		//~ #endif
-		
-		//~ insert_next_time_in_sorted_list(start_times, j->start_time);
-		
-		//~ #ifdef PRINT
-		//~ printf("After adding starting time %d:\n", j->start_time);
-		//~ print_time_list(start_times->head, 0);
-		//~ #endif
-			
-		//~ j = j->next;
 	}
 }
 
@@ -477,4 +451,103 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	#ifdef PRINT_SCORES_DATA
 	fclose(f_fcfs_score);
 	#endif
+}
+
+/* TODO : pas besoin de sort a chaque fois. Do I do it ? */
+void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs)
+{
+	printf("Start fcfs_scheduler_backfill_big_nodes. Mode is: %d.\n", backfill_big_node_mode);
+	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+	struct Job* j = head_job;
+	bool result = false;
+	int i = 0;
+	
+	while (j != NULL)
+	{
+		if (nb_non_available_cores < nb_cores)
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
+			result = false;
+			if (j->index_node_list != 2) /* TODO : pas sûr ça. */
+			{
+				i = j->index_node_list;
+				while (result == false && i != 3)
+				{
+					printf("Try to start immedialy (T=%d) job %d on node of category %d.\n", t, j->unique_id, i);
+					nb_non_available_cores = schedule_job_to_start_immediatly_on_specific_node_size(j, head_node[i], t, backfill_big_node_mode, total_queue_time, nb_finished_jobs, nb_non_available_cores, &result);
+					i += 1;
+				}
+				printf("Result is: %d.\n", result);
+			}
+			if (result == false)
+			{
+				printf("Just schedule later job %d.\n", j->unique_id);
+				/* If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits). */
+				nb_non_available_cores = schedule_job_on_earliest_available_cores_specific_sublist_node(j, head_node[j->index_node_list], t, nb_non_available_cores);
+			}
+			//~ exit(1);
+			insert_next_time_in_sorted_list(start_times, j->start_time);
+			
+			j = j->next;
+		}
+		else
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
+			break;
+		}
+	}
+}
+	
+void fcfs_scheduler_area_filling(struct Job* head_job, struct Node_List** head_node, int t, int** Planned_Area)
+{
+	//~ scheduled_job_list = []
+	//~ nb_cores, nb_non_available_cores = get_cores_non_available_cores(node_list, t)
+	//~ number_of_nodes_sub_list = len(node_list)
+	
+	printf("Planned areas are: [%d, %d, %d] [%d, %d, %d] [%d, %d, %d]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
+	
+	//~ for j in l:
+		//~ if nb_non_available_cores < nb_cores:
+			//~ if __debug__:
+				//~ print("Scheduling job", j.unique_id, "with data of size", j.index_node_list)
+			//~ scheduled_job_list.append(j)
+			//~ result = False
+			
+			//~ # First try to start immedtialy on your node size
+			//~ if __debug__:
+				//~ print("Try to start immedialy on my node of size", j.index_node_list)
+			//~ result, nb_non_available_cores = start_job_immediatly_specific_node_size(j, node_list[j.index_node_list], t, 0, 0, 0, nb_non_available_cores)
+			
+			//~ # If it failed, try to schedule it on a bigger node
+			//~ i = j.index_node_list + 1
+			//~ if (result == False):
+				//~ while (result == False and i != number_of_nodes_sub_list):	
+					//~ if __debug__:
+						//~ print("Try to start immedialy on next node of size", i)
+						//~ print("Planned_Area[i][j.index_node_list] - (j.cores*j.walltime):", Planned_Area[i][j.index_node_list], (j.cores*j.walltime))
+					//~ if (Planned_Area[i][j.index_node_list] - (j.cores*j.walltime) >= 0):
+						//~ if __debug__:
+							//~ print("i can try")
+						//~ result, nb_non_available_cores = start_job_immediatly_specific_node_size(j, node_list[i], t, 0, 0, 0, nb_non_available_cores)
+						//~ # TODO
+					//~ i += 1
+			
+			//~ # Need to schedule it for later on my size
+			//~ if (result == False):
+				//~ if __debug__:
+					//~ print("Just schedule job", j.unique_id, "later")
+				//~ nb_non_available_cores = schedule_job_on_earliest_available_cores_specific_sublist_node_no_return(j, node_list[j.index_node_list], t, nb_non_available_cores)
+				
+		//~ else:
+			//~ if __debug__:
+				//~ print("Cluster full break.")
+			//~ break
+			
+	//~ return scheduled_job_list
 }

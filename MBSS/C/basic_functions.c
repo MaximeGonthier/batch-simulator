@@ -1,7 +1,7 @@
 #include <main.h>
 
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
-int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
+int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes)
 {
 	int i = 0;
 	int min_time = -1;
@@ -10,25 +10,33 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	int last_node_size_to_choose_from = 0;
 	
 	/* In which node size I can pick. */
-	if (j->index_node_list == 0)
+	if (use_bigger_nodes == true)
 	{
-		first_node_size_to_choose_from = 0;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 1)
-	{
-		first_node_size_to_choose_from = 1;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 2)
-	{
-		first_node_size_to_choose_from = 2;
-		last_node_size_to_choose_from = 2;
+		if (j->index_node_list == 0)
+		{
+			first_node_size_to_choose_from = 0;
+			last_node_size_to_choose_from = 2;
+		}
+		else if (j->index_node_list == 1)
+		{
+			first_node_size_to_choose_from = 1;
+			last_node_size_to_choose_from = 2;
+		}
+		else if (j->index_node_list == 2)
+		{
+			first_node_size_to_choose_from = 2;
+			last_node_size_to_choose_from = 2;
+		}
+		else
+		{
+			printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
-		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-		exit(EXIT_FAILURE);
+		first_node_size_to_choose_from = j->index_node_list;
+		last_node_size_to_choose_from = j->index_node_list;
 	}
 		
 	/* Finding the node with the earliest available time. */
@@ -97,15 +105,68 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
 		
-	//~ #ifdef PRINT
-	//~ if (j->node_used->unique_id == 183) {
-	//~ print_decision_in_scheduler(j); }
-	//~ #endif
+	#ifdef PRINT
+	print_decision_in_scheduler(j);
+	#endif
 	
 	//~ if (j->unique_id == 1382)
 	//~ {
 		//~ print_decision_in_scheduler(j);
 	//~ }
+	
+	/* Need to sort cores after each schedule of a job. */
+	sort_cores_by_available_time_in_specific_node(j->node_used);
+		
+	return nb_non_available_cores;
+}
+
+int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j, struct Node_List* head_node_size_i, int t, int nb_non_available_cores)
+{
+	int i = 0;
+	int min_time = -1;
+	int earliest_available_time = 0;
+	int first_node_size_to_choose_from = 0;
+	int last_node_size_to_choose_from = 0;
+			
+	/* Finding the node with the earliest available time. */
+	//~ for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
+	//~ {
+		struct Node* n = head_node_size_i->head;
+		while (n != NULL)
+		{			
+			earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+			if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
+			{
+				earliest_available_time = t;
+			}
+			if (min_time == -1 || min_time > earliest_available_time)
+			{
+				min_time = earliest_available_time;
+				j->node_used = n;
+			}
+						
+			n = n->next;
+		}
+		
+	/* Update infos on the job and on cores. */
+	j->start_time = min_time;
+	j->end_time = min_time + j->walltime;
+	for (i = 0; i < j->cores; i++)
+	{
+		j->cores_used[i] = j->node_used->cores[i]->unique_id;
+		if (j->node_used->cores[i]->available_time <= t)
+		{
+			nb_non_available_cores += 1;
+		}
+		j->node_used->cores[i]->available_time = min_time + j->walltime;
+		
+		/* Maybe I need job queue or not not sure. TODO. */
+		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
+	}
+		
+	#ifdef PRINT
+	print_decision_in_scheduler(j);
+	#endif
 	
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(j->node_used);
@@ -236,22 +297,6 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(n);
-}
-
-void sort_cores_by_available_time_in_specific_node(struct Node* n)
-{
-	for (int step = 0; step < 20 - 1; step++)
-	{
-		for (int i = 0; i < 20 - step - 1; ++i)
-		{
-            if (n->cores[i]->available_time > n->cores[i + 1]->available_time) {
-        
-		struct Core* temp = n->cores[i];
-        n->cores[i] = n->cores[i+1];
-       n->cores[i + 1] = temp;
-      }
-    }
-  }
 }
 
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
@@ -446,10 +491,9 @@ void start_jobs(int t, struct Job* head)
 			//~ {
 				//~ next_end_time = j->end_time;
 			//~ }
-			//~ #ifdef PRINT
-			//~ if (j->node_used->unique_id == 183) {
-			//~ printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
-			//~ #endif
+			#ifdef PRINT
+			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
+			#endif
 			
 			#ifdef PRINT_CLUSTER_USAGE
 			running_cores += j->cores;
@@ -834,4 +878,80 @@ int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data
 		a = a->next;
 	}
 	return -1;
+}
+
+int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct Node_List* head_node_size_i, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs, int nb_non_available_cores, bool* result)
+{
+	int mean_queue_time = 0;
+	int earliest_available_time = 0;
+	int threshold_for_a_start = 0;
+	int i = 0;
+	
+	if (nb_finished_jobs == 0)
+	{
+		mean_queue_time = 0;
+	}
+	else
+	{
+		mean_queue_time = total_queue_time/nb_finished_jobs;
+	}
+	
+	struct Node* n = head_node_size_i->head;
+	while(n != NULL)
+	{
+		earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+		
+		if (backfill_big_node_mode == 0)
+		{
+			threshold_for_a_start = t;
+		}
+		else if (backfill_big_node_mode == 1)
+		{
+			if (mean_queue_time - (t - j->subtime) > 0)
+			{
+				threshold_for_a_start = t + mean_queue_time - (t - j->subtime);
+			}
+			else
+			{
+				threshold_for_a_start = t;
+			}
+		}
+		else
+		{
+			perror("Error on backfill_big_node_mode, must be 0 or 1.\n");
+			exit(EXIT_FAILURE);
+		}
+			
+		if (earliest_available_time <= threshold_for_a_start) /* Ok I can start immediatly, schedule job and return true. */
+		{
+			/* Update infos on the job and on cores. */
+			j->node_used = n;
+			j->start_time = earliest_available_time;
+			j->end_time = earliest_available_time + j->walltime;
+			for (i = 0; i < j->cores; i++)
+			{
+				j->cores_used[i] = j->node_used->cores[i]->unique_id;
+				if (j->node_used->cores[i]->available_time <= t)
+				{
+					nb_non_available_cores += 1;
+				}
+				j->node_used->cores[i]->available_time = earliest_available_time + j->walltime;
+				
+				/* Maybe I need job queue or not not sure. TODO. */
+				//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
+			}
+		
+			#ifdef PRINT
+			print_decision_in_scheduler(j);
+			#endif
+		
+			/* Need to sort cores after each schedule of a job. */
+			sort_cores_by_available_time_in_specific_node(j->node_used);
+			
+			*result = true;
+			return nb_non_available_cores;
+		}
+		n = n->next;
+	}
+	return nb_non_available_cores;
 }
