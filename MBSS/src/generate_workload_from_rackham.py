@@ -115,7 +115,6 @@ nb_jobs_day_2 = 0
 if workload[0].start_time_from_history < first_time_day_0:
 	workload[0].workload = -2
 	nb_jobs_started_before_day_0 += 1
-	# ~ print("here")
 elif workload[0].subtime < first_time_day_0:
 	workload[0].workload = -1
 	nb_jobs_not_started_but_submitted_before_day_0 += 1
@@ -129,7 +128,7 @@ elif workload[0].subtime > last_time_day_1:
 	workload[0].workload = 2
 	nb_jobs_day_2 +=1
 else:
-	print("Error time generation workload")
+	print("Error time generation workload is", workload[0].subtime)
 	exit(1)
 
 f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d start_time_from_history: %d start_node_from_history: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size, workload[0].workload, workload[0].start_time_from_history - min_subtime, workload[0].start_node_from_history))
@@ -185,8 +184,10 @@ for i in range (1, id_count - 1):
 		workload[i].workload = 2
 		nb_jobs_day_2 +=1
 	else:
-		print("Error time generation workload")
-		exit(1)
+		print("Error time generation workload is", workload[i].subtime)
+		workload[i].workload = 1
+		nb_jobs_day_1 +=1
+		# ~ exit(1)
 	
 	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d start_time_from_history: %d start_node_from_history: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload, workload[i].start_time_from_history - min_subtime, workload[i].start_node_from_history))
 f_output.close()
