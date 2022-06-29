@@ -108,18 +108,15 @@ do
 	fi
 	
 	# 0 if not choosen
-	M1=1500
-	M2=1500
+	M1=2000
+	M2=0
 	M3=0
 	PAS=500
-	
-	l=$((2))
-	
-	for ((j=3; j<N; j++))
+		
+	for ((j=4; j<N; j++))
 	do
-		for ((k=l; k<N; k++))
+		for ((k=0; k<N; k++))
 		do
-			l=$((0))
 			SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
 			truncate -s 0 outputs/Results_${SCHEDULER}.csv
 			echo "Starting ${SCHEDULER}"
