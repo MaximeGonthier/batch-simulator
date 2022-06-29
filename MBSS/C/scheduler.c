@@ -147,9 +147,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
 	#endif
 	
-	/* --- Reduced complexity nb of copy --- */		
-	struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-	time_or_data_already_checked_nb_of_copy_list->head = NULL;
+	/* --- Reduced complexity nb of copy --- */	
+	//~ if (multiplier_nb_copy != 0)
+	//~ {
+		struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
+		time_or_data_already_checked_nb_of_copy_list->head = NULL;
+	//~ }
 
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
@@ -426,7 +429,9 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			/* Increment nb of copy for current file if we scheduled at time t the current job. */
 			if (multiplier_nb_copy != 0 && j->start_time == t)
 			{
+				//~ printf("Need to increment for job %d Multi is %d.\n", j->unique_id, multiplier_nb_copy); fflush(stdout);
 				increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
+				//~ printf("Increment ok for job %d.\n", j->unique_id); fflush(stdout);
 			}
 			
 			j = j->next;

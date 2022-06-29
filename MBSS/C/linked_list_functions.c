@@ -524,18 +524,30 @@ void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data
 	struct Time_or_Data_Already_Checked_Nb_of_Copy* current = liste->head;
 	if (current == NULL)
 	{
+		//~ printf("Need to create.\n"); fflush(stdout);
 		create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(liste, time_or_data_to_increment, 1);
+		//~ printf("Create ok.\n"); fflush(stdout);
 		return;
 	}
 	while (current->time_or_data != time_or_data_to_increment && current != NULL)
 	{
+		//~ printf("Current is %d.\n", current->time_or_data); fflush(stdout);
 		current = current->next;
+		//~ printf("NExt.\n"); fflush(stdout);
+		if (current == NULL)
+		{
+			create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(liste, time_or_data_to_increment, 1);
+			return;
+		}
 	}
+	//~ printf("End.\n");  fflush(stdout);
 	if (current == NULL)
 	{
 		perror("Error in increment_time_or_data_nb_of_copy_specific_time_or_data.\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
+	//~ printf("++\n");  fflush(stdout);
+	//~ printf("On %d.\n", current->time_or_data);  fflush(stdout);
 	current->nb_of_copy += 1;
 }
 

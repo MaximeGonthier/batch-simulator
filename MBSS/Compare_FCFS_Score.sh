@@ -83,7 +83,7 @@ make -C C/
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 		
 # To get all combinations of multiplier couples
-for ((i=2; i<=3; i++))
+for ((i=1; i<=3; i++))
 do
 	truncate -s 0 outputs/heatmap_stretch.txt
 	truncate -s 0 outputs/heatmap_max_stretch.txt
@@ -185,6 +185,8 @@ do
 	python3 src/plot_heatmap.py outputs/heatmap_max_flow.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Max_Flow"
 	mv plot.pdf plot/Heatmap_Max_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
 	mv outputs/heatmap_max_flow.txt data/Heatmap_Max_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+	
+	echo "Plotting heatmap ok for ${MULTIPLIER_1} X ${MULTIPLIER_2}"
 done
 
 echo "Final results are:"

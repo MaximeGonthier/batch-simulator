@@ -153,27 +153,32 @@ int main(int argc, char *argv[])
 		{
 			i += 1;
 		}
-		char *to_copy = malloc(5*sizeof(char));
-		strncpy(to_copy, scheduler + j, i - j);
-		multiplier_file_to_load = atoi(to_copy);
+		char *to_copy1 = malloc(5*sizeof(char));
+		char *to_copy2 = malloc(5*sizeof(char));
+		char *to_copy3 = malloc(5*sizeof(char));
+		strncpy(to_copy1, scheduler + j, i - j);
+		multiplier_file_to_load = atoi(to_copy1);
 		j = i + 2;
 		i = i + 1;
 		while (scheduler[i] != '_')
 		{
 			i += 1;
 		}
-		strncpy(to_copy, scheduler + j, i - j);
-		multiplier_file_evicted = atoi(to_copy);
+		strncpy(to_copy2, scheduler + j, i - j);
+		multiplier_file_evicted = atoi(to_copy2);
 		j = i + 2;
 		while (scheduler[i])
 		{
 			i += 1;
 		}
-		strncpy(to_copy, scheduler + j, i - j);
-		multiplier_nb_copy = atoi(to_copy);
+		strncpy(to_copy3, scheduler + j, i - j);
+		multiplier_nb_copy = atoi(to_copy3);
 		
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-		free(to_copy);
+		//~ exit(1);
+		free(to_copy1);
+		free(to_copy2);
+		free(to_copy3);
 	}
 	else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
