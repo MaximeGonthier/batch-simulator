@@ -83,7 +83,7 @@ make -C C/
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 		
 # To get all combinations of multiplier couples
-for ((i=1; i<=3; i++))
+for ((i=2; i<=3; i++))
 do
 	truncate -s 0 outputs/heatmap_stretch.txt
 	truncate -s 0 outputs/heatmap_max_stretch.txt
