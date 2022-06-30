@@ -41,6 +41,6 @@ do
 done
 
 echo "Converting job history..."
-# python3 src/generate_workload_from_rackham.py $START"->"$END 256jobs 1024jobs dataonalljobs? 1storsecondversion?
+# python3 src/generate_workload_from_rackham.py $START"->"$END 256jobs 1024jobs dataonalljobs? 1storsecondversion(the one with -2 jobs started from history)?
 python3 src/generate_workload_from_rackham.py $START"->"$END 10 5 1 2
 echo "Conversion done!"

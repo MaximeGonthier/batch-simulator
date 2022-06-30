@@ -1,6 +1,6 @@
 # The commented code just got area ratio from previous CONVERTED_WORKLOAD of each job size.
 # The new code also compute the area each job can use in other sizes like described in Area filling.
-# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER omnisicentornot
+# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER omnisicent or not (0 or 1)
 # Attention je considère qu'on a que 3 tailles de nodes par défaut. Ajouter cela à la lecture du cluster si besoin.
 
 # Imports
@@ -73,6 +73,7 @@ print("Tmax =", Tmax)
 
 # For M_3
 Planned_Area_3 = [0, 0, Area_Jobs[2]]
+Ratio_Area_3 = [0, 0, Area_Jobs[2]/Tmax]
 Remaining_Area_3 = Tmax*K_3
 Remaining_Area_3 = Remaining_Area_3 - Area_Jobs[2]
 Area_Jobs[2] = 0
@@ -83,11 +84,13 @@ while Remaining_Area_3 > 0 and y >= 0:
 	print("area_to_use for M_3 =", area_to_use)
 	Remaining_Area_3 = Remaining_Area_3 - area_to_use
 	Planned_Area_3[y] = area_to_use
+	Ratio_Area_3[y] = area_to_use/Tmax
 	Area_Jobs[y] = Area_Jobs[y] - area_to_use
 	y = y - 1
 	
 # For M_2
 Planned_Area_2 = [0, Area_Jobs[1], 0]
+Ratio_Area_2 = [0, Area_Jobs[1]/Tmax, 0]
 Remaining_Area_2 = Tmax*K_2
 Remaining_Area_2 = Remaining_Area_2 - Area_Jobs[1]
 Area_Jobs[1] = 0
@@ -98,46 +101,33 @@ while Remaining_Area_2 > 0 and y >= 0:
 	print("area_to_use for M_2 =", area_to_use)
 	Remaining_Area_2 = Remaining_Area_2 - area_to_use
 	Planned_Area_2[y] = area_to_use
+	Ratio_Area_2[y] = area_to_use/Tmax
 	Area_Jobs[y] = Area_Jobs[y] - area_to_use
 	y = y - 1
 	
 # For M_1
 Planned_Area_1 = [Area_Jobs[0], 0, 0]
+Ratio_Area_1 = [Area_Jobs[0]/Tmax, 0, 0]
 
-# ~ exit(1)
-# ~ # Start with bigger one. -1 means infinite
-# ~ if Area_3 < Tmax:
-	# ~ if Area_3 + Area_2 <= Tmax:
-		# ~ if Area_3 + Area_2 + Area_1 <= Tmax: # Can all fit on node of size 3
-			# ~ Planned_Area_3 = [Area_1, Area_2, -1]
-		# ~ else: # Only jobs 2 and 3 can all fit on node of size 3 and maybe a part of Area 1
-			# ~ Planned_Area_3 = [max(0, Tmax - (Area_3 + Area_2)), Area_2, -1]
-	# ~ else: # A part of area 2 can fit
-		# ~ Planned_Area_3 = [0, max(0, Tmax - Area_3), -1]
-# ~ else: # nothing else can fit
-	# ~ Planned_Area_3 = [0, 0, -1]
-
-# ~ # Start with bigger one. -1 means infinite
-# ~ if Area_2 - Planned_Area_3[1] < Tmax:
-	# ~ if Area_2 - Planned_Area_3[1] + Area_1 <= Tmax:
-		# ~ Planned_Area_2 = [Area_1, -1, 0]
-	# ~ else:
-		# ~ Planned_Area_2 = [max(0, Tmax - (Area_2 - Planned_Area_3[1])), -1, 0]
-# ~ else: # nothing else can fit
-	# ~ Planned_Area_2 = [0, -1, 0]
-
-# ~ Planned_Area_1 = [-1, 0, 0]
-
-print("Planned_Area_3 =", Planned_Area_3)
-print("Planned_Area_2 =", Planned_Area_2)
-print("Planned_Area_1 =", Planned_Area_1)
-# ~ exit(1)
+if omniscient == 1:
+	print("Planned_Area_3 =", Planned_Area_3)
+	print("Planned_Area_2 =", Planned_Area_2)
+	print("Planned_Area_1 =", Planned_Area_1)
+else:
+	print("Ratio_Area_3 =", Ratio_Area_3)
+	print("Ratio_Area_2 =", Ratio_Area_2)
+	print("Ratio_Area_1 =", Ratio_Area_1)
 
 file_to_open = "inputs/Planned_area_" + sys.argv[1][27:] + ".txt"
 f = open(file_to_open, "w")
 
-f.write("Planned_Area_1: %s %s %s\n" % (Planned_Area_1[0], Planned_Area_1[1], Planned_Area_1[2]))
-f.write("Planned_Area_2: %s %s %s\n" % (Planned_Area_2[0], Planned_Area_2[1], Planned_Area_2[2]))
-f.write("Planned_Area_3: %s %s %s\n" % (Planned_Area_3[0], Planned_Area_3[1], Planned_Area_3[2]))
+if omniscient == 1:
+	f.write("Planned_Area_1: %s %s %s\n" % (Planned_Area_1[0], Planned_Area_1[1], Planned_Area_1[2]))
+	f.write("Planned_Area_2: %s %s %s\n" % (Planned_Area_2[0], Planned_Area_2[1], Planned_Area_2[2]))
+	f.write("Planned_Area_3: %s %s %s\n" % (Planned_Area_3[0], Planned_Area_3[1], Planned_Area_3[2]))
+else:
+	f.write("Ratio_Area_1: %s %s %s\n" % (Ratio_Area_1[0], Ratio_Area_1[1], Ratio_Area_1[2]))
+	f.write("Ratio_Area_2: %s %s %s\n" % (Ratio_Area_2[0], Ratio_Area_2[1], Ratio_Area_2[2]))
+	f.write("Ratio_Area_3: %s %s %s\n" % (Ratio_Area_3[0], Ratio_Area_3[1], Ratio_Area_3[2]))
 
 f.close
