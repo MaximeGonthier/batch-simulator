@@ -81,16 +81,76 @@ make -C C/
 
 # 4. Barplots and heatmap of stretch, stretch with minimum and total flow
 #~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-		
+
+SCHEDULER="Fcfs_with_a_score_x1000_x0_x1000"
+truncate -s 0 outputs/Results_${SCHEDULER}.csv
+echo "Starting ${SCHEDULER}"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+echo "Results ${SCHEDULER} are:"
+head outputs/Results_${SCHEDULER}.csv
+cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+cat outputs/Stretch_${SCHEDULER}.txt >> outputs/heatmap_stretch.txt
+cat outputs/Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_stretch_with_a_minimum.txt
+cat outputs/Total_flow_${SCHEDULER}.txt >> outputs/heatmap_total_flow.txt
+cat outputs/Max_Stretch_${SCHEDULER}.txt >> outputs/heatmap_max_stretch.txt
+cat outputs/Max_Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_max_stretch_with_a_minimum.txt
+cat outputs/Max_flow_${SCHEDULER}.txt >> outputs/heatmap_max_flow.txt
+echo "" >> outputs/heatmap_stretch.txt
+echo "" >> outputs/heatmap_stretch_with_a_minimum.txt
+echo "" >> outputs/heatmap_total_flow.txt
+echo "" >> outputs/heatmap_max_stretch.txt
+echo "" >> outputs/heatmap_max_stretch_with_a_minimum.txt
+echo "" >> outputs/heatmap_max_flow.txt
+
+SCHEDULER="Fcfs_with_a_score_x1000_x0_x1500"
+truncate -s 0 outputs/Results_${SCHEDULER}.csv
+echo "Starting ${SCHEDULER}"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+echo "Results ${SCHEDULER} are:"
+head outputs/Results_${SCHEDULER}.csv
+cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+cat outputs/Stretch_${SCHEDULER}.txt >> outputs/heatmap_stretch.txt
+cat outputs/Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_stretch_with_a_minimum.txt
+cat outputs/Total_flow_${SCHEDULER}.txt >> outputs/heatmap_total_flow.txt
+cat outputs/Max_Stretch_${SCHEDULER}.txt >> outputs/heatmap_max_stretch.txt
+cat outputs/Max_Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_max_stretch_with_a_minimum.txt
+cat outputs/Max_flow_${SCHEDULER}.txt >> outputs/heatmap_max_flow.txt
+echo "" >> outputs/heatmap_stretch.txt
+echo "" >> outputs/heatmap_stretch_with_a_minimum.txt
+echo "" >> outputs/heatmap_total_flow.txt
+echo "" >> outputs/heatmap_max_stretch.txt
+echo "" >> outputs/heatmap_max_stretch_with_a_minimum.txt
+echo "" >> outputs/heatmap_max_flow.txt
+
+SCHEDULER="Fcfs_with_a_score_x1000_x0_x2000"
+truncate -s 0 outputs/Results_${SCHEDULER}.csv
+echo "Starting ${SCHEDULER}"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+echo "Results ${SCHEDULER} are:"
+head outputs/Results_${SCHEDULER}.csv
+cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+cat outputs/Stretch_${SCHEDULER}.txt >> outputs/heatmap_stretch.txt
+cat outputs/Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_stretch_with_a_minimum.txt
+cat outputs/Total_flow_${SCHEDULER}.txt >> outputs/heatmap_total_flow.txt
+cat outputs/Max_Stretch_${SCHEDULER}.txt >> outputs/heatmap_max_stretch.txt
+cat outputs/Max_Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_max_stretch_with_a_minimum.txt
+cat outputs/Max_flow_${SCHEDULER}.txt >> outputs/heatmap_max_flow.txt
+echo "" >> outputs/heatmap_stretch.txt
+echo "" >> outputs/heatmap_stretch_with_a_minimum.txt
+echo "" >> outputs/heatmap_total_flow.txt
+echo "" >> outputs/heatmap_max_stretch.txt
+echo "" >> outputs/heatmap_max_stretch_with_a_minimum.txt
+echo "" >> outputs/heatmap_max_flow.txt
+
 # To get all combinations of multiplier couples
 for ((i=2; i<=3; i++))
 do
-	truncate -s 0 outputs/heatmap_stretch.txt
-	truncate -s 0 outputs/heatmap_max_stretch.txt
-	truncate -s 0 outputs/heatmap_stretch_with_a_minimum.txt
-	truncate -s 0 outputs/heatmap_max_stretch_with_a_minimum.txt
-	truncate -s 0 outputs/heatmap_total_flow.txt
-	truncate -s 0 outputs/heatmap_max_flow.txt
+	#~ truncate -s 0 outputs/heatmap_stretch.txt
+	#~ truncate -s 0 outputs/heatmap_max_stretch.txt
+	#~ truncate -s 0 outputs/heatmap_stretch_with_a_minimum.txt
+	#~ truncate -s 0 outputs/heatmap_max_stretch_with_a_minimum.txt
+	#~ truncate -s 0 outputs/heatmap_total_flow.txt
+	#~ truncate -s 0 outputs/heatmap_max_flow.txt
 	
 	# Heatmap size
 	N=5
@@ -108,12 +168,12 @@ do
 	fi
 	
 	# 0 if not choosen
-	M1=0
+	M1=1500
 	M2=0
 	M3=0
 	PAS=500
 		
-	for ((j=0; j<N; j++))
+	for ((j=3; j<N; j++))
 	do
 		for ((k=0; k<N; k++))
 		do
