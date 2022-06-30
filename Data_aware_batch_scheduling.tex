@@ -498,27 +498,6 @@ For each $x$ in decreasing order:
 	\end{itemize}
 \end{itemize}
 
-%~ For x = n downto 0
-
-%~ %%% Initialisation
-%~ - Remaining_Area[x] <- Tmax * nb_of_nodes[x]
-
-%~ %%% On met ce qui reste des jobs de type x sur les machines x
-%~ - Remaining_Area[x] <- Remaining_Area[x] - Area_Jobs[x]
-%~ - Planned_Area[x][x] <- Area_Jobs[x]
-%~ - Area_Jobs[x] <- 0
-
-%~ %%% Tant qu'il reste de la place, on met alloue des jobs de type inférieur
-%~ - y <- x-1
-%~ - While Remaining_Area[x]>0 and y>=0:
-  %~ - area\_to\_use <- min (Remaining_Area[x], Area_Jobs[y])
-  %~ - Remaining_Area[x] <- Remaining_Area[x] - area\_to\_use
-  %~ - Planned_Area[x][y] <- area\_to\_use
-  %~ - Area_Jobs[y] <- - Area_Jobs[y] - area\_to\_use
- %~ (EndWhile)
-
-%~ (EndFor)
-
 Here is a small example. Let's say that we have $3$ sizes of nodes: $M_1, M_2$ and $M_3$, each having $K_1 = 5, K_2 = 3$ and $K_3 = 2$ nodes with a total of $K = 10$ nodes:
 \begin{enumerate}
 	\item From previous workloads we get:
@@ -588,7 +567,10 @@ Here is the pseudo-code for our algorithm after computing statistics from previo
 \For {$next\_size$ in range $(x, l)$} \Comment{By starting at $x$, I assure that in the worst case I'm scheduled on a node of my size}
 	\If {$Planned\_Area[next\_size][x] - Area(J_i) \geq 0~or~next\_size == x$}
 		\State $EAT \gets$ earliest available time to start $J_i$ on a node of size $next\_size$
-		\If {$EAT < min$}
+		\If {$EAT = T$}
+			\State $choosen\_size = next\_size$
+			\State Break
+		\ElsIf {$EAT < min$}
 			\State $min \gets EAT$
 			\State $choosen\_size = next\_size$
 		\EndIf
@@ -791,8 +773,12 @@ If I look into the past I get: Planned Area (3) : [ 0, 0, infinite ]
 \section{Meeting 30/06/22}
 
 \begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Stretch}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_with_a_minimum_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Stretch with a minimum}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Total_Flow_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Flow}\end{subfigure}\caption{June 28}\end{figure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Mean Flow Stretch}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Max_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Max Flow Stretch}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_with_a_minimum_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Mean Bounded Flow Stretch $(T/max(T_{opti}, 5min))$}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Max_Stretch_with_a_minimum_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Max Bounded Flow Stretch}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Total_Flow_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Total Flow}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Max_Flow_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Max Flow}\end{subfigure}
+\caption{June 30}\end{figure}
 
 \end{document}
