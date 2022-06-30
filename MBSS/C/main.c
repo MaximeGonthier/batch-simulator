@@ -133,6 +133,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
 	}
 	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
+	free(title)
 	#endif
 	
 	int i = 0;
@@ -142,7 +143,8 @@ int main(int argc, char *argv[])
 	int multiplier_nb_copy = 0;
 	int backfill_big_node_mode = 0;
 	bool use_bigger_nodes = true; /* For FCFS */
-	int** Planned_Area = malloc(3*3*sizeof(int));
+	//~ int** Planned_Area = malloc(3*3*sizeof(int));
+	long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
@@ -182,18 +184,30 @@ int main(int argc, char *argv[])
 	}
 	else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
+		//~ char* file_to_open = malloc(100*sizeof(char));
 		FILE *f = NULL;
-		char s1[10];
-		char s2[10];
-		char s3[10];
-		char s4[10];
+		char s1[30];
+		char s2[30];
+		char s3[30];
+		char s4[30];
 		if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
 		{
-			f = fopen("input_job_file_omniscient.txt", "r");
+			char* file_to_open = malloc(100*sizeof(char));
+			char subbuff[23];
+			memcpy(subbuff, &input_job_file[27], 22);
+			subbuff[22] = '\0';
+			printf("subbuff is %s.\n", subbuff);
+			strcpy(file_to_open, "inputs/Planned_area_");
+			strcat(file_to_open, subbuff);
+			strcat(file_to_open, ".txt");
+			printf("Opening %s\n", file_to_open);
+			f = fopen(file_to_open, "r");
+			free(file_to_open);
 		}
 		else 
 		{
-			f = fopen("input_job_filetxt", "r");
+			printf("Opening inputs/Planned_area_2022-01-18->2022-01-18.txt\n");
+			f = fopen("inputs/Planned_area_2022-01-18->2022-01-18.txt", "r");
 		}
 		if (!f)
 		{
@@ -203,9 +217,9 @@ int main(int argc, char *argv[])
 		i = 0;
 		while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 		{
-			Planned_Area[i][0] = atof(s2);
-			Planned_Area[i][1] = atof(s3);
-			Planned_Area[i][2] = atof(s4);
+			Planned_Area[i][0] = atoll(s2);
+			Planned_Area[i][1] = atoll(s3);
+			Planned_Area[i][2] = atoll(s4);
 			i += 1;
 		}
 		fclose(f);
@@ -222,7 +236,6 @@ int main(int argc, char *argv[])
 	}
 	
 	bool new_jobs = false;
-	
 	/* For the schedulers dealing with size constraint I need to sort scheduled_job_list by file size (biggest to smallest) now but
 	 * also do it when new jobs are added to scheduled_job_list. */
 	bool sort_by_file_size = false;
@@ -329,10 +342,14 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
 			}
-			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
-			{
-				fcfs_scheduler_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
-			}
+			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0)
+			//~ {
+				//~ fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+			//~ {
+				//~ fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
+			//~ }
 			else
 			{
 				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);

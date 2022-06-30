@@ -125,8 +125,8 @@ int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j
 	int i = 0;
 	int min_time = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	//~ int first_node_size_to_choose_from = 0;
+	//~ int last_node_size_to_choose_from = 0;
 			
 	/* Finding the node with the earliest available time. */
 	//~ for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
@@ -954,4 +954,27 @@ int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct
 		n = n->next;
 	}
 	return nb_non_available_cores;
+}
+
+int get_earliest_available_time_specific_sublist_node(int nb_cores_asked, struct Node_List* head_node_size_i, struct Node** choosen_node, int t)
+{
+	int min_time = -1;
+	int earliest_available_time = 0;
+	struct Node* n = head_node_size_i->head;
+	while (n != NULL)
+	{			
+		earliest_available_time = n->cores[nb_cores_asked - 1]->available_time; /* -1 because tab start at 0 */
+		if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
+		{
+			earliest_available_time = t;
+		}
+		if (min_time == -1 || min_time > earliest_available_time)
+		{
+			min_time = earliest_available_time;
+			*choosen_node = n;
+		}			
+		n = n->next;
+	}
+				
+	return earliest_available_time;
 }

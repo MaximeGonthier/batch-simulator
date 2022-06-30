@@ -187,6 +187,7 @@ int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node
 int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data_Already_Checked_Nb_of_Copy_List* list);
 int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct Node_List* head_node_size_i, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs, int nb_non_available_cores, bool* result);
 int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j, struct Node_List* head_node_size_i, int t, int nb_non_available_cores);
+int get_earliest_available_time_specific_sublist_node(int nb_cores_asked, struct Node_List* head_node_size_i, struct Node** choosen_node, int t);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -216,7 +217,7 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
-void fcfs_scheduler_area_filling(struct Job* head_job, struct Node_List** head_node, int t, int** Planned_Area);
+void fcfs_scheduler_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []
