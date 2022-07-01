@@ -47,6 +47,18 @@ elif (comparaison == "Waiting_for_a_load_time"):
 elif (comparaison == "Total_waiting_for_a_load_time_and_transfer_time"):
 	Y_index = 12
 	plot_title = "Total waiting for a load time and transfer time"
+elif (comparaison == "Mean_Stretch"):
+	Y_index = 13
+	plot_title = "Mean Stretch"
+elif (comparaison == "Mean_Stretch_With_a_Minimum"):
+	Y_index = 14
+	plot_title = "Mean Bounded Stretch"
+elif (comparaison == "Max_Stretch"):
+	Y_index = 15
+	plot_title = "Max Stretch"
+elif (comparaison == "Max_Stretch_With_a_Minimum"):
+	Y_index = 16
+	plot_title = "Max Bounded Stretch"
 else:
 	print("Wrong comparison")
 	exit(1)
@@ -57,7 +69,6 @@ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
   
 # Plot the data using bar() method
-# ~ plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta"])
 plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
 # ~ plt.bar(X, Y)
 # ~ plt.bar(X, Y)

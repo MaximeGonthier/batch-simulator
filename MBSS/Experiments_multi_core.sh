@@ -1,11 +1,12 @@
 #!/bin/bash
 # bash Experiments_multi_core.sh workload cluster scheduler PRINT?(1 for gantt chart, 2 for distrib of queue times)
 
-#~ oarsub -p "network_address in ('nova-1.lyon.grid5000.fr')" -r "2022-06-27 16:07:01" -l walltime=02:00:00
+# In passive mode
 #~ oarsub -p nova -l core=16,walltime=01:45:00 -r '2022-06-27 17:09:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-02-08-\>2022-02-08 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0"
-#~ oarsub -p nova walltime=01:45:00 -r '2022-06-27 17:09:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-02-08-\>2022-02-08 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0"
-#~ oarsub -p nova -r "2022-06-27 19:00:00" -l walltime=14:00:00
+#~ oarsub -p nova -l walltime=03:11:00 -r '2022-07-01 15:42:00' "bash Compare_Size_Constraint.sh inputs/workloads/converted/2022-01-24-\>2022-01-24 inputs/clusters/rackham_450_128_32_256_4_1024.txt"
 
+# In interactive mode
+#~ oarsub -p nova -r "2022-06-27 19:00:00" -l walltime=14:00:00
 #~ screen
 #~ ssh tonNoeud
 #~ ./ton_script
