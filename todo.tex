@@ -89,20 +89,20 @@
 		\item Re-writing of area filling
 		\item More heatmaps fcfs with a score
 		\item Code area filling ratio and area filling omniscient
-		\item pseudo code area filling with different filling of allocated area
+		\item pseudo code area filling with different filling of allocated area (It's: Allocated Area[choosen size][x] gets Allocated Area[choosen size][x] + Area(Ji) with Area(Ji) = cores*walltime. But I would prefer to do: cores*(delay+transfer time))
+		\item ignore dt for constraint == 2
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
-		\item Allocated Area[choosen size][x] gets Allocated Area[choosen size][x] + Area(Ji) with Area(Ji) = cores*walltime. But should I do cores*(delay+transfer time) ?
+		\item Do I still put a data on each job ?
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
 			\item code update intelligent de allocated area
-			\item ignore dt for constraint = 1!
 			\item area filing: veriff avec loris ce qu e j'ai ecrit puis le coder
 			\item are filling omnisicnet comme je fais en ce moment. Si ca marche pas essayer avec le graduellement
 			\item Dire que pour omnisicent je fais l'ancienne version avec planned
