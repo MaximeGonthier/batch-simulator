@@ -90,7 +90,10 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)
 {
+	#ifdef PRINT
 	printf("Start fcfs scheduler. Use bigger nodes: %d.\n", use_bigger_nodes);
+	#endif
+	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	struct Job* j = head_job;
 	while (j != NULL)
@@ -461,7 +464,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 /* TODO : pas besoin de sort a chaque fois. Do I do it ? */
 void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs)
 {
+	#ifdef PRINT
 	printf("Start fcfs_scheduler_backfill_big_nodes. Mode is: %d.\n", backfill_big_node_mode);
+	#endif
+	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	struct Job* j = head_job;
 	bool result = false;
@@ -481,15 +487,20 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 				i = j->index_node_list;
 				while (result == false && i != 3)
 				{
+					#ifdef PRINT
 					printf("Try to start immedialy (T=%d) job %d on node of category %d.\n", t, j->unique_id, i);
+					#endif
+					
 					nb_non_available_cores = schedule_job_to_start_immediatly_on_specific_node_size(j, head_node[i], t, backfill_big_node_mode, total_queue_time, nb_finished_jobs, nb_non_available_cores, &result);
 					i += 1;
 				}
-				printf("Result is: %d.\n", result);
 			}
 			if (result == false)
 			{
+				#ifdef PRINT
 				printf("Just schedule later job %d.\n", j->unique_id);
+				#endif
+				
 				/* If we are here it means we failed to start the job anywhere or it's a job necessating the biggest nodes, so we need to schedule it now on it's corresponding node size (so the smallest one on which it fits). */
 				nb_non_available_cores = schedule_job_on_earliest_available_cores_specific_sublist_node(j, head_node[j->index_node_list], t, nb_non_available_cores);
 			}
