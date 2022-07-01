@@ -82,7 +82,7 @@ make -C C/
 # 4. Barplots and heatmap of stretch, stretch with minimum and total flow
 #~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-SCHEDULER="Fcfs_with_a_score_x0_x500_x2000"
+SCHEDULER="Fcfs_with_a_score_x0_x1500_x2000"
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 echo "Starting ${SCHEDULER}"
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
@@ -129,11 +129,11 @@ do
 	
 	# 0 if not choosen
 	M1=0
-	M2=1000
+	M2=2000
 	M3=0
 	PAS=500
 		
-	for ((j=2; j<N; j++))
+	for ((j=4; j<N; j++))
 	do
 		for ((k=0; k<N; k++))
 		do
