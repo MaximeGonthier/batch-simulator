@@ -611,7 +611,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ #ifdef PRINT
 			//~ if (j->node_used->unique_id == 183)
 			//~ {
-			//~ printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
+			printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
 			//~ }
 			//~ #endif
 			
@@ -651,6 +651,7 @@ void end_jobs(struct Job* job_list_head, int t)
 						//~ j->cores[i]->running_job = j;
 						j->node_used->cores[k]->running_job = false;
 						j->node_used->cores[k]->running_job_end = -1;
+						printf("Running false for job %d.\n", j->unique_id);
 						break;
 					}
 				}
@@ -710,6 +711,7 @@ void reset_cores(struct Node_List** l, int t)
 				if (n->cores[j]->running_job == false)
 				{
 					n->cores[j]->available_time = t;
+					printf("Core takes t = %d for node %d;\n", t, n->unique_id);
 				}
 				else
 				{
@@ -976,5 +978,5 @@ int get_earliest_available_time_specific_sublist_node(int nb_cores_asked, struct
 		n = n->next;
 	}
 				
-	return earliest_available_time;
+	return min_time;
 }

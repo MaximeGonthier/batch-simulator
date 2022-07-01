@@ -559,20 +559,6 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 						j->node_used = choosen_node;
 					}
 				}
-				//~ printf("
-				/* If EAT == t, I can stop and start it there. */
-				//~ if (EAT == t)
-				//~ {
-					//~ choosen_size = next_size;
-					//~ j->node_used = choosen_node;
-					//~ break;
-				//~ }
-				//~ else if (EAT < min_time || min_time == -1)
-				//~ {
-					//~ min_time = EAT;
-					//~ choosen_size = next_size;
-					//~ j->node_used = choosen_node;
-				//~ }
 			}
 			
 			/* Schedule the job on said node size */
@@ -593,7 +579,10 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			}
 			
 			/* Reduced corresponding Planned_Area */
-			Planned_Area[choosen_size][j->index_node_list] -= Area_j;
+			if (next_size != j->index_node_list)
+			{
+				Planned_Area[choosen_size][j->index_node_list] -= Area_j;
+			}
 				
 			#ifdef PRINT
 			print_decision_in_scheduler(j);

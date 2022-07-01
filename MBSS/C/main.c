@@ -303,7 +303,8 @@ int main(int argc, char *argv[])
 					break;
 				}
 			}
-						
+			printf("Job list after new jobs:\n");
+			print_job_list(scheduled_job_list->head);			
 			if (job_pointer != NULL)
 			{
 				next_submit_time = job_pointer->subtime;
