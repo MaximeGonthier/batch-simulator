@@ -512,8 +512,10 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3])
 {
 	// care use long long for area!!
+	#ifdef PRINT
 	printf("Start of planned area filling.\n");
 	printf("Planned areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
+	#endif
 		
 	int next_size = 0;
 	int i = 0;
@@ -540,13 +542,21 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			/* Get EAT on each node size. */
 			for (next_size = j->index_node_list; next_size < 3; next_size++)
 			{
-				if (Planned_Area[next_size][j->index_node_list] - Area_j >= 0 || next_size == j->index_node_list)
+				if (next_size == j->index_node_list || Planned_Area[next_size][j->index_node_list] - Area_j >= 0)
 				{
 					EAT = get_earliest_available_time_specific_sublist_node(j->cores, head_node[next_size], &choosen_node, t);
+					
+					#ifdef PRINT
 					printf("EAT on node of size %d is %d.\n", next_size, EAT);
+					#endif
+					
 					if (EAT == t)
 					{
+						
+						#ifdef PRINT
 						printf("EAT == t can break.\n");
+						#endif
+						
 						min_time = EAT;
 						choosen_size = next_size;
 						j->node_used = choosen_node;
@@ -606,7 +616,126 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 	}
 }
 
-void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Ratio_Area[3][3])
+void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3])
 {
+	// care use long long for area!!
+	#ifdef PRINT
+	printf("Start of ratio area filling.\n");
+	printf("Ratio areas are: [%f, %f, %f] [%f, %f, %f] [%f, %f, %f]\n", Ratio_Area[0][0], Ratio_Area[0][1], Ratio_Area[0][2], Ratio_Area[1][0], Ratio_Area[1][1], Ratio_Area[1][2], Ratio_Area[2][0], Ratio_Area[2][1], Ratio_Area[2][2]);
+	printf("Allocated areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Allocated_Area[0][0], Allocated_Area[0][1], Allocated_Area[0][2], Allocated_Area[1][0], Allocated_Area[1][1], Allocated_Area[1][2], Allocated_Area[2][0], Allocated_Area[2][1], Allocated_Area[2][2]);
+	#endif
 	
+	long long Temp_Allocated_Area[3][3];
+	int i = 0;
+	int k = 0;
+	
+	for (i = 0; i < 3; i++)
+	{
+		for (k = 0; k < 3; k++)
+		{
+			Temp_Allocated_Area[i][k] = Allocated_Area[i][k];
+		}
+	}
+	
+	int next_size = 0;
+	long long Area_j;
+	int EAT = 0;
+	int min_time = -1;
+	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+	struct Job* j = head_job;
+	int choosen_size = 0;
+	struct Node* choosen_node = NULL; /* TODO: malloc ? */
+	while (j != NULL)
+	{
+		if (nb_non_available_cores < nb_cores)
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			printf("Scheduling job %d.\n", j->unique_id);			
+			printf("Temp allocated areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Temp_Allocated_Area[0][0], Temp_Allocated_Area[0][1], Temp_Allocated_Area[0][2], Temp_Allocated_Area[1][0], Temp_Allocated_Area[1][1], Temp_Allocated_Area[1][2], Temp_Allocated_Area[2][0], Temp_Allocated_Area[2][1], Temp_Allocated_Area[2][2]);
+			#endif
+			
+			min_time = -1;
+			choosen_node = NULL;
+			Area_j = j->cores*j->walltime;
+			
+			/* Get EAT on each node size. */
+			for (next_size = j->index_node_list; next_size < 3; next_size++)
+			{
+				#ifdef PRINT
+				printf("%f*%d - %lld - %lld >= 0 ?\n", Ratio_Area[next_size][j->index_node_list], t, Temp_Allocated_Area[next_size][j->index_node_list], Area_j);
+				#endif
+				
+				if (next_size == j->index_node_list || Ratio_Area[next_size][j->index_node_list]*t - Temp_Allocated_Area[next_size][j->index_node_list] - Area_j >= 0)
+				{
+					EAT = get_earliest_available_time_specific_sublist_node(j->cores, head_node[next_size], &choosen_node, t);
+					
+					#ifdef PRINT
+					printf("EAT on node of size %d is %d.\n", next_size, EAT);
+					#endif
+					
+					if (EAT == t)
+					{
+						#ifdef PRINT
+						printf("EAT == t can break.\n");
+						#endif
+						
+						min_time = EAT;
+						choosen_size = next_size;
+						j->node_used = choosen_node;
+						break;
+					}
+					else if (EAT < min_time || min_time == -1)
+					{
+						min_time = EAT;
+						choosen_size = next_size;
+						j->node_used = choosen_node;
+					}
+				}
+			}
+			
+			/* Schedule the job on said node size */
+			/* Update infos on the job and on cores. */
+			j->start_time = min_time;
+			j->end_time = min_time + j->walltime;
+			for (i = 0; i < j->cores; i++)
+			{
+				j->cores_used[i] = j->node_used->cores[i]->unique_id;
+				if (j->node_used->cores[i]->available_time <= t)
+				{
+					nb_non_available_cores += 1;
+				}
+				j->node_used->cores[i]->available_time = min_time + j->walltime;
+				
+				/* Maybe I need job queue or not not sure. TODO. */
+				// copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
+			}
+			
+			/* increment temp allocated area */
+			if (choosen_size > j->index_node_list)
+			{
+				Temp_Allocated_Area[choosen_size][j->index_node_list] += Area_j;
+			}
+				
+			#ifdef PRINT
+			print_decision_in_scheduler(j);
+			#endif
+			
+			/* Need to sort cores after each schedule of a job. */
+			sort_cores_by_available_time_in_specific_node(j->node_used);
+		
+			insert_next_time_in_sorted_list(start_times, j->start_time);
+			
+			j = j->next;
+		}
+		else
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
+			break;
+		}
+	}
+	//~ exit(1);
 }

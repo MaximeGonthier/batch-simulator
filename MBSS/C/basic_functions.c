@@ -437,7 +437,13 @@ void start_jobs(int t, struct Job* head)
 			}
 			j->transfer_time = transfer_time;
 			j->waiting_for_a_load_time = waiting_for_a_load_time;
-						
+			
+			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
+			if (j->index_node_list < j->node_used->index_node_list)
+			{
+				Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
+			}
+			
 			//~ if (j->unique_id <= 1382)
 			//~ {
 				//~ printf("%d and %d.\n", j->transfer_time, j->waiting_for_a_load_time);
@@ -608,12 +614,9 @@ void end_jobs(struct Job* job_list_head, int t)
 				
 			finished_jobs += 1;
 			
-			//~ #ifdef PRINT
-			//~ if (j->node_used->unique_id == 183)
-			//~ {
+			#ifdef PRINT
 			printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
-			//~ }
-			//~ #endif
+			#endif
 			
 			/* Just printing, can remove */
 			if (finished_jobs%5000 == 0)
@@ -636,7 +639,7 @@ void end_jobs(struct Job* job_list_head, int t)
 				exit(EXIT_FAILURE);
 			}
 			#endif
-			
+						
 			//~ #ifdef PRINT
 			//~ if (j->node_used->unique_id == 183) {
 			//~ printf("n avail cores end_jobs %d.\n", j->node_used->n_available_cores); }
@@ -651,7 +654,7 @@ void end_jobs(struct Job* job_list_head, int t)
 						//~ j->cores[i]->running_job = j;
 						j->node_used->cores[k]->running_job = false;
 						j->node_used->cores[k]->running_job_end = -1;
-						printf("Running false for job %d.\n", j->unique_id);
+						//~ printf("Running false for job %d.\n", j->unique_id);
 						break;
 					}
 				}
@@ -711,7 +714,7 @@ void reset_cores(struct Node_List** l, int t)
 				if (n->cores[j]->running_job == false)
 				{
 					n->cores[j]->available_time = t;
-					printf("Core takes t = %d for node %d;\n", t, n->unique_id);
+					//~ printf("Core takes t = %d for node %d;\n", t, n->unique_id);
 				}
 				else
 				{

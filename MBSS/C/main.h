@@ -29,6 +29,13 @@ extern int total_queue_time;
 extern int first_subtime_day_0;
 extern char* scheduler;
 
+/* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
+ * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of
+ * area flling I use a temp tab at the beggining of the schedule that copy the values of this global variable
+ * because the schedule can change later on with liberated cores.
+ */
+extern long long Allocated_Area[3][3];
+
 /* To only call these functions when I need it. */
 extern struct Next_Time_List* end_times;
 extern struct Next_Time_List* start_times; /* TODO try to do that with update at each new scheduled job and reset when reset jobs and reschedule */
@@ -102,6 +109,7 @@ struct Node {
     struct Data_List* data;
     struct Core** cores;
     int n_available_cores;
+    int index_node_list;
 };
 
 struct Data {
@@ -218,7 +226,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
-void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Ratio_Area[3][3]);
+void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3]);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

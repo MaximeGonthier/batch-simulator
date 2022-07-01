@@ -21,6 +21,7 @@ char* scheduler;
 struct Next_Time_List* end_times;
 struct Next_Time_List* start_times;
 int nb_job_to_evaluate_started;
+long long Allocated_Area[3][3];
 
 int main(int argc, char *argv[])
 {
@@ -143,9 +144,8 @@ int main(int argc, char *argv[])
 	int multiplier_nb_copy = 0;
 	int backfill_big_node_mode = 0;
 	bool use_bigger_nodes = true; /* For FCFS */
-	//~ int** Planned_or_Ratio_Area = malloc(3*3*sizeof(int));
-	long long (*Planned_or_Ratio_Area)[3] = malloc(sizeof(long long[3][3]));
-	
+	long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
+	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 	{
@@ -184,12 +184,12 @@ int main(int argc, char *argv[])
 	}
 	else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
-		//~ char* file_to_open = malloc(100*sizeof(char));
 		FILE *f = NULL;
 		char s1[30];
 		char s2[30];
 		char s3[30];
 		char s4[30];
+		int i = 0;
 		if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
 		{
 			char* file_to_open = malloc(100*sizeof(char));
@@ -203,24 +203,45 @@ int main(int argc, char *argv[])
 			printf("Opening %s\n", file_to_open);
 			f = fopen(file_to_open, "r");
 			free(file_to_open);
+			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
+			{
+				Planned_Area[i][0] = atoll(s2);
+				Planned_Area[i][1] = atoll(s3);
+				Planned_Area[i][2] = atoll(s4);
+				i += 1;
+			}
 		}
 		else 
 		{
+			//~ long long (*Allocated_Area)[3] = malloc(sizeof(long long[3][3]));
+			//~ Allocated_Area = malloc(3*sizeof(long long *));
+			//~ for (i = 0; i < 3; i++)
+			//~ {
+				//~ Allocated_Area[i] = malloc(3 * sizeof(long long));
+				//~ Allocated_Area[i] = 0;
+			//~ }
+			//~ printf("%lld.\n", Allocated_Area[0][1]);
+			for (int ii = 0; ii < 3; ii++)
+			{
+				for (int iii = 0; iii < 3; iii++)
+				{
+					Allocated_Area[ii][iii] = 0;
+				}
+			}
 			printf("Opening inputs/Planned_area_2022-01-18->2022-01-18.txt\n");
 			f = fopen("inputs/Planned_area_2022-01-18->2022-01-18.txt", "r");
+			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
+			{
+				Ratio_Area[i][0] = atof(s2);
+				Ratio_Area[i][1] = atof(s3);
+				Ratio_Area[i][2] = atof(s4);
+				i += 1;
+			}
 		}
 		if (!f)
 		{
 			perror("fopen error in area filling.\n");
 			exit(EXIT_FAILURE);
-		}
-		i = 0;
-		while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
-		{
-			Planned_or_Ratio_Area[i][0] = atoll(s2);
-			Planned_or_Ratio_Area[i][1] = atoll(s3);
-			Planned_or_Ratio_Area[i][2] = atoll(s4);
-			i += 1;
 		}
 		fclose(f);
 	}
@@ -241,11 +262,17 @@ int main(int argc, char *argv[])
 	bool sort_by_file_size = false;
 	if ((strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0) || (strncmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_big_job_first", 19) == 0))
 	{
+		#ifdef PRINT
 		printf("Sorting job list by file's size.\n");
+		#endif
+		
 		sort_by_file_size = true;
 		sort_job_list_by_file_size(&scheduled_job_list->head);
+		
+		#ifdef PRINT
 		printf("Job list after sort byt file's size:\n");
 		print_job_list(scheduled_job_list->head);
+		#endif
 	}
 	
 	/* Start of simulation. */
@@ -273,6 +300,7 @@ int main(int argc, char *argv[])
 		if (next_submit_time == t) /* We have new jobs need to schedule them. */
 		{
 			new_jobs = true;
+			
 			#ifdef PRINT
 			printf("We have new jobs at time %d.\n", t);
 			#endif
@@ -303,8 +331,12 @@ int main(int argc, char *argv[])
 					break;
 				}
 			}
+			
+			#ifdef PRINT
 			printf("Job list after new jobs:\n");
-			print_job_list(scheduled_job_list->head);			
+			print_job_list(scheduled_job_list->head);
+			#endif
+						
 			if (job_pointer != NULL)
 			{
 				next_submit_time = job_pointer->subtime;
@@ -345,11 +377,11 @@ int main(int argc, char *argv[])
 			}
 			else if (strcmp(scheduler, "Fcfs_area_filling") == 0)
 			{
-				fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Planned_or_Ratio_Area);
+				fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
 			}
 			else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
 			{
-				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_or_Ratio_Area);
+				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
 			}
 			else
 			{

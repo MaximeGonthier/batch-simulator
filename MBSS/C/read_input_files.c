@@ -25,6 +25,7 @@ void read_cluster(char* input_node_file)
     char memory[100];
     char bandwidth[100];
     char core[100];
+    int index_node = 0;
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s) == 10)
 	{
 		struct Node *new = (struct Node*) malloc(sizeof(struct Node));
@@ -32,6 +33,29 @@ void read_cluster(char* input_node_file)
 		new->memory = atoi(memory);
 		new->bandwidth = atof(bandwidth);
 		new->n_available_cores = 20;
+		
+		if (constraint_on_sizes != 0)
+		{
+			if (new->memory == 128)
+			{
+				index_node = 0;
+			}
+			else if (new->memory == 256)
+			{
+				index_node = 1;
+			}
+			else if (new->memory == 1024)
+			{
+				index_node = 2;
+			}
+			else
+			{
+				perror("Error memory size in read_cluster"); fflush(stdout);
+				exit(EXIT_FAILURE);
+			}
+		}
+		new->index_node_list = index_node;
+		
 		new->data = malloc(sizeof(*new->data));
 		new->data->head = NULL;
 		new->data->tail = NULL;
