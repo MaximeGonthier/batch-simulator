@@ -565,21 +565,31 @@ Here is the pseudo-code for our algorithm after computing statistics from previo
 \begin{algorithmic}[1]
 \State For each size $x$ and $y$, $Allocated\_Area[x][y] \gets 0$
 \State Sort $\jobset$ by size of required node (biggest to smallest) and then by submission time
-\State Need to schedule job $J_i$, requiring a node of size $x$, at time $t$
-\For {$next\_size$ in range $(x, l)$} \Comment{By starting at $x$, I assure that in the worst case I'm scheduled on a node of my size}
-	\If {$Ratio\_Area[next\_size][x] * t - Allocated\_Area[next\_size][x] - Area(J_i) \geq 0~or~next\_size == x$}
-		\State $EAT \gets$ earliest available time to start $J_i$ on a node of size $next\_size$
-		\If {$EAT = T$}
-			\State $choosen\_size = next\_size$
-			\State Break
-		\ElsIf {$EAT < min$}
-			\State $min \gets EAT$
-			\State $choosen\_size = next\_size$
-		\EndIf
+\While {all jobs are not started}
+	\If {Job $J_i$, requiring a node of size $x$, is available at time $t$}
+		\State $Temp\_Allocated\_Area \gets Allocated\_Area$
+		\For {$next\_size$ in range $(x, l)$} \Comment{By starting at $x$, I assure that in the worst case I'm scheduled on a node of my size}
+			\If {$Ratio\_Area[next\_size][x] * t - Temp\_Allocated\_Area[next\_size][x] - Area(J_i) \geq 0~or~next\_size == x$}
+				\State $EAT \gets$ earliest available time to start $J_i$ on a node of size $next\_size$
+				\If {$EAT = T$}
+					\State $choosen\_size = next\_size$
+					\State Break
+				\ElsIf {$EAT < min$}
+					\State $min \gets EAT$
+					\State $choosen\_size = next\_size$
+				\EndIf
+			\EndIf
+		\EndFor
+		\State Schedule $J_i$ on the earliest available node of size $choosen\_size$
+		\State $Temp\_Allocated\_Area[choosen\_size][x] \gets Temp\_Allocated\_Area[choosen\_size][x] + Area(J_i)$
 	\EndIf
-\EndFor
-\State Start $J_i$ on the earliest available node of size $choosen\_size$
-\State $Allocated\_Area[choosen\_size][x] \gets Allocated\_Area[choosen\_size][x] + Area(J_i)$
+	\If {Job $J_i$ start at time $t$}
+		\State $Allocated\_Area[choosen\_size][x] \gets Allocated\_Area[choosen\_size][x] + Area(J_i)$
+	\EndIf
+	\If {Job $J_i$ end at time $t$}
+		\State $Allocated\_Area[choosen\_size][x] \gets Allocated\_Area[choosen\_size][x] - (Area(J_i) - \core(J_i) \times (\completiontime(J_i) - \start(J_i)))$
+	\EndIf
+\EndWhile
 \end{algorithmic}
 \end{algorithm}
 
@@ -872,7 +882,7 @@ If I look into the past I get: Planned Area (3) : [ 0, 0, infinite ]
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Flow_times_Fcfs_no_use_bigger_nodes_Fcfs_backfill_big_nodes_0_2022-02-08->2022-02-08_reduced_95_128_4_256_1_1024.pdf}\caption{Flow}\end{subfigure}
 \caption{Size constraint - June 17 - Trace size constraint to understand big total flow difference (192903568 VS 139565444).}\end{figure}
 
-\section{Meeting 30/06/22}
+\section{Meeting ??/??/22}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Mean Flow Stretch}\end{subfigure}
