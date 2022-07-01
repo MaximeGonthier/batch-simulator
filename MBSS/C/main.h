@@ -217,7 +217,8 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
-void fcfs_scheduler_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
+void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
+void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Ratio_Area[3][3]);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

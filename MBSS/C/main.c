@@ -143,8 +143,8 @@ int main(int argc, char *argv[])
 	int multiplier_nb_copy = 0;
 	int backfill_big_node_mode = 0;
 	bool use_bigger_nodes = true; /* For FCFS */
-	//~ int** Planned_Area = malloc(3*3*sizeof(int));
-	long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
+	//~ int** Planned_or_Ratio_Area = malloc(3*3*sizeof(int));
+	long long (*Planned_or_Ratio_Area)[3] = malloc(sizeof(long long[3][3]));
 	
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
@@ -217,9 +217,9 @@ int main(int argc, char *argv[])
 		i = 0;
 		while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 		{
-			Planned_Area[i][0] = atoll(s2);
-			Planned_Area[i][1] = atoll(s3);
-			Planned_Area[i][2] = atoll(s4);
+			Planned_or_Ratio_Area[i][0] = atoll(s2);
+			Planned_or_Ratio_Area[i][1] = atoll(s3);
+			Planned_or_Ratio_Area[i][2] = atoll(s4);
 			i += 1;
 		}
 		fclose(f);
@@ -342,14 +342,14 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
 			}
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0)
-			//~ {
-				//~ fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
-			//~ {
-				//~ fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
-			//~ }
+			else if (strcmp(scheduler, "Fcfs_area_filling") == 0)
+			{
+				fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Planned_or_Ratio_Area);
+			}
+			else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+			{
+				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_or_Ratio_Area);
+			}
 			else
 			{
 				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
@@ -582,30 +582,30 @@ int main(int argc, char *argv[])
 
 
 //~ if (scheduler == "Fcfs_area_filling" or scheduler == "Fcfs_area_filling_omniscient"):
-	//~ Planned_Area = []
+	//~ Planned_or_Ratio_Area = []
 	//~ if (scheduler == "Fcfs_area_filling"):
 		//~ with open("inputs/file_size_requirement/Ratio_area_2022-02-02->2022-02-02.txt") as f:
 			//~ line = f.readline()
 			//~ r1, r2, r3, r4,= line.split()
-			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ Planned_or_Ratio_Area.append([float(r2), float(r3), float(r4)])
 			//~ line = f.readline()
 			//~ r1, r2, r3, r4,= line.split()
-			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ Planned_or_Ratio_Area.append([float(r2), float(r3), float(r4)])
 			//~ line = f.readline()
 			//~ r1, r2, r3, r4,= line.split()
-			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ Planned_or_Ratio_Area.append([float(r2), float(r3), float(r4)])
 		//~ f.close
 	//~ elif (scheduler == "Fcfs_area_filling_omniscient"):
 		//~ with open("inputs/file_size_requirement/Ratio_area_2022-02-08->2022-02-08_very_reduced.txt") as f:
 			//~ line = f.readline()
 			//~ r1, r2, r3, r4,= line.split()
-			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ Planned_or_Ratio_Area.append([float(r2), float(r3), float(r4)])
 			//~ line = f.readline()
 			//~ r1, r2, r3, r4,= line.split()
-			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ Planned_or_Ratio_Area.append([float(r2), float(r3), float(r4)])
 			//~ line = f.readline()
 			//~ r1, r2, r3, r4,= line.split()
-			//~ Planned_Area.append([float(r2), float(r3), float(r4)])
+			//~ Planned_or_Ratio_Area.append([float(r2), float(r3), float(r4)])
 		//~ f.close
 	//~ else:
 		//~ print("Wrong scheduler area filling")
