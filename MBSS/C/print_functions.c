@@ -240,6 +240,8 @@ void print_csv(struct To_Print* head_to_print)
 	float core_time_used = 0;
 	float denominator_bounded_stretch = 0;
 	
+	//~ printf("Nb of job evaluated: %d.\n", nb_job_to_evaluate);
+	
 	while (head_to_print != NULL)
 	{
 		//~ printf("Evaluate job %d.\n", head_to_print->job_unique_id); fflush(stdout);
@@ -269,6 +271,13 @@ void print_csv(struct To_Print* head_to_print)
 		}
 			
 		core_time_used += head_to_print->time_used*head_to_print->job_cores;
+		
+		if (head_to_print->job_start_time - head_to_print->job_subtime < 0)
+		{
+			printf("Error queue time is %d for job %d.\n", head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->job_unique_id);
+			exit(EXIT_FAILURE);
+		}
+		
 		total_queue_time += head_to_print->job_start_time - head_to_print->job_subtime;
 		if (max_queue_time < head_to_print->job_start_time - head_to_print->job_subtime)
 		{

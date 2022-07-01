@@ -262,9 +262,9 @@ int main(int argc, char *argv[])
 	bool sort_by_file_size = false;
 	if ((strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0) || (strncmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_big_job_first", 19) == 0))
 	{
-		#ifdef PRINT
+		//~ #ifdef PRINT
 		printf("Sorting job list by file's size.\n");
-		#endif
+		//~ #endif
 		
 		sort_by_file_size = true;
 		sort_job_list_by_file_size(&scheduled_job_list->head);
@@ -315,6 +315,16 @@ int main(int argc, char *argv[])
 					printf("New job %d.\n", job_pointer->unique_id);
 					#endif
 					
+					//~ if (job_pointer->unique_id == 27673)
+					//~ {
+						//~ printf("New job at t = %d.\n", t);
+					//~ }
+					//~ if (job_pointer->subtime > t)
+					//~ {
+						//~ printf("Error job %d subtime %d available at time %d.\n", job_pointer->unique_id, job_pointer->subtime, t);
+						//~ exit(EXIT_FAILURE);
+					//~ }
+					
 					temp = job_pointer->next;
 					if (sort_by_file_size == true)
 					{
@@ -344,7 +354,8 @@ int main(int argc, char *argv[])
 			else
 			{
 				next_submit_time = -1;
-			}			
+			}		
+			//~ exit(1);	
 		}
 
 		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */

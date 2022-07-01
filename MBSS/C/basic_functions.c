@@ -108,7 +108,11 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
-	
+					//~ if (j->unique_id == 27673)
+			//~ {
+				//~ printf("e %d s %d sub %d t %d.\n", j->end_time, j->start_time, j->subtime, t);
+				//~ print_decision_in_scheduler(j);
+			//~ }
 	//~ if (j->unique_id == 1382)
 	//~ {
 		//~ print_decision_in_scheduler(j);
@@ -167,6 +171,12 @@ int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
+	
+				//~ if (j->unique_id == 27673)
+			//~ {
+				//~ printf("%d %d %d.\n", j->end_time, j->start_time, j->subtime);
+				//~ print_decision_in_scheduler(j);
+			//~ }
 	
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(j->node_used);
@@ -395,7 +405,8 @@ void start_jobs(int t, struct Job* head)
 	int k = 0;
 	int overhead_of_load = 0;
 	int min_between_delay_and_walltime = 0;
-	
+				int transfer_time = 0;
+			int waiting_for_a_load_time = 0;
 	#ifdef PRINT
 	printf("Start of start_jobs at time %d.\n", t); fflush(stdout);
 	#endif
@@ -427,19 +438,31 @@ void start_jobs(int t, struct Job* head)
 			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
 			total_queue_time += j->start_time - j->subtime;
 			
-			int transfer_time = 0;
-			int waiting_for_a_load_time = 0;
-			//~ if (j->data != 0 && constraint_on_sizes != 2 && j->workload != -2) /* I also don't want to put transfer time on fix workload occupation jobs */
-			if (j->data != 0 && constraint_on_sizes != 2) /* I also don't want to put transfer time on fix workload occupation jobs */
+			transfer_time = 0;
+			waiting_for_a_load_time = 0;
+			
+			//~ if (j->data != 0)
+			if (j->data != 0 && constraint_on_sizes != 2)
 			{
+				//~ printf("here\n");
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
 			}
-			j->transfer_time = transfer_time;
-			j->waiting_for_a_load_time = waiting_for_a_load_time;
+			//~ if (constraint_on_sizes == 2)
+			//~ {
+				//~ j->transfer_time = 0;
+				//~ j->waiting_for_a_load_time = 0;
+			//~ }
+			//~ else
+			//~ {
+			//~ transfer_time = 0;
+			//~ waiting_for_a_load_time = 0;
+				j->transfer_time = transfer_time;
+				j->waiting_for_a_load_time = waiting_for_a_load_time;
+			//~ }
 			
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
-			if (j->index_node_list < j->node_used->index_node_list)
+			if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0 && j->index_node_list < j->node_used->index_node_list)
 			{
 				Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
 			}
@@ -449,19 +472,28 @@ void start_jobs(int t, struct Job* head)
 				//~ printf("%d and %d.\n", j->transfer_time, j->waiting_for_a_load_time);
 			//~ }
 			
-			if (transfer_time == 0)
-			{
-				overhead_of_load = waiting_for_a_load_time;
-			}
-			else if (waiting_for_a_load_time == 0)
-			{
-				overhead_of_load = transfer_time;
-			}
-			else
-			{
-				printf("Error calcul transfer time.\n"); fflush(stdout);
-				exit(EXIT_FAILURE);
-			}
+			//~ if (constraint_on_sizes == 2 || j->data == 0)
+			//~ {
+				//~ overhead_of_load = 0;
+			//~ }
+			//~ else
+			//~ {
+			overhead_of_load = 0;
+				//~ printf("%d %d.\n", transfer_time, waiting_for_a_load_time);
+				if (transfer_time == 0)
+				{
+					overhead_of_load = waiting_for_a_load_time;
+				}
+				else if (waiting_for_a_load_time == 0)
+				{
+					overhead_of_load = transfer_time;
+				}
+				else
+				{
+					printf("Error calcul transfer time.\n");
+					exit(EXIT_FAILURE);
+				}
+			//~ }
 			
 			//~ #ifdef PRINT
 			//~ printf("For job %d: %d transfer time and %d waiting for a load time.\n", j->unique_id, transfer_time, waiting_for_a_load_time); fflush(stdout);
@@ -479,6 +511,10 @@ void start_jobs(int t, struct Job* head)
 			}
 			j->end_time = j->start_time + min_between_delay_and_walltime; /* Attention le j->end time est mis a jour la! */
 			
+			//~ if (j->unique_id == 27673)
+			//~ {
+				//~ printf("%d %d %d %d.\n", j->end_time, j->start_time, j->subtime, min_between_delay_and_walltime);
+			//~ }
 			/* Add in list of end times. */
 			//~ #ifdef PRINT
 			//~ printf("Before adding ending time %d:\n", j->end_time);
@@ -514,17 +550,7 @@ void start_jobs(int t, struct Job* head)
 				exit(EXIT_FAILURE);
 			}
 			#endif
-			
-			//~ #ifdef PRINT
-			//~ if (j->node_used->unique_id == 183) {
-			//~ printf("n avail cores start_jobs %d.\n", j->node_used->n_available_cores); }
-			//~ #endif
-			
-			//~ #ifdef PRINT
-			//~ if (j->unique_id <= 1382) {
-			//~ printf("==> Job %d start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data); }
-			//~ #endif
-			
+						
 			for (i = 0; i < j->cores; i++)
 			{
 				for (k = 0; k < 20; k++)
@@ -621,8 +647,6 @@ void end_jobs(struct Job* job_list_head, int t)
 			/* Just printing, can remove */
 			if (finished_jobs%5000 == 0)
 			{
-				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_finished, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
-				//~ printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
 									
