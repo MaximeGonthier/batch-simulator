@@ -190,32 +190,67 @@ int main(int argc, char *argv[])
 		char s3[30];
 		char s4[30];
 		int i = 0;
-		if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0)
+		
+		char* file_to_open = malloc(100*sizeof(char));
+		
+		/* Getting cluster */
+		char subbuff_cluster[23];
+		memcpy(subbuff_cluster, &input_node_file[24], 22);
+		subbuff[22] = '\0';
+		printf("subbuff_cluster is %s.\n", subbuff_cluster);
+		
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0)
 		{
-			char* file_to_open = malloc(100*sizeof(char));
-			char subbuff[23];
-			memcpy(subbuff, &input_job_file[27], 22);
-			subbuff[22] = '\0';
-			printf("subbuff for workload is %s.\n", subbuff);
-			strcpy(file_to_open, "inputs/Planned_area_");
-			strcat(file_to_open, subbuff);
-			memcpy(subbuff, &input_node_file[24], 22);
-			subbuff[22] = '\0';
-			printf("subbuff for cluster is %s.\n", subbuff);
-			strcat(file_to_open, subbuf);
-			//~ strcat(file_to_open, ".txt");
-			printf("Opening %s\n", file_to_open);
-			exit(1);
-			f = fopen(file_to_open, "r");
-			free(file_to_open);
-			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
-			{
-				Planned_Area[i][0] = atoll(s2);
-				Planned_Area[i][1] = atoll(s3);
-				Planned_Area[i][2] = atoll(s4);
-				i += 1;
-			}
+			strcpy(file_to_open, "inputs/Planned_area_2022-01-18->2022-01-18_");
+			strcat(file_to_open, subbuff_cluster);
 		}
+		else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0)
+		{
+			strcpy(file_to_open, "inputs/Ratio_area_2022-01-18->2022-01-18_");
+			strcat(file_to_open, subbuff_cluster);
+		}
+		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+		{
+			/* Getting workload */
+			char subbuff_workload[23];
+			memcpy(subbuff_workload, &input_job_file[27], 22);
+			subbuff_workload[22] = '\0';
+			printf("subbuff_workload is %s.\n", subbuff_workload);
+			
+			strcpy(file_to_open, "inputs/Planned_area_");
+			strcat(file_to_open, subbuff_workload);
+			strcat(file_to_open, subbuff_cluster);
+		}
+		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0)
+		{
+			/* Getting workload */
+			char subbuff_workload[23];
+			memcpy(subbuff_workload, &input_job_file[27], 22);
+			subbuff_workload[22] = '\0';
+			printf("subbuff_workload is %s.\n", subbuff_workload);
+			
+			strcpy(file_to_open, "inputs/Ratio_area_");
+			strcat(file_to_open, subbuff_workload);
+			strcat(file_to_open, subbuff_cluster);
+		}
+
+		printf("Opening file: %s\n", file_to_open);
+		f = fopen(file_to_open, "r");
+		if (!f)
+		{
+			perror("fopen error in area filling.\n");
+			exit(EXIT_FAILURE);
+		}
+		free(file_to_open);
+		
+		while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
+		{
+			Planned_Area[i][0] = atoll(s2);
+			Planned_Area[i][1] = atoll(s3);
+			Planned_Area[i][2] = atoll(s4);
+			i += 1;
+		}
+
 		else 
 		{
 			for (int ii = 0; ii < 3; ii++)
@@ -235,11 +270,11 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		if (!f)
-		{
-			perror("fopen error in area filling.\n");
-			exit(EXIT_FAILURE);
-		}
+		//~ if (!f)
+		//~ {
+			//~ perror("fopen error in area filling.\n");
+			//~ exit(EXIT_FAILURE);
+		//~ }
 		fclose(f);
 	}
 	else if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
