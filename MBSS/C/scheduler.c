@@ -94,7 +94,10 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 	printf("Start fcfs scheduler. Use bigger nodes: %d.\n", use_bigger_nodes);
 	#endif
 	
+	//~ int nb_running_cores = 0;
+	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+
 	struct Job* j = head_job;
 	while (j != NULL)
 	{
@@ -104,7 +107,14 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
+			//~ if (backfill == false)
+			//~ {
 			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
+			//~ }
+			//~ else
+			//~ {
+				//~ nb_non_available_cores = schedule_job_on_earliest_available_cores_backfill(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
+			//~ }
 			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			
@@ -113,12 +123,90 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 		else
 		{
 			#ifdef PRINT
-			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
+			
+			//~ printf("There are %d running cores.\n", nb_running_cores);
+			
+			/* Continue backfilling. */
+			//~ if (nb_running_cores < nb_cores && backfill == true)
+			//~ {
+				//~ nb_running_cores = resume_backfilling(j, head_node, t, nb_running_cores, use_biger_nodes);
+			//~ }
+			//~ else
+			//~ {
 			break;
+			//~ }
 		}
 	}
+}
+
+void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)
+{
+	#ifdef PRINT
+	printf("Start fcfs easybf scheduler. Use bigger nodes: %d.\n", use_bigger_nodes);
+	#endif
+	
+	//~ int nb_running_cores = get_nb_running_cores(node_list, t);
+	int nb_running_cores = running_cores;
+	
+	//~ exit(1);
+	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+
+	printf("Nb of running cores before j1: %d.\n", nb_running_cores);
+	/* First schedule J_1. */
+	struct Job* j1 = head_job;
+	nb_running_cores = schedule_job_on_earliest_available_cores_return_running_cores(j1, head_node, t, nb_running_cores, use_bigger_nodes);
+	insert_next_time_in_sorted_list(start_times, j1->start_time);
+	
+	printf("Nb of running cores after j1: %d.\n", nb_running_cores);
+	
+	bool result = false;
+	struct Job* j = j1->next;
+
+	while (j != NULL)
+	{
+		if (nb_running_cores < nb_cores)
+		{
+			#ifdef PRINT
+			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
+			#endif
+			
+			result = false;
+			
+			nb_running_cores = try_to_start_job_immediatly_without_delaying_j1(j, j1, head_node, nb_running_cores, &result, use_bigger_nodes, t);
+			
+			if (result == true)
+			{
+				insert_next_time_in_sorted_list(start_times, j->start_time);
+			}
+			printf("Nb of running cores after starting (or not: %d) Job %d: %d.\n", result, j->unique_id, nb_running_cores);
+			j = j->next;
+		}
+		else
+		{
+			#ifdef PRINT
+			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
+			#endif
+			
+			
+			//~ printf("There are %d running cores.\n", nb_running_cores);
+			
+			/* Continue backfilling. */
+			//~ if (nb_running_cores < nb_cores && backfill == true)
+			//~ {
+				//~ nb_running_cores = resume_backfilling(j, head_node, t, nb_running_cores, use_biger_nodes);
+			//~ }
+			//~ else
+			//~ {
+			break;
+			//~ }
+		}
+		//~ exit(1);
+	}
+	
+	/* TODO: enleve les trucs que j'ai ajouté pour backfill ici et dans le main. Faire fonction fcfs backfill ou juste je schedule J_1 puis j'essaye de strat immediatly tout les jobs. */
 }
 
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)

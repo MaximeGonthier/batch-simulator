@@ -193,7 +193,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		}
 		new->index_node_list = index_node;
 		
-		new->start_time = 0; 
+		new->start_time = -1; 
 		new->end_time = 0; 
 		new->end_before_walltime = false;
 		new->node_used = (struct Node*) malloc(sizeof(struct Node));

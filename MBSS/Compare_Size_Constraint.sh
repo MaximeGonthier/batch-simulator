@@ -1,4 +1,6 @@
 #!/bin/bash
+# oarsub -p nova -l core=16,walltime=02:00:00 -r '2022-07-08 12:12:00' "bash Compare_Size_Constraint.sh inputs/workloads/converted/2022-01-24-\>2022-01-24 inputs/clusters/rackham_450_128_32_256_4_1024.txt"
+
 start=`date +%s`
 
 if [ "$#" -ne 2 ]; then

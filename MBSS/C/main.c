@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
 	int multiplier_file_evicted = 0;
 	int multiplier_nb_copy = 0;
 	int backfill_big_node_mode = 0;
-	bool use_bigger_nodes = true; /* For FCFS */
+	bool use_bigger_nodes = true;
 	long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	/* Getting informations for certain schedulers. */
@@ -275,6 +275,13 @@ int main(int argc, char *argv[])
 		#endif
 	}
 	
+	//~ /* To activate backfilling. After a schedule is done. I try to start immediatly jobs without delaying the first scheduled job. */
+	//~ bool backfill = false;
+	//~ if (strcmp(scheduler, "Fcfs_easy_backfill") == 0)
+	//~ {
+		//~ backfill = true;
+	//~ }
+	
 	/* Start of simulation. */
 	printf("Start simulation.\n");
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
@@ -381,6 +388,10 @@ int main(int argc, char *argv[])
 			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0))
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
+			}
+			else if (strcmp(scheduler, "Fcfs_easybf") == 0)
+			{
+				fcfs_easybf_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}
 			else if ((strcmp(scheduler, "Fcfs_backfill_big_nodes_0") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1") == 0))
 			{

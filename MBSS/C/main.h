@@ -185,6 +185,7 @@ void start_jobs(int t, struct Job* scheduled);
 void end_jobs(struct Job* job_list_head, int t);
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
 int get_nb_non_available_cores(struct Node_List** n, int t);
+//~ int get_nb_running_cores(struct Node_List** n, int t);
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes);
 void reset_cores(struct Node_List** l, int t);
 void remove_data_from_node(struct Job* j, int t);
@@ -196,6 +197,8 @@ int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data
 int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct Node_List* head_node_size_i, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs, int nb_non_available_cores, bool* result);
 int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j, struct Node_List* head_node_size_i, int t, int nb_non_available_cores);
 int get_earliest_available_time_specific_sublist_node(int nb_cores_asked, struct Node_List* head_node_size_i, struct Node** choosen_node, int t);
+int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j1, struct Node_List** head_node, int nb_running_cores, bool* result, bool use_bigger_nodes, int t);
+int schedule_job_on_earliest_available_cores_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, bool use_bigger_nodes);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -227,6 +230,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
 void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3]);
+void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []
