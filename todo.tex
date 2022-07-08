@@ -87,7 +87,7 @@
 
 	\begin{enumerate}
 		\item Re-writing of area filling
-		\item More heatmaps fcfs with a score
+		\item More heatmaps fcfs with a score and all multipliers combination heatmaps
 		\item Code area filling ratio and area filling omniscient
 		\item pseudo code area filling with different filling of allocated area (It's: Allocated Area[choosen size][x] gets Allocated Area[choosen size][x] + Area(Ji) with Area(Ji) = cores*walltime. But I would prefer to do: cores*(delay+transfer time))
 		\item ignore dt for constraint == 2
@@ -103,19 +103,18 @@
 	\subsection{General}
 		\begin{enumerate}
 			\item code update intelligent de allocated area
-			\item area filing: veriff avec loris ce qu e j'ai ecrit puis le coder
+			\item area filing: veriff avec loris ce que j'ai ecrit puis le coder
 			\item are filling omnisicnet comme je fais en ce moment. Si ca marche pas essayer avec le graduellement
 			\item Dire que pour omnisicent je fais l'ancienne version avec planned
 			
-			\item Some heatmaps (max flow, total flow, max stretch, mean stretch, max bounded stretch, mean bounded stretch) for fcfs with a score
 			\item test constraint: test normal et test avec workload et cluster particulier comme écris plus bas dans la todo list pour voir si y a un impact
 			\item Paye Enseirb
 			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus.
 			
 			\item Check rendu rapports le 30 Aout pour les 3A
 			
-			\item Fusionner fcfs score et area ?
-			\item ajouyter backfiling
+			\item Fusionner fcfs score et area et mettre la contrainte des tailles et les temps dechargements.
+			\item ajouter backfiling a tous.
 			
 			\item pour area filling utiliser les stats et test avec cluster de 1/3 de gros nodes mais aussi vrai test plus gros ou je devrais pas voir de différences
 			\item A la place de immedialy est ce que ca finir a plus tot sur le noeud de taille x + 1 et comparer aussi avec x + 2 ... x + n.

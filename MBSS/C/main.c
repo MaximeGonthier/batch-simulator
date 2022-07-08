@@ -262,12 +262,12 @@ int main(int argc, char *argv[])
 	bool sort_by_file_size = false;
 	if ((strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0) || (strncmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_big_job_first", 19) == 0))
 	{
-		//~ #ifdef PRINT
+		#ifdef PRINT
 		printf("Sorting job list by file's size.\n");
-		//~ #endif
+		#endif
 		
-		sort_by_file_size = true;
-		sort_job_list_by_file_size(&scheduled_job_list->head);
+		//~ sort_by_file_size = true;
+		//~ sort_job_list_by_file_size(&scheduled_job_list->head);
 		
 		#ifdef PRINT
 		printf("Job list after sort byt file's size:\n");
