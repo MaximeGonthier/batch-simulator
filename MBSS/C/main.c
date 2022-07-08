@@ -266,22 +266,16 @@ int main(int argc, char *argv[])
 		printf("Sorting job list by file's size.\n");
 		#endif
 		
-		//~ sort_by_file_size = true;
-		//~ sort_job_list_by_file_size(&scheduled_job_list->head);
+		/* To sort by file size for certain schedulers. */
+		sort_by_file_size = true;
+		sort_job_list_by_file_size(&scheduled_job_list->head);
 		
 		#ifdef PRINT
 		printf("Job list after sort byt file's size:\n");
 		print_job_list(scheduled_job_list->head);
 		#endif
 	}
-	
-	//~ /* To activate backfilling. After a schedule is done. I try to start immediatly jobs without delaying the first scheduled job. */
-	//~ bool backfill = false;
-	//~ if (strcmp(scheduler, "Fcfs_easy_backfill") == 0)
-	//~ {
-		//~ backfill = true;
-	//~ }
-	
+		
 	/* Start of simulation. */
 	printf("Start simulation.\n");
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
