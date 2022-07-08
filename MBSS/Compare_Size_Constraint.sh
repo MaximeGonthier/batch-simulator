@@ -23,7 +23,7 @@ make -C C/
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-for ((i=0; i<=6; i++))
+for ((i=0; i<=8; i++))
 do
 	# Schedulers
 	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
@@ -32,7 +32,9 @@ do
 	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
 	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_area_filling"
-	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_area_filling_omniscient"
+	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_area_filling_with_ratio"
+	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_area_filling_omniscient"
+	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_area_filling_omniscient_with_ratio"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv

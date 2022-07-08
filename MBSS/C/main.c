@@ -196,11 +196,16 @@ int main(int argc, char *argv[])
 			char subbuff[23];
 			memcpy(subbuff, &input_job_file[27], 22);
 			subbuff[22] = '\0';
-			printf("subbuff is %s.\n", subbuff);
+			printf("subbuff for workload is %s.\n", subbuff);
 			strcpy(file_to_open, "inputs/Planned_area_");
 			strcat(file_to_open, subbuff);
-			strcat(file_to_open, ".txt");
+			memcpy(subbuff, &input_node_file[24], 22);
+			subbuff[22] = '\0';
+			printf("subbuff for cluster is %s.\n", subbuff);
+			strcat(file_to_open, subbuf);
+			//~ strcat(file_to_open, ".txt");
 			printf("Opening %s\n", file_to_open);
+			exit(1);
 			f = fopen(file_to_open, "r");
 			free(file_to_open);
 			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
@@ -213,14 +218,6 @@ int main(int argc, char *argv[])
 		}
 		else 
 		{
-			//~ long long (*Allocated_Area)[3] = malloc(sizeof(long long[3][3]));
-			//~ Allocated_Area = malloc(3*sizeof(long long *));
-			//~ for (i = 0; i < 3; i++)
-			//~ {
-				//~ Allocated_Area[i] = malloc(3 * sizeof(long long));
-				//~ Allocated_Area[i] = 0;
-			//~ }
-			//~ printf("%lld.\n", Allocated_Area[0][1]);
 			for (int ii = 0; ii < 3; ii++)
 			{
 				for (int iii = 0; iii < 3; iii++)
