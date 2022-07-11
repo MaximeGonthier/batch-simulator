@@ -562,6 +562,13 @@ void start_jobs(int t, struct Job* head)
 		if (j->start_time == t)
 		//~ if (j->start_time <= t)
 		{
+			
+			if (j->delay <= 0)
+			{
+				printf("Error delay is %d for job %d.\n", j->delay, j->unique_id);
+				//~ exit(EXIT_FAILURE);
+			}
+			
 			//~ printf("It needs to start.\n");
 			/* Remove from list of starting times. */
 			if (start_times->head != NULL && start_times->head->time == t)
@@ -588,7 +595,7 @@ void start_jobs(int t, struct Job* head)
 			//~ if (j->data != 0)
 			if (j->data != 0 && constraint_on_sizes != 2)
 			{
-				//~ printf("here\n");
+				//~ printf("here\n"	);
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
 			}
@@ -606,7 +613,7 @@ void start_jobs(int t, struct Job* head)
 			//~ }
 			
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
-			if (strncmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0 && j->index_node_list < j->node_used->index_node_list)
+			if ((strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0) && j->index_node_list < j->node_used->index_node_list)
 			{
 				Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
 			}
@@ -640,7 +647,7 @@ void start_jobs(int t, struct Job* head)
 			//~ }
 			
 			//~ #ifdef PRINT
-			//~ printf("For job %d: %d transfer time and %d waiting for a load time.\n", j->unique_id, transfer_time, waiting_for_a_load_time); fflush(stdout);
+			//~ printf("For job %d: %d transfer time and %d waiting for a load time. Overhead is %d\n", j->unique_id, transfer_time, waiting_for_a_load_time, overhead_of_load); fflush(stdout);
 			//~ #endif
 			
 			if (j->delay + overhead_of_load < j->walltime)
@@ -655,6 +662,11 @@ void start_jobs(int t, struct Job* head)
 			}
 			j->end_time = j->start_time + min_between_delay_and_walltime; /* Attention le j->end time est mis a jour la! */
 			
+			if (j->end_time <= j->start_time)
+			{
+				printf("Error end time job %d workload %d: %d -> %d\n min_between_delay_and_walltime is %d, walltime was %d, delay was %d\n", j->unique_id, j->workload, j->start_time, j->end_time, min_between_delay_and_walltime, j->walltime, j->delay);
+				//~ exit(EXIT_FAILURE);
+			}
 			//~ if (j->unique_id == 27673)
 			//~ {
 				//~ printf("%d %d %d %d.\n", j->end_time, j->start_time, j->subtime, min_between_delay_and_walltime);
@@ -740,7 +752,7 @@ void start_jobs(int t, struct Job* head)
 			j = j->next;
 		}
 	}
-	printf("End of start jobs.\n"); fflush(stdout);
+	//~ printf("End of start jobs.\n"); fflush(stdout);
 	//~ print_job_list(scheduled_job_list->head);
 	//~ if len(jobs_to_remove) > 0:
 		//~ scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
@@ -1203,12 +1215,12 @@ int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j
 						{
 							for (k = 0; k < j1->cores; k++)
 							{
-								printf("Testing %d == %d ?\n", n->cores[i]->unique_id, j1->cores_used[k]);
+								//~ printf("Testing %d == %d ?\n", n->cores[i]->unique_id, j1->cores_used[k]);
 								if (n->cores[i]->unique_id == j1->cores_used[k])
 								{
 									/* Need to exit. */
 									ok_on_this_node = false;
-									printf("%d == %d.\n", n->cores[i]->unique_id, j1->cores_used[k]);
+									//~ printf("%d == %d.\n", n->cores[i]->unique_id, j1->cores_used[k]);
 									need_to_break = true;
 									break;
 								}

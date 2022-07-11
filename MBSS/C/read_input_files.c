@@ -154,6 +154,13 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->unique_id = atoi(id);
 		new->subtime = atoi(subtime);
 		new->delay = atoi(delay);
+		
+		if (new->delay <= 0)
+		{
+			printf("Error delay.\n");
+			exit(EXIT_FAILURE);
+		}
+		
 		new->walltime = atoi(walltime);
 		new->cores = atoi(cores);
 		new->data = atoi(data);

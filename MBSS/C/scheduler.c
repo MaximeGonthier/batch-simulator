@@ -33,6 +33,10 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 		
 		int time_since_start = t - j->start_time_from_history;
 		j->delay -= time_since_start;
+		if(j->delay <= 0)
+		{
+			j->delay = 1;
+		}
 		j->walltime -= time_since_start;
 		
 		struct Node *choosen_node = (struct Node*) malloc(sizeof(struct Node));
@@ -611,10 +615,10 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3])
 {
 	// care use long long for area!!
-	#ifdef PRINT
+	//~ #ifdef PRINT
 	printf("Start of planned area filling.\n");
 	printf("Planned areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
-	#endif
+	//~ #endif
 		
 	int next_size = 0;
 	int i = 0;
@@ -650,8 +654,7 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 					#endif
 					
 					if (EAT == t)
-					{
-						
+					{	
 						#ifdef PRINT
 						printf("EAT == t can break.\n");
 						#endif
@@ -691,6 +694,7 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			if (next_size != j->index_node_list)
 			{
 				Planned_Area[choosen_size][j->index_node_list] -= Area_j;
+				//~ printf("--\n");
 			}
 				
 			#ifdef PRINT
@@ -718,11 +722,11 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3])
 {
 	// care use long long for area!!
-	#ifdef PRINT
+	//~ #ifdef PRINT
 	printf("Start of ratio area filling.\n");
 	printf("Ratio areas are: [%f, %f, %f] [%f, %f, %f] [%f, %f, %f]\n", Ratio_Area[0][0], Ratio_Area[0][1], Ratio_Area[0][2], Ratio_Area[1][0], Ratio_Area[1][1], Ratio_Area[1][2], Ratio_Area[2][0], Ratio_Area[2][1], Ratio_Area[2][2]);
 	printf("Allocated areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Allocated_Area[0][0], Allocated_Area[0][1], Allocated_Area[0][2], Allocated_Area[1][0], Allocated_Area[1][1], Allocated_Area[1][2], Allocated_Area[2][0], Allocated_Area[2][1], Allocated_Area[2][2]);
-	#endif
+	//~ #endif
 	
 	long long Temp_Allocated_Area[3][3];
 	int i = 0;
@@ -836,5 +840,4 @@ void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** 
 			break;
 		}
 	}
-	//~ exit(1);
 }
