@@ -92,95 +92,61 @@
 		\item pseudo code area filling with different filling of allocated area (It's: Allocated Area[choosen size][x] gets Allocated Area[choosen size][x] + Area(Ji) with Area(Ji) = cores*walltime. But I would prefer to do: cores*(delay+transfer time))
 		\item code area filling with ratio and allocated area
 		\item code easybf fcfs only
+		\item are filling omnisicnet comme je fais en ce moment. Si ca marche pas essayer avec le graduellement
+		\item dans area filling: A la place de immedialy est ce que ca finir a plus tot sur le noeud de taille x + 1 et comparer aussi avec x + 2 ... x + n.
+		\item Size onstraint: sorting by size is bad
+		\item ignore dt for constraint == 2
+		\item revoir area filling tart dans le main en fct de planned or ratio et des nouveau noms de fichiers et retester avec les 2 cluster différents.
+		\item plot with nb of upgraded jobs
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
 		\item Do I still put a data on each job ?
+		\item Utiliser attestation volontariat IPDPS pour formations ? 20h ?
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item revoir area filling tart dans le main en fct de planned or ratio et des nouveau noms de fichiers et retester avec les 2 cluster différents.
-			\item ignore dt for constraint == 2
+			\item Count nuber of smaller jobs on bigger nodes
+			\item Répondre a Bora
+			\item backfill with fcfs score where I use fcfs score for j1 and for backfill I look at the earlest finish time + a score on nb of copy and evicted time. Like classic fcfs score but only among nodes where I can start immediatly
+			\item refaire des tests size constraint
+			\item se ré inscrire sur siged
 			\item code more easy bf and test them.
-			\item are filling omnisicnet comme je fais en ce moment. Si ca marche pas essayer avec le graduellement
-			\item Dire que pour omnisicent je fais l'ancienne version avec planned
-			
-			\item test constraint: test normal et test avec workload et cluster particulier comme écris plus bas dans la todo list pour voir si y a un impact
+			\item test constraint: test normal et test avec workload et cluster particulier comme écris plus bas dans la todo list pour voir si y a un impact (pour area filling utiliser les stats et test avec cluster de 1/3 de gros nodes mais aussi vrai test plus gros ou je devrais pas voir de différences).
 			\item Paye Enseirb
+			\item Remboursements Fréjus
+			\item Remboursements Suède
 			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus.
-			
 			\item Check rendu rapports le 30 Aout pour les 3A
-			
 			\item Fusionner fcfs score et area et mettre la contrainte des tailles et les temps dechargements.
-			\item ajouter backfiling a tous.
-			
-			\item pour area filling utiliser les stats et test avec cluster de 1/3 de gros nodes mais aussi vrai test plus gros ou je devrais pas voir de différences
-			\item A la place de immedialy est ce que ca finir a plus tot sur le noeud de taille x + 1 et comparer aussi avec x + 2 ... x + n.
+			\item ajouter backfiling a tous ?
 			\item essayer avec plus de gros noeuds pour size constraint
 			\item Courbe en fixant 1 paramèrte
-			\item Rajouter un max au dénominateur du stretch pour que la durée ne sois pas moins de 3 min. div max (flow parfait, 3min)
-			\item Refaire heatmap
-			\item Voir rapport avec A
-			\item voir quantité de petits jobs
-			\item Envoyer param hMETIS a Bora
-			\item ajouter easy bf a fcfs avec un score si on le valide
-								
-			\item flow stretch courbe de points triée par walltime ou par delay au lieu de trier par job ids.
-						
-			\item tracer terminaison de ces jobs sur courbes usgae des nodes
-					
-			\item Do test with 3 new plot methods
-						
-			\item plot heat map of fcfs score with a parameter to 1 or 0 and the 2 others
-			\item Virer 3eme multiplicateur et faire heat map pour voir des stretch
-			\item prendre le stretch du flou (flow/flow cluster vide (avec transferts)) Moyenne mediane des ratio de tt les jobs ensuite.
-			\item plot garder exposant sur l axe a gauche
-			\item Enlever transferts sur courbes contraintes tailles et enlever les données d'entrées même si les algos les regardent
-			\item mettre la rose sur la 12 pour contraintes. La 13 sert pas car trop desiquilibré
-			\item plot stats ratio area et cluster
-			\item Est-ce vraiment utile ?
-			\item changer workload  avec bcp de petit aussi long que les gros pour prouver que strat taille a un effet mais pas visible ssur des workloads classiques. et quelques gros pour voir.
-			
-		
-			\item voir contraintes tailles
-			\item retester avec autres algos
-			\item profiler mon code pour voir ce qui coute du temps
-			\item Envoyer abstract ACACES avant 15 juin
-			\item Faire poster ACACES
-			\item Cours pour l'année prochaine
+			\item ajouter easy bf a fcfs avec un score						
+			\item tracer terminaison des jobs -2 sur courbes usage du cluster
+			\item Ne pas oublier que j'ai les courbes VS sur flow stretch et queue times aussi que je peux tracer						
 			\item Après avis favorable déposer dossier sur SIGED
-			\item faire des boxplots
-			\item faire option easy bf a la place de shceuler en particulier
-			\item Voir thèses de Herman
-			\item Talk to Hans Karlsson
-			\item Lire articles Emanuel Rubensson \url{https://webmail.ens-lyon.fr/?_task=mail&_caps=pdf%3D1%2Cflash%3D0%2Ctif%3D0&_uid=4630&_mbox=INBOX&_action=show}
-			\item Compare algo with different workloads. Use queue time of each job compared to a baseline. Compare queue time of each job between 2 heuristics by saying who won on each queue time.
 			\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores
-			\item Use same X scale for distributions of queue times
-			\item Use same X scale workloads stats
+			\item Use same X scale for workloads stats when I want to compare them
 			\item Use same X scale for some gantt charts when I want to compare them
-			\item TODO du code: backfill, available node list qui contient les cores available aussi
-			\item contrainte de la localié sur la taille de la données, contrainte sur les coeurs, contrainte sur les partage de données
-			\item stratégie qui essaye d'utiliser moins les gros noeud pour les garder pour les gros jobs ?
-			\item Lors d'une exec imprimer sur le terminal et dans le fichier de résultats les stats sur le workload et le cluster
-			\item Comparer algo qui reschedule tout et algo qui schedule que quand un nouveau core est disponible et ne schedule que 1 seul job a la fois par cores.
-			\item lire article bf : Utilization, Predictability, Workloads
+			\item lire article bf : Utilization, Predictability, Workloads et le mettre dans les related works: It gives information about the imporvement given by backfilling. A complex conservative (loking at job size) backfilling can be better than easy, but it still depend on the workload.
 			\item Faire plusieurs test et mettre une barre d'erreur
-			\item Afficher temps de transferts sur les Gantt charts
-			\item Rendre le code général en enlevant les 20 correspondant aux nombres de cores et en mettant une var globale initialisé lors de la lecture du cluster
+			\item Afficher temps de transferts sur les Gantt charts: Comment ?
+			\item Rendre le code général (20 pour cores par node et 3 pour nb tailles de noeuds différents)
 		\end{enumerate}
-	\subsection{Batsim}
-		\begin{enumerate}
-			\item Batsim a pas la granularité au sein d'un noeud
-			\item Gérer n nodes
-			\item Gérer n jobs
-			\item Faire un delay aussi long que la somme du poids des données manquantes
-			\item faire la maj des données du node partout, sois Dans le scheduler sois dans fit mais faut le faire!
-			\item Gérér à la main les évictions
-		\end{enumerate}
+		
+	%~ \subsection{Batsim}
+		%~ \begin{enumerate}
+			%~ \item Batsim a pas la granularité au sein d'un noeud
+			%~ \item Gérer n nodes
+			%~ \item Gérer n jobs
+			%~ \item Faire un delay aussi long que la somme du poids des données manquantes
+			%~ \item faire la maj des données du node partout, sois Dans le scheduler sois dans fit mais faut le faire!
+			%~ \item Gérér à la main les évictions
+		%~ \end{enumerate}
 
 \end{document}

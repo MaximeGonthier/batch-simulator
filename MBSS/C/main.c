@@ -146,11 +146,20 @@ int main(int argc, char *argv[])
 	bool use_bigger_nodes = true;
 	long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
+	
 	/* Getting informations for certain schedulers. */
-	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
+	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 25) == 0))
 	{
-		i = 19;
-		j = 19;
+		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
+		{
+			i = 19;
+			j = 19;
+		}
+		else
+		{
+			i = 25;
+			j = 25;
+		}
 		while (scheduler[i] != '_')
 		{
 			i += 1;
@@ -177,7 +186,6 @@ int main(int argc, char *argv[])
 		multiplier_nb_copy = atoi(to_copy3);
 		
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-		//~ exit(1);
 		free(to_copy1);
 		free(to_copy2);
 		free(to_copy3);
@@ -418,6 +426,10 @@ int main(int argc, char *argv[])
 			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 			{
 				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			}
+			else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 25) == 0)
+			{
+				fcfs_with_a_score_easybf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
 			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0))
 			{

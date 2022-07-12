@@ -141,7 +141,6 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 			//~ else
 			//~ {
 			break;
-			//~ }
 		}
 	}
 }
@@ -152,11 +151,7 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 	printf("Start fcfs easybf scheduler. Use bigger nodes: %d.\n", use_bigger_nodes);
 	#endif
 	
-	//~ int nb_running_cores = get_nb_running_cores(node_list, t);
 	int nb_running_cores = running_cores;
-	
-	//~ exit(1);
-	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 
 	printf("Nb of running cores before j1: %d.\n", nb_running_cores);
 	/* First schedule J_1. */
@@ -194,23 +189,58 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
 			#endif
 			
-			
-			//~ printf("There are %d running cores.\n", nb_running_cores);
-			
-			/* Continue backfilling. */
-			//~ if (nb_running_cores < nb_cores && backfill == true)
-			//~ {
-				//~ nb_running_cores = resume_backfilling(j, head_node, t, nb_running_cores, use_biger_nodes);
-			//~ }
-			//~ else
-			//~ {
 			break;
-			//~ }
 		}
-		//~ exit(1);
 	}
+}
+
+void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
+{
+	#ifdef PRINT
+	printf("Start fcfs with a score easybf scheduler.\n");
+	#endif
 	
-	/* TODO: enleve les trucs que j'ai ajouté pour backfill ici et dans le main. Faire fonction fcfs backfill ou juste je schedule J_1 puis j'essaye de strat immediatly tout les jobs. */
+	int nb_running_cores = running_cores;
+
+	printf("Nb of running cores before j1: %d.\n", nb_running_cores);
+	/* First schedule J_1. */
+	struct Job* j1 = head_job;
+	nb_running_cores = schedule_job_fcfs_score_return_running_cores(j1, head_node, t, nb_running_cores, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+	insert_next_time_in_sorted_list(start_times, j1->start_time);
+	
+	printf("Nb of running cores after j1: %d.\n", nb_running_cores);
+	
+	bool result = false;
+	struct Job* j = j1->next;
+
+	while (j != NULL)
+	{
+		if (nb_running_cores < nb_cores)
+		{
+			#ifdef PRINT
+			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
+			#endif
+			
+			result = false;
+			
+			nb_running_cores = try_to_start_job_immediatly_fcfs_score_without_delaying_j1(j, j1, head_node, nb_running_cores, &result, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			
+			if (result == true)
+			{
+				insert_next_time_in_sorted_list(start_times, j->start_time);
+			}
+			printf("Nb of running cores after starting (or not: %d) Job %d: %d.\n", result, j->unique_id, nb_running_cores);
+			j = j->next;
+		}
+		else
+		{
+			#ifdef PRINT
+			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
+			#endif
+			
+			break;
+		}
+	}
 }
 
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
@@ -615,10 +645,10 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3])
 {
 	// care use long long for area!!
-	//~ #ifdef PRINT
+	#ifdef PRINT
 	printf("Start of planned area filling.\n");
 	printf("Planned areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
-	//~ #endif
+	#endif
 		
 	int next_size = 0;
 	int i = 0;
@@ -722,11 +752,11 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3])
 {
 	// care use long long for area!!
-	//~ #ifdef PRINT
+	#ifdef PRINT
 	printf("Start of ratio area filling.\n");
 	printf("Ratio areas are: [%f, %f, %f] [%f, %f, %f] [%f, %f, %f]\n", Ratio_Area[0][0], Ratio_Area[0][1], Ratio_Area[0][2], Ratio_Area[1][0], Ratio_Area[1][1], Ratio_Area[1][2], Ratio_Area[2][0], Ratio_Area[2][1], Ratio_Area[2][2]);
 	printf("Allocated areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Allocated_Area[0][0], Allocated_Area[0][1], Allocated_Area[0][2], Allocated_Area[1][0], Allocated_Area[1][1], Allocated_Area[1][2], Allocated_Area[2][0], Allocated_Area[2][1], Allocated_Area[2][2]);
-	//~ #endif
+	#endif
 	
 	long long Temp_Allocated_Area[3][3];
 	int i = 0;

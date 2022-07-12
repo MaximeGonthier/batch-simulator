@@ -59,6 +59,9 @@ elif (comparaison == "Max_Stretch"):
 elif (comparaison == "Max_Stretch_With_a_Minimum"):
 	Y_index = 16
 	plot_title = "Max Bounded Stretch"
+elif (comparaison == "Nb_Upgraded_Jobs"):
+	Y_index = 17
+	plot_title = "Nb Upgraded Jobs"
 else:
 	print("Wrong comparison")
 	exit(1)

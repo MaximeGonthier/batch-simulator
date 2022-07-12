@@ -16,12 +16,12 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 echo ${WORKLOAD_TP}
 echo ${CLUSTER_TP}
-CONTRAINTES_TAILLES=1
-#~ CONTRAINTES_TAILLES=2
+#~ CONTRAINTES_TAILLES=1
+CONTRAINTES_TAILLES=2
 
 make -C C/
 
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 for ((i=0; i<=8; i++))
 do
@@ -64,6 +64,7 @@ python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Mean_Stretch ${CLUSTE
 python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Max_Stretch ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Max_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Size_Constraint_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP} 0 outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 # Moving main csv data file
 mv outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv

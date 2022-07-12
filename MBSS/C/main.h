@@ -148,6 +148,7 @@ struct To_Print {
     int waiting_for_a_load_time;
     float empty_cluster_time;
     int data_type;
+    int upgraded; /* Was it on bigger nodes ? 0 or 1 */
 };
 
 struct Interval_List {
@@ -199,6 +200,8 @@ int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j
 int get_earliest_available_time_specific_sublist_node(int nb_cores_asked, struct Node_List* head_node_size_i, struct Node** choosen_node, int t);
 int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j1, struct Node_List** head_node, int nb_running_cores, bool* result, bool use_bigger_nodes, int t);
 int schedule_job_on_earliest_available_cores_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, bool use_bigger_nodes);
+int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, struct Job* j1, struct Node_List** head_node, int nb_running_cores, bool* result, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
+int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -231,6 +234,7 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
 void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3]);
 void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
+void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []

@@ -122,6 +122,14 @@ void to_print_job_csv(struct Job* job, int time)
 		new->waiting_for_a_load_time = job->waiting_for_a_load_time;
 		new->empty_cluster_time = job->delay + (job->data_size)/0.1;
 		new->data_type = job->index_node_list;
+		if (job->node_used->index_node_list > job->index_node_list)
+		{
+			new->upgraded = 1;
+		}
+		else
+		{
+			new->upgraded = 0;
+		}
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
 	
@@ -239,11 +247,15 @@ void print_csv(struct To_Print* head_to_print)
 	float mean_flow_stretch_with_a_minimum = 0;
 	float core_time_used = 0;
 	float denominator_bounded_stretch = 0;
+	int nb_upgraded_jobs = 0;
 	
 	//~ printf("Nb of job evaluated: %d.\n", nb_job_to_evaluate);
 	
 	while (head_to_print != NULL)
 	{
+		/* Get smaller jobs on bigger nodes */
+		nb_upgraded_jobs += head_to_print->upgraded;
+		
 		//~ printf("Evaluate job %d.\n", head_to_print->job_unique_id); fflush(stdout);
 		
 		/* Flow stretch */
@@ -332,8 +344,9 @@ void print_csv(struct To_Print* head_to_print)
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
 	}
-	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum);
-	printf("%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum);
+	
+	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs);
+	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs);
 	fclose(f);
 	
 	/* For flow stretch heat map */
