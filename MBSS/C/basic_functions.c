@@ -1492,7 +1492,7 @@ int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct
 
 int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j1, struct Node_List** head_node, int nb_running_cores, bool* result, bool use_bigger_nodes, int t)
 {
-	printf("Try to start Job %d now.\n", j->unique_id);
+	//~ printf("Try to start Job %d now.\n", j->unique_id);
 	int earliest_available_time = 0;
 	int i = 0;
 	int k = 0;
@@ -1616,7 +1616,7 @@ int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j
 /* Basically it's fcfs with a score but only on nodes where you can start immediatly. */
 int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, struct Job* j1, struct Node_List** head_node, int nb_running_cores, bool* result, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
 {
-	printf("Try to start Job %d now with fcfs score.\n", j->unique_id);
+	//~ printf("Try to start job %d now with fcfs score.\n", j->unique_id);
 	int earliest_available_time = 0;
 	int i = 0;
 	int k = 0;
@@ -1633,7 +1633,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 			//~ first_node_size_to_choose_from = 0;
 			//~ last_node_size_to_choose_from = 0;
 			bool is_being_loaded = false;
-			int time_to_reload_evicted_files = 0;
+			float time_to_reload_evicted_files = 0;
 			int nb_copy_file_to_load = 0;
 	bool could_schedule = false;
 	
@@ -1720,8 +1720,10 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 				
 				if (ok_on_this_node == true)
 				{
+					//~ printf("Node %d is ok.\n", n->unique_id);
 					could_schedule = true;
-					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+					/* I already do it earlier. */
+					//~ earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
 						earliest_available_time = t;
@@ -1847,6 +1849,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 					}
 				}
 			}
+			n = n->next;
 		}
 	}
 		
@@ -1948,6 +1951,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 			*result = true;
 			return nb_running_cores;
 	}
+	//~ printf("Could not start the job.\n");
 	return nb_running_cores;
 }
 

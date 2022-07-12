@@ -152,14 +152,19 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 	#endif
 	
 	int nb_running_cores = running_cores;
-
+	
+	#ifdef PRINT
 	printf("Nb of running cores before j1: %d.\n", nb_running_cores);
+	#endif
+	
 	/* First schedule J_1. */
 	struct Job* j1 = head_job;
 	nb_running_cores = schedule_job_on_earliest_available_cores_return_running_cores(j1, head_node, t, nb_running_cores, use_bigger_nodes);
 	insert_next_time_in_sorted_list(start_times, j1->start_time);
 	
+	#ifdef PRINT
 	printf("Nb of running cores after j1: %d.\n", nb_running_cores);
+	#endif
 	
 	bool result = false;
 	struct Job* j = j1->next;
@@ -180,7 +185,11 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 			{
 				insert_next_time_in_sorted_list(start_times, j->start_time);
 			}
+			
+			#ifdef PRINT
 			printf("Nb of running cores after starting (or not: %d) Job %d: %d.\n", result, j->unique_id, nb_running_cores);
+			#endif
+			
 			j = j->next;
 		}
 		else
@@ -201,14 +210,19 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	#endif
 	
 	int nb_running_cores = running_cores;
-
+	
+	#ifdef PRINT
 	printf("Nb of running cores before j1: %d.\n", nb_running_cores);
+	#endif
+	
 	/* First schedule J_1. */
 	struct Job* j1 = head_job;
 	nb_running_cores = schedule_job_fcfs_score_return_running_cores(j1, head_node, t, nb_running_cores, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 	insert_next_time_in_sorted_list(start_times, j1->start_time);
 	
+	#ifdef PRINT
 	printf("Nb of running cores after j1: %d.\n", nb_running_cores);
+	#endif
 	
 	bool result = false;
 	struct Job* j = j1->next;
@@ -229,7 +243,9 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 			{
 				insert_next_time_in_sorted_list(start_times, j->start_time);
 			}
+			#ifdef PRINT
 			printf("Nb of running cores after starting (or not: %d) Job %d: %d.\n", result, j->unique_id, nb_running_cores);
+			#endif
 			j = j->next;
 		}
 		else
