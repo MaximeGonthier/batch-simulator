@@ -98,6 +98,7 @@
 		\item ignore dt for constraint == 2
 		\item revoir area filling tart dans le main en fct de planned or ratio et des nouveau noms de fichiers et retester avec les 2 cluster différents.
 		\item plot with nb of upgraded jobs
+		\item When I sort by file size I have worse results but only with the full cluster; With the special one it's the same
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -110,9 +111,9 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item Count nuber of smaller jobs on bigger nodes
+			\item Regarder TADaaM talk - Jannis Klinkenberg (RWTH Aachen) - Locality-Aware Scheduling in OpenMP le 19 Juillet
 			\item Répondre a Bora
-			\item backfill with fcfs score where I use fcfs score for j1 and for backfill I look at the earlest finish time + a score on nb of copy and evicted time. Like classic fcfs score but only among nodes where I can start immediatly
+			\item backfill with fcfs score where I use fcfs score for j1 and for backfill I look at the earlest finish time + a score. Like classic fcfs score but only among nodes where I can start immediatly without delaying j1.
 			\item refaire des tests size constraint
 			\item se ré inscrire sur siged
 			\item code more easy bf and test them.

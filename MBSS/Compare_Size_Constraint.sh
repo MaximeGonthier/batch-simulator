@@ -38,10 +38,7 @@ do
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
-	echo "${SCHEDULER}"
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-	echo "Results ${SCHEDULER} are:"
-	head outputs/Results_${SCHEDULER}.csv
 	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 done
 

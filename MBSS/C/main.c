@@ -58,7 +58,6 @@ int main(int argc, char *argv[])
 	
 	/* Read cluster */
 	read_cluster(input_node_file);
-	printf("Read cluster done.\n"); fflush(stdout);
 
 	#ifdef PRINT
 	print_node_list(node_list);
@@ -315,8 +314,8 @@ int main(int argc, char *argv[])
 		#endif
 		
 		/* To sort by file size for certain schedulers. */
-		sort_by_file_size = true;
-		sort_job_list_by_file_size(&scheduled_job_list->head);
+		//~ sort_by_file_size = true;
+		//~ sort_job_list_by_file_size(&scheduled_job_list->head);
 		
 		#ifdef PRINT
 		printf("Job list after sort byt file's size:\n");
