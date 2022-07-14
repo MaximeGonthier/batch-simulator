@@ -99,6 +99,24 @@
 		\item revoir area filling tart dans le main en fct de planned or ratio et des nouveau noms de fichiers et retester avec les 2 cluster différents.
 		\item plot with nb of upgraded jobs
 		\item When I sort by file size I have worse results but only with the full cluster; With the special one it's the same
+		\item plot avec backfill. Ameliore fcfs mais fcfs score est meilleur sans. La diff e transfert est grande entre fcfs score et fcfs score bf
+		\item Why are filling so bad ? Even in omniscient ? K_1 = 162
+K_2 = 162
+K_3 = 162
+K = 486
+Area_Jobs[M_1] = 27459451020
+Area_Jobs[M_2] = 7100838660
+Area_Jobs[M_3] = 7288861020
+Area_Jobset = 41849150700
+Tmax = 86109363.58024691
+Remaining_Area_3 = 6660855880.0
+area_to_use for M_3 = 6660855880.0
+Remaining_Area_2 = 13509734120.0
+area_to_use for M_2 = 13509734120.0
+Planned_Area_3 = [0, 6660855880.0, 7288861020]
+Planned_Area_2 = [13509734120.0, 439982780.0, 0]
+Planned_Area_1 = [13949716900.0, 0, 0]
+
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -111,6 +129,7 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item faire vs fcfs bf fcfs score et fcfs bf fcfs score bf et fcfs score fcfs score bf
 			\item Regarder TADaaM talk - Jannis Klinkenberg (RWTH Aachen) - Locality-Aware Scheduling in OpenMP le 19 Juillet
 			\item Répondre a Bora
 			\item backfill with fcfs score where I use fcfs score for j1 and for backfill I look at the earlest finish time + a score. Like classic fcfs score but only among nodes where I can start immediatly without delaying j1.

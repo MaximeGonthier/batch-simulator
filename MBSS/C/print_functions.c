@@ -177,7 +177,7 @@ void to_print_job_csv(struct Job* job, int time)
 	strcpy(file_to_open, "outputs/Distribution_queue_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "a");
+	FILE* f = fopen(file_to_open, "a");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -222,6 +222,17 @@ void print_csv(struct To_Print* head_to_print)
 	strcat(file_to_open, ".txt");
 	FILE* f_stretch = fopen(file_to_open, "w");
 	if (!f_stretch)
+	{
+		perror("Error opening file.\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	file_to_open = malloc(100*sizeof(char));
+	strcpy(file_to_open, "outputs/Bounded_Stretch_times_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
+	FILE* f_bounded_stretch = fopen(file_to_open, "w");
+	if (!f_bounded_stretch)
 	{
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
@@ -315,6 +326,7 @@ void print_csv(struct To_Print* head_to_print)
 		fprintf(f_queue, "%d %d %d %d %d\n", head_to_print->job_unique_id, head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		fprintf(f_flow, "%d %d %d %d %d\n", head_to_print->job_unique_id, head_to_print->job_end_time - head_to_print->job_subtime, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		fprintf(f_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
+		fprintf(f_bounded_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		#endif
 		
 		head_to_print = head_to_print->next;
@@ -324,6 +336,7 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_queue);
 	fclose(f_flow);
 	fclose(f_stretch);
+	fclose(f_bounded_stretch);
 	#endif
 		
 	/* Compute mean values */
@@ -333,12 +346,12 @@ void print_csv(struct To_Print* head_to_print)
 	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/nb_job_to_evaluate;
 	
 	/* Main file of results */
-	char* file_to_open = malloc(100*sizeof(char));
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Results_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".csv");
-	FILE* f = fopen(file_to_open, "a");
+	char* file_to_open_2 = malloc(100*sizeof(char));
+	file_to_open_2 = malloc(100*sizeof(char));
+	strcpy(file_to_open_2, "outputs/Results_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".csv");
+	FILE* f = fopen(file_to_open_2, "a");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -350,11 +363,11 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For flow stretch heat map */
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Stretch_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "w");
+	file_to_open_2 = malloc(100*sizeof(char));
+	strcpy(file_to_open_2, "outputs/Stretch_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".txt");
+	f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -364,11 +377,11 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For max flow stretch heat map */
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Max_Stretch_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "w");
+	file_to_open_2 = malloc(100*sizeof(char));
+	strcpy(file_to_open_2, "outputs/Max_Stretch_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".txt");
+	f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -378,11 +391,11 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For flow stretch with a minimum heat map */
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Stretch_with_a_minimum_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "w");
+	file_to_open_2 = malloc(100*sizeof(char));
+	strcpy(file_to_open_2, "outputs/Stretch_with_a_minimum_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".txt");
+	f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -392,11 +405,11 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For max flow stretch with a minimum heat map */
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Max_Stretch_with_a_minimum_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "w");
+	file_to_open_2 = malloc(100*sizeof(char));
+	strcpy(file_to_open_2, "outputs/Max_Stretch_with_a_minimum_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".txt");
+	f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -406,11 +419,11 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For total flow heat map */
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Total_flow_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "w");
+	file_to_open_2 = malloc(100*sizeof(char));
+	strcpy(file_to_open_2, "outputs/Total_flow_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".txt");
+	f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -420,11 +433,11 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For max flow heat map */
-	file_to_open = malloc(100*sizeof(char));
-	strcpy(file_to_open, "outputs/Max_flow_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	f = fopen(file_to_open, "w");
+	file_to_open_2 = malloc(100*sizeof(char));	
+	strcpy(file_to_open_2, "outputs/Max_flow_");
+	strcat(file_to_open_2, scheduler);
+	strcat(file_to_open_2, ".txt");
+	f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n");
@@ -433,5 +446,5 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f, "%f", max_flow);
 	fclose(f);
 	
-	free(file_to_open);
+	free(file_to_open_2);
 }

@@ -41,21 +41,34 @@ make -C C/
 #~ mv outputs/Stretch_times_${SCHEDULER_COMP}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_COMP}.txt
 #~ mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_REF}_VS_${SCHEDULER_COMP}.pdf
 
-#~ # 2. Stretch of all jobs of multiple algorithms on a same plot
-#~ SCHEDULER_1="Fcfs_with_a_score_x1_x1_x1"
-#~ echo "${SCHEDULER_1}"
-#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER_1 0 $CONTRAINTES_TAILLES
-#~ SCHEDULER_2="Fcfs_with_a_score_x2_x2_x2"
-#~ echo "${SCHEDULER_2}"
-#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER_2 0 $CONTRAINTES_TAILLES
-#~ SCHEDULER_3="Fcfs_with_a_score_x3_x3_x3"
-#~ echo "${SCHEDULER_3}"
-#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER_3 0 $CONTRAINTES_TAILLES
-#~ python3 src/plot_stretch_multiple_schedulers.py ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3}
-#~ mv outputs/Stretch_times_${SCHEDULER_1}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
-#~ mv outputs/Stretch_times_${SCHEDULER_2}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
-#~ mv outputs/Stretch_times_${SCHEDULER_3}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
-#~ mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}.pdf
+# 2. Stretch of all jobs of multiple algorithms on a same plot
+make print_distribution_queue_times -C C/
+
+SCHEDULER_1="Fcfs"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER_1 $CONTRAINTES_TAILLES
+
+SCHEDULER_2="Fcfs_easybf"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER_2 $CONTRAINTES_TAILLES
+
+SCHEDULER_3="Fcfs_with_a_score_x500_x500_x0"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER_3 $CONTRAINTES_TAILLES
+
+SCHEDULER_4="Fcfs_with_a_score_easybf_x500_x500_x0"
+./C/main $WORKLOAD $CLUSTER $SCHEDULER_4 $CONTRAINTES_TAILLES
+
+python3 src/plot_stretch_multiple_schedulers.py Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ${SCHEDULER_4}
+mv outputs/Stretch_times_${SCHEDULER_1}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
+mv outputs/Stretch_times_${SCHEDULER_2}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
+mv outputs/Stretch_times_${SCHEDULER_3}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
+mv outputs/Stretch_times_${SCHEDULER_4}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_4}.txt
+mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}_${SCHEDULER_4}.pdf
+
+python3 src/plot_stretch_multiple_schedulers.py Bounded_Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ${SCHEDULER_4}
+mv outputs/Bounded_Stretch_times_${SCHEDULER_1}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
+mv outputs/Bounded_Stretch_times_${SCHEDULER_2}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
+mv outputs/Bounded_Stretch_times_${SCHEDULER_3}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
+mv outputs/Bounded_Stretch_times_${SCHEDULER_4}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_4}.txt
+mv plot.pdf plot/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}_${SCHEDULER_4}.pdf
 
 #~ # 3. Curve with 2 fixed parameters and varying only one
 #~ truncate -s 0 outputs/stretch.txt
@@ -82,29 +95,9 @@ make -C C/
 # 4. Barplots and heatmap of stretch, stretch with minimum and total flow
 #~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-SCHEDULER="Fcfs_with_a_score_x0_x1500_x2000"
-truncate -s 0 outputs/Results_${SCHEDULER}.csv
-echo "Starting ${SCHEDULER}"
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-echo "Results ${SCHEDULER} are:"
-head outputs/Results_${SCHEDULER}.csv
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-cat outputs/Stretch_${SCHEDULER}.txt >> outputs/heatmap_stretch.txt
-cat outputs/Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_stretch_with_a_minimum.txt
-cat outputs/Total_flow_${SCHEDULER}.txt >> outputs/heatmap_total_flow.txt
-cat outputs/Max_Stretch_${SCHEDULER}.txt >> outputs/heatmap_max_stretch.txt
-cat outputs/Max_Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_max_stretch_with_a_minimum.txt
-cat outputs/Max_flow_${SCHEDULER}.txt >> outputs/heatmap_max_flow.txt
-echo "" >> outputs/heatmap_stretch.txt
-echo "" >> outputs/heatmap_stretch_with_a_minimum.txt
-echo "" >> outputs/heatmap_total_flow.txt
-echo "" >> outputs/heatmap_max_stretch.txt
-echo "" >> outputs/heatmap_max_stretch_with_a_minimum.txt
-echo "" >> outputs/heatmap_max_flow.txt
-
 # To get all combinations of multiplier couples
-for ((i=3; i<=3; i++))
-do
+#~ for ((i=3; i<=3; i++))
+#~ do
 	#~ truncate -s 0 outputs/heatmap_stretch.txt
 	#~ truncate -s 0 outputs/heatmap_max_stretch.txt
 	#~ truncate -s 0 outputs/heatmap_stretch_with_a_minimum.txt
@@ -113,118 +106,118 @@ do
 	#~ truncate -s 0 outputs/heatmap_max_flow.txt
 	
 	# Heatmap size
-	N=5
-	# N=8
+	#~ N=5
+	#~ # N=8
 	
-	if [ $((i)) == 1 ]; then
-		MULTIPLIER_1=Time_to_load_file
-		MULTIPLIER_2=Time_to_evict_file
-	elif [ $((i)) == 2 ]; then
-		MULTIPLIER_1=Time_to_load_file
-		MULTIPLIER_2=Nb_copy
-	elif [ $((i)) == 3 ]; then
-		MULTIPLIER_1=Time_to_evict_file
-		MULTIPLIER_2=Nb_copy	
-	fi
+	#~ if [ $((i)) == 1 ]; then
+		#~ MULTIPLIER_1=Time_to_load_file
+		#~ MULTIPLIER_2=Time_to_evict_file
+	#~ elif [ $((i)) == 2 ]; then
+		#~ MULTIPLIER_1=Time_to_load_file
+		#~ MULTIPLIER_2=Nb_copy
+	#~ elif [ $((i)) == 3 ]; then
+		#~ MULTIPLIER_1=Time_to_evict_file
+		#~ MULTIPLIER_2=Nb_copy	
+	#~ fi
 	
-	# 0 if not choosen
-	M1=0
-	M2=2000
-	M3=0
-	PAS=500
+	#~ # 0 if not choosen
+	#~ M1=0
+	#~ M2=2000
+	#~ M3=0
+	#~ PAS=500
 		
-	for ((j=4; j<N; j++))
-	do
-		for ((k=0; k<N; k++))
-		do
-			SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
-			truncate -s 0 outputs/Results_${SCHEDULER}.csv
-			echo "Starting ${SCHEDULER}"
-			./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-			echo "Results ${SCHEDULER} are:"
-			head outputs/Results_${SCHEDULER}.csv
-			cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-			cat outputs/Stretch_${SCHEDULER}.txt >> outputs/heatmap_stretch.txt
-			cat outputs/Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_stretch_with_a_minimum.txt
-			cat outputs/Total_flow_${SCHEDULER}.txt >> outputs/heatmap_total_flow.txt
-			cat outputs/Max_Stretch_${SCHEDULER}.txt >> outputs/heatmap_max_stretch.txt
-			cat outputs/Max_Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_max_stretch_with_a_minimum.txt
-			cat outputs/Max_flow_${SCHEDULER}.txt >> outputs/heatmap_max_flow.txt
-			echo "" >> outputs/heatmap_stretch.txt
-			echo "" >> outputs/heatmap_stretch_with_a_minimum.txt
-			echo "" >> outputs/heatmap_total_flow.txt
-			echo "" >> outputs/heatmap_max_stretch.txt
-			echo "" >> outputs/heatmap_max_stretch_with_a_minimum.txt
-			echo "" >> outputs/heatmap_max_flow.txt
+	#~ for ((j=4; j<N; j++))
+	#~ do
+		#~ for ((k=0; k<N; k++))
+		#~ do
+			#~ SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
+			#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+			#~ echo "Starting ${SCHEDULER}"
+			#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+			#~ echo "Results ${SCHEDULER} are:"
+			#~ head outputs/Results_${SCHEDULER}.csv
+			#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+			#~ cat outputs/Stretch_${SCHEDULER}.txt >> outputs/heatmap_stretch.txt
+			#~ cat outputs/Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_stretch_with_a_minimum.txt
+			#~ cat outputs/Total_flow_${SCHEDULER}.txt >> outputs/heatmap_total_flow.txt
+			#~ cat outputs/Max_Stretch_${SCHEDULER}.txt >> outputs/heatmap_max_stretch.txt
+			#~ cat outputs/Max_Stretch_with_a_minimum_${SCHEDULER}.txt >> outputs/heatmap_max_stretch_with_a_minimum.txt
+			#~ cat outputs/Max_flow_${SCHEDULER}.txt >> outputs/heatmap_max_flow.txt
+			#~ echo "" >> outputs/heatmap_stretch.txt
+			#~ echo "" >> outputs/heatmap_stretch_with_a_minimum.txt
+			#~ echo "" >> outputs/heatmap_total_flow.txt
+			#~ echo "" >> outputs/heatmap_max_stretch.txt
+			#~ echo "" >> outputs/heatmap_max_stretch_with_a_minimum.txt
+			#~ echo "" >> outputs/heatmap_max_flow.txt
 		
-			if [ ${MULTIPLIER_2} == "Time_to_load_file" ]; then
-				M1=$((M1+PAS))
-			elif [ ${MULTIPLIER_2} == "Time_to_evict_file" ]; then
-				M2=$((M2+PAS))
-			elif [ ${MULTIPLIER_2} == "Nb_copy" ]; then
-				M3=$((M3+PAS))
-			fi
-		done
-		if [ ${MULTIPLIER_1} == "Time_to_load_file" ]; then
-			M1=$((M1+PAS))
-			M2=0
-			M3=0
-		elif [ ${MULTIPLIER_1} == "Time_to_evict_file" ]; then
-			M1=0
-			M2=$((M2+PAS))
-			M3=0
-		elif [ ${MULTIPLIER_1} == "Nb_copy" ]; then
-			M1=0
-			M2=0
-			M3=$((M3+PAS))
-		fi
-	done
+			#~ if [ ${MULTIPLIER_2} == "Time_to_load_file" ]; then
+				#~ M1=$((M1+PAS))
+			#~ elif [ ${MULTIPLIER_2} == "Time_to_evict_file" ]; then
+				#~ M2=$((M2+PAS))
+			#~ elif [ ${MULTIPLIER_2} == "Nb_copy" ]; then
+				#~ M3=$((M3+PAS))
+			#~ fi
+		#~ done
+		#~ if [ ${MULTIPLIER_1} == "Time_to_load_file" ]; then
+			#~ M1=$((M1+PAS))
+			#~ M2=0
+			#~ M3=0
+		#~ elif [ ${MULTIPLIER_1} == "Time_to_evict_file" ]; then
+			#~ M1=0
+			#~ M2=$((M2+PAS))
+			#~ M3=0
+		#~ elif [ ${MULTIPLIER_1} == "Nb_copy" ]; then
+			#~ M1=0
+			#~ M2=0
+			#~ M3=$((M3+PAS))
+		#~ fi
+	#~ done
 	
-	echo "Plotting heatmap ${MULTIPLIER_1} X ${MULTIPLIER_2}"
+	#~ echo "Plotting heatmap ${MULTIPLIER_1} X ${MULTIPLIER_2}"
 	
 	#~ python3 src/plot_heatmap.py outputs/heatmap_stretch.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Mean_Flow_Stretch"
 	#~ mv plot.pdf plot/Heatmap_Stretch_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
-	mv outputs/heatmap_stretch.txt data/Heatmap_Stretch_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+	#~ mv outputs/heatmap_stretch.txt data/Heatmap_Stretch_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 	
 	#~ python3 src/plot_heatmap.py outputs/heatmap_stretch_with_a_minimum.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Mean_Bounded_Flow_Stretch"
 	#~ mv plot.pdf plot/Heatmap_Stretch_with_a_minimum_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
-	mv outputs/heatmap_stretch_with_a_minimum.txt data/Heatmap_Stretch_with_a_minimum_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+	#~ mv outputs/heatmap_stretch_with_a_minimum.txt data/Heatmap_Stretch_with_a_minimum_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 	
 	#~ python3 src/plot_heatmap.py outputs/heatmap_total_flow.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Total_Flow"
 	#~ mv plot.pdf plot/Heatmap_Total_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
-	mv outputs/heatmap_total_flow.txt data/Heatmap_Total_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+	#~ mv outputs/heatmap_total_flow.txt data/Heatmap_Total_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 	
 	#~ python3 src/plot_heatmap.py outputs/heatmap_max_stretch.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Max_Flow_Stretch"
 	#~ mv plot.pdf plot/Heatmap_Max_Stretch_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
-	mv outputs/heatmap_max_stretch.txt data/Heatmap_Max_Stretch_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+	#~ mv outputs/heatmap_max_stretch.txt data/Heatmap_Max_Stretch_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 	
 	#~ python3 src/plot_heatmap.py outputs/heatmap_max_stretch_with_a_minimum.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Max_Bounded_Flow_Stretch"
 	#~ mv plot.pdf plot/Heatmap_Max_Stretch_with_a_minimum_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
-	mv outputs/heatmap_max_stretch_with_a_minimum.txt data/Heatmap_Max_Stretch_with_a_minimum_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+	#~ mv outputs/heatmap_max_stretch_with_a_minimum.txt data/Heatmap_Max_Stretch_with_a_minimum_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 	
 	#~ python3 src/plot_heatmap.py outputs/heatmap_max_flow.txt $((N)) ${MULTIPLIER_1} ${MULTIPLIER_2} $((PAS)) "Max_Flow"
 	#~ mv plot.pdf plot/Heatmap_Max_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
-	mv outputs/heatmap_max_flow.txt data/Heatmap_Max_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
-done
+	#~ mv outputs/heatmap_max_flow.txt data/Heatmap_Max_Flow_FCFS_Score_${MULTIPLIER_1}_${MULTIPLIER_2}_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+#~ done
 
-echo "Final results are:"
-cat outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ echo "Final results are:"
+#~ cat outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-echo "Plotting final results barplots..."
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ echo "Plotting final results barplots..."
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py FCFS_Score_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-# Moving main csv data file
-mv outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ # Moving main csv data file
+#~ mv outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 # 5. Just testing manually
 # echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Nb Upgraded Jobs" > outputs/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
