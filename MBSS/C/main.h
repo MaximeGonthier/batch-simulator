@@ -28,6 +28,7 @@ extern int running_nodes;
 extern int total_queue_time;
 extern int first_subtime_day_0;
 extern char* scheduler;
+extern long long Planned_Area[3][3];
 
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
  * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of
@@ -231,7 +232,8 @@ void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** head_node, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs);
-void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
+//~ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3]);
+void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t);
 void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3]);
 void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);

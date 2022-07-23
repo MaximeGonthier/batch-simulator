@@ -22,6 +22,7 @@ struct Next_Time_List* end_times;
 struct Next_Time_List* start_times;
 int nb_job_to_evaluate_started;
 long long Allocated_Area[3][3];
+long long Planned_Area[3][3];
 
 int main(int argc, char *argv[])
 {
@@ -143,7 +144,8 @@ int main(int argc, char *argv[])
 	int multiplier_nb_copy = 0;
 	int backfill_big_node_mode = 0;
 	bool use_bigger_nodes = true;
-	long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
+	//~ long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
+	//~ (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	
 	/* Getting informations for certain schedulers. */
@@ -227,6 +229,8 @@ int main(int argc, char *argv[])
 			strcpy(file_to_open, "inputs/Planned_area_");
 			strcat(file_to_open, subbuff_workload);
 			strcat(file_to_open, subbuff_cluster);
+			
+			//~ strcat(file_to_open, "inputs/Planned_area_test-11_4nodes.txt");
 		}
 		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0)
 		{
@@ -314,8 +318,8 @@ int main(int argc, char *argv[])
 		#endif
 		
 		/* To sort by file size for certain schedulers. */
-		//~ sort_by_file_size = true;
-		//~ sort_job_list_by_file_size(&scheduled_job_list->head);
+		sort_by_file_size = true;
+		sort_job_list_by_file_size(&scheduled_job_list->head);
 		
 		#ifdef PRINT
 		printf("Job list after sort byt file's size:\n");
@@ -363,10 +367,6 @@ int main(int argc, char *argv[])
 					printf("New job %d.\n", job_pointer->unique_id);
 					#endif
 					
-					//~ if (job_pointer->unique_id == 283)
-					//~ {
-						//~ printf("New job %d at t = %d. Delay is %d\n", job_pointer->unique_id, t, job_pointer->delay);
-					//~ }
 					//~ if (job_pointer->subtime > t)
 					//~ {
 						//~ printf("Error job %d subtime %d available at time %d.\n", job_pointer->unique_id, job_pointer->subtime, t);
@@ -448,7 +448,8 @@ int main(int argc, char *argv[])
 			}
 			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
 			{
-				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
+				//~ fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t, Planned_Area);
+				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t);
 			}
 			else
 			{

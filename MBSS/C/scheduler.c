@@ -658,16 +658,29 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 	}
 }
 	
-void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3])
+//~ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3])
+void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t)
 {
 	// care use long long for area!!
 	#ifdef PRINT
 	printf("Start of planned area filling.\n");
 	printf("Planned areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
 	#endif
+	
+	long long Temp_Planned_Area[3][3];
+	int i = 0;
+	int k = 0;
+	
+	for (i = 0; i < 3; i++)
+	{
+		for (k = 0; k < 3; k++)
+		{
+			Temp_Planned_Area[i][k] = Planned_Area[i][k];
+		}
+	}
+
 		
 	int next_size = 0;
-	int i = 0;
 	long long Area_j;
 	int EAT = 0;
 	int min_time = -1;
@@ -691,7 +704,7 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			/* Get EAT on each node size. */
 			for (next_size = j->index_node_list; next_size < 3; next_size++)
 			{
-				if (next_size == j->index_node_list || Planned_Area[next_size][j->index_node_list] - Area_j >= 0)
+				if (next_size == j->index_node_list || Temp_Planned_Area[next_size][j->index_node_list] - Area_j >= 0)
 				{
 					EAT = get_earliest_available_time_specific_sublist_node(j->cores, head_node[next_size], &choosen_node, t);
 					
@@ -700,7 +713,7 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 					#endif
 					
 					if (EAT == t)
-					{	
+					{
 						#ifdef PRINT
 						printf("EAT == t can break.\n");
 						#endif
@@ -739,8 +752,8 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			/* Reduced corresponding Planned_Area */
 			if (next_size != j->index_node_list)
 			{
-				Planned_Area[choosen_size][j->index_node_list] -= Area_j;
-				//~ printf("--\n");
+				/* TODO do temp ... and real in start jobs ... */
+				Temp_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
 			}
 				
 			#ifdef PRINT

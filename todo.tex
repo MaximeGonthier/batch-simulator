@@ -100,46 +100,35 @@
 		\item plot with nb of upgraded jobs
 		\item When I sort by file size I have worse results but only with the full cluster; With the special one it's the same
 		\item plot avec backfill. Ameliore fcfs mais fcfs score est meilleur sans. La diff e transfert est grande entre fcfs score et fcfs score bf
-		\item Why are filling so bad ? Even in omniscient ? K_1 = 162
-K_2 = 162
-K_3 = 162
-K = 486
-Area_Jobs[M_1] = 27459451020
-Area_Jobs[M_2] = 7100838660
-Area_Jobs[M_3] = 7288861020
-Area_Jobset = 41849150700
-Tmax = 86109363.58024691
-Remaining_Area_3 = 6660855880.0
-area_to_use for M_3 = 6660855880.0
-Remaining_Area_2 = 13509734120.0
-area_to_use for M_2 = 13509734120.0
-Planned_Area_3 = [0, 6660855880.0, 7288861020]
-Planned_Area_2 = [13509734120.0, 439982780.0, 0]
-Planned_Area_1 = [13949716900.0, 0, 0]
-
+		\item Why are filling so bad ? Even in omniscient ? I corrected a bit but it's still worse. Also there is a difference between true allocated area and the one I compute in the schedule (because the scheduele change and I only update allocated area when a job start. Else I have a temp one just for the current schedule).
+		\item Try in area filling to reduce allocated area by the diff between walltime and real delay if the job finished before it's walltime
+		\item Comment one paper of vincenc
+		\item Mail au gars de data locality sur numa: Jannis Klinkenberg
+		\item dossier inscription administrative
+		\item attestation sur siged de acaces et IPDPS
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 
 	\begin{enumerate}
 		\item Do I still put a data on each job ?
-		\item Utiliser attestation volontariat IPDPS pour formations ? 20h ?
+		\item Utiliser attestation volontariat IPDPS pour formations ? 20h ? Pareil pour ACACES.
+		\item Dois-je annuler ma demande de cumul ?
 	\end{enumerate}
 
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item transmettre dossier siged  et payer une fois tous les avis saisies (5/6 ou 6/6)
+			\item paye 3 missions + enseirb
+			\item mail mathieu calendrier: attendre réponse
 			\item faire vs fcfs bf fcfs score et fcfs bf fcfs score bf et fcfs score fcfs score bf
-			\item Regarder TADaaM talk - Jannis Klinkenberg (RWTH Aachen) - Locality-Aware Scheduling in OpenMP le 19 Juillet
 			\item Répondre a Bora
 			\item backfill with fcfs score where I use fcfs score for j1 and for backfill I look at the earlest finish time + a score. Like classic fcfs score but only among nodes where I can start immediatly without delaying j1.
 			\item refaire des tests size constraint
 			\item se ré inscrire sur siged
 			\item code more easy bf and test them.
 			\item test constraint: test normal et test avec workload et cluster particulier comme écris plus bas dans la todo list pour voir si y a un impact (pour area filling utiliser les stats et test avec cluster de 1/3 de gros nodes mais aussi vrai test plus gros ou je devrais pas voir de différences).
-			\item Paye Enseirb
-			\item Remboursements Fréjus
-			\item Remboursements Suède
 			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus.
 			\item Check rendu rapports le 30 Aout pour les 3A
 			\item Fusionner fcfs score et area et mettre la contrainte des tailles et les temps dechargements.
@@ -149,7 +138,6 @@ Planned_Area_1 = [13949716900.0, 0, 0]
 			\item ajouter easy bf a fcfs avec un score						
 			\item tracer terminaison des jobs -2 sur courbes usage du cluster
 			\item Ne pas oublier que j'ai les courbes VS sur flow stretch et queue times aussi que je peux tracer						
-			\item Après avis favorable déposer dossier sur SIGED
 			\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores
 			\item Use same X scale for workloads stats when I want to compare them
 			\item Use same X scale for some gantt charts when I want to compare them
