@@ -884,6 +884,10 @@ If I look into the past I get: Planned Area (3) : [ 0, 0, infinite ]
 
 \section{Meeting ??/??/22}
 
+\subsection{Finding parameters for FCFS with a score}
+
+No constraint on node sizes.
+
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Mean Flow Stretch}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Heatmap_Max_Stretch_FCFS_Score_Time_to_load_file_Time_to_evict_file_2022-01-24->2022-01-24_450_128_32_256_4_1024.pdf}\caption{Max Flow Stretch}\end{subfigure}
@@ -912,9 +916,37 @@ If I look into the past I get: Planned Area (3) : [ 0, 0, infinite ]
 \caption{Time to evict a file X Number of copy of a file - July 8}\end{figure}
 
 \begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-01-24->2022-01-24_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer and waiting for a load time}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-01-24->2022-01-24_Makespan_450_128_32_256_4_1024.pdf}\caption{Makespan}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-01-24->2022-01-24_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer and waiting for a load time}\label{1}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-01-24->2022-01-24_Makespan_450_128_32_256_4_1024.pdf}\caption{Makespan}\label{2}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-01-24->2022-01-24_Core_time_used_450_128_32_256_4_1024.pdf}\caption{Core time used}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/FCFS_Score_2022-01-24->2022-01-24_Maximum_queue_time_450_128_32_256_4_1024.pdf}\caption{Max queue time}\label{0}\end{subfigure}
 \caption{Comparing multiplier for FCFS with a score - July 8}\end{figure}
+
+\paragraph {Conclusion on finding parameters for FCFS with a score}
+\begin{itemize}
+	\item The nb of copy parameters gives us worse performances. As we can see on figure \ref{1} and \ref{2}, it reduces
+	the amount of data transfers because it does not want to create ne copy but at the expense of the makespan. Which means that 
+	you have very bad load balance.
+	\item The best parameters for time to load a file and time to evict a file are 500 500 for the mean bounded and un-bounded stretch as well as for the max bounded stretch and total flow. For the max flow, we can see that it's better to put at 0 the time to load file. In this situation you are not constrained when choosing a node by the common data and you can thus have a better load balance and thus avoid waiting for a good node in term of locality which give fewer risk of having a very long flow on a job.
+\end{itemize}
+
+\subsection{Trying EASY-backfilling}
+
+No constraint on node sizes.
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer and waiting for a load time}\label{3}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{Mean bounded stretch}\label{4}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Maximum_queue_time_450_128_32_256_4_1024.pdf}\caption{Maximum queue time}\label{5}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\label{6}\end{subfigure}
+\caption{Comparing algorithms with EASY-backfill - Sometime in July}\end{figure}
+
+\paragraph {Conclusion on trying EASY-backfilling}
+\begin{itemize}
+	\item From figure \ref{4} and \ref{6}, we can see that fcfs benefit from EASY-backfilling.
+	\item From figure \ref{4} and \ref{6}, we can see that fcfs with a score does not benefit from EASY-backfilling. It can be explained by the greater amount of transfers that we can see on figure \ref{3}. My conclusion on this was first to 
+	try with conservative backfilling. But with this you still loose data locality because any backfilling will replace the node's memory. So my goal will simply be here to try without backfilling at all and consider that the gain on transfer time is too important to be put as a secondary objective.
+	\item From figure \ref{5}, we can see that fcfs with a score suffer from a significantly higher max queue time that the other algorithms. We can already see it on figure \ref{0}. Indeed, waiting for a better node for locality will increase waiting time for a few jobs. Now the question is, does this happen on a large amount of jobs ? Maybe I should plot the number of jobs where the queue time is superior to 25000 for example ? If it's only a few jobs we can consider that it's not important ?
+\end{itemize}
 
 \end{document}
