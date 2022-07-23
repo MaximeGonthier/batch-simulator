@@ -986,15 +986,22 @@ Data transfers ignored.
 
 Data transfers and constraint on node sizes. Still, no corelation between node size and job length. Should I add one ?
 
-\paragraph{Idea for fcfs with a score backfill big nodes} 
-The intuition is to use fcfs with a score. But If on a node of my size ($x$), the earliest available time is larger than t (or the mean queue time of previous jobs in mode 1), then I look at the score of nodes of size $x+1$. When I compute the score on bigger nodes I add a malus which is a multiplier times the area of the jobs (core used $\times$ walltime) compared to the total size. If I find a node where I can start at time t or (or the mean queue time of previous jobs in mode 1), I take the one with the best score. Else I go a size above.
+\paragraph{Idea for fcfs with a score backfill big nodes or with area filling} 
+The intuition is to use fcfs with a score. But If on a node of my size ($x$), the earliest available time is larger than t (or the mean queue time of previous jobs minus the time already waited by current job in mode 1), then I look at the score of nodes of size $x+1$.
 
-We could also do that with the intuition of area filling: look from previous workload the allocated area available on bigger sizes and then compute a malus based on the amount of area I will occupy in this space. The issue is that with a clasic cluster, no area are allowed for smaller jobs.
+We could also do that with the intuition of area filling: look from previous workload the allocated area available on bigger sizes and then compute a malus based on the amount of area I will occupy in this space. However, the allocated area is quite small with a normal cluster for smaller jobs.
 
-The rundown is:
-\begin{itemize}
-	\item 
-	\item 
-	\item 
-\end{itemize}
+If I want to schedule of job using a file of size $x$
+\begin{enumerate}
+	\item Compute score on nodes of size $x$. If the earliest available time is $> t$ (or t + mean queue time minus the time already waited by current job depending on the mode) do 2. Else compute on the node with the best score.
+	\item Compute score on nodes of size $x + 1$. If the earliest available time is $> t$ (or ...) do 3. Else if the best score of nodes of size $x + 1$ is also better than the best on node of size $x$, then compute on the node with the best score of size $x+1$.
+	\item ...
+	\item Else compute on node of size $x$ with the best score.
+\end{enumerate}
+
+I could also do something inspired by area filling.
+From previous workloads get the possible allocated area
+\begin{enumerate}
+	\item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Allocated\_Area(x+1)}$.
+\end{enumerate}
 \end{document}
