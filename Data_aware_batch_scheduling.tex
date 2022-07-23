@@ -946,7 +946,44 @@ No constraint on node sizes.
 	\item From figure \ref{4} and \ref{6}, we can see that fcfs benefit from EASY-backfilling.
 	\item From figure \ref{4} and \ref{6}, we can see that fcfs with a score does not benefit from EASY-backfilling. It can be explained by the greater amount of transfers that we can see on figure \ref{3}. My conclusion on this was first to 
 	try with conservative backfilling. But with this you still loose data locality because any backfilling will replace the node's memory. So my goal will simply be here to try without backfilling at all and consider that the gain on transfer time is too important to be put as a secondary objective.
-	\item From figure \ref{5}, we can see that fcfs with a score suffer from a significantly higher max queue time that the other algorithms. We can already see it on figure \ref{0}. Indeed, waiting for a better node for locality will increase waiting time for a few jobs. Now the question is, does this happen on a large amount of jobs ? Maybe I should plot the number of jobs where the queue time is superior to 25000 for example ? If it's only a few jobs we can consider that it's not important ?
+	\item From figure \ref{5}, we can see that fcfs with a score suffer from a significantly higher max queue time that the other algorithms. We can already see it on figure \ref{0}. Indeed, waiting for a better node for locality will increase waiting time for a few jobs. Now the question is, does this happen on a large amount of jobs ? Maybe I should plot the number of jobs where the queue time is superior to 25000 for example ? If it's only a few jobs we can consider that it's not important ? So I did that and for this experiments got 51/11973 (0.4\%) evaluated jobs above a 25000s queue time.
+	\item For later experiments I will use fcfs with easybf to compare myslef because it performs better.
 \end{itemize}
 
+\subsection{Studying nodes' size constraint}
+
+Data transfers ignored.
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{Number of "upgraded" jobs}\label{14}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{Mean bounded stretch}\label{7}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Maximum_queue_time_450_128_32_256_4_1024.pdf}\caption{Maximum queue time}\label{8}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\label{9}\end{subfigure}
+\caption{Size constraint but no transfers - Normal cluster - Sometime in July}\label{13}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_162_128_162_256_162_1024.pdf}\caption{Number of "upgraded" jobs}\label{15}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_162_128_162_256_162_1024.pdf}\caption{Mean bounded stretch}\label{10}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Maximum_queue_time_162_128_162_256_162_1024.pdf}\caption{Maximum queue time}\label{11}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Total_flow_162_128_162_256_162_1024.pdf}\caption{Total flow}\label{12}\end{subfigure}
+\caption{Size constraint but no transfers - 1/3 128 nodes, 1/3 256 nodes, 1/3 1024 nodes cluster - Sometime in July}\label{16}\end{figure}
+
+\paragraph {Conclusion on studying nodes' size constraint}
+\begin{itemize}
+	\item With a normal cluster: \begin{itemize}
+		\item From figure \ref{13} we can see that with a normal cluster (4/32/450), 5\% of jobs needing 1024 nodes, 10\% of jobs needing 256 nodes or higher and 85\% jobs needing 128 or higher nodes, we are in a situation where it is impossible to schedule using bigger nodes as we can see on figure \ref{14}. We can also note that sorting jobs by file size is detrimental to performance. By the time all 128 nodes are used, some jobs are already on the bigger nodes, and the queue on these nodes is much more occupied with these proportions, so no benefit can be obtained here.
+	\end{itemize}
+	\item With a 1/3 1/3 1/3 cluster: \begin{itemize}
+		\item From figure \ref{16}, we can see that it can makes sense here to sort jobs by file size.
+		\item Back fill big nodes algorithms are the one geting the best performances, by a very thin margin.
+		\item The area filling strategies with a ratio are getting worse performances than the same algorithms without a ratio (so with the full space already available at t=0). However this is still a small jobset, maybe on much larger time period it could perform better. Area filling can suffer without ratio because we don't know in advance the number of jobs. Here area filling was using data from January 18 for January 24. But if I want to schedule for X days instead of 1, I have to know it in advance, so I need to compute area filling for a large amount of different number of days which is not practical.
+		\item The good results of backfill big nodes makes me think that I could do a fcfs with a score with a penalty if you want to schedule on a bigger nodes on the same principle. If scheduling on a node of my size can be done before the current mean queue time I do it, else I allow to do it on a bigger node but with a small malus on the score.
+	\end{itemize}
+	\item For later experiments I will use fcfs with easybf and fcfs no use bigger nodes with easybf to compare myslef.
+\end{itemize}
+
+\subsection{Merging the 2 constraints}
+
+Data transfers and constraint on node sizes. Still, no corelation between node size and job length. Should I add one ?
 \end{document}
+
