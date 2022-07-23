@@ -149,18 +149,24 @@ int main(int argc, char *argv[])
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	
 	/* Getting informations for certain schedulers. */
-	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0))
+	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0))
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
 			i = 19;
 			j = 19;
 		}
-		else
+		else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0)
 		{
 			i = 26;
 			j = 26;
 		}
+		else
+		{
+			i = 40;
+			j = 40;
+		}
+		
 		while (scheduler[i] != '_')
 		{
 			i += 1;
@@ -191,7 +197,8 @@ int main(int argc, char *argv[])
 		free(to_copy2);
 		free(to_copy3);
 	}
-	else if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
+	
+	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
 		FILE *f = NULL;
 		char s1[30];
@@ -295,13 +302,23 @@ int main(int argc, char *argv[])
 		}
 		fclose(f);
 	}
-	else if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
+	
+	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_", 37) == 0)
 	{
 		/* 0 = don't compute anything, 1 = compute mean queue time */
-		backfill_big_node_mode = scheduler[24] - '0';
-		printf("backfill big nodes mode is %d.\n", backfill_big_node_mode);
+		if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
+		{
+			backfill_big_node_mode = scheduler[24] - '0';
+		}
+		else
+		{
+			backfill_big_node_mode = scheduler[37] - '0';
+			//~ backfill_big_node_mode = scheduler[38];
+		}
+		printf("Backfill big nodes mode is %d.\n", backfill_big_node_mode);
 	}
-	else if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0)
+	
+	if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0 || strcmp(scheduler, "Fcfs_no_use_bigger_nodes_easybf") == 0)
 	{
 		use_bigger_nodes = false;
 	}
@@ -430,11 +447,16 @@ int main(int argc, char *argv[])
 			{
 				fcfs_with_a_score_easybf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
+			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0)
+			{
+				fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, backfill_big_node_mode, total_queue_time, finished_jobs);
+				exit(1);
+			}
 			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0))
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}
-			else if (strcmp(scheduler, "Fcfs_easybf") == 0)
+			else if (strcmp(scheduler, "Fcfs_easybf") == 0 || strcmp(scheduler, "Fcfs_no_use_bigger_nodes_easybf") == 0)
 			{
 				fcfs_easybf_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}

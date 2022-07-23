@@ -22,7 +22,7 @@ CONTRAINTES_TAILLES=0
 
 make -C C/
 
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs" > outputs/Results_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time" > outputs/Results_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 for ((i=1; i<=4; i++))
 do

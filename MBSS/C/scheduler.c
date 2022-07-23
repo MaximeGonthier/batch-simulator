@@ -900,3 +900,8 @@ void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** 
 		}
 	}
 }
+
+void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int backfill_big_node_mode, int total_queue_time, int finished_jobs)
+{
+	
+}
