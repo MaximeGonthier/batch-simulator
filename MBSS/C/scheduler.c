@@ -933,9 +933,9 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
-	#ifdef PRINT
-	print_data_intervals(head_node, t);
-	#endif
+	//~ #ifdef PRINT
+	//~ print_data_intervals(head_node, t);
+	//~ #endif
 	
 	#ifdef PRINT_SCORES_DATA
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
@@ -1131,12 +1131,18 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 								else if (min_score > score)
 								{
 									/* New for this fcfs */
-									if (i == first_node_size_to_choose_from || min_time <= threshold_for_a_start)
+									if (i == first_node_size_to_choose_from || earliest_available_time <= threshold_for_a_start)
 									{
 										min_time = earliest_available_time;
 										min_score = score;
 										j->node_used = n;
 										choosen_time_to_load_file = time_to_load_file;
+									}
+									else
+									{
+										#ifdef PRINT
+										printf("Not current size and threshold > (%d>%d)\n", threshold_for_a_start, earliest_available_time);
+										#endif
 									}
 								}
 							}
@@ -1197,9 +1203,9 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 			
 			if (found == false)
 			{
-				#ifdef PRINT
-				printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
-				#endif
+				//~ #ifdef PRINT
+				//~ printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
+				//~ #endif
 				
 				/* Create a class Data for this node. */
 				struct Data* new = (struct Data*) malloc(sizeof(struct Data));
@@ -1218,10 +1224,10 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 				insert_tail_data_list(j->node_used->data, new);
 			}			
 			
-			#ifdef PRINT
-			printf("After add interval are:\n"); fflush(stdout);
-			print_data_intervals(head_node, t);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("After add interval are:\n"); fflush(stdout);
+			//~ print_data_intervals(head_node, t);
+			//~ #endif
 			
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(j->node_used);
@@ -1436,7 +1442,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 							{
 								/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
 								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
-								{									
+								{								
 									/* --- Reduced complexity nb of copy --- */
 									if (time_or_data_already_checked == -1)
 									{
