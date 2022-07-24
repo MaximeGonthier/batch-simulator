@@ -1002,6 +1002,6 @@ If I want to schedule of job using a file of size $x$
 I could also do something inspired by area filling.
 From previous workloads get the possible allocated area
 \begin{enumerate}
-	\item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Allocated\_Area(x+1)}$.
+	\item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area(x+1)}$. In this case I can choose not to update $Planned\_Area(x+1)$ after the job is started on this node size because I just use it for the score. Or should I still update it ?
 \end{enumerate}
 \end{document}

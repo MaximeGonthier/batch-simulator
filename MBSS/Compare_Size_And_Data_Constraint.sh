@@ -29,10 +29,11 @@ do
 	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes_easybf"
 	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs"
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_easybf"
-	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0"
-	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x500_x0"
-	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_0_x500_x500_x0"
-	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_1_x500_x500_x0"
+	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
+	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x500_x0_x0"
+	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_0_x500_x500_x0_x0"
+	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_1_x500_x500_x0_x0"
+	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_area_filling_x500_x500_x0_x1"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv

@@ -930,7 +930,7 @@ void start_jobs(int t, struct Job* head)
 				//~ #endif
 			}
 			
-			//~ # For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain time ?
+			/* For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain some time ? */
 			total_queue_time += j->start_time - j->subtime;
 			
 			transfer_time = 0;
@@ -959,7 +959,7 @@ void start_jobs(int t, struct Job* head)
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list)
 			{
-				if ((strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0) || (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0))
+				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
 				{
 					Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
 				}
@@ -967,7 +967,6 @@ void start_jobs(int t, struct Job* head)
 				{
 					Planned_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*j->walltime;
 				}
-				//~ printf("- areas.\n");
 			}
 			
 			//~ if (j->unique_id <= 1382)
@@ -1152,7 +1151,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			/* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
 			{
-				if ((strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0) || (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0))
+				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
 				{
 					Allocated_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*(j->walltime - (j->end_time - j->start_time));
 				}
@@ -1160,7 +1159,6 @@ void end_jobs(struct Job* job_list_head, int t)
 				{
 					Planned_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*(j->walltime - (j->end_time - j->start_time));
 				}
-				//~ printf("+ areas.\n");
 			}
 
 				
