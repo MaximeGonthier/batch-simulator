@@ -906,13 +906,13 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 	/* Unique to this function for fcfs with a score */
 	int mean_queue_time = 0;
 	int threshold_for_a_start = 0;	
-	if (nb_finished_jobs == 0)
+	if (finished_jobs == 0)
 	{
 		mean_queue_time = 0;
 	}
 	else
 	{
-		mean_queue_time = total_queue_time/nb_finished_jobs;
+		mean_queue_time = total_queue_time/finished_jobs;
 	}
 	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
@@ -1001,6 +1001,30 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 			if (multiplier_nb_copy != 0)
 			{
 				time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
+			}
+			
+			/* Unique for this fcfs with a score as well. */
+			/* Before incrementing the size of a node that I can look at I want to see if I need to. */
+			threshold_for_a_start = 0;				
+			if (backfill_big_node_mode == 0)
+			{
+				threshold_for_a_start = t;
+			}
+			else if (backfill_big_node_mode == 1)
+			{
+				if (mean_queue_time - (t - j->subtime) > 0)
+				{
+					threshold_for_a_start = t + mean_queue_time - (t - j->subtime);
+				}
+				else
+				{
+					threshold_for_a_start = t;
+				}
+			}
+			else
+			{
+				perror("Error on backfill_big_node_mode, must be 0 or 1 in fcfs with a score.\n");
+				exit(EXIT_FAILURE);
 			}
 
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
@@ -1096,7 +1120,7 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 								#ifdef PRINT		
 								printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
-													
+								
 								/* 2.6. Get minimum score/ */
 								if (min_score == -1)
 								{
@@ -1107,10 +1131,14 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 								}
 								else if (min_score > score)
 								{
-									min_time = earliest_available_time;
-									min_score = score;
-									j->node_used = n;
-									choosen_time_to_load_file = time_to_load_file;
+									/* New for this fcfs */
+									if (i == first_node_size_to_choose_from || min_time <= threshold_for_a_start)
+									{
+										min_time = earliest_available_time;
+										min_score = score;
+										j->node_used = n;
+										choosen_time_to_load_file = time_to_load_file;
+									}
 								}
 							}
 						}
@@ -1123,50 +1151,19 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 					n = n->next;
 				}
 				
-				/* Unique for this fcfs with a score as well. */
-				/* Before incrementing the size of a node that I can look at I want to see if I need to. */
-				threshold_for_a_start = 0;				
-				if (backfill_big_node_mode == 0)
+				/* New for this fcfs to reduce complexity. */
+				if (min_time <= threshold_for_a_start && i == first_node_size_to_choose_from) /* Perfect right size! I can break. */
 				{
-					threshold_for_a_start = t;
+					#ifdef PRINT
+					printf("Could schedule on node of my size!\n");
+					#endif
+					break; /* Break the for on nodes sizes. */
 				}
-				else if (backfill_big_node_mode == 1)
-				{
-					if (mean_queue_time - (t - j->subtime) > 0)
-					{
-						threshold_for_a_start = t + mean_queue_time - (t - j->subtime);
-					}
-					else
-					{
-						threshold_for_a_start = t;
-					}
-				}
-				else
-				{
-					perror("Error on backfill_big_node_mode, must be 0 or 1 in fcfs with a score.\n");
-					exit(EXIT_FAILURE);
-				}
-				if (min_time <= threshold_for_a_start) /* Ok I can start immediatly, schedule job and return true. */
-				{
-					if (i == first_size_to_choose_from) /* Perfect right size! */
-					{
-						#ifdef PRINT
-						printf("Could schedule on node of my size!\n");
-						#endif
-						break; /* Break the for on nodes sizes. */
-					}
-					else /* Else need to check if the score is better */
-					{
-						
-					}
-				}
-				/* Else I just continue the loop and try to find a better node. */
-				Attention il faut comparer les scores si je trouve mieux en x+1. Aussi pur reduire la complexité vaut mieux tt de 
-				suite choisir un noeud de la taille ok pour pas avoir a le refaire apres. a par défaut ca se fais normalement
+				/* Else I just continue the loop and try to find a better node size. If I don't find anything better I normally chose a node from the size x. Happens naturally normally cause I start with min_time == -1 at size x. */
 			}
 			
 			j->transfer_time = choosen_time_to_load_file;
-					
+			
 			/* Get start time and update available times of the cores. */
 			j->start_time = min_time;
 			j->end_time = min_time + j->walltime;
