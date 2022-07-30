@@ -935,7 +935,7 @@ No constraint on node sizes.
 No constraint on node sizes.
 
 \begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer and waiting for a load time}\label{3}\end{subfigure}
+%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer and waiting for a load time}\label{3}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{Mean bounded stretch}\label{4}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Maximum_queue_time_450_128_32_256_4_1024.pdf}\caption{Maximum queue time}\label{5}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Backfill_2022-01-24->2022-01-24_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\label{6}\end{subfigure}
@@ -1004,4 +1004,19 @@ From previous workloads get the possible allocated area
 \begin{enumerate}
 	\item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area(x+1)}$. In this case I can choose not to update $Planned\_Area(x+1)$ after the job is started on this node size because I just use it for the score. Or should I still update it ?
 \end{enumerate}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{Number of "upgraded" jobs}\label{17}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{Mean bounded stretch}\label{18}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Maximum_queue_time_450_128_32_256_4_1024.pdf}\caption{Maximum queue time}\label{19}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\label{20}\end{subfigure}
+\caption{Size constraint and data transfers - normal cluster - Sometime in July}\label{21}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_162_128_162_256_162_1024.pdf}\caption{Number of "upgraded" jobs}\label{22}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_162_128_162_256_162_1024.pdf}\caption{Mean bounded stretch}\label{23}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Maximum_queue_time_162_128_162_256_162_1024.pdf}\caption{Maximum queue time}\label{24}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Total_flow_162_128_162_256_162_1024.pdf}\caption{Total flow}\label{25}\end{subfigure}
+\caption{Size constraint and data transfers - 1/3 128 nodes, 1/3 256 nodes, 1/3 1024 nodes cluster - Sometime in July}\label{26}\end{figure}
+
 \end{document}
