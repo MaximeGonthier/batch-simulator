@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	
 	/* Getting informations for certain schedulers. */
-	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 27) == 0))
+	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0))
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -166,6 +166,11 @@ int main(int argc, char *argv[])
 		{
 			i = 32;
 			j = 32;
+		}
+		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
+		{
+			i = 43;
+			j = 43;
 		}
 		else
 		{
@@ -213,7 +218,7 @@ int main(int argc, char *argv[])
 		free(to_copy3);
 	}
 	
-	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 27) == 0)
+	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 	{
 		FILE *f = NULL;
 		char s1[30];
@@ -230,7 +235,7 @@ int main(int argc, char *argv[])
 		//~ subbuff_cluster[29] = '\0';
 		printf("subbuff_cluster is %s.\n", subbuff_cluster);
 		
-		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 27) == 0)
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0)
 		{
 			strcpy(file_to_open, "inputs/Planned_area_2022-01-18->2022-01-18_");
 			strcat(file_to_open, subbuff_cluster);
@@ -240,19 +245,17 @@ int main(int argc, char *argv[])
 			strcpy(file_to_open, "inputs/Ratio_area_2022-01-18->2022-01-18_");
 			strcat(file_to_open, subbuff_cluster);
 		}
-		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0)
+		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 		{
 			/* Getting workload */
 			char subbuff_workload[23];
 			memcpy(subbuff_workload, &input_job_file[27], 22);
 			subbuff_workload[22] = '_';
-			printf("subbuff_workload is %s.\n", subbuff_workload);
+			printf("subbuff_workload is %s in omniscient.\n", subbuff_workload);
 			
 			strcpy(file_to_open, "inputs/Planned_area_");
 			strcat(file_to_open, subbuff_workload);
 			strcat(file_to_open, subbuff_cluster);
-			
-			//~ strcat(file_to_open, "inputs/Planned_area_test-11_4nodes.txt");
 		}
 		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
 		{
@@ -281,7 +284,7 @@ int main(int argc, char *argv[])
 		}
 		free(file_to_open);
 		
-		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 27) == 0)
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 		{
 			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 			{
@@ -345,9 +348,7 @@ int main(int argc, char *argv[])
 	if (
 	(strcmp(scheduler, "Fcfs_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_0_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0))
 	{
-		//~ #ifdef PRINT
 		printf("Sorting job list by file's size.\n");
-		//~ #endif
 		
 		/* To sort by file size for certain schedulers. */
 		sort_by_file_size = true;
@@ -466,7 +467,7 @@ int main(int argc, char *argv[])
 			{
 				fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, backfill_big_node_mode, total_queue_time, finished_jobs);
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 27) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 			{
 				fcfs_with_a_score_area_filling_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes);
 			}

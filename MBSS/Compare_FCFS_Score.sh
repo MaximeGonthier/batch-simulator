@@ -15,7 +15,7 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 echo "Workload:" ${WORKLOAD_TP}
 echo "Cluster:" ${CLUSTER_TP}
-CONTRAINTES_TAILLES=$3
+CONTRAINTES_TAILLES=$3 # 1 if you want both constraints
 echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 
 make -C C/
@@ -73,7 +73,7 @@ make -C C/
 
 # 3. Curve with 2 fixed parameters and varying only one
 truncate -s 0 outputs/stretch.txt
-PAS=500
+PAS=5000
 for ((i=0; i<5; i++))
 do
 	M1=500

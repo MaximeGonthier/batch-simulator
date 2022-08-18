@@ -979,8 +979,14 @@ Data transfers ignored.
 		\item The area filling strategies with a ratio are getting worse performances than the same algorithms without a ratio (so with the full space already available at t=0). However this is still a small jobset, maybe on much larger time period it could perform better. Area filling can suffer without ratio because we don't know in advance the number of jobs. Here area filling was using data from January 18 for January 24. But if I want to schedule for X days instead of 1, I have to know it in advance, so I need to compute area filling for a large amount of different number of days which is not practical.
 		\item The good results of backfill big nodes makes me think that I could do a fcfs with a score with a penalty if you want to schedule on a bigger nodes on the same principle. If scheduling on a node of my size can be done before the current mean queue time I do it, else I allow to do it on a bigger node but with a small malus on the score.
 	\end{itemize}
-	\item For later experiments I will use fcfs with easybf and fcfs no use bigger nodes with easybf to compare myslef.
+	\item For later experiments I will use fcfs with easybf and fcfs no use bigger nodes with easybf to compare myself.
+	\item I tested with a larger working set (3 days) and the resukts are worse for fcfs with area filling (see below Figure~\ref{29}) because the number of upgraded jobs si lower.
 \end{itemize}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-26_Nb_Upgraded_Jobs_162_128_162_256_162_1024.pdf}\caption{Number of "upgraded" jobs}\label{27}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-26_Mean_Stretch_With_a_Minimum_162_128_162_256_162_1024.pdf}\caption{Mean bounded stretch}\label{28}\end{subfigure}
+\caption{Size constraint but no transfers - 1/3 128 nodes, 1/3 256 nodes, 1/3 1024 nodes cluster - Sometime in July - 3 consecutive days evaluated}\label{29}\end{figure}
 
 \subsection{Merging the 2 constraints}
 
@@ -1018,5 +1024,19 @@ From previous workloads get the possible allocated area
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Maximum_queue_time_162_128_162_256_162_1024.pdf}\caption{Maximum queue time}\label{24}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Total_flow_162_128_162_256_162_1024.pdf}\caption{Total flow}\label{25}\end{subfigure}
 \caption{Size constraint and data transfers - 1/3 128 nodes, 1/3 256 nodes, 1/3 1024 nodes cluster - Sometime in July}\label{26}\end{figure}
+
+\paragraph {Conclusion on merging two constraints}
+\begin{itemize}
+	\item With a normal cluster: \begin{itemize}
+		\item I have not been able to upgrade jobs apart from backfilling. even with bigger multiplier on planned area for fcfs with a score
+		\item Fcfs with a score and easy bf perform better but the total flow is not better. 
+	\end{itemize}
+	\item With a 1/3 1/3 1/3 cluster: \begin{itemize}
+		\item With a special cluster, all the strategies can upgrade jobs.
+		\item This time, easy backfilling is the best for the mean stretch and the total flow. 
+	\end{itemize}
+	\item Note that the strategy used by fcfs easy bf and fcfs with a score to use bigger nodes is very aggressive and do not favor big jobs on big nodes.
+	\item Need to test with bigger workloads
+\end{itemize}
 
 \end{document}

@@ -47,7 +47,6 @@ START=${FILE_START:21}
 END=${FILE_END:21}
 OUTPUT="inputs/workloads/raw/"$START"->"$END
 echo "Output will be" $OUTPUT
-#~ exit
 truncate -s 0 $OUTPUT
 for ((i=1; i<=$#; i++))
 do
@@ -61,7 +60,6 @@ do
 	# Day 1
 	if [ $((i)) == $((start)) ]
 	then
-		#~ echo "ger"
 		head -1 ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
 	fi
 	if [ $((i)) == $((end)) ]

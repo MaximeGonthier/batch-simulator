@@ -22,18 +22,37 @@ make -C C/
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time" > outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-for ((i=1; i<=9; i++))
+#~ for ((i=1; i<=9; i++))
+#~ do
+	#~ # Schedulers
+	#~ if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
+	#~ elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes_easybf"
+	#~ elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs"
+	#~ elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_easybf"
+	#~ elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_0_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_1_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_area_filling_x500_x500_x0_x1000"
+	#~ fi
+	
+	#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+	#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+	#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ done
+
+for ((i=1; i<=4; i++))
 do
 	# Schedulers
-	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
-	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes_easybf"
-	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs"
-	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_easybf"
-	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
-	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x500_x0_x0"
-	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_0_x500_x500_x0_x0"
-	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_1_x500_x500_x0_x0"
-	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_area_filling_x500_x500_x0_x1000"
+	#~ if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
+	#~ elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes_easybf"
+	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_easybf"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_0_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_1_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_area_filling_x500_x500_x0_x1000"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
