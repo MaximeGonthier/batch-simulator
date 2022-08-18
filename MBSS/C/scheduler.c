@@ -1312,6 +1312,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	float area_ratio_used = 0;
+	//~ long long area_ratio_used = 0;
 	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
@@ -1388,134 +1389,141 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
-				struct Node* n = head_node[i]->head;
-				while (n != NULL)
-				{	
-					#ifdef PRINT
-					printf("On node %d?\n", n->unique_id); fflush(stdout);
-					#endif
-					
-					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
-					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
-					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
-					{
-						earliest_available_time = t;
-					}
-					
-					#ifdef PRINT
-					printf("A: EAT is: %d.\n", earliest_available_time); fflush(stdout);
-					#endif
-					
-					if (min_score == -1 || earliest_available_time < min_score)
-					{
-						/* 2.2. B = Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
-						if (j->data == 0)
+				if (Planned_Area[i][j->index_node_list] > 0 || i == first_node_size_to_choose_from)
+				{
+					struct Node* n = head_node[i]->head;
+					while (n != NULL)
+					{	
+						#ifdef PRINT
+						printf("On node %d?\n", n->unique_id); fflush(stdout);
+						#endif
+						
+						/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
+						earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+						if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 						{
-							time_to_load_file = 0;
-						}
-						else
-						{
-							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded); /* Use the intervals in each data to get this info. */
+							earliest_available_time = t;
 						}
 						
 						#ifdef PRINT
-						printf("B: Time to load file: %d. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						printf("A: EAT is: %d.\n", earliest_available_time); fflush(stdout);
 						#endif
-											
-						if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
+						
+						if (min_score == -1 || earliest_available_time < min_score)
 						{
-							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
-							if (multiplier_file_evicted == 0)
+							/* 2.2. B = Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
+							if (j->data == 0)
 							{
-								time_to_reload_evicted_files = 0;
+								time_to_load_file = 0;
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded); /* Use the intervals in each data to get this info. */
 							}
 							
 							#ifdef PRINT
-							printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);
+							printf("B: Time to load file: %d. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 							#endif
-							
-							if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files < min_score)
+												
+							if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
 							{
-								/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
-								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
-								{								
-									/* --- Reduced complexity nb of copy --- */
-									if (time_or_data_already_checked == -1)
-									{
-										#ifdef PRINT
-										printf("Need to compute nb of copy it was never done.\n");
-										#endif
-										nb_copy_file_to_load = get_nb_valid_copy_of_a_file(t, head_node, j->data);
-										create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, j->data, nb_copy_file_to_load);
-										time_or_data_already_checked = nb_copy_file_to_load;
-										#ifdef PRINT
-										printf("Compute nb of copy done, it's %d.\n", nb_copy_file_to_load);
-										#endif
-									}
-									else
-									{
-										nb_copy_file_to_load = time_or_data_already_checked;
-										#ifdef PRINT
-										printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, t, nb_copy_file_to_load);
-										#endif
-									}
+								/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
+								if (multiplier_file_evicted == 0)
+								{
+									time_to_reload_evicted_files = 0;
 								}
 								else
 								{
-									nb_copy_file_to_load = 0;
+									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
 								}
 								
 								#ifdef PRINT
-								printf("Nb of copy for data %d at time %d on node %d is %d.\n", j->data, earliest_available_time, n->unique_id, nb_copy_file_to_load); fflush(stdout);
+								printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);
 								#endif
 								
-								if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy < min_score)
+								if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files < min_score)
 								{
-									if (i != first_node_size_to_choose_from && multiplier_area_bigger_nodes != 0)
-									{
-										area_ratio_used = (j->cores*j->walltime)/Planned_Area[i][j->index_node_list];
+									/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
+									if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
+									{								
+										/* --- Reduced complexity nb of copy --- */
+										if (time_or_data_already_checked == -1)
+										{
+											#ifdef PRINT
+											printf("Need to compute nb of copy it was never done.\n");
+											#endif
+											nb_copy_file_to_load = get_nb_valid_copy_of_a_file(t, head_node, j->data);
+											create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, j->data, nb_copy_file_to_load);
+											time_or_data_already_checked = nb_copy_file_to_load;
+											#ifdef PRINT
+											printf("Compute nb of copy done, it's %d.\n", nb_copy_file_to_load);
+											#endif
+										}
+										else
+										{
+											nb_copy_file_to_load = time_or_data_already_checked;
+											#ifdef PRINT
+											printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, t, nb_copy_file_to_load);
+											#endif
+										}
 									}
 									else
 									{
-										area_ratio_used = 0;
+										nb_copy_file_to_load = 0;
 									}
-								
-									/* Compute node's score. */
-									score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy + multiplier_area_bigger_nodes*area_ratio_used;
 									
-									#ifdef PRINT		
-									printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f + NCP %d + AREA %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout);
+									#ifdef PRINT
+									printf("Nb of copy for data %d at time %d on node %d is %d.\n", j->data, earliest_available_time, n->unique_id, nb_copy_file_to_load); fflush(stdout);
 									#endif
-														
-									/* 2.6. Get minimum score/ */
-									if (min_score == -1)
+									
+									if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy < min_score)
 									{
-										min_time = earliest_available_time;
-										min_score = score;
-										j->node_used = n;
-										choosen_time_to_load_file = time_to_load_file;
-									}
-									else if (min_score > score)
-									{
-										min_time = earliest_available_time;
-										min_score = score;
-										j->node_used = n;
-										choosen_time_to_load_file = time_to_load_file;
+										if (i != first_node_size_to_choose_from && multiplier_area_bigger_nodes != 0)
+										{
+											#ifdef PRINT
+											printf("area_ratio_used = (%d*%d)/%lld.\n", j->cores, j->walltime, Planned_Area[i][j->index_node_list]); fflush(stdout);
+											#endif
+											
+											area_ratio_used = (j->cores*j->walltime)/Planned_Area[i][j->index_node_list];
+										}
+										else
+										{
+											area_ratio_used = 0;
+										}
+									
+										/* Compute node's score. */
+										score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy + multiplier_area_bigger_nodes*area_ratio_used;
+										
+										#ifdef PRINT
+										printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f + NCP %d + AREA %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout);
+										#endif
+															
+										/* 2.6. Get minimum score/ */
+										if (min_score == -1)
+										{
+											min_time = earliest_available_time;
+											min_score = score;
+											j->node_used = n;
+											choosen_time_to_load_file = time_to_load_file;
+										}
+										else if (min_score > score)
+										{
+											min_time = earliest_available_time;
+											min_score = score;
+											j->node_used = n;
+											choosen_time_to_load_file = time_to_load_file;
+										}
 									}
 								}
 							}
 						}
+						
+						#ifdef PRINT_SCORES_DATA
+						fprintf(f_fcfs_score, "Node: %d EAT: %d C: %f CxX: %f Score: %f\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
+						#endif
+						
+						n = n->next;
 					}
-					
-					#ifdef PRINT_SCORES_DATA
-					fprintf(f_fcfs_score, "Node: %d EAT: %d C: %f CxX: %f Score: %f\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
-					#endif
-					
-					n = n->next;
 				}
 			}
 			

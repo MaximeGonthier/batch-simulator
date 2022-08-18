@@ -42,54 +42,56 @@ make -C C/
 #~ mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_REF}_VS_${SCHEDULER_COMP}.pdf
 
 # 2. Stretch of all jobs of multiple algorithms on a same plot
-make print_distribution_queue_times -C C/
+#~ make print_distribution_queue_times -C C/
 
-SCHEDULER_1="Fcfs"
-./C/main $WORKLOAD $CLUSTER $SCHEDULER_1 $CONTRAINTES_TAILLES
+#~ SCHEDULER_1="Fcfs"
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER_1 $CONTRAINTES_TAILLES
 
-SCHEDULER_2="Fcfs_easybf"
-./C/main $WORKLOAD $CLUSTER $SCHEDULER_2 $CONTRAINTES_TAILLES
+#~ SCHEDULER_2="Fcfs_easybf"
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER_2 $CONTRAINTES_TAILLES
 
-SCHEDULER_3="Fcfs_with_a_score_x500_x500_x0"
-./C/main $WORKLOAD $CLUSTER $SCHEDULER_3 $CONTRAINTES_TAILLES
+#~ SCHEDULER_3="Fcfs_with_a_score_x500_x500_x0"
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER_3 $CONTRAINTES_TAILLES
 
-SCHEDULER_4="Fcfs_with_a_score_easybf_x500_x500_x0"
-./C/main $WORKLOAD $CLUSTER $SCHEDULER_4 $CONTRAINTES_TAILLES
+#~ SCHEDULER_4="Fcfs_with_a_score_easybf_x500_x500_x0"
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER_4 $CONTRAINTES_TAILLES
 
-python3 src/plot_stretch_multiple_schedulers.py Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ${SCHEDULER_4}
-mv outputs/Stretch_times_${SCHEDULER_1}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
-mv outputs/Stretch_times_${SCHEDULER_2}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
-mv outputs/Stretch_times_${SCHEDULER_3}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
-mv outputs/Stretch_times_${SCHEDULER_4}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_4}.txt
-mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}_${SCHEDULER_4}.pdf
+#~ python3 src/plot_stretch_multiple_schedulers.py Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ${SCHEDULER_4}
+#~ mv outputs/Stretch_times_${SCHEDULER_1}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
+#~ mv outputs/Stretch_times_${SCHEDULER_2}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
+#~ mv outputs/Stretch_times_${SCHEDULER_3}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
+#~ mv outputs/Stretch_times_${SCHEDULER_4}.txt data/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_4}.txt
+#~ mv plot.pdf plot/Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}_${SCHEDULER_4}.pdf
 
-python3 src/plot_stretch_multiple_schedulers.py Bounded_Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ${SCHEDULER_4}
-mv outputs/Bounded_Stretch_times_${SCHEDULER_1}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
-mv outputs/Bounded_Stretch_times_${SCHEDULER_2}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
-mv outputs/Bounded_Stretch_times_${SCHEDULER_3}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
-mv outputs/Bounded_Stretch_times_${SCHEDULER_4}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_4}.txt
-mv plot.pdf plot/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}_${SCHEDULER_4}.pdf
+#~ python3 src/plot_stretch_multiple_schedulers.py Bounded_Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ${SCHEDULER_4}
+#~ mv outputs/Bounded_Stretch_times_${SCHEDULER_1}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}.txt
+#~ mv outputs/Bounded_Stretch_times_${SCHEDULER_2}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_2}.txt
+#~ mv outputs/Bounded_Stretch_times_${SCHEDULER_3}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_3}.txt
+#~ mv outputs/Bounded_Stretch_times_${SCHEDULER_4}.txt data/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_4}.txt
+#~ mv plot.pdf plot/Bounded_Stretch_times_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER_1}_${SCHEDULER_2}_${SCHEDULER_3}_${SCHEDULER_4}.pdf
 
-#~ # 3. Curve with 2 fixed parameters and varying only one
-#~ truncate -s 0 outputs/stretch.txt
-#~ PAS=5000
-#~ for ((i=0; i<5; i++))
-#~ do
-	#~ M1=$((i*PAS))
-	#~ M2=0
-	#~ M3=0
-	#~ SCHEDULER="Fcfs_with_a_score_x${M1}_x${M2}_x${M3}"
-	#~ echo "Starting ${SCHEDULER}"
-	#~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 $CONTRAINTES_TAILLES
-	#~ cat outputs/Stretch_${SCHEDULER}.txt >> outputs/stretch.txt
-	#~ echo "" >> outputs/stretch.txt
-#~ done
 
-#~ MULTIPLIER=Time_to_load_file
+# 3. Curve with 2 fixed parameters and varying only one
+truncate -s 0 outputs/stretch.txt
+PAS=500
+for ((i=0; i<5; i++))
+do
+	M1=500
+	M2=500
+	M3=0
+	M4=$((i*PAS))
+	SCHEDULER="Fcfs_with_a_score_area_filling_x${M1}_x${M2}_x${M3}_x${M4}"
+	echo "Starting ${SCHEDULER}"
+	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+	cat outputs/Stretch_${SCHEDULER}.txt >> outputs/stretch.txt
+	echo "" >> outputs/stretch.txt
+done
 
-#~ python3 src/plot_curve.py outputs/stretch.txt ${PAS} ${MULTIPLIER}
-#~ mv outputs/stretch.txt data/Mean_stretch_${WORKLOAD_TP}_${CLUSTER_TP}_Time_to_evict.txt
-#~ mv plot.pdf plot/Mean_stretch_${WORKLOAD_TP}_${CLUSTER_TP}_Time_to_evict.pdf
+MULTIPLIER=Area_filling
+
+python3 src/plot_curve.py outputs/stretch.txt ${PAS} ${MULTIPLIER}
+mv outputs/stretch.txt data/Mean_stretch_${WORKLOAD_TP}_${CLUSTER_TP}_${MULTIPLIER}.txt
+mv plot.pdf plot/Mean_stretch_${WORKLOAD_TP}_${CLUSTER_TP}_${MULTIPLIER}.pdf
 
 
 # 4. Barplots and heatmap of stretch, stretch with minimum and total flow
