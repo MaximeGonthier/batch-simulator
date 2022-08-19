@@ -311,13 +311,11 @@ void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0)
 		{
 			first_day_1 = true;
 			first_subtime_day_1 = j->subtime - first_subtime_day_0;
-			//~ first_subtime_day_1 = j->subtime;
 		}
 		else if (j->workload == 2 && first_day_2 == false)
 		{
 			first_day_2 = true;
 			first_subtime_day_2 = j->subtime - first_subtime_day_0;
-			//~ first_subtime_day_2 = j->subtime;
 		}
 		j = j->next;
 	}

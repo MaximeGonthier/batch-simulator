@@ -980,7 +980,7 @@ Data transfers ignored.
 		\item The good results of backfill big nodes makes me think that I could do a fcfs with a score with a penalty if you want to schedule on a bigger nodes on the same principle. If scheduling on a node of my size can be done before the current mean queue time I do it, else I allow to do it on a bigger node but with a small malus on the score.
 	\end{itemize}
 	\item For later experiments I will use fcfs with easybf and fcfs no use bigger nodes with easybf to compare myself.
-	\item I tested with a larger working set (3 days) and the resukts are worse for fcfs with area filling (see below Figure~\ref{29}) because the number of upgraded jobs si lower.
+	\item I tested with a larger working set (3 days) and the results are worse for fcfs with area filling (see below Figure~\ref{29}) because the number of upgraded jobs si lower.
 \end{itemize}
 
 \begin{figure}[H]\centering
@@ -1028,7 +1028,7 @@ From previous workloads get the possible allocated area
 \paragraph {Conclusion on merging two constraints}
 \begin{itemize}
 	\item With a normal cluster: \begin{itemize}
-		\item I have not been able to upgrade jobs apart from backfilling. even with bigger multiplier on planned area for fcfs with a score
+		\item I have not been able to upgrade jobs apart from backfilling. Even with bigger multiplier on planned area for fcfs with a score area filling. I tried also with omniscient and get the same results.
 		\item Fcfs with a score and easy bf perform better but the total flow is not better. 
 	\end{itemize}
 	\item With a 1/3 1/3 1/3 cluster: \begin{itemize}

@@ -81,6 +81,11 @@ int main(int argc, char *argv[])
 	//~ #endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
+	FILE* f_results_job_by_job = fopen("outputs/Results_for_cluster_usage.txt", "w");
+	fclose(f_results_job_by_job);
+	#endif
+	
+	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
 	#endif
 
@@ -121,6 +126,7 @@ int main(int argc, char *argv[])
 	}
 	fclose(f_fcfs_score);
 	#endif
+
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	char* title = malloc(100*sizeof(char));
@@ -134,7 +140,7 @@ int main(int argc, char *argv[])
         exit(EXIT_FAILURE);
 	}
 	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
-	free(title)
+	free(title);
 	#endif
 	
 	int i = 0;
