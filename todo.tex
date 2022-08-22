@@ -128,6 +128,7 @@
 		\item Faire plusieurs test et mettre une barre d'erreur (ce qui varie c'est la taille des fichiers d'entrées lors de la génération du workload). For this I did Generate\_workload\_from\_rackham\_for\_variance.sh to generate different workloads (10 is enough or I go up to 30 ? Might take a while if I do 30 times the same test. Or maybe just once to show the varaince is small ?) and then I try them all and show the variance.
 		\item Use same X scale for workloads stats when I want to compare them
 		\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores: It is just fcfs with a score x1 x0 x0 x0
+		\item test Fcfswithascoreareafillingomniscientx qui varie: pas de meilleurs résultats
 	 \end{enumerate}
 	
 \section{Todo}
@@ -145,7 +146,6 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item test Fcfswithascoreareafillingomniscientx qui varie
 			\item test autres workloads pour les 2 contraintes
 			\item voir pk ca crash avec bcp de jobs
 			\item mettre a jour planned area pour fcfs score area filling quand j'upgrade des jobs ?
