@@ -15,6 +15,7 @@ struct Node_List** node_list;
 struct To_Print_List* jobs_to_print_list;
 int running_cores;
 int running_nodes;
+int running_nodes_workload_minus_2;
 int total_queue_time;
 int first_subtime_day_0;
 char* scheduler;
@@ -31,6 +32,7 @@ int main(int argc, char *argv[])
 	total_number_jobs = 0;
 	running_cores = 0;
 	running_nodes = 0;
+	running_nodes_workload_minus_2 = 0;
 	//~ nb_job_to_evaluate_finished = 0;
 	nb_job_to_evaluate_started = 0;
 	total_queue_time = 0;
@@ -80,10 +82,10 @@ int main(int argc, char *argv[])
 	//~ print_job_list(job_list->head);
 	//~ #endif
 	
-	#ifdef PRINT_CLUSTER_USAGE
-	FILE* f_results_job_by_job = fopen("outputs/Results_for_cluster_usage.txt", "w");
-	fclose(f_results_job_by_job);
-	#endif
+	//~ #ifdef PRINT_CLUSTER_USAGE
+	//~ FILE* f_results_job_by_job = fopen("outputs/Results_for_cluster_usage.txt", "w");
+	//~ fclose(f_results_job_by_job);
+	//~ #endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
@@ -139,7 +141,7 @@ int main(int argc, char *argv[])
 		perror("fopen in main");
         exit(EXIT_FAILURE);
 	}
-	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs\n");
+	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs,Used nodes workload -2\n");
 	free(title);
 	#endif
 	
@@ -528,7 +530,7 @@ int main(int argc, char *argv[])
 		//~ }
 		
 		#ifdef PRINT_CLUSTER_USAGE
-		fprintf(f_stats, "%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head));
+		fprintf(f_stats, "%d,%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head), running_nodes_workload_minus_2);
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)

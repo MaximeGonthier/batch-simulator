@@ -72,6 +72,8 @@ make -C C/
 
 
 # 3. Curve with 2 fixed parameters and varying only one
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time" > outputs/Results_FCFS_Score_Move_1_Parameter_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+
 truncate -s 0 outputs/stretch.txt
 PAS=5000
 for ((i=0; i<5; i++))
@@ -82,9 +84,11 @@ do
 	M4=$((i*PAS))
 	SCHEDULER="Fcfs_with_a_score_area_filling_x${M1}_x${M2}_x${M3}_x${M4}"
 	echo "Starting ${SCHEDULER}"
+	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
 	cat outputs/Stretch_${SCHEDULER}.txt >> outputs/stretch.txt
 	echo "" >> outputs/stretch.txt
+	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Move_1_Parameter_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 done
 
 MULTIPLIER=Area_filling

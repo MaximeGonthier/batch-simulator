@@ -1051,6 +1051,11 @@ void start_jobs(int t, struct Job* head)
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes += 1;
+				
+				if (j->workload == -2)
+				{
+					running_nodes_workload_minus_2 += 1;
+				}
 			}
 			j->node_used->n_available_cores -= j->cores;
 			if (j->node_used->n_available_cores < 0)
@@ -1182,6 +1187,11 @@ void end_jobs(struct Job* job_list_head, int t)
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes -= 1;
+				
+				if (j->workload == -2)
+				{
+					running_nodes_workload_minus_2 -= 1;
+				}
 			}
 			if (j->node_used->n_available_cores > 20)
 			{

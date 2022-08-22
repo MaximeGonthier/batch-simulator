@@ -25,6 +25,7 @@ extern struct Node_List** node_list;
 extern struct To_Print_List* jobs_to_print_list;
 extern int running_cores;
 extern int running_nodes;
+extern int running_nodes_workload_minus_2;
 extern int total_queue_time;
 extern int first_subtime_day_0;
 extern char* scheduler;

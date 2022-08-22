@@ -71,6 +71,11 @@ plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Sub
 plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
 
 plt.plot(Y)
+
+if (comparaison == "Used_nodes"):
+	Y2 = list(df.iloc[:, 3])
+	plt.plot(Y2)
+
 plt.title(plot_title)
 plt.xlabel("Time in seconds")
 plt.ylabel(Y_label)

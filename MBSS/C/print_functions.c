@@ -133,20 +133,20 @@ void to_print_job_csv(struct Job* job, int time)
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
 	
-	#ifdef PRINT_CLUSTER_USAGE
-	int start_time = 0;
-	if (job->workload == -2)
-	{
-		start_time = job->start_time_from_history;
-	}
-	else
-	{
-		start_time = job->start_time;
-	}
-	FILE* f_results_job_by_job = fopen("outputs/Results_for_cluster_usage.txt", "a");
-	fprintf(f_results_job_by_job, "Node: %d | Cores: %d | Start: %d | End: %d | Workload: %d\n", job->node_used->unique_id, job->cores, start_time, job->end_time, job->workload);
-	fclose(f_results_job_by_job);
-	#endif
+	//~ #ifdef PRINT_CLUSTER_USAGE
+	//~ int start_time = 0;
+	//~ if (job->workload == -2)
+	//~ {
+		//~ start_time = job->start_time_from_history;
+	//~ }
+	//~ else
+	//~ {
+		//~ start_time = job->start_time;
+	//~ }
+	//~ FILE* f_results_job_by_job = fopen("outputs/Results_for_cluster_usage.txt", "a");
+	//~ fprintf(f_results_job_by_job, "Node: %d | Cores: %d | Start: %d | End: %d | Workload: %d\n", job->node_used->unique_id, job->cores, start_time, job->end_time, job->workload);
+	//~ fclose(f_results_job_by_job);
+	//~ #endif
 	
 	#ifdef PRINT_GANTT_CHART
 	//~ printf("la\n"); fflush(stdout);
