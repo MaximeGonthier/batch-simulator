@@ -29,6 +29,7 @@ PROBABILITY_OF_USING_256GB = int(sys.argv[2]) # 0-100
 PROBABILITY_OF_USING_1TB = int(sys.argv[3]) # 0-100
 DATA_ON_ALL_JOBS = int(sys.argv[4]) # 0 or 1
 VERSION = int(sys.argv[5]) # 1 or 2
+VARIANCE = int(sys.argv[6])
     
 # Get start of first and last job times that will be considered in terms of submission times
 f_start_end = open("outputs/start_end_date_evaluated_jobs.txt", "r")
@@ -92,7 +93,10 @@ min_subtime = workload[0].subtime
 # ~ print("There are", id_count - 1, "jobs and", id_count - nb_ignored_jobs*2, "will be evaluated")
 
 # Getting data. 0 means no data
-f_output = open("inputs/workloads/converted/" + FILENAME, "w")
+if (VARIANCE != 0):
+	f_output = open("inputs/workloads/converted/" + FILENAME + "_V" + str(VARIANCE), "w")
+else:
+	f_output = open("inputs/workloads/converted/" + FILENAME, "w")
 
 if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 	workload[0].data = 1

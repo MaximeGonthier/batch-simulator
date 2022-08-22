@@ -97,9 +97,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 	#ifdef PRINT
 	printf("Start fcfs scheduler. Use bigger nodes: %d.\n", use_bigger_nodes);
 	#endif
-	
-	//~ int nb_running_cores = 0;
-	
+		
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 
 	struct Job* j = head_job;
@@ -111,14 +109,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
-			//~ if (backfill == false)
-			//~ {
 			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
-			//~ }
-			//~ else
-			//~ {
-				//~ nb_non_available_cores = schedule_job_on_earliest_available_cores_backfill(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
-			//~ }
 			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			
@@ -130,16 +121,6 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
-			
-			//~ printf("There are %d running cores.\n", nb_running_cores);
-			
-			/* Continue backfilling. */
-			//~ if (nb_running_cores < nb_cores && backfill == true)
-			//~ {
-				//~ nb_running_cores = resume_backfilling(j, head_node, t, nb_running_cores, use_biger_nodes);
-			//~ }
-			//~ else
-			//~ {
 			break;
 		}
 	}
@@ -1445,7 +1426,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 								{
 									/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
 									if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
-									{								
+									{
 										/* --- Reduced complexity nb of copy --- */
 										if (time_or_data_already_checked == -1)
 										{
@@ -1484,7 +1465,8 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 											printf("area_ratio_used = (%d*%d)/%lld.\n", j->cores, j->walltime, Planned_Area[i][j->index_node_list]); fflush(stdout);
 											#endif
 											
-											area_ratio_used = (j->cores*j->walltime)/Planned_Area[i][j->index_node_list];
+											area_ratio_used = (float)(j->cores*j->walltime)/Planned_Area[i][j->index_node_list];
+											//~ printf("%f\n", area_ratio_used);
 										}
 										else
 										{
@@ -1495,7 +1477,9 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 										score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy + multiplier_area_bigger_nodes*area_ratio_used;
 										
 										#ifdef PRINT
-										printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f + NCP %d + AREA %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout);
+										//~ if (area_ratio_used != 0) {
+										printf("Score for job %d is %d (EAT: %d + TL: %d + TRL: %f + NCP: %d + AREA: %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout); 
+										//~ }
 										#endif
 															
 										/* 2.6. Get minimum score/ */

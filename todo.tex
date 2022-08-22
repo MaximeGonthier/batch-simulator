@@ -108,18 +108,28 @@
 		\item plot the number of jobs where the queue time is superior to 25000 for example
 		\item tirer quelques conclusions dans le document principal
 		\item plot 2 contraintes ensembles
-		\item test Fcfs_with_a_score_area_filling_omniscient_x (fais et ca upgrade pas plus)
-		\item code pour tracer terminaison des jobs -2 sur courbes usage du cluster
+		\item code pour tracer terminaison des jobs -2 sur courbes usage du cluster: mais toujours pas full. Je devrais prendre bcp plus loin dans le futur ?
+		\item tester en faisant varier le multiplicateur de fcfs score area filling: je n'observe pas d'améliorations
+		\item Afficher temps de transferts sur les Gantt charts
 	\end{enumerate}
 	
 \section{Questions for next meeting}
-
 	\begin{enumerate}
+		\item On a eu 2 reviews sur fgcs
 		\item Do I still put a data on each job ?
 		\item Utiliser attestation volontariat IPDPS pour formations ? 20h ? Pareil pour ACACES avec 20h de cours ?
 		\item Still, no corelation between node size and job length. Should I add one ?
 	\end{enumerate}
+	
 
+\section{Informations for the article}
+	\begin{enumerate}
+		\item Use same X scale for some gantt charts when I want to compare them: to do that add a job of duration 0 at the maxtime of the heuristic you are showing
+		\item Faire plusieurs test et mettre une barre d'erreur (ce qui varie c'est la taille des fichiers d'entrées lors de la génération du workload). For this I did Generate\_workload\_from\_rackham\_for\_variance.sh to generate different workloads (10 is enough or I go up to 30 ? Might take a while if I do 30 times the same test. Or maybe just once to show the varaince is small ?) and then I try them all and show the variance.
+		\item Use same X scale for workloads stats when I want to compare them
+		\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores: It is just fcfs with a score x1 x0 x0 x0
+	 \end{enumerate}
+	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
@@ -130,22 +140,17 @@
 			\item mail calendrier mes autres cours enseirbs: attendre réponse
 			\item Répondre a Bora
 			\item transmettre dossier siged  et payer une fois tous les avis saisies (5/6 ou 6/6)
-			
-			\item test autres workloads pour les 2 contraintes
-			\item tester en faisant varier le multiplicateur de fcfs score area filling
-			\item refaire courbe usage cluster
-			
-			\item mettre a jour planned area pour fcfs score area filling ?
-			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus.
 			\item Check rendu rapports le 30 Aout pour les 3A
 			\item Date redu rapport des 2A ?
+		\end{enumerate}
+	\subsection{Uppsala}
+		\begin{enumerate}
+			\item test Fcfswithascoreareafillingomniscientx qui varie
+			\item test autres workloads pour les 2 contraintes
+			\item voir pk ca crash avec bcp de jobs
+			\item mettre a jour planned area pour fcfs score area filling quand j'upgrade des jobs ?
+			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus ?
 			\item Ne pas oublier que j'ai les courbes VS sur flow stretch et queue times aussi que je peux tracer						
-			\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores
-			\item Use same X scale for workloads stats when I want to compare them
-			\item Use same X scale for some gantt charts when I want to compare them
-			\item lire article bf : Utilization, Predictability, Workloads et le mettre dans les related works: It gives information about the imporvement given by backfilling. A complex conservative (loking at job size) backfilling can be better than easy, but it still depend on the workload.
-			\item Faire plusieurs test et mettre une barre d'erreur
-			\item Afficher temps de transferts sur les Gantt charts: Comment ?
 			\item Rendre le code général (20 pour cores par node et 3 pour nb tailles de noeuds différents)
 		\end{enumerate}
 \end{document}

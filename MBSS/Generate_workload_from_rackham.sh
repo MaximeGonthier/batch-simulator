@@ -2,29 +2,8 @@
 # Merge consecutive files and do a workload that my simulator can read
 # bash Generate_workload_from_rackham.sh day0 start daytoevaluate1 daytoevaluate2 ... daytoevaluaten end day+1 ... day+n
 
-# Convert file into readable information and add input data
-#~ if [ $(($#)) < 8 ]
-#~ then
-	#~ exit
-#~ fi
 echo "Merging input files..."
 echo "There are $(($#-2)) input files"
-
-#~ $((i))=1
-#~ while ((${i} != "z"))
-#~ do
-	#~ $((i))=$((2))
-#~ done
-#~ i=i-1
-#~ FILE_START=$i
-
-#~ i=i+2
-#~ while (($i != "/"))
-#~ do
-	#~ i=i+1
-#~ done
-#~ i=i-1
-#~ FILE_END=$i
 
 for ((i=1; i<=$#; i++))
 do
@@ -83,8 +62,8 @@ do
 		fi
 	fi
 done
-#~ exit
+
 echo "Converting job history..."
 # python3 src/generate_workload_from_rackham.py $START"->"$END 256jobs 1024jobs dataonalljobs? 1storsecondversion(the one with -2 jobs started from history)?
-python3 src/generate_workload_from_rackham.py $START"->"$END 10 5 1 2
+python3 src/generate_workload_from_rackham.py $START"->"$END 10 5 1 2 0
 echo "Conversion done!"

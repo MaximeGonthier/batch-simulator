@@ -118,6 +118,7 @@ are focusing on a better utilization of idling memory together with
 thrashing limitation. Our focus will be to control data loads and eviction so the
 processing order will naturally limits thrashing.
 
+
 \subsection{HDFS, a popular distributed file system}
 HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that incorporate memory-aware scheduling.
 HDFS is suitable for applications that have large data sets. 
@@ -1038,5 +1039,9 @@ From previous workloads get the possible allocated area
 	\item Note that the strategy used by fcfs easy bf and fcfs with a score to use bigger nodes is very aggressive and do not favor big jobs on big nodes.
 	\item Need to test with bigger workloads
 \end{itemize}
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-24->2022-01-26_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage with jobs started before day 0 in orange}\label{30}\end{figure}
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_with_transfer_time.png}\caption{Gantt chart with transfer times; can be used to show on small example and reduce cluster the strategy of each heuristic ?}\label{31}\end{figure}
 
 \end{document}

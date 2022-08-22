@@ -149,7 +149,6 @@ void to_print_job_csv(struct Job* job, int time)
 	//~ #endif
 	
 	#ifdef PRINT_GANTT_CHART
-	//~ printf("la\n"); fflush(stdout);
 	int i = 0;
 	char* file_to_open = malloc(100*sizeof(char));
 	strcpy(file_to_open, "outputs/Results_all_jobs_");
@@ -161,7 +160,37 @@ void to_print_job_csv(struct Job* job, int time)
 		printf("Error opening file Results_all_jobs_scheduler.csv\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
-	fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, time_used, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
+	/* OLD */
+	//~ fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, time_used, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
+	
+	/* Print transfer time if any */
+	if (job->transfer_time > 0)
+	{
+		fprintf(f, "I/O-%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, job->transfer_time, job->start_time - first_subtime_day_0 + job->transfer_time, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
+		/* Printing the cores used. */
+		if (job->cores > 1)
+		{
+			for (i = 0; i < job->cores; i++)
+			{
+				if (i == job->cores - 1)
+				{
+					fprintf(f, "%d", job->node_used->unique_id*20 + job->cores_used[i]);
+				}
+				else
+				{
+					fprintf(f, "%d ", job->node_used->unique_id*20 + job->cores_used[i]);
+				}
+			 }
+		}
+		else
+		{
+			fprintf(f, "%d", job->node_used->unique_id*20 + job->cores_used[0]);
+		}
+		fprintf(f, ",-1,\"\"\n");
+	}
+	
+	/* Then print actual job */
+	fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0 + job->transfer_time, time_used - job->transfer_time, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
 	/* Printing the cores used. */
 	if (job->cores > 1)
 	{
@@ -182,9 +211,9 @@ void to_print_job_csv(struct Job* job, int time)
 		fprintf(f, "%d", job->node_used->unique_id*20 + job->cores_used[0]);
 	}
 	fprintf(f, ",-1,\"\"\n");
+	
 	fclose(f);
 	free(file_to_open);
-	//~ printf("la2\n"); fflush(stdout);
 	#endif
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
