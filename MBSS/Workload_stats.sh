@@ -71,7 +71,7 @@ if [ $MOIS=="Mars" ] || [ $MOIS=="Décembre" ] # Décembre a que 30 jours en fa
 		do
 		string+=${ANNEE}"-"${id_mois}"-2"${i},
 	done
-	string+=${ANNEE}"-"${id_mois}"-30,2022-"${id_mois}"-31"
+	string+=${ANNEE}"-"${id_mois}"-30,${ANNEE}-"${id_mois}"-31"
 	last_day=31
 elif [[ $MOIS == "Avril" || $MOIS == "Juin" || $MOIS == "Septembre" || $MOIS == "Novembre" ]]
 	then
@@ -109,7 +109,7 @@ fi
 echo ${string}
 scp maxim@rackham.uppmax.uu.se:../../../sw/share/slurm/rackham/accounting/\{${string}\} /home/gonthier/data-aware-batch-scheduling/MBSS/inputs/workloads/raw/
 
-python3 src/convert_stats_workload.py ${id_mois} ${ANNEE} ${last_day}
-python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} cores
-python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} walltime
-python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} delay
+#~ python3 src/convert_stats_workload.py ${id_mois} ${ANNEE} ${last_day}
+#~ python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} cores
+#~ python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} walltime
+#~ python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} delay
