@@ -58,7 +58,7 @@ echo "$MOIS"
 #~ if [ $MOIS=="Janvier" ] || [ $MOIS == "Mars" ] || [ $MOIS == "Mai" ] || [ $MOIS == "Juillet" ] || [ $MOIS == "Aout" ] || [ $MOIS == "Octobre" ] || [ $MOIS == "Décembre" ]
 if [ $MOIS=="Mars" ] || [ $MOIS=="Décembre" ] # Décembre a que 30 jours en fait personne travaille le 31
 	then
-	echo "31"
+	echo "31 jours"
 	for ((i = 1 ; i <= 9 ; i++))
 		do
 		string+=${ANNEE}"-"${id_mois}"-0"${i},

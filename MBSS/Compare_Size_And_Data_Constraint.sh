@@ -41,7 +41,7 @@ do
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 done
 
 echo "Final results are:"

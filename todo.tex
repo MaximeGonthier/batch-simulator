@@ -115,12 +115,22 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
+		\item HEFT is like fcfs with a score x1 x0 x0 x0 I guess ? Oui
 		\item On a eu 2 reviews sur fgcs
 		\item Do I still put a data on each job ?
 		\item Utiliser attestation volontariat IPDPS pour formations ? 20h ? Pareil pour ACACES avec 20h de cours ?
 		\item Still, no corelation between node size and job length. Should I add one ?
 	\end{enumerate}
 	
+\item Pour le workload: ignorer jobs cancelled. Ne pas ignorer job failed ou timeout. si jobs multi node les diviser. mettre un overhead de 2*1min aux jobs et de 1*2min aux failed. Par contre les cancelled je les ignore complètement.
+	
+\faire varier les ratio de chaque taille voir si a un moment l'agressivité est detrimentale
+\ajouter bf aux autres strates de area filling et backfill big nodes
+\prendre 1 mois entier et couper pour voir si on tout
+\demander a carl a quel point c'ets utilisé. Y a til de l'overhead ? Ce qui expliquerai l'usage du cluster
+\prendre en compte les jobs cancelled et timeout pour le schedule , les error a voir pour l'usage de la plateforme
+y a t il un overhead avant apres la terminaison d n job ? Le simuler ?
+regarder qui sont les jobs delaier de plus de 25000
 
 \section{Informations for the article}
 	\begin{enumerate}
@@ -129,6 +139,7 @@
 		\item Use same X scale for workloads stats when I want to compare them
 		\item Code to compare ourselves, HEFT that would be FCFS that take into consideration transfer time for the earliest available cores: It is just fcfs with a score x1 x0 x0 x0
 		\item test Fcfswithascoreareafillingomniscientx qui varie: pas de meilleurs résultats
+		\item cluster usage in real: https://www.uppmax.uu.se/resources/system-usage/rackham/
 	 \end{enumerate}
 	
 \section{Todo}
@@ -137,7 +148,7 @@
 			\item se renseigner payement enseirb semestre 1: (demander a sandrine truffier ?)
 			\item remboursement loris frejus papier
 			\item payer ré inscription
-			\item Voir mission Dallas
+			\item Voir mission Dallas: demander a denis
 			\item mail calendrier mes autres cours enseirbs: attendre réponse
 			\item Répondre a Bora
 			\item transmettre dossier siged  et payer une fois tous les avis saisies (5/6 ou 6/6)

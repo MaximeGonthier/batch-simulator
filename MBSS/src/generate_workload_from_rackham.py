@@ -5,6 +5,7 @@
 
 # Imports
 import sys
+from math import *
 import random
 import operator
 from dataclasses import dataclass
@@ -64,8 +65,9 @@ while line:
 		print("Line:", line, "is wrong!!")
 	else:
 		r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15 = line.split()
-		if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20 and int(str(r8)[4:]) - int(str(r7)[6:]) > 0): # DELAY MUST NOT BE 0! I don't know why but there are 0 seconds jobs with completed status
-			if (len(str(r15)) > 17): # Mean that the walltime is superior to 10 days
+		# ~ if (str(r3) == "jobstate=COMPLETED" and int(str(r11)[6:]) <= 20 and int(str(r8)[4:]) - int(str(r7)[6:]) > 0): # DELAY MUST NOT BE 0! I don't know why but there are 0 seconds jobs with completed status
+		if (str(r3) != "jobstate=CANCELLED"): # I just don't do CANCELLED jobs
+			if (len(str(r15)) > 17): # Mean that the walltime is superior to 100 days
 				print("Error, size not dealt with")
 				exit(1)
 			elif (len(str(r15)) == 17): # Mean that the walltime is superior to 10 days
@@ -74,15 +76,47 @@ while line:
 				walltime = int(str(r15)[6:7])*24*60*60 + int(str(r15)[8:10])*60*60 + int(str(r15)[11:13])*60 + int(str(r15)[14:16])
 			else:
 				walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
+			
 			# Similarly walltime must not be 0
 			if (walltime > 0):
-				# ~ # And I don't want failed jobs with long walltimes
-				w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(str(r10)[7:]))
-				workload.append(w)
-				id_count += 1
+				if (int(str(r11)[6:]) > 20): # If it's a multinode job I divide it.
+					print(line)
+					print("Cores =", int(str(r11)[6:]))
+					nb_jobs_a_creer = ceil(int(str(r11)[6:])/20)
+					print("nb_jobs_a_creer =", nb_jobs_a_creer)
+					l = 8
+					for k in range (0, nb_jobs_a_creer):
+						node_from_history = [] # I need to get the node from history cause it's in the format [node-node] or [node,node] depending on if it's one by one or a serie of consecutive nodes
+						node_from_history.append(str(r10)[l:l+1])
+						print("append", str(r10)[l:l+1])
+						l += 1
+						while str(r10)[l:l+1] != "-" and str(r10)[l:l+1] != "]" and str(r10)[l:l+1] != ",":
+							if str(r10)[l:l+1] == "-":
+								# ~ for m in range (int(str(r10)[l-1:l]) + 1, int(str(r10)[l+1:l+2])):
+									# ~ node_from_history.append(m)
+									# ~ print("append", m)
+								exit(1)
+							else:
+								node_from_history.append(str(r10)[l:l+1])
+								print("append", str(r10)[l:l+1])
+							l += 1
+						print("Node in this multi node job", node_from_history)
+						# ~ exit(1)
+						l += 1
+						w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, 20, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(node_from_history))
+						# ~ print(int(w.start_node_from_history))
+						workload.append(w)
+						id_count += 1
+						# ~ k += 1
+					exit(1)
+				else:
+					w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(str(r10)[7:]))
+					workload.append(w) # Append the job in our workload
+					id_count += 1
 			else:
-				print("Error walltime is 0 ??")
+				print("Error walltime is 0.")
 				exit(1)
+					
 	line = f_input.readline()
 f_input.close()
 
@@ -115,7 +149,7 @@ nb_jobs_day_0 = 0
 nb_jobs_day_1 = 0
 nb_jobs_day_2 = 0
 
-# ~ print(workload[0].start_time_from_history, first_time_day_0)
+# First jobs
 if workload[0].start_time_from_history < first_time_day_0:
 	workload[0].workload = -2
 	nb_jobs_started_before_day_0 += 1
@@ -136,11 +170,13 @@ else:
 	exit(1)
 
 f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d start_time_from_history: %d start_node_from_history: %d }\n" % (1, workload[0].subtime - min_subtime, workload[0].delay, workload[0].walltime, workload[0].cores, workload[0].user, workload[0].data, workload[0].data_size, workload[0].workload, workload[0].start_time_from_history - min_subtime, workload[0].start_node_from_history))
+
 last_data = workload[0].data
 last_size = workload[0].data_size
 last_user = workload[0].user
 last_subtime = workload[0].subtime
 last_core = workload[0].cores
+
 for i in range (1, id_count - 1):
 	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 		share_last_user = random.randint(0,99)
