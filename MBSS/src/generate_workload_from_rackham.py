@@ -30,8 +30,8 @@ FILENAME = sys.argv[1] # FILE 1
 PROBABILITY_OF_USING_256GB = int(sys.argv[2]) # 0-100
 PROBABILITY_OF_USING_1TB = int(sys.argv[3]) # 0-100
 DATA_ON_ALL_JOBS = int(sys.argv[4]) # 0 or 1
-VERSION = int(sys.argv[5]) # 1 or 2
-VARIANCE = int(sys.argv[6])
+# ~ VERSION = int(sys.argv[5]) # 1 or 2
+VARIANCE = int(sys.argv[5])
     
 # Get start of first and last job times that will be considered in terms of submission times
 f_start_end = open("outputs/start_end_date_evaluated_jobs.txt", "r")
@@ -87,10 +87,10 @@ while line:
 			# Similarly walltime must not be 0
 			if (walltime > 0):
 				if (int(str(r11)[6:]) > 20): # If it's a multinode job I divide it.
-					print(line)
-					print("Cores =", int(str(r11)[6:]))
+					# ~ print(line)
+					# ~ print("Cores =", int(str(r11)[6:]))
 					nb_jobs_a_creer = ceil(int(str(r11)[6:])/20)
-					print("nb_jobs_a_creer =", nb_jobs_a_creer)
+					# ~ print("nb_jobs_a_creer =", nb_jobs_a_creer)
 					l1 = 8
 					l2 = 8
 					k = 0
@@ -103,13 +103,13 @@ while line:
 						while str(r10)[l2:l2+1] != "-" and str(r10)[l2:l2+1] != "]" and str(r10)[l2:l2+1] != ",":
 							l2 += 1
 						node_from_history = str(r10)[l1:l2]
-						print("Node in this multi node job", node_from_history)
+						# ~ print("Node in this multi node job", node_from_history)
 						w = Job(int(str(r9)[7:]), delai, walltime, 20, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(node_from_history))
 						workload.append(w)
 						id_count += 1
 						
 						if str(r10)[l2:l2+1] == "-": # Cas particulier on on prend des noeuds consécutifs
-							print("Cas -")
+							# ~ print("Cas -")
 							l1 = l2 + 1
 							l2 += 1
 							debut = int(node_from_history)
@@ -117,7 +117,7 @@ while line:
 								l2 += 1
 							fin = int(str(r10)[l1:l2])
 							for m in range (debut + 1, fin + 1):
-								print("Node in this multi node job", m)
+								# ~ print("Node in this multi node job", m)
 								w = Job(int(str(r9)[7:]), delai, walltime, 20, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), m)
 								workload.append(w)
 								id_count += 1
@@ -161,15 +161,23 @@ if (VARIANCE != 0):
 else:
 	f_output = open("inputs/workloads/converted/" + FILENAME, "w")
 
+n_128_data = 0
+n_256_data = 0
+n_1024_data = 0
+
 if (workload[0].cores >= 5 or DATA_ON_ALL_JOBS == 1):
 	workload[0].data = 1
 	r = 0
 	r = random.randint(0,99)
 	size = 6.4
-	if (r < PROBABILITY_OF_USING_256GB):
-		size = 12.8
-	elif (r < PROBABILITY_OF_USING_1TB + PROBABILITY_OF_USING_256GB):
+	if (r < PROBABILITY_OF_USING_1TB):
+		n_1024_data += 1
 		size = 51.2
+	elif (r >= PROBABILITY_OF_USING_1TB and r < PROBABILITY_OF_USING_1TB + PROBABILITY_OF_USING_256GB):
+		n_256_data += 1
+		size = 12.8
+	else:
+		n_128_data += 1
 	workload[0].data_size = size*workload[0].cores
 
 nb_jobs_started_before_day_0 = 0
@@ -206,9 +214,10 @@ last_user = workload[0].user
 last_subtime = workload[0].subtime
 last_core = workload[0].cores
 
+
+
 for i in range (1, id_count - 1):
 	if (workload[i].cores >= 5 or DATA_ON_ALL_JOBS == 1):
-		share_last_user = random.randint(0,99)
 		if (last_user == workload[i].user and last_subtime + 800 >= workload[i].subtime and last_core == workload[i].cores): # Max 800 seconds between two jobs for them to use the same data and must use the same amount of cores and have the smae user
 			workload[i].data = last_data
 			workload[i].data_size = last_size
@@ -218,10 +227,15 @@ for i in range (1, id_count - 1):
 			r = 0
 			r = random.randint(0,99)
 			size = 6.4
-			if (r < PROBABILITY_OF_USING_256GB):
-				size = 12.8
-			elif (r < PROBABILITY_OF_USING_1TB + PROBABILITY_OF_USING_256GB):
+			if (r < PROBABILITY_OF_USING_1TB):
+				n_1024_data += 1
 				size = 51.2
+			elif (r >= PROBABILITY_OF_USING_1TB and r < PROBABILITY_OF_USING_1TB + PROBABILITY_OF_USING_256GB):
+				n_256_data += 1
+				size = 12.8
+			else:
+				n_128_data += 1
+
 			workload[i].data_size = size*workload[i].cores
 			last_size = workload[i].data_size
 			last_data = workload[i].data
@@ -229,14 +243,6 @@ for i in range (1, id_count - 1):
 			last_subtime = workload[i].subtime
 			last_core = workload[i].cores
 
-		
-	# ~ if workload[i].subtime >= first_time_used_jobs and workload[i].subtime <= last_used_job:
-		# ~ workload[i].workload = 1
-		# ~ nb_used_jobs += 1
-	# ~ elif workload[i].subtime > last_used_job:
-		# ~ workload[i].workload = 2
-	# ~ else:
-		# ~ workload[i].workload = 0
 	if workload[i].start_time_from_history < first_time_day_0:
 		workload[i].workload = -2
 		nb_jobs_started_before_day_0 += 1
@@ -256,10 +262,9 @@ for i in range (1, id_count - 1):
 		print("Error time generation workload is", workload[i].subtime)
 		workload[i].workload = 1
 		nb_jobs_day_1 +=1
-		# ~ exit(1)
 	
 	f_output.write("{ id: %d subtime: %d delay: %d walltime: %d cores: %d user: %s data: %d data_size: %f workload: %d start_time_from_history: %d start_node_from_history: %d }\n" % (i + 1, workload[i].subtime - min_subtime, workload[i].delay, workload[i].walltime, workload[i].cores, workload[i].user, workload[i].data, workload[i].data_size, workload[i].workload, workload[i].start_time_from_history - min_subtime, workload[i].start_node_from_history))
 f_output.close()
 
-# ~ print("There are", id_count - 1, "jobs.", nb_used_jobs, "will be evaluated")
 print("There are", id_count - 1, "jobs.", nb_jobs_started_before_day_0, "started before day 0,", nb_jobs_not_started_but_submitted_before_day_0, "submitted but not started before day 0,", nb_jobs_day_0, "at day 0,", nb_jobs_day_1, "evaluated at day 1,", nb_jobs_day_2, "at day 2 and beyond.")
+print("There are", n_128_data, "different data of size 128", n_256_data, "different data of size 256", n_1024_data, "of size 1024")
