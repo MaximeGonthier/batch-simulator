@@ -6,6 +6,7 @@
 # Imports
 import sys
 from math import *
+# ~ from math import *
 import random
 import operator
 from dataclasses import dataclass
@@ -77,6 +78,12 @@ while line:
 			else:
 				walltime = int(str(r15)[6:8])*60*60 + int(str(r15)[9:11])*60 + int(str(r15)[12:14])
 			
+			if (int(str(r8)[4:]) - int(str(r7)[6:]) < 0):
+				print("Error délai")
+				exit(1)
+			# 2min d'overhead sur les jobs
+			delai = int(str(r8)[4:]) - int(str(r7)[6:]) + 120
+				
 			# Similarly walltime must not be 0
 			if (walltime > 0):
 				if (int(str(r11)[6:]) > 20): # If it's a multinode job I divide it.
@@ -84,33 +91,55 @@ while line:
 					print("Cores =", int(str(r11)[6:]))
 					nb_jobs_a_creer = ceil(int(str(r11)[6:])/20)
 					print("nb_jobs_a_creer =", nb_jobs_a_creer)
-					l = 8
-					for k in range (0, nb_jobs_a_creer):
-						node_from_history = [] # I need to get the node from history cause it's in the format [node-node] or [node,node] depending on if it's one by one or a serie of consecutive nodes
-						node_from_history.append(str(r10)[l:l+1])
-						print("append", str(r10)[l:l+1])
-						l += 1
-						while str(r10)[l:l+1] != "-" and str(r10)[l:l+1] != "]" and str(r10)[l:l+1] != ",":
-							if str(r10)[l:l+1] == "-":
-								# ~ for m in range (int(str(r10)[l-1:l]) + 1, int(str(r10)[l+1:l+2])):
-									# ~ node_from_history.append(m)
-									# ~ print("append", m)
-								exit(1)
-							else:
-								node_from_history.append(str(r10)[l:l+1])
-								print("append", str(r10)[l:l+1])
-							l += 1
+					l1 = 8
+					l2 = 8
+					k = 0
+					while k < nb_jobs_a_creer:
+						# ~ print("la")
+						# ~ node_from_history = [] # I need to get the node from history cause it's in the format [node-node] or [node,node] depending on if it's one by one or a serie of consecutive nodes
+						# ~ node_from_history.append(str(r10)[l:l+1])
+						# ~ print("append", str(r10)[l:l+1])
+						# ~ l += 1
+						while str(r10)[l2:l2+1] != "-" and str(r10)[l2:l2+1] != "]" and str(r10)[l2:l2+1] != ",":
+							l2 += 1
+						node_from_history = str(r10)[l1:l2]
 						print("Node in this multi node job", node_from_history)
-						# ~ exit(1)
-						l += 1
-						w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, 20, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(node_from_history))
-						# ~ print(int(w.start_node_from_history))
+						w = Job(int(str(r9)[7:]), delai, walltime, 20, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(node_from_history))
 						workload.append(w)
 						id_count += 1
-						# ~ k += 1
-					exit(1)
+						
+						if str(r10)[l2:l2+1] == "-": # Cas particulier on on prend des noeuds consécutifs
+							print("Cas -")
+							l1 = l2 + 1
+							l2 += 1
+							debut = int(node_from_history)
+							while str(r10)[l2:l2+1] != "-" and str(r10)[l2:l2+1] != "]" and str(r10)[l2:l2+1] != ",":
+								l2 += 1
+							fin = int(str(r10)[l1:l2])
+							for m in range (debut + 1, fin + 1):
+								print("Node in this multi node job", m)
+								w = Job(int(str(r9)[7:]), delai, walltime, 20, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), m)
+								workload.append(w)
+								id_count += 1
+								k += 1 # For counter up there on number of jobs to create
+							# ~ print("exit")
+							# ~ exit(1)
+						# ~ else:
+						# Increment for next node indication
+						l1 = l2 + 1
+						l2 += 1
+						k += 1
+						
 				else:
-					w = Job(int(str(r9)[7:]), int(str(r8)[4:]) - int(str(r7)[6:]), walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), int(str(r10)[7:]))
+					# ~ print(line)
+					
+					# Si le node n'est pas précisé j'en choisis un au hasard entre 0 et 486
+					if (len(str(r10)) == 6):
+						nodes_from_hist = random.randint(0, 485)
+					else:
+						nodes_from_hist = int(str(r10)[7:])
+
+					w = Job(int(str(r9)[7:]), delai, walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), nodes_from_hist)
 					workload.append(w) # Append the job in our workload
 					id_count += 1
 			else:

@@ -111,26 +111,19 @@
 		\item code pour tracer terminaison des jobs -2 sur courbes usage du cluster: mais toujours pas full. Je devrais prendre bcp plus loin dans le futur ?
 		\item tester en faisant varier le multiplicateur de fcfs score area filling: je n'observe pas d'améliorations
 		\item Afficher temps de transferts sur les Gantt charts
+		\item Pour le workload: ignorer jobs cancelled. Ne pas ignorer job failed ou timeout. si jobs multi node les diviser. mettre un overhead de 2*1min aux jobs et de 1*2min aux failed. Par contre les cancelled je les ignore complètement.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
+		\item https://www.researchoutreach.org me contacte pour mettre en avant notre article ?
+		\item je me fais inviter pour être revoiewer partout
 		\item HEFT is like fcfs with a score x1 x0 x0 x0 I guess ? Oui
 		\item On a eu 2 reviews sur fgcs
 		\item Do I still put a data on each job ?
 		\item Utiliser attestation volontariat IPDPS pour formations ? 20h ? Pareil pour ACACES avec 20h de cours ?
 		\item Still, no corelation between node size and job length. Should I add one ?
 	\end{enumerate}
-	
-\item Pour le workload: ignorer jobs cancelled. Ne pas ignorer job failed ou timeout. si jobs multi node les diviser. mettre un overhead de 2*1min aux jobs et de 1*2min aux failed. Par contre les cancelled je les ignore complètement.
-	
-\faire varier les ratio de chaque taille voir si a un moment l'agressivité est detrimentale
-\ajouter bf aux autres strates de area filling et backfill big nodes
-\prendre 1 mois entier et couper pour voir si on tout
-\demander a carl a quel point c'ets utilisé. Y a til de l'overhead ? Ce qui expliquerai l'usage du cluster
-\prendre en compte les jobs cancelled et timeout pour le schedule , les error a voir pour l'usage de la plateforme
-y a t il un overhead avant apres la terminaison d n job ? Le simuler ?
-regarder qui sont les jobs delaier de plus de 25000
 
 \section{Informations for the article}
 	\begin{enumerate}
@@ -157,6 +150,11 @@ regarder qui sont les jobs delaier de plus de 25000
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item varier les ratio de chaque taille voir si a un moment l'agressivité est detrimentale
+			\item 1 mois entier et couper pour voir si on a vraiment tout
+			\item regarder qui sont les jobs delaier de plus de 25000
+			\item test usage
+			\item refaire tests 2 contraintes avec easybf sur tous
 			\item test autres workloads pour les 2 contraintes
 			\item voir pk ca crash avec bcp de jobs
 			\item mettre a jour planned area pour fcfs score area filling quand j'upgrade des jobs ?
