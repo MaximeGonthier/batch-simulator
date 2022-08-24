@@ -1054,8 +1054,17 @@ From previous workloads get the possible allocated area
 	\item Need to test with bigger workloads
 \end{itemize}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-24->2022-01-26_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage with jobs started before day 0 in orange}\label{30}\end{figure}
-
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_with_transfer_time.png}\caption{Gantt chart with transfer times; can be used to show on small example and reduce cluster the strategy of each heuristic ?}\label{31}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-17->2022-01-19_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{37}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Distribution/2022-01-17->2022-01-19_delay.pdf}\caption{Jobs' duration}\label{38}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Distribution/2022-01-17->2022-01-19_subtime.pdf}\caption{Submission time}\label{39}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Distribution/2022-01-17->2022-01-19_data_size.pdf}\caption{Nodes' size required}\label{40}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Distribution/2022-01-17->2022-01-19_cores.pdf}\caption{Number of cores required}\label{41}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Distribution/2022-01-17->2022-01-19_subtime_with_nodes_size.pdf}\caption{Submissions time with nodes' size required}\label{42}\end{subfigure}
+\caption{Statistics on a workload of 5 days with the NEW workload generation - normal cluster - August 24}\label{43}\end{figure}
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{Images/Workload_generation.png}\caption{Visualization of the workload creation - August 24}\label{44}\end{figure}
 
 \end{document}

@@ -295,11 +295,23 @@ void print_csv(struct To_Print* head_to_print)
 	float total_waiting_for_a_load_time_and_transfer_time = 0;
 	float makespan = 0;
 	float total_flow_stretch = 0;
+	float total_flow_stretch_128 = 0;
+	float total_flow_stretch_256 = 0;
+	float total_flow_stretch_1024 = 0;
 	float max_flow_stretch = 0;
 	float total_flow_stretch_with_a_minimum = 0;
+	float total_flow_stretch_with_a_minimum_128 = 0;
+	float total_flow_stretch_with_a_minimum_256 = 0;
+	float total_flow_stretch_with_a_minimum_1024 = 0;
 	float max_flow_stretch_with_a_minimum = 0;
 	float mean_flow_stretch = 0;
+	float mean_flow_stretch_128 = 0;
+	float mean_flow_stretch_256 = 0;
+	float mean_flow_stretch_1024 = 0;
 	float mean_flow_stretch_with_a_minimum = 0;
+	float mean_flow_stretch_with_a_minimum_128 = 0;
+	float mean_flow_stretch_with_a_minimum_256 = 0;
+	float mean_flow_stretch_with_a_minimum_1024 = 0;
 	float core_time_used = 0;
 	float denominator_bounded_stretch = 0;
 	int nb_upgraded_jobs = 0;
@@ -312,11 +324,26 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		/* Get smaller jobs on bigger nodes */
 		nb_upgraded_jobs += head_to_print->upgraded;
-		
-		//~ printf("Evaluate job %d.\n", head_to_print->job_unique_id); fflush(stdout);
-		
+				
 		/* Flow stretch */
 		total_flow_stretch += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+		if (head_to_print->data_type == 0)
+		{
+			total_flow_stretch_128 += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+		}
+		else if (head_to_print->data_type == 1)
+		{
+			total_flow_stretch_256 += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+		}
+		else if (head_to_print->data_type == 2)
+		{
+			total_flow_stretch_1024 += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
+		}
+		else
+		{
+			printf("error print csv data type.\n");
+			exit(EXIT_FAILURE);
+		}
 		
 		/* Bounded flow stretch */
 		if (head_to_print->empty_cluster_time > 300)
@@ -328,7 +355,24 @@ void print_csv(struct To_Print* head_to_print)
 			denominator_bounded_stretch = 300;
 		}
 		total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
-		
+		if (head_to_print->data_type == 0)
+		{
+			total_flow_stretch_with_a_minimum_128 += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
+		}
+		else if (head_to_print->data_type == 1)
+		{
+			total_flow_stretch_with_a_minimum_256 += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
+		}
+		else if (head_to_print->data_type == 2)
+		{
+			total_flow_stretch_with_a_minimum_1024 += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
+		}
+		else
+		{
+			printf("error print csv data type.\n");
+			exit(EXIT_FAILURE);
+		}
+
 		/* Maximum in flow stretch */
 		if (max_flow_stretch < (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time)
 		{
@@ -396,7 +440,13 @@ void print_csv(struct To_Print* head_to_print)
 	mean_queue_time = total_queue_time/nb_job_to_evaluate;
 	mean_flow = total_flow/nb_job_to_evaluate;
 	mean_flow_stretch = total_flow_stretch/nb_job_to_evaluate;
+	mean_flow_stretch_128 = total_flow_stretch_128/nb_job_to_evaluate;
+	mean_flow_stretch_256 = total_flow_stretch_256/nb_job_to_evaluate;
+	mean_flow_stretch_1024 = total_flow_stretch_1024/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum = total_flow_stretch_with_a_minimum/nb_job_to_evaluate;
+	mean_flow_stretch_with_a_minimum_128 = total_flow_stretch_with_a_minimum_128/nb_job_to_evaluate;
+	mean_flow_stretch_with_a_minimum_256 = total_flow_stretch_with_a_minimum_256/nb_job_to_evaluate;
+	mean_flow_stretch_with_a_minimum_1024 = total_flow_stretch_with_a_minimum_1024/nb_job_to_evaluate;
 	
 	/* Main file of results */
 	char* file_to_open_2 = malloc(100*sizeof(char));
@@ -411,8 +461,8 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 	
-	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times);
-	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d, Nb large queue times (>%d): %d\n\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, what_is_a_large_queue_time, nb_large_queue_times);
+	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
+	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d, Nb large queue times (>%d): %d, Mean flow stretch 128 256 1024: %f %f %f, Mean flow stretch with a minimum 128 256 1024: %f %f %f\n\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, what_is_a_large_queue_time, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	fclose(f);
 	
 	/* For flow stretch heat map */

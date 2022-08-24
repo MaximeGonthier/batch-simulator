@@ -1,5 +1,6 @@
 # python3 src/plot_running_cores.py input_file title
 # importing package
+# plot stats on cluster usage
 import matplotlib.pyplot as plt
 import pandas as pd
 import sys

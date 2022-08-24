@@ -138,8 +138,13 @@ while line:
 						nodes_from_hist = random.randint(0, 485)
 					else:
 						nodes_from_hist = int(str(r10)[7:])
-
-					w = Job(int(str(r9)[7:]), delai, walltime, int(str(r11)[6:]), str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), nodes_from_hist)
+					
+					if (int(str(r11)[6:]) == 0):
+						cores = 1
+					else:
+						cores = int(str(r11)[6:])
+					
+					w = Job(int(str(r9)[7:]), delai, walltime, cores, str(r5)[9:], 0, 0, -1, int(str(r7)[6:]), nodes_from_hist)
 					workload.append(w) # Append the job in our workload
 					id_count += 1
 			else:

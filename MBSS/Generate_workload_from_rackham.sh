@@ -1,6 +1,6 @@
 #!/bin/bash
 # Merge consecutive files and do a workload that my simulator can read
-# bash Generate_workload_from_rackham.sh day0 start daytoevaluate1 daytoevaluate2 ... daytoevaluaten end day+1 ... day+n
+# bash Generate_workload_from_rackham.sh day0 start daytoevaluate1 daytoevaluate2 ... daytoevaluaten end day+1 ... day+n collection day+n+1 day+n+2 ... day+n+m
 
 echo "Merging input files..."
 echo "There are $(($#-2)) input files"
@@ -16,6 +16,10 @@ do
 	then
 		end=$((i-1))
 		FILE_END=${@:$end:1}
+	fi
+	if [ ${@:$i:1} == "collection" ]
+	then
+		collection=$((i-1))
 	fi
 done
 #~ echo $start
@@ -52,18 +56,32 @@ do
 		head -1 ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
 	fi
 	
+	# Day just for job collection afterward
+	if [ $((i)) == $((collection)) ]
+	then
+		tail -1 ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
+	fi
+	
 	if [ ${@:$i:1} != "start" ]
 	then
 		if [ ${@:$i:1} != "end" ]
 		then
-			echo "Adding" ${@:$i:1}
-			#~ cat ${@:i:i} >> $OUTPUT
-			cat ${@:$i:1} >> $OUTPUT
+			if [ ${@:$i:1} != "collection" ]
+			then
+				echo "Adding" ${@:$i:1}
+				cat ${@:$i:1} >> $OUTPUT
+			fi
 		fi
 	fi
 done
 
+cat outputs/start_end_date_evaluated_jobs.txt
+exit
 echo "Converting job history..."
 # python3 src/generate_workload_from_rackham.py $START"->"$END 256jobs 1024jobs dataonalljobs? variance?
 python3 src/generate_workload_from_rackham.py $START"->"$END 10 5 1 0
 echo "Conversion done!"
+
+echo "Plotting stats on the workload..."
+python3 src/plot_stats_one_converted_workload.py $START"->"$END
+echo "Plotting stats done!"

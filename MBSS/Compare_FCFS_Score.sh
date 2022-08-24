@@ -21,6 +21,7 @@ echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 make -C C/
 
 #~ # 1. Queue times, flow times and stretch of all jobs of FCFS_SCORE VS FCFS
+#~ make print_distribution_queue_times -C C/
 #~ SCHEDULER_REF="Fcfs"
 #~ echo "${SCHEDULER_REF}"
 #~ python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER_REF 0 $CONTRAINTES_TAILLES
