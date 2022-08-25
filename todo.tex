@@ -117,6 +117,7 @@
 		\item cluster usage is good now
 		\item temporalité des gros jobs en terme de submit time
 		\item looking at further jobs for workload but not adding them in my schedule if after day2 (14 jours entier et couper pour voir si on a vraiment tout)
+		\item ré ecriture des algos fcfs score + backfill big nodes or + area filling
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -148,10 +149,14 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item plot et montrer cluster usage ainsi que stat du workload avec les perfs à côté
+			\item finir test size constraint
+			\item enlever Fcfs_with_a_score_backfill_big_nodes_1_x car ya que le mode 0
+			\item coder algos fcfs score + backfill big nodes or + area filling avec et sans ratio
+			\item coder les mêmes avec backfill
+			\item les tester avec les 2 contraintes
 			\item tester avec data sur jobs de plus de 5 cores seulement
 			\item la version omnisicnet de area filling devrais marcher sur un exemple simple avec des ratios que je maitrise = verifier les perfs sur les gros jobs car la moyenne peut tout lisser
-			\item backfill big node avec fcfs score: faire a la place si dans taille + 1 je bats la moyenne des scores precedant de 50\% au moin je peux le compute dessus. + voir area filling aussi puis tester avec contraintes de taille seulement et faire varier les proportions dans le workload
+			\item backfill big node avec fcfs score: faire a la place si dans taille + 1 je bats la moyenne des scores precedant de 50\% au moin je peux le compute dessus. + voir area filling aussi puis tester
 			\item size constraint: montrer moyenne de cahque taille de job separemment pour stretch: codé, à plot
 			\item varier les ratio de chaque taille voir si a un moment l'agressivité est detrimentale et varier proportions de tailles de jobss en mode pas de transferts de données
 			\item regarder qui sont les jobs delaier de plus de 25000

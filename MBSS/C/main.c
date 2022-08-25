@@ -368,7 +368,7 @@ int main(int argc, char *argv[])
 		}
 		free(file_to_open);
 		
-		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0) || (strcmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0))
+		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0) || (strcmp(scheduler, "Fcfs_area_filling") == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0))
 		{
 			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 			{
@@ -379,7 +379,7 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio", 39) == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio", 28) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 53) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 64) == 0))
+		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 53) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 64) == 0))
 		{
 			for (int ii = 0; ii < 3; ii++)
 			{
