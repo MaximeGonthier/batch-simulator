@@ -1,12 +1,12 @@
 # The commented code just got area ratio from previous CONVERTED_WORKLOAD of each job size.
 # The new code also compute the area each job can use in other sizes like described in Area filling.
-# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER planned_or_not (0 or 1)
+# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER
 # Attention je considère qu'on a que 3 tailles de nodes par défaut. Ajouter cela à la lecture du cluster si besoin.
 
 # Imports
 import sys
 
-planned = int(sys.argv[3])
+# ~ planned = int(sys.argv[3]) # I do both at once now
 # Inputs
 input_job_file = sys.argv[1]
 # get number of nodes of each type
@@ -109,28 +109,31 @@ while Remaining_Area_2 > 0 and y >= 0:
 Planned_Area_1 = [Area_Jobs[0], 0, 0]
 Ratio_Area_1 = [Area_Jobs[0]/Tmax, 0, 0]
 
-if planned == 1:
-	print("Planned_Area_3 =", Planned_Area_3)
-	print("Planned_Area_2 =", Planned_Area_2)
-	print("Planned_Area_1 =", Planned_Area_1)
-else:
-	print("Ratio_Area_3 =", Ratio_Area_3)
-	print("Ratio_Area_2 =", Ratio_Area_2)
-	print("Ratio_Area_1 =", Ratio_Area_1)
+# ~ if planned == 1:
+print("Planned_Area_3 =", Planned_Area_3)
+print("Planned_Area_2 =", Planned_Area_2)
+print("Planned_Area_1 =", Planned_Area_1)
+# ~ else:
+print("Ratio_Area_3 =", Ratio_Area_3)
+print("Ratio_Area_2 =", Ratio_Area_2)
+print("Ratio_Area_1 =", Ratio_Area_1)
 
-if planned == 0:
-	file_to_open = "inputs/Ratio_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
-else:
-	file_to_open = "inputs/Planned_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
-f = open(file_to_open, "w")
+# ~ if planned == 0:
+file_to_open1 = "inputs/Ratio_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
+# ~ else:
+file_to_open2 = "inputs/Planned_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
 
-if planned == 1:
-	f.write("Planned_Area_1: %s %s %s\n" % (Planned_Area_1[0], Planned_Area_1[1], Planned_Area_1[2]))
-	f.write("Planned_Area_2: %s %s %s\n" % (Planned_Area_2[0], Planned_Area_2[1], Planned_Area_2[2]))
-	f.write("Planned_Area_3: %s %s %s\n" % (Planned_Area_3[0], Planned_Area_3[1], Planned_Area_3[2]))
-else:
-	f.write("Ratio_Area_1: %s %s %s\n" % (Ratio_Area_1[0], Ratio_Area_1[1], Ratio_Area_1[2]))
-	f.write("Ratio_Area_2: %s %s %s\n" % (Ratio_Area_2[0], Ratio_Area_2[1], Ratio_Area_2[2]))
-	f.write("Ratio_Area_3: %s %s %s\n" % (Ratio_Area_3[0], Ratio_Area_3[1], Ratio_Area_3[2]))
+f1 = open(file_to_open1, "w")
+f2 = open(file_to_open2, "w")
 
-f.close
+# ~ if planned == 1:
+f2.write("Planned_Area_1: %s %s %s\n" % (Planned_Area_1[0], Planned_Area_1[1], Planned_Area_1[2]))
+f2.write("Planned_Area_2: %s %s %s\n" % (Planned_Area_2[0], Planned_Area_2[1], Planned_Area_2[2]))
+f2.write("Planned_Area_3: %s %s %s\n" % (Planned_Area_3[0], Planned_Area_3[1], Planned_Area_3[2]))
+# ~ else:
+f1.write("Ratio_Area_1: %s %s %s\n" % (Ratio_Area_1[0], Ratio_Area_1[1], Ratio_Area_1[2]))
+f1.write("Ratio_Area_2: %s %s %s\n" % (Ratio_Area_2[0], Ratio_Area_2[1], Ratio_Area_2[2]))
+f1.write("Ratio_Area_3: %s %s %s\n" % (Ratio_Area_3[0], Ratio_Area_3[1], Ratio_Area_3[2]))
+
+f1.close
+f2.close

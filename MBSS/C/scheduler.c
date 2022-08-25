@@ -38,6 +38,10 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 			j->delay = 1;
 		}
 		j->walltime -= time_since_start;
+		if(j->walltime <= 0)
+		{
+			j->walltime = 1;
+		}
 		
 		struct Node *choosen_node = (struct Node*) malloc(sizeof(struct Node));
 		int index_node = (j->node_from_history - 1)%(nb_node[0] + nb_node[1] + nb_node[2]);

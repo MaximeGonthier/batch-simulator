@@ -781,6 +781,12 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	for (i = 0; i < j->cores; i++)
 	{
 		j->cores_used[i] = n->cores[i]->unique_id;
+		
+		//~ if (j->node_used->cores[i]->available_time <= t)
+		//~ {
+			//~ nb_non_available_cores += 1;
+		//~ }
+		
 		n->cores[i]->available_time = earliest_available_time + j->walltime;
 		
 		/* Maybe I need job queue or not, not sure. TODO. */
@@ -791,6 +797,7 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	//~ if (j->node_used->unique_id == 183) {
 	//~ print_decision_in_scheduler(j); }
 	//~ #endif
+	
 	
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(n);
@@ -1061,7 +1068,7 @@ void start_jobs(int t, struct Job* head)
 			if (j->node_used->n_available_cores < 0)
 			{
 				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
-				exit(EXIT_FAILURE);
+				//~ exit(EXIT_FAILURE);
 			}
 			#endif
 						
@@ -1196,7 +1203,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			if (j->node_used->n_available_cores > 20)
 			{
 				printf("error n avail jobs on node %d", j->node_used->unique_id);
-				exit(EXIT_FAILURE);
+				//~ exit(EXIT_FAILURE);
 			}
 			#endif
 						
