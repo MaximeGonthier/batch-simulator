@@ -991,25 +991,38 @@ Data transfers are ignored.
 
 \subsection{Merging the 2 constraints}
 
-Data transfers and constraint on node sizes. Still, no corelation between node size and job length. Should I add one ?
+Data transfers and constraint on node sizes.
 
-\paragraph{Idea for fcfs with a score backfill big nodes or with area filling} 
-The intuition is to use fcfs with a score. But If on a node of my size ($x$), the earliest available time is larger than t (or the mean queue time of previous jobs minus the time already waited by current job in mode 1), then I look at the score of nodes of size $x+1$.
+\paragraph{Unsing fcfs with a score with backfill big nodes} 
+The intuition is to use fcfs with a score. But If I can get a significantly better score on a node of size $x+1$, then I compute my job on a node of size $x+1$.
 
-We could also do that with the intuition of area filling: look from previous workload the allocated area available on bigger sizes and then compute a malus based on the amount of area I will occupy in this space. However, the allocated area is quite small with a normal cluster for smaller jobs.
+%~ We could also do that with the intuition of area filling: look from previous workload the allocated area available on bigger sizes and then compute a malus based on the amount of area I will occupy in this space. However, the allocated area is quite small with a normal cluster for smaller jobs.
 
-If I want to schedule of job using a file of size $x$
+If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
-	\item Compute score on nodes of size $x$. If the earliest available time is $> t$ (or t + mean queue time minus the time already waited by current job depending on the mode) do 2. Else compute on the node with the best score.
-	\item Compute score on nodes of size $x + 1$. If the earliest available time is $> t$ (or ...) do 3. Else if the best score of nodes of size $x + 1$ is also better than the best on node of size $x$, then compute on the node with the best score of size $x+1$.
-	\item ...
-	\item Else compute on node of size $x$ with the best score.
+	\item Compute score on nodes of size $x$. If the best score on nodes of size $x$ is inferior to the mean score of the previous jobs, I can compute $J_i$ on nodes of size $x$. Else do 2.
+	%~ If the earliest available time is $> t$ (or t + mean queue time minus the time already waited by current job depending on the mode) do 2. Else compute on the node with the best score.
+	\item Compute score on nodes of size $x + 1$. If the best score on nodes of size $x + 1$ is inferior to the mean score of the previous jobs, I can compute $J_i$ on nodes of size $x + 1$. Else do 3.
+	%~ If the earliest available time is $> t$ (or ...) do 3. Else if the best score of nodes of size $x + 1$ is also better than the best on node of size $x$, then compute on the node with the best score of size $x+1$.
+	\item Compute score on nodes of size $x + 2$. If the best score on nodes of size $x + 2$ is inferior to the mean score of the previous jobs, I can compute $J_i$ on nodes of size $x + 2$. Else do 4.
+	\item Compute on node of size $x$ with the best score.
 \end{enumerate}
 
-I could also do something inspired by area filling.
-From previous workloads get the possible allocated area
+\paragraph{Using fcfs with a score with area filling - strategy 1}
+From previous workloads get the possible allocated area.
+If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
-	\item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area(x+1)}$. In this case I can choose not to update $Planned\_Area(x+1)$ after the job is started on this node size because I just use it for the score. Or should I still update it ?
+	\item Compute the score on nodes of size $x$. If $Planned\_Area(x+1) - area(J_i) > 0$ -> Compute the score on nodes of size $x+1$. And so on for $x+2$...
+	\item Compute $J_i$ on the node with the best score.
+	%~ \item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area(x+1)}$. In this case I can choose not to update $Planned\_Area(x+1)$ after the job is started on this node size because I just use it for the score. Or should I still update it ?
+	\item Update $Planned\_Area(x+1)$ if necessary.
+\end{enumerate}
+
+\paragraph{Using fcfs with a score with area filling - strategy 2}
+If I want to schedule of job $J_i$ using a file of size $x$
+\begin{enumerate}
+	\item Compute score on all nodes. Add a malus equal to: $multiplier \times area(J_i)$.
+	\item Compute $J_i$ on the node with the best score.
 \end{enumerate}
 
 \begin{figure}[H]\centering

@@ -256,9 +256,9 @@ int main(int argc, char *argv[])
 		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 		{
 			/* Getting workload */
-			char subbuff_workload[23];
-			memcpy(subbuff_workload, &input_job_file[27], 22);
-			subbuff_workload[22] = '_';
+			char subbuff_workload[30];
+			memcpy(subbuff_workload, &input_job_file[27], 29);
+			subbuff_workload[29] = '_';
 			printf("subbuff_workload is %s in omniscient.\n", subbuff_workload);
 			
 			strcpy(file_to_open, "inputs/Planned_area_");
@@ -268,9 +268,9 @@ int main(int argc, char *argv[])
 		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
 		{
 			/* Getting workload */
-			char subbuff_workload[23];
-			memcpy(subbuff_workload, &input_job_file[27], 22);
-			subbuff_workload[22] = '_';
+			char subbuff_workload[30];
+			memcpy(subbuff_workload, &input_job_file[27], 29);
+			subbuff_workload[29] = '_';
 			printf("subbuff_workload is %s.\n", subbuff_workload);
 			
 			strcpy(file_to_open, "inputs/Ratio_area_");
