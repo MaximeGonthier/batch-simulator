@@ -22,21 +22,21 @@ CONTRAINTES_TAILLES=2 # Ignore data transfers
 make -C C/
 
 # Truncate and init the main result file
-#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 #~ for ((i=0; i<=14; i++))
-for ((i=5; i<=6; i++))
+for ((i=0; i<=5; i++))
 do
 	# Schedulers
 	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
 	elif [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
-	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_big_job_first"
-	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
-	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
+	#~ elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_big_job_first"
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1"
 	#~ elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_area_filling"
 	#~ elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_area_filling_with_ratio"
-	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_area_filling_omniscient"
-	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_area_filling_omniscient_with_ratio"
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_area_filling_omniscient"
+	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_area_filling_omniscient_with_ratio"
 	#~ elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_backfill_big_nodes_0_big_job_first"
 	#~ elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_backfill_big_nodes_1_big_job_first"
 	#~ elif [ $((i)) == 11 ]; then SCHEDULER="Fcfs_area_filling_big_job_first"

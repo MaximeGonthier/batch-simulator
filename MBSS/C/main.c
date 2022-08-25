@@ -1,3 +1,35 @@
+/** The available schedulers are:
+ * FCFS - write Fcfs
+ * FCFS that won't upgrade jobs - write Fcfs_no_use_bigger_nodes
+ * FCFS that sort jobs by node required size - write Fcfs_big_job_first
+ * FCFS with EASYBF - write Fcfs_easybf
+ * FCFS with EASYBF that that won't upgrade jobs - write Fcfs_no_use_bigger_nodes_easybf
+ * FCFS and can upgrade jobs for better start time - wtrite Fcfs_backfill_big_nodes_0
+ * FCFS and can upgrade jobs for better start time + temps moyen d'attente - write Fcfs_backfill_big_nodes_1
+ * FCFS with a score - write Fcfs_with_a_score_xM1_xM2_xM3_xM4
+ * FCFS with a score with EASYBF - write Fcfs_with_a_score_easybf_xM1_xM2_xM3_xM4
+ * FCFS with a score and can upgrade jobs for a better score - write Fcfs_with_a_score_backfill_big_nodes_0_xM1_xM2_xM3_xM4
+ * FCFS with a score and can upgrade jobs if the area fit - write Fcfs_with_a_score_area_filling_if_it_fit_xM1_xM2_xM3_xM4
+ * FCFS with a score and can upgrade jobs if the area fit and knows the future of areas - write Fcfs_with_a_score_area_filling_if_it_fit_omniscient_xM1_xM2_xM3_xM4
+ * FCFS with a score and can upgrade jobs and with a score on the area taken - write Fcfs_with_a_score_area_filling_malus_xM1_xM2_xM3_xM4
+ *
+ **/
+
+			//~ else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
+			//~ {
+				//~ fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
+			//~ }
+			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0)
+			//~ {
+				//~ fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t);
+			//~ }
+			//~ else
+			//~ {
+				//~ printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
+				//~ exit(EXIT_FAILURE);
+			//~ }
+
+
 #include <main.h>
 
 int constraint_on_sizes;
