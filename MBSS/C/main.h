@@ -239,7 +239,7 @@ void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** 
 void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes);
 void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 //~ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int backfill_big_node_mode, int total_queue_time, int finished_jobs);
-int fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int score_moyen);
+void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int score_moyen);
 void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int multiplier_area_bigger_nodes);
 
 //~ # Ce sont des listes de listes

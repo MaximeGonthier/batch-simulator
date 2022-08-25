@@ -554,7 +554,8 @@ int main(int argc, char *argv[])
 			/* NEW */
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_xM1_xM2_xM3_xM4", 52) == 0)
 			{
-				score_moyen = fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, score_moyen);
+				/* TODO : score_moyen a update mais ou ? */
+				fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, score_moyen);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 			{
