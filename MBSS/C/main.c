@@ -343,8 +343,8 @@ int main(int argc, char *argv[])
 			{
 				taille_subbuf = 30;
 			}
-			char* subbuff_workload = malloc(sizeof(char)*taille_subbuf);
-			memcpy(subbuff_workload, &input_job_file[27], 29);
+			char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf+1));
+			memcpy(subbuff_workload, &input_job_file[27], taille_subbuf);
 			subbuff_workload[taille_subbuf] = '_';
 			
 			strcpy(file_to_open, "inputs/Ratio_area_");
