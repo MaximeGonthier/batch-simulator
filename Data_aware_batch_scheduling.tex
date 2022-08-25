@@ -993,7 +993,7 @@ Data transfers are ignored.
 
 Data transfers and constraint on node sizes.
 
-\paragraph{Unsing fcfs with a score with backfill big nodes} 
+\paragraph{Using fcfs with a score with backfill big nodes} 
 The intuition is to use fcfs with a score. But If I can get a significantly better score on a node of size $x+1$, then I compute my job on a node of size $x+1$.
 
 %~ We could also do that with the intuition of area filling: look from previous workload the allocated area available on bigger sizes and then compute a malus based on the amount of area I will occupy in this space. However, the allocated area is quite small with a normal cluster for smaller jobs.
@@ -1012,7 +1012,7 @@ If I want to schedule of job $J_i$ using a file of size $x$
 From previous workloads get the possible allocated area.
 If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
-	\item Compute the score on nodes of size $x$. If $Planned\_Area(x+1) - area(J_i) > 0$ -> Compute the score on nodes of size $x+1$. And so on for $x+2$...
+	\item Compute the score on nodes of size $x$. If $Planned\_Area(x+1) - area(J_i) > 0$ then, compute the score on nodes of size $x+1$. And so on for $x+2$...
 	\item Compute $J_i$ on the node with the best score.
 	%~ \item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area(x+1)}$. In this case I can choose not to update $Planned\_Area(x+1)$ after the job is started on this node size because I just use it for the score. Or should I still update it ?
 	\item Update $Planned\_Area(x+1)$ if necessary.
@@ -1021,9 +1021,10 @@ If I want to schedule of job $J_i$ using a file of size $x$
 \paragraph{Using fcfs with a score with area filling - strategy 2}
 If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
-	\item Compute score on all nodes. Add a malus equal to: $multiplier \times area(J_i)$.
+	\item Compute score on all nodes. Add a malus equal to: $multiplier \times area(J_i)$ if I want to schedule on a node of size bigger than $x$.
 	\item Compute $J_i$ on the node with the best score.
 \end{enumerate}
+However here there are no correlation with the proportion of space taken.
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{Number of "upgraded" jobs}\label{17}\end{subfigure}
