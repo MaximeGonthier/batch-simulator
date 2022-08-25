@@ -885,19 +885,20 @@ void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** 
 	}
 }
 
-void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int backfill_big_node_mode, int total_queue_time, int finished_jobs)
+//~ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int backfill_big_node_mode, int total_queue_time, int finished_jobs)
+int fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int score_moyen)
 {
-	/* Unique to this function for fcfs with a score */
-	int mean_queue_time = 0;
-	int threshold_for_a_start = 0;	
-	if (finished_jobs == 0)
-	{
-		mean_queue_time = 0;
-	}
-	else
-	{
-		mean_queue_time = total_queue_time/finished_jobs;
-	}
+	//~ /* Unique to this function for fcfs with a score */
+	//~ int mean_queue_time = 0;
+	//~ int threshold_for_a_start = 0;	
+	//~ if (finished_jobs == 0)
+	//~ {
+		//~ mean_queue_time = 0;
+	//~ }
+	//~ else
+	//~ {
+		//~ mean_queue_time = total_queue_time/finished_jobs;
+	//~ }
 	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;

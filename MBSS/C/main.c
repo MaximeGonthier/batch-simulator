@@ -61,6 +61,7 @@ long long Planned_Area[3][3];
 
 int main(int argc, char *argv[])
 {
+	int score_moyen = 0;
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
@@ -367,7 +368,7 @@ int main(int argc, char *argv[])
 		}
 		free(file_to_open);
 		
-		if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0))
+		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient", 28) == 0) || (strcmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0))
 		{
 			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 			{
@@ -378,7 +379,7 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		else if ((strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0))
+		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio", 39) == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio", 28) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 53) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 64) == 0))
 		{
 			for (int ii = 0; ii < 3; ii++)
 			{
@@ -553,7 +554,7 @@ int main(int argc, char *argv[])
 			/* NEW */
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_xM1_xM2_xM3_xM4", 52) == 0)
 			{
-				//~ fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, total_queue_time, finished_jobs);
+				score_moyen = fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, score_moyen);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 			{
