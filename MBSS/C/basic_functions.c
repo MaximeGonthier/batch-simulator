@@ -1068,6 +1068,7 @@ void start_jobs(int t, struct Job* head)
 			if (j->node_used->n_available_cores < 0)
 			{
 				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
+				j->node_used->n_available_cores = 0; /* Test */
 				//~ exit(EXIT_FAILURE);
 			}
 			#endif
@@ -1202,7 +1203,8 @@ void end_jobs(struct Job* job_list_head, int t)
 			}
 			if (j->node_used->n_available_cores > 20)
 			{
-				printf("error n avail jobs on node %d", j->node_used->unique_id);
+				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
+				j->node_used->n_available_cores = 20; /* Test */
 				//~ exit(EXIT_FAILURE);
 			}
 			#endif

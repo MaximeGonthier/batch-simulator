@@ -63,22 +63,22 @@ elif (comparaison == "Nb_Upgraded_Jobs"):
 	Y_index = 17
 	plot_title = "Nb Upgraded Jobs"
 elif (comparaison == "Mean_Stretch_128"):
-	Y_index = 18
+	Y_index = 19 # Car il y a large queue time job que je plot pas mais qui est dans la data
 	plot_title = "Mean Stretch 128 jobs"
 elif (comparaison == "Mean_Stretch_256"):
-	Y_index = 19
+	Y_index = 20
 	plot_title = "Mean Stretch 256 jobs"
 elif (comparaison == "Mean_Stretch_1024"):
-	Y_index = 20
+	Y_index = 21
 	plot_title = "Mean Stretch 1024 jobs"
 elif (comparaison == "Mean_Stretch_With_a_Minimum_128"):
-	Y_index = 21
+	Y_index = 22
 	plot_title = "Mean Bounded Stretch 128 jobs"
 elif (comparaison == "Mean_Stretch_With_a_Minimum_256"):
-	Y_index = 22
+	Y_index = 23
 	plot_title = "Mean Bounded Stretch 256 jobs"
 elif (comparaison == "Mean_Stretch_With_a_Minimum_1024"):
-	Y_index = 23
+	Y_index = 24
 	plot_title = "Mean Bounded Stretch 1024 jobs"
 else:
 	print("Wrong comparison")

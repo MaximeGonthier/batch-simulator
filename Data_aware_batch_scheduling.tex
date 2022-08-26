@@ -955,6 +955,8 @@ No constraint on node sizes.
 
 Data transfers are ignored.
 
+\subsubsection{First study}
+
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{Number of "upgraded" jobs}\label{14}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-24_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{Mean bounded stretch}\label{7}\end{subfigure}
@@ -989,23 +991,83 @@ Data transfers are ignored.
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-24->2022-01-26_Mean_Stretch_With_a_Minimum_162_128_162_256_162_1024.pdf}\caption{Mean bounded stretch}\label{28}\end{subfigure}
 \caption{Size constraint but no transfers - 1/3 128 nodes, 1/3 256 nodes, 1/3 1024 nodes cluster - Sometime in July - 3 consecutive days evaluated}\label{29}\end{figure}
 
+\subsubsection{Second study}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V10000_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{100\% of 128 jobs, 0\% of 256 jobs, 0\% of 1024 jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9532_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs}\label{47}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9271_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs}\label{48}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V85105_Mean_Stretch_With_a_Minimum_450_128_32_256_4_1024.pdf}\caption{85\% of 128 jobs, 10\% of 256 jobs, 5\% of 1024 jobs}\label{46}\end{subfigure}
+\caption{Mean bounded stretch for all jobs - Varying the data size repartition in the workload - Normal cluster - August 26}\label{49}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V10000_Mean_Stretch_With_a_Minimum_128_450_128_32_256_4_1024.pdf}\caption{100\% of 128 jobs, 0\% of 256 jobs, 0\% of 1024 jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9532_Mean_Stretch_With_a_Minimum_128_450_128_32_256_4_1024.pdf}\caption{95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs}\label{47}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9271_Mean_Stretch_With_a_Minimum_128_450_128_32_256_4_1024.pdf}\caption{92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs}\label{48}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V85105_Mean_Stretch_With_a_Minimum_128_450_128_32_256_4_1024.pdf}\caption{85\% of 128 jobs, 10\% of 256 jobs, 5\% of 1024 jobs}\label{46}\end{subfigure}
+\caption{Mean bounded stretch for 128 jobs - Varying the data size repartition in the workload - Normal cluster - August 26}\label{49}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V10000_Mean_Stretch_With_a_Minimum_256_450_128_32_256_4_1024.pdf}\caption{100\% of 128 jobs, 0\% of 256 jobs, 0\% of 1024 jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9532_Mean_Stretch_With_a_Minimum_256_450_128_32_256_4_1024.pdf}\caption{95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs}\label{47}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9271_Mean_Stretch_With_a_Minimum_256_450_128_32_256_4_1024.pdf}\caption{92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs}\label{48}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V85105_Mean_Stretch_With_a_Minimum_256_450_128_32_256_4_1024.pdf}\caption{85\% of 128 jobs, 10\% of 256 jobs, 5\% of 1024 jobs}\label{46}\end{subfigure}
+\caption{Mean bounded stretch for 256 jobs - Varying the data size repartition in the workload - Normal cluster - August 26}\label{49}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V10000_Mean_Stretch_With_a_Minimum_1024_450_128_32_256_4_1024.pdf}\caption{100\% of 128 jobs, 0\% of 256 jobs, 0\% of 1024 jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9532_Mean_Stretch_With_a_Minimum_1024_450_128_32_256_4_1024.pdf}\caption{95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs}\label{47}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9271_Mean_Stretch_With_a_Minimum_1024_450_128_32_256_4_1024.pdf}\caption{92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs}\label{48}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V85105_Mean_Stretch_With_a_Minimum_1024_450_128_32_256_4_1024.pdf}\caption{85\% of 128 jobs, 10\% of 256 jobs, 5\% of 1024 jobs}\label{46}\end{subfigure}
+\caption{Mean bounded stretch for 1024 jobs - Varying the data size repartition in the workload - Normal cluster - August 26}\label{49}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V10000_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{100\% of 128 jobs, 0\% of 256 jobs, 0\% of 1024 jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9532_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs}\label{47}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V9271_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs}\label{48}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Size_Constraint_2022-01-17->2022-01-17_V85105_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{85\% of 128 jobs, 10\% of 256 jobs, 5\% of 1024 jobs}\label{46}\end{subfigure}
+\caption{Number of "upgraded jobs" - Varying the data size repartition in the workload - Normal cluster - August 26}\label{49}\end{figure}
+
 \subsection{Merging the 2 constraints}
 
 Data transfers and constraint on node sizes.
-
-\paragraph{Using fcfs with a score with backfill big nodes} 
 The intuition is to use fcfs with a score. But If I can get a significantly better score on a node of size $x+1$, then I compute my job on a node of size $x+1$.
 
-%~ We could also do that with the intuition of area filling: look from previous workload the allocated area available on bigger sizes and then compute a malus based on the amount of area I will occupy in this space. However, the allocated area is quite small with a normal cluster for smaller jobs.
-
-If I want to schedule of job $J_i$ using a file of size $x$
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 1}
+If I want to schedule of job $J_i$ using a file of size $x$.
 \begin{enumerate}
-	\item Compute score on nodes of size $x$. If the best score on nodes of size $x$ is inferior to the mean score of the previous jobs, I can compute $J_i$ on nodes of size $x$. Else do 2.
-	%~ If the earliest available time is $> t$ (or t + mean queue time minus the time already waited by current job depending on the mode) do 2. Else compute on the node with the best score.
-	\item Compute score on nodes of size $x + 1$. If the best score on nodes of size $x + 1$ is inferior to the mean score of the previous jobs, I can compute $J_i$ on nodes of size $x + 1$. Else do 3.
-	%~ If the earliest available time is $> t$ (or ...) do 3. Else if the best score of nodes of size $x + 1$ is also better than the best on node of size $x$, then compute on the node with the best score of size $x+1$.
-	\item Compute score on nodes of size $x + 2$. If the best score on nodes of size $x + 2$ is inferior to the mean score of the previous jobs, I can compute $J_i$ on nodes of size $x + 2$. Else do 4.
-	\item Compute on node of size $x$ with the best score.
+	\item Compute score on all nodes.
+	\item If a node of size $x$ has a score in the 95th percentile of scores. Compute $J_i$ on this node. Else do 3.
+	\item If a node of size $x+1$ has a score in the 95th percentile of scores. Compute $J_i$ on this node. Else do 4.
+	\item If a node of size $x+2$ has a score in the 95th percentile of scores. Compute $J_i$ on this node. Else do 5.
+	\item Compute $J_i$ on the node of size $x$ with the best score.
+\end{enumerate}
+Advantage: Only use good scores when I schedule on bigger nodes.\\
+Disadvantage: If a score in a node of size $x$ is very close to a score in a node of size $x+1$, but not in the 95th percentile, it won't be choosen.
+
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 2}
+If I want to schedule of job $J_i$ using a file of size $x$.
+\begin{enumerate}
+	\item Compute score on all nodes. Get the best score on each node size: $Best\_Score(x)$, $Best\_Score(x+1)$, $Best\_Score(x+2)$.
+	\item $P \gets Best\_Score(x) + Best\_Score(x+1) + Best\_Score(x+2)$.
+	\item Choose a random number $R$ between 0 and $P$.
+	\item If $R < Best\_Score(x)$, compute $J_i$ on the node of size $x$ with the best score. Else do 5.
+	\item If $R < Best\_Score(x) + Best\_Score(x+1)$, compute $J_i$ on the node of size $x+1$ with the best score. Else do 6.
+	\item Compute $J_i$ on the node of size $x+2$ with the best score.
+\end{enumerate}
+Advantage: If a node size has an extremly good score it will be choosen.\\
+Disadvantage: If the 3 scores are very close, nothing favor the smaller nodes even though it could make sense to use the smaller node when the difference is not significant.
+
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 3}
+Get $p(256)$ and $p(1024)$, the probability a job has of using a 256 or 1024 node.
+Get $mean\_cores$ the mean number of cores of a job from previous workloads.
+If I want to schedule of job $J_i$ using a file of size $x$.
+\begin{enumerate}
+	\item Compute score on all nodes. Get the best score on each node size: $Best\_Score(x)$, $Best\_Score(x+1)$, ...
+	\item If the best of the three is $Best\_Score(x)$, compute $J_i$ on this node. Else do 3.
+	\item If the best of the three is $Best\_Score(x+1)$, compute $Gain \gets Best\_Score(x) - Best\_Score(x+1)$.
+	\item Compute $Loss \gets p(x+1) \times$ score of a job using $mean\_cores$ and requiring a $x+1$ node if we schedule it after $J_i$, on a $x+1$ node.
+	\item If $Loss < Gain$, compute $J_i$ on a node of size $x+1$. Else compute $J_i$ on a node of size $x$.
 \end{enumerate}
 
 \paragraph{Using fcfs with a score with area filling - strategy 1}
@@ -1014,7 +1076,6 @@ If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
 	\item Compute the score on nodes of size $x$. If $Planned\_Area(x+1) - area(J_i) > 0$ then, compute the score on nodes of size $x+1$. And so on for $x+2$...
 	\item Compute $J_i$ on the node with the best score.
-	%~ \item Compute score on all nodes. If the size of a node is bigger than your size $x$, add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area(x+1)}$. In this case I can choose not to update $Planned\_Area(x+1)$ after the job is started on this node size because I just use it for the score. Or should I still update it ?
 	\item Update $Planned\_Area(x+1)$ if necessary.
 \end{enumerate}
 
@@ -1024,7 +1085,7 @@ If I want to schedule of job $J_i$ using a file of size $x$
 	\item Compute score on all nodes. Add a malus equal to: $multiplier \times area(J_i)$ if I want to schedule on a node of size bigger than $x$.
 	\item Compute $J_i$ on the node with the best score.
 \end{enumerate}
-However here there are no correlation with the proportion of space taken.
+Disadvantage: There are no correlation with the proportion of space taken.
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{Number of "upgraded" jobs}\label{17}\end{subfigure}
