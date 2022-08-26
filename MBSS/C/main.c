@@ -379,7 +379,7 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 53) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 64) == 0))
+		else if ((strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 53) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 64) == 0))
 		{
 			for (int ii = 0; ii < 3; ii++)
 			{

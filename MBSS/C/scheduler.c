@@ -1168,6 +1168,9 @@ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct
 			#ifdef PRINT
 			print_decision_in_scheduler(j);
 			#endif
+			
+			/* Update le score moyen */
+			//~ score_moyen = min_score += 
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
