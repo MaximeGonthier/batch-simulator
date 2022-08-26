@@ -1,5 +1,14 @@
 #include <main.h>
 
+void print_tab_of_int (int arr[], int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		printf("%d", arr[i]);
+	}
+	printf("\n");
+}
+
 void print_node_list(struct Node_List** list)
 {
 	for (int i = 0; i < 3; i++)

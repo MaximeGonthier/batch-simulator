@@ -61,7 +61,6 @@ long long Planned_Area[3][3];
 
 int main(int argc, char *argv[])
 {
-	int score_moyen = 0;
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
@@ -177,7 +176,7 @@ int main(int argc, char *argv[])
 	
 	/* Getting informations for certain schedulers. */
 	//~ if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0))
-	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_x", 38) == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0) || strncmp(scheduler, "Fcfs_with_a_score_area_filling_with_a_malus_x", 45) == 0))
+	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0) || strncmp(scheduler, "Fcfs_with_a_score_area_filling_with_a_malus_x", 45) == 0))
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -189,10 +188,10 @@ int main(int argc, char *argv[])
 			i = 26;
 			j = 26;
 		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_x", 38) == 0)
+		else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
 		{
-			i = 38;
-			j = 38;
+			i = 54;
+			j = 54;
 		}
 		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0)
 		{
@@ -442,6 +441,32 @@ int main(int argc, char *argv[])
 		print_job_list(scheduled_job_list->head);
 		#endif
 	}
+	
+	/* Besoin de calculer le nombre de nodes dans chaque catégorie pour certains algos. */
+	int number_node_size_128_and_more = 0;
+	int number_node_size_256_and_more = 0;
+	int number_node_size_1024 = 0;
+	if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
+	{
+		for (i = 0; i <= 2; i++)
+		{
+			struct Node* n = node_list[i]->head;
+			while (n != NULL)
+			{
+				number_node_size_128_and_more += 1;
+				if (i == 1)
+				{
+					number_node_size_256_and_more += 1;
+				}
+				else if (i == 2)
+				{
+					number_node_size_1024 += 1;
+				}
+				n = n->next;
+			}
+		}
+		printf("There are %d nodes of size 128 and more, %d of size 256 and more, %d of size 1024.\n", number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
+	}
 		
 	/* Start of simulation. */
 	printf("Start simulation.\n");
@@ -552,10 +577,9 @@ int main(int argc, char *argv[])
 				//~ fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, backfill_big_node_mode, total_queue_time, finished_jobs);
 			//~ }
 			/* NEW */
-			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_xM1_xM2_xM3_xM4", 52) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_xM1_xM2_xM3_xM4", 52) == 0)
 			{
-				/* TODO : score_moyen a update mais ou ? */
-				fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, score_moyen);
+				fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 			{
