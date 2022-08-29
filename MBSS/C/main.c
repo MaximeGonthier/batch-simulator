@@ -273,7 +273,7 @@ int main(int argc, char *argv[])
 		free(to_copy3);
 	}
 	
-	if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0))
+	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
 		FILE *f = NULL;
 		char s1[30];
@@ -287,85 +287,54 @@ int main(int argc, char *argv[])
 		/* Getting cluster */
 		char subbuff_cluster[30];
 		memcpy(subbuff_cluster, &input_node_file[24], 29);
-		printf("subbuff_cluster is %s.\n", subbuff_cluster);
+		printf("Cluster is %s\n", subbuff_cluster);
 		
-		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0))
+		/* Getting workload */
+		int taille_workload = strlen(input_job_file);
+		int taille_subbuf = 0;
+		printf("Taille nom du workload: %d.\n", taille_workload);
+		if (taille_workload == 49) // Cas classique sans rien après le nom du workload
 		{
-			strcpy(file_to_open, "inputs/Planned_area_2022-01-18->2022-01-18_");
-			strcat(file_to_open, subbuff_cluster);
+			taille_subbuf = 22;
 		}
-		else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0))
+		else if (taille_workload == 55) // Cas 9271
 		{
-			strcpy(file_to_open, "inputs/Ratio_area_2022-01-18->2022-01-18_");
-			strcat(file_to_open, subbuff_cluster);
+			taille_subbuf = 28;
 		}
-		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0))
+		else if (taille_workload == 56) // Cas 90100
 		{
-			/* Getting workload */
-			int taille_workload = strlen(input_job_file);
-			int taille_subbuf = 0;
-			if (taille_workload == 55) // Cas 9271 2022-01-17->2022-01-17_V9271
-			{
-				taille_subbuf = 28;
-			}
-			else if (taille_workload == 56) // Cas 90100
-			{
-				taille_subbuf = 29;
-			}
-			else if (taille_workload == 57) // Cas 502525
-			{
-				taille_subbuf = 30;
-			}
-			char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf+1));
-			memcpy(subbuff_workload, &input_job_file[27], taille_subbuf);
-			subbuff_workload[taille_subbuf] = '_';
-			
-			strcpy(file_to_open, "inputs/Planned_area_");
-			strcat(file_to_open, subbuff_workload);
-			strcat(file_to_open, subbuff_cluster);
-			free(subbuff_workload);
+			taille_subbuf = 29;
 		}
-		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0))
+		else if (taille_workload == 57) // Cas 502525
 		{
-			//~ /* Getting workload */
-			//~ char subbuff_workload[30];
-			//~ memcpy(subbuff_workload, &input_job_file[27], 29);
-			//~ subbuff_workload[29] = '_';
-			//~ printf("subbuff_workload is %s.\n", subbuff_workload);
-			
-			//~ strcpy(file_to_open, "inputs/Ratio_area_");
-			//~ strcat(file_to_open, subbuff_workload);
-			//~ strcat(file_to_open, subbuff_cluster);
-			
-			/* Getting workload */
-			int taille_workload = strlen(input_job_file);
-			int taille_subbuf = 0;
-			if (taille_workload == 55) // Cas 9271 2022-01-17->2022-01-17_V9271
-			{
-				taille_subbuf = 28;
-			}
-			else if (taille_workload == 56) // Cas 90100
-			{
-				taille_subbuf = 29;
-			}
-			else if (taille_workload == 57) // Cas 502525
-			{
-				taille_subbuf = 30;
-			}
-			char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf+1));
-			memcpy(subbuff_workload, &input_job_file[27], taille_subbuf);
-			subbuff_workload[taille_subbuf] = '_';
-			
-			strcpy(file_to_open, "inputs/Ratio_area_");
-			strcat(file_to_open, subbuff_workload);
-			strcat(file_to_open, subbuff_cluster);
-			free(subbuff_workload);
+			taille_subbuf = 30;
 		}
 		else
 		{
-			perror("Error scheduler area filling.\n");
+			printf("Mauvais nom de cluster.\n");
 			exit(EXIT_FAILURE);
 		}
+		char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf+1));
+		memcpy(subbuff_workload, &input_job_file[27], taille_subbuf);
+		subbuff_workload[taille_subbuf] = '_';
+		printf("Workload is %s\n", subbuff_workload);
+
+		/* Normal case */
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+		{
+			strcpy(file_to_open, "inputs/Planned_Ratio_areas/Planned_area_");
+		}
+		else
+		{
+			strcpy(file_to_open, "inputs/Planned_Ratio_areas/Ratio_area_");
+		}
+		strcat(file_to_open, subbuff_workload);
+		/* Non omniscient case take 7 days earlier. */
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0)
+		{
+			strcat(file_to_open, "7_days_earlier_");
+		}
+		strcat(file_to_open, subbuff_cluster);
 
 		printf("Opening file: %s\n", file_to_open);
 		f = fopen(file_to_open, "r");
@@ -376,7 +345,7 @@ int main(int argc, char *argv[])
 		}
 		free(file_to_open);
 		
-		if ((strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0) || (strcmp(scheduler, "Fcfs_area_filling") == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0))
+		if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling") == 0)
 		{
 			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 			{
@@ -387,7 +356,7 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		else if ((strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 53) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 64) == 0))
+		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0)
 		{
 			for (int ii = 0; ii < 3; ii++)
 			{
@@ -412,6 +381,7 @@ int main(int argc, char *argv[])
 		}
 		fclose(f);
 	}
+	exit(1);
 	
 	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
 	{
@@ -661,6 +631,13 @@ int main(int argc, char *argv[])
 		
 		/* Time is advancing. */
 		t += 1;
+		
+		/* Je dépasse les int max ? */
+		if (t > 2000000000)
+		{
+			printf("Risque de dépasser les int max t = %d.\n", t);
+			exit(EXIT_FAILURE);
+		}
 	}
 	
 	#ifdef PRINT_CLUSTER_USAGE

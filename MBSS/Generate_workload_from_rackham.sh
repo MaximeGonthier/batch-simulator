@@ -78,7 +78,10 @@ done
 echo "Start and end times"
 cat outputs/start_end_date_evaluated_jobs.txt
 
-VARIANCE=85105
+#~ VARIANCE=10000
+VARIANCE=85100
+#~ VARIANCE=9532
+#~ VARIANCE=9271
 
 echo "Converting job history..."
 # python3 src/generate_workload_from_rackham.py $START"->"$END 256jobs 1024jobs dataonalljobs? variance?

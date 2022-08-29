@@ -1,8 +1,8 @@
 # The commented code just got area ratio from previous CONVERTED_WORKLOAD of each job size.
 # The new code also compute the area each job can use in other sizes like described in Area filling.
-# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER
+# Usage: python3 src/Compute_area_ratio_previous_CONVERTED_WORKLOAD.py CONVERTED_WORKLOAD CLUSTER CONVERTED_WORKLOAD_7_DAYS_LATER (optional)
 # Attention je considère qu'on a que 3 tailles de nodes par défaut. Ajouter cela à la lecture du cluster si besoin.
-
+# Si l'option 7_days_earlier_ n'est pas vide alors je renomme avec 7 jours de plus dans le nom du workload et avec 7_days_earlier_ pour indiquer au code C que c'est ca pour le non omnisicnet
 # Imports
 import sys
 
@@ -34,7 +34,6 @@ print("K_2 =", K_2)
 print("K_3 =", K_3)
 print("K =", K)
 
-# ~ exit(1)
 
 Area_Jobs = [0, 0, 0]
 Area_Jobset = 0
@@ -118,19 +117,20 @@ print("Ratio_Area_3 =", Ratio_Area_3)
 print("Ratio_Area_2 =", Ratio_Area_2)
 print("Ratio_Area_1 =", Ratio_Area_1)
 
-# ~ if planned == 0:
-file_to_open1 = "inputs/Ratio_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
-# ~ else:
-file_to_open2 = "inputs/Planned_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
+if len(sys.argv) == 4: # Cas non omnisicnet
+	file_to_open1 = "inputs/Planned_Ratio_areas/Ratio_area_" + sys.argv[3][27:] + "_7_days_earlier_" + sys.argv[2][24:]
+	file_to_open2 = "inputs/Planned_Ratio_areas/Planned_area_" + sys.argv[3][27:] + "_7_days_earlier_" + sys.argv[2][24:]
+else:
+	file_to_open1 = "inputs/Planned_Ratio_areas/Ratio_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
+	file_to_open2 = "inputs/Planned_Ratio_areas/Planned_area_" + sys.argv[1][27:] + "_" + sys.argv[2][24:]
 
 f1 = open(file_to_open1, "w")
 f2 = open(file_to_open2, "w")
+print("Opening files ", file_to_open1, "and", file_to_open2)
 
-# ~ if planned == 1:
 f2.write("Planned_Area_1: %s %s %s\n" % (Planned_Area_1[0], Planned_Area_1[1], Planned_Area_1[2]))
 f2.write("Planned_Area_2: %s %s %s\n" % (Planned_Area_2[0], Planned_Area_2[1], Planned_Area_2[2]))
 f2.write("Planned_Area_3: %s %s %s\n" % (Planned_Area_3[0], Planned_Area_3[1], Planned_Area_3[2]))
-# ~ else:
 f1.write("Ratio_Area_1: %s %s %s\n" % (Ratio_Area_1[0], Ratio_Area_1[1], Ratio_Area_1[2]))
 f1.write("Ratio_Area_2: %s %s %s\n" % (Ratio_Area_2[0], Ratio_Area_2[1], Ratio_Area_2[2]))
 f1.write("Ratio_Area_3: %s %s %s\n" % (Ratio_Area_3[0], Ratio_Area_3[1], Ratio_Area_3[2]))

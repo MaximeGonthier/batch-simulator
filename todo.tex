@@ -83,9 +83,20 @@
 
 %~ /data-aware-batch-scheduling/MBSS$ oarsub -p orion -l core=2,walltime=08:00:00 -r '2022-06-14 19:00:00' "bash Stats_single_workload.sh inputs/workloads/converted/test-11 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0"
 
+\section{Informations for the article}
+	\begin{enumerate}
+		\item HEFT is like fcfs with a score x1 x0 x0 x0
+		\item Use same X scale for some gantt charts when I want to compare them: to do that add a job of duration 0 at the maxtime of the heuristic you are showing
+		\item Faire plusieurs test et mettre une barre d'erreur (ce qui varie c'est la taille des fichiers d'entrées lors de la génération du workload). For this I did Generate\_workload\_from\_rackham\_for\_variance.sh to generate different workloads (10 is enough or I go up to 30 ? Might take a while if I do 30 times the same test. Or maybe just once to show the varaince is small ?) and then I try them all and show the variance.
+		\item Use same X scale for workloads stats when I want to compare them
+		\item cluster usage in real: https://www.uppmax.uu.se/resources/system-usage/rackham/
+		\item About files in the simulation: %\url{https://webmail.ens-lyon.fr/?_task=mail&_caps=pdf%3D1%2Cflash%3D0%2Ctif%3D0&_uid=5368&_mbox=INBOX&_action=show}
+	 \end{enumerate}
+
 \section{What's new since last meeting ?}
 
 	\begin{enumerate}
+		% Pour elisabeth et carl
 		\item Re-writing of area filling
 		\item More heatmaps fcfs with a score and all multipliers combination heatmaps
 		\item Code area filling ratio and area filling omniscient
@@ -112,6 +123,7 @@
 		\item tester en faisant varier le multiplicateur de fcfs score area filling: je n'observe pas d'améliorations
 		\item Afficher temps de transferts sur les Gantt charts
 		
+		% Reu du 29/08
 		\item Pour le workload: ignorer jobs cancelled. Ne pas ignorer job failed ou timeout. Si jobs multi node les diviser. Ajout d'un overhead de 2*1min aux jobs et de 1*2min aux failed. Data sur tous les jobs.
 		\item stats sur workload can be plotted
 		\item cluster usage is good now
@@ -120,22 +132,16 @@
 		\item ré ecriture des algos fcfs score + backfill big nodes or + area filling
 		\item new plots size constraint only
 		\item code backfill 95th percentile: trop de complexité car je regarde tout les noeuds
+
+		% Reu du 06/09
+		\item mettre des long long pour fcfs with a score
+		\item voir fonctionnement area filling ratio en détail: penser a update allocated area dans start et end jobs pour les nouveaux algo area filing
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item ISAIC 2022 conference ?
+		\item
 	\end{enumerate}
-
-\section{Informations for the article}
-	\begin{enumerate}
-		\item HEFT is like fcfs with a score x1 x0 x0 x0
-		\item Use same X scale for some gantt charts when I want to compare them: to do that add a job of duration 0 at the maxtime of the heuristic you are showing
-		\item Faire plusieurs test et mettre une barre d'erreur (ce qui varie c'est la taille des fichiers d'entrées lors de la génération du workload). For this I did Generate\_workload\_from\_rackham\_for\_variance.sh to generate different workloads (10 is enough or I go up to 30 ? Might take a while if I do 30 times the same test. Or maybe just once to show the varaince is small ?) and then I try them all and show the variance.
-		\item Use same X scale for workloads stats when I want to compare them
-		\item cluster usage in real: https://www.uppmax.uu.se/resources/system-usage/rackham/
-		\item About files in the simulation: %\url{https://webmail.ens-lyon.fr/?_task=mail&_caps=pdf%3D1%2Cflash%3D0%2Ctif%3D0&_uid=5368&_mbox=INBOX&_action=show}
-	 \end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
@@ -151,10 +157,16 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item mettre des long dans les int
+			\item test size constraint area filling normal en regardant 14 jours dans le passé
+			\item mettre des long long dans les int
+			\item reduire complexité 95th percentile en s'arretant des qu'on est plus dans les 5\% et recommencersi on upgrade
+			\item ecrire et coder area filling strat 2 mais diviser par planned area
+			\item strat 3 backfill big nodes changer un peu: a la place de la proba voir les jobs suivants de taille x+1 (dans la liste connu) et les schedule pour de faux pour avoir la somme de leurs queue time. Puis faire de même avec au milieu notre job j, faire la différecne pour Loss.
+			
+			\item corriger histogrammes stats workloads
 			\item ajouter backffill big node classique a 2 contrainte pour monrer que ca marche pas dans ce cas ?
 			\item strat backfill big nodes: p*scoreperdu vs score sur x / 95 percentile des scores pour le job ? / score de cahque type puis ponderation et choix aleatoire /
-			\item coder algos fcfs score + backfill big nodes or + area filling avec et sans ratio
+			\item coder algos fcfs score + backfill big nodes or + area filling avec et sans ratio (attention pour les area filling faut mettre a jour dans start jobs et end jobs)
 			\item coder les mêmes avec backfill
 			\item les tester avec les 2 contraintes
 			\item tester avec data sur jobs de plus de 5 cores seulement
