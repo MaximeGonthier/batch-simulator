@@ -313,7 +313,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 {
 	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;
-	int min_score = -1;
+	long long min_score = -1;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
@@ -322,7 +322,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	int score = 0;
+	long long score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
@@ -509,7 +509,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
 								
 								#ifdef PRINT		
-								printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
 													
 								/* 2.6. Get minimum score/ */
@@ -1661,13 +1661,13 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 	int earliest_available_time = 0;
 	int i = 0;
 	int k = 0;
-	int score = 0;
+	long long score = 0;
 	//~ bool ok_on_this_node = false;
 				/* Reset some values. */
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	int min_time = 0;					
-	int	min_score = -1;
+	long long	min_score = -1;
 	int time_to_load_file = 0;
 	int time_or_data_already_checked = 0;
 			//~ earliest_available_time = 0;
@@ -1865,7 +1865,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
 								
 								#ifdef PRINT		
-								printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
 								
 
@@ -2020,7 +2020,7 @@ int get_earliest_available_time_specific_sublist_node(int nb_cores_asked, struct
 }
 
 // Function to perform Selection Sort
-void sort_tab_of_int_decreasing_order(int arr[], int n)
+void sort_tab_of_int_decreasing_order(long long arr[], int n)
 {
     int i, j, min_idx;
  
@@ -2041,9 +2041,9 @@ void sort_tab_of_int_decreasing_order(int arr[], int n)
     }
 }
 
-void swap(int* xp, int* yp)
+void swap(long long* xp, long long* yp)
 {
-    int temp = *xp;
+    long long temp = *xp;
     *xp = *yp;
     *yp = temp;
 }

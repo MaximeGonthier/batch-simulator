@@ -207,8 +207,8 @@ int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j
 int schedule_job_on_earliest_available_cores_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, bool use_bigger_nodes);
 int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, struct Job* j1, struct Node_List** head_node, int nb_running_cores, bool* result, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
-void sort_tab_of_int_decreasing_order(int arr[], int n);
-void swap(int* xp, int* yp);
+void sort_tab_of_int_decreasing_order(long long arr[], int n);
+void swap(long long* xp, long long* yp);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);

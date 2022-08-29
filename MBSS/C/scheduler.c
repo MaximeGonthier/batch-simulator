@@ -245,10 +245,10 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 }
 
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
-{	
+{
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;
-	int min_score = -1;
+	long long min_score = -1;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
@@ -257,7 +257,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	int score = 0;
+	long long score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
@@ -445,14 +445,14 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
 								
 								/* Je dépasse les int max ? */
-								if (score > 1000000000)
-								{
-									printf("Risque de dépasser les int max.\n");
-									exit(EXIT_FAILURE);
-								}
+								//~ if (score > 1000000000)
+								//~ {
+									//~ printf("Risque de dépasser les int max.\n");
+									//~ exit(EXIT_FAILURE);
+								//~ }
 								
 								#ifdef PRINT		
-								printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
 													
 								/* 2.6. Get minimum score/ */
@@ -912,7 +912,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	int score = 0;
+	long long score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
@@ -983,9 +983,9 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 			
 			/* Tab pour ranger tout les scores */
 			int nb_nodes_evaluated = 0;
-			int min_score_nodes_128 = -1;
-			int min_score_nodes_256 = -1;
-			int min_score_nodes_1024 = -1;
+			long long min_score_nodes_128 = -1;
+			long long min_score_nodes_256 = -1;
+			long long min_score_nodes_1024 = -1;
 			int min_time_nodes_128 = 0;
 			int min_time_nodes_256 = 0;
 			int min_time_nodes_1024 = 0;
@@ -1007,7 +1007,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 			{
 				nb_nodes_evaluated = number_node_size_1024;
 			}
-			int* tab_scores_all_nodes = malloc(sizeof(int)*nb_nodes_evaluated);
+			long long* tab_scores_all_nodes = malloc(sizeof(long long)*nb_nodes_evaluated);
 			
 			/* Compteur score calculé actuel */
 			int index_current_evaluated_node = 0;
@@ -1103,7 +1103,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
 								
 								#ifdef PRINT		
-								printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
 													
 								//~ /* 2.6. Get minimum score/ */
@@ -1369,8 +1369,8 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 	int i = 0;
 	int random = 0;
 	int node_size_choosen = 0;
-	int sum_best_scores = 0;
-	int* tab_min_score = malloc(sizeof(int)*3);
+	long long sum_best_scores = 0;
+	long long* tab_min_score = malloc(sizeof(long long)*3);
 	tab_min_score[0] = -1;
 	tab_min_score[1] = -1;
 	tab_min_score[2] = -1;
@@ -1382,7 +1382,7 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	int score = 0;
+	long long score = 0;
 	int* tab_min_time = malloc(sizeof(int)*3);
 	tab_min_time[0] = 0;
 	tab_min_time[1] = 0;
@@ -1564,7 +1564,7 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 								//~ printf("Score: %d = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy);
 								
 								#ifdef PRINT		
-								printf("Score for job %d is %d (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
 													
 								/* 2.6. Get minimum score/ */
@@ -1818,7 +1818,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	//~ int i = 0;
-	int min_score = -1;
+	long long min_score = -1;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
@@ -1827,7 +1827,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	int score = 0;
+	long long score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
@@ -2017,7 +2017,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 										
 										#ifdef PRINT
 										//~ if (area_ratio_used != 0) {
-										printf("Score for job %d is %d (EAT: %d + TL: %d + TRL: %f + NCP: %d + AREA: %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout); 
+										printf("Score for job %d is %lld (EAT: %d + TL: %d + TRL: %f + NCP: %d + AREA: %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout); 
 										//~ }
 										#endif
 															
