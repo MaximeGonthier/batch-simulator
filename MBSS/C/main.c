@@ -14,7 +14,8 @@
  * FCFS with a score and can upgrade jobs if the area fit and knows the future of areas - write Fcfs_with_a_score_area_filling_if_it_fit_omniscient_xM1_xM2_xM3_xM4
  * FCFS with a score and can upgrade jobs if the area fit and knows the future of areas with a ratio on the area - write Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_xM1_xM2_xM3_xM4
  * FCFS with a score and can upgrade jobs and with a score on the area taken - write Fcfs_with_a_score_area_filling_with_a_malus_xM1_xM2_xM3_xM4
- *
+ *Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x
+ * Fcfs_with_a_score_backfill_big_nodes_probability_x
  **/
 
 			//~ else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
@@ -61,6 +62,9 @@ long long Planned_Area[3][3];
 
 int main(int argc, char *argv[])
 {
+	/* random seed init. */
+	srand(time(NULL));
+	
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
@@ -176,7 +180,7 @@ int main(int argc, char *argv[])
 	
 	/* Getting informations for certain schedulers. */
 	//~ if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0))
-	if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0) || strncmp(scheduler, "Fcfs_with_a_score_area_filling_with_a_malus_x", 45) == 0))
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_with_a_malus_x", 45) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -217,6 +221,11 @@ int main(int argc, char *argv[])
 		{
 			i = 45;
 			j = 45;
+		}
+		else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
+		{
+			i = 54;
+			j = 54;
 		}
 		else
 		{
@@ -404,17 +413,17 @@ int main(int argc, char *argv[])
 		fclose(f);
 	}
 	
-	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_", 37) == 0)
+	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
 	{
 		/* 0 = don't compute anything, 1 = compute mean queue time */
-		if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
-		{
+		//~ if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
+		//~ {
 			backfill_big_node_mode = scheduler[24] - '0';
-		}
-		else
-		{
-			backfill_big_node_mode = scheduler[37] - '0';
-		}
+		//~ }
+		//~ else
+		//~ {
+			//~ backfill_big_node_mode = scheduler[37] - '0';
+		//~ }
 		printf("Backfill big nodes mode is %d.\n", backfill_big_node_mode);
 	}
 	
@@ -460,6 +469,7 @@ int main(int argc, char *argv[])
 				}
 				else if (i == 2)
 				{
+					number_node_size_256_and_more += 1;
 					number_node_size_1024 += 1;
 				}
 				n = n->next;
@@ -577,9 +587,13 @@ int main(int argc, char *argv[])
 				//~ fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, backfill_big_node_mode, total_queue_time, finished_jobs);
 			//~ }
 			/* NEW */
-			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_xM1_xM2_xM3_xM4", 52) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
 			{
 				fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
+			}
+			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
+			{
+				fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
 			{

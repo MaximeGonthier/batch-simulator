@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <time.h>
 
 /* Global variables */
 extern int constraint_on_sizes;
@@ -245,6 +246,7 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 //~ void fcfs_with_a_score_backfill_big_nodes_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int backfill_big_node_mode, int total_queue_time, int finished_jobs);
 void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024);
 void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int multiplier_area_bigger_nodes);
+void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 
 //~ # Ce sont des listes de listes
 //~ # ~ sub_list = []
