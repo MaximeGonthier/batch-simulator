@@ -1135,6 +1135,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ }
 			
 			/* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
+			/* Attention c'est pas pour fcfs with a score area factor!! */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
 			{
 				if (planned_or_ratio == 1)

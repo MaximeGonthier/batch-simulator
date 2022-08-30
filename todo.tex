@@ -138,6 +138,11 @@
 		\item voir fonctionnement area filling ratio en détail: penser a update allocated area dans start et end jobs pour les nouveaux algo area filing
 		\item Je prendres une semaine plus tôt pour recup les planned and ratio area en cas non omniscient
 		\item Je prends 1 mois entier dans le passé pour ratio area
+		\item Ré écriture strat backfill 3
+		\item code backfill strat 2
+		\item code backfill strat 1 corrigé mais pas vérifié
+		\item code area filling strat 1
+		\item code area filling strat 2
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -159,11 +164,11 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item test size constraint area filling normal en regardant 14 jours dans le passé
-			\item mettre des long long dans les int
-			\item reduire complexité 95th percentile en s'arretant des qu'on est plus dans les 5\% et recommencersi on upgrade
-			\item ecrire et coder area filling strat 2 mais diviser par planned area
-			\item strat 3 backfill big nodes changer un peu: a la place de la proba voir les jobs suivants de taille x+1 (dans la liste connu) et les schedule pour de faux pour avoir la somme de leurs queue time. Puis faire de même avec au milieu notre job j, faire la différecne pour Loss.
+			\item test size constraint area filling normal et ratio en regardant 14 jours dans le passé. plutot montrer workload par workload
+			\item Coder 95th percentile complexité réduite: a verifier
+			\item coder les 5 strats mix
+			\item les tester avec size constrain = 1
+			\item leurs ajouter easy backfill
 			
 			\item corriger histogrammes stats workloads
 			\item ajouter backffill big node classique a 2 contrainte pour monrer que ca marche pas dans ce cas ?
