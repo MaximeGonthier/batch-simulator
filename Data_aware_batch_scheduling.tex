@@ -1045,6 +1045,15 @@ If I want to schedule of job $J_i$ using a file of size $x$.
 Advantage: Only use good scores when I schedule on bigger nodes.\\
 Disadvantage: If a score in a node of size $x$ is very close to a score in a node of size $x+1$, but not in the 95th percentile, it won't be choosen.
 
+To reduce the complexity I do:
+\begin{enumerate}
+	\item Compute score on nodes of size $x$ as long as the score is still in the 95th percentile (because I know the total number of nodes I can do that).
+	\item If a node of size $x$ has a score in the 95th percentile of scores. Compute $J_i$ on this node. Else do 3.
+	\item Compute score on nodes of size $x+1$ as long as the score is still in the 95th percentile.
+	\item If a node of size $x+1$ has a score in the 95th percentile of scores. Compute $J_i$ on this node. Else do 4.
+	\item ...
+\end{enumerate}
+
 \paragraph{Using fcfs with a score with backfill big nodes - strategy 2: weighted random}
 If I want to schedule of job $J_i$ using a file of size $x$.
 \begin{enumerate}
@@ -1058,15 +1067,16 @@ If I want to schedule of job $J_i$ using a file of size $x$.
 Advantage: If a node size has an extremly good score it will be choosen.\\
 Disadvantage: If the 3 scores are very close, nothing favor the smaller nodes even though it could make sense to use the smaller node when the difference is not significant.
 
-\paragraph{Using fcfs with a score with backfill big nodes - strategy 3: ?}
-Get $p(256)$ and $p(1024)$, the probability a job has of using a 256 or 1024 node.
-Get $mean\_cores$ the mean number of cores of a job from previous workloads.
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 3: Gain/Loss tradeoff}
+Get in the available job list, the subset of jobs $subset(x+1)$ of size $x+1$.
 If I want to schedule of job $J_i$ using a file of size $x$.
 \begin{enumerate}
 	\item Compute score on all nodes. Get the best score on each node size: $Best\_Score(x)$, $Best\_Score(x+1)$, ...
 	\item If the best of the three is $Best\_Score(x)$, compute $J_i$ on this node. Else do 3.
 	\item If the best of the three is $Best\_Score(x+1)$, compute $Gain \gets Best\_Score(x) - Best\_Score(x+1)$.
-	\item Compute $Loss \gets p(x+1) \times$ score of a job using $mean\_cores$ and requiring a $x+1$ node if we schedule it after $J_i$, on a $x+1$ node.
+	\item Simulate a schedule of the jobs in $subset(x+1)$ and compute $Sum\_queue\_times \gets Queue\_time(J_j) \forall j \in subset(x+1)$.
+	\item Add $J_i$ on a node of size $x+1$ and simulate a schedule of the jobs in $subset(x+1)$ and compute $Sum\_queue\_times\_with\_J_i \gets Queue\_time(J_j) \forall j \in subset(x+1)$
+	\item Compute $Loss \gets Sum\_queue\_times\_with\_J_i - Sum\_queue\_times$.
 	\item If $Loss < Gain$, compute $J_i$ on a node of size $x+1$. Else compute $J_i$ on a node of size $x$.
 \end{enumerate}
 
@@ -1079,13 +1089,18 @@ If I want to schedule of job $J_i$ using a file of size $x$
 	\item Update $Planned\_Area(x+1)$ if necessary.
 \end{enumerate}
 
-\paragraph{Using fcfs with a score with area filling - strategy 2}
+\paragraph{Using fcfs with a score with area filling - strategy 2: adding a score on the area}
 If I want to schedule of job $J_i$ using a file of size $x$
+\begin{enumerate}
+	\item Compute score on all nodes. Add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area[x+1]}$ if I want to schedule on a node of size bigger than $x$.
+	\item Compute $J_i$ on the node with the best score.
+\end{enumerate}
+OR:
 \begin{enumerate}
 	\item Compute score on all nodes. Add a malus equal to: $multiplier \times area(J_i)$ if I want to schedule on a node of size bigger than $x$.
 	\item Compute $J_i$ on the node with the best score.
 \end{enumerate}
-Disadvantage: There are no correlation with the proportion of space taken.
+Disadvantage: it's not really a time like the other factors of the score.s
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/Results_Size_And_Data_2022-01-24->2022-01-24_Nb_Upgraded_Jobs_450_128_32_256_4_1024.pdf}\caption{Number of "upgraded" jobs}\label{17}\end{subfigure}
