@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
 	
 	/* Getting informations for certain schedulers. */
 	//~ if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0))
-	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_with_a_malus_x", 45) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0)
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -197,35 +197,35 @@ int main(int argc, char *argv[])
 			i = 54;
 			j = 54;
 		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_x", 41) == 0)
-		{
-			i = 41;
-			j = 41;
-		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_x", 52) == 0)
-		{
-			i = 52;
-			j = 52;
-		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_with_ratio_x", 52) == 0)
-		{
-			i = 52;
-			j = 52;
-		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_if_it_fit_omniscient_with_ratio_x", 63) == 0)
-		{
-			i = 63;
-			j = 63;
-		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_with_a_malus_x", 45) == 0)
-		{
-			i = 45;
-			j = 45;
-		}
 		else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
 		{
 			i = 54;
 			j = 54;
+		}
+		else if (strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0)
+		{
+			i = 32;
+			j = 32;
+		}
+		else if (strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0)
+		{
+			i = 43;
+			j = 43;
+		}
+		else if (strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0)
+		{
+			i = 43;
+			j = 43;
+		}
+		else if (strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0)
+		{
+			i = 54;
+			j = 54;
+		}
+		else if (strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0)
+		{
+			i = 58;
+			j = 58;
 		}
 		else
 		{
@@ -273,6 +273,7 @@ int main(int argc, char *argv[])
 		free(to_copy3);
 	}
 	
+	int planned_or_ratio = 0; /* O = planned, 1 = ratio */
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
 		FILE *f = NULL;
@@ -320,16 +321,17 @@ int main(int argc, char *argv[])
 		printf("Workload is %s\n", subbuff_workload);
 
 		/* Normal case */
-		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0)
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0)
 		{
 			strcpy(file_to_open, "inputs/Planned_Ratio_areas/Planned_area_");
 		}
 		else /* Ratio case */
 		{
+			planned_or_ratio = 1;
 			strcpy(file_to_open, "inputs/Planned_Ratio_areas/Ratio_area_");
-		}
+		}		
 		/* Different must bigger trace for ratio because we can, it's just a ratio. For the omniscient however we take the good one. */
-		if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") != 0)
+		if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") != 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0)
 		{
 			strcat(file_to_open, subbuff_workload);
 		}
@@ -343,7 +345,7 @@ int main(int argc, char *argv[])
 			strcat(file_to_open, "_");
 		}
 		/* Non omniscient case take 7 days earlier. */
-		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0)
 		{
 			strcat(file_to_open, "7_days_earlier_");
 		}
@@ -358,7 +360,7 @@ int main(int argc, char *argv[])
 		}
 		free(file_to_open);
 		
-		if (strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling") == 0)
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0)
 		{
 			while (fscanf(f, "%s %s %s %s", s1, s2, s3, s4) == 4)
 			{
@@ -369,7 +371,7 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
+		else
 		{
 			for (int ii = 0; ii < 3; ii++)
 			{
@@ -387,14 +389,8 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		else
-		{
-			perror("Error scheduler area ratio.\n");
-			exit(EXIT_FAILURE);
-		}
 		fclose(f);
 	}
-	//~ exit(1);
 	
 	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
 	{
@@ -578,9 +574,9 @@ int main(int argc, char *argv[])
 			{
 				fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0)
+			else if (strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0)
 			{
-				fcfs_with_a_score_area_filling_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes);
+				fcfs_with_a_score_area_filling_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, planned_or_ratio);
 			}
 			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0))
 			{

@@ -741,7 +741,8 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			}
 			
 			/* Reduced corresponding Planned_Area */
-			if (next_size != j->index_node_list)
+			//~ if (next_size != j->index_node_list)
+			if (choosen_size > j->index_node_list)
 			{
 				/* TODO do temp ... and real in start jobs ... */
 				Temp_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
@@ -1797,27 +1798,23 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 }
 
 /* Add a malus on fcfs with a score on the index of the node you want to use depending on the allocated area you have. */
-void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int multiplier_area_bigger_nodes)
+void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int planned_or_ratio)
 {
-	#ifdef PRINT
-	printf("Start of planned area filling.\n");
-	printf("Planned areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
-	#endif
-	
-	//~ long long Temp_Planned_Area[3][3];
+	/* get area in a temp tab */
+	long long Temp_Planned_Area[3][3];
 	int i = 0;
-	//~ int k = 0;
+	int k = 0;
 	
-	//~ for (i = 0; i < 3; i++)
-	//~ {
-		//~ for (k = 0; k < 3; k++)
-		//~ {
-			//~ Temp_Planned_Area[i][k] = Planned_Area[i][k];
-		//~ }
-	//~ }
-	
+	for (i = 0; i < 3; i++)
+	{
+		for (k = 0; k < 3; k++)
+		{
+			Temp_Planned_Area[i][k] = Planned_Area[i][k];
+		}
+	}
+
+	long long Area_j = 0;
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
-	//~ int i = 0;
 	long long min_score = -1;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
@@ -1831,8 +1828,6 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
-	float area_ratio_used = 0;
-	//~ long long area_ratio_used = 0;
 	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
@@ -1846,11 +1841,9 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	#endif
 	
 	/* --- Reduced complexity nb of copy --- */	
-	//~ if (multiplier_nb_copy != 0)
-	//~ {
-		struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-		time_or_data_already_checked_nb_of_copy_list->head = NULL;
-	//~ }
+	struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
+	time_or_data_already_checked_nb_of_copy_list->head = NULL;
+
 
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
@@ -1872,7 +1865,6 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
-			area_ratio_used = 0;
 			
 			/* In which node size I can pick. */
 			if (j->index_node_list == 0)
@@ -1896,20 +1888,17 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 				exit(EXIT_FAILURE);
 			}
 			
-			/* --- Normal complexity nb of copy --- */		
-			/* For the number of valid copy of a data on other nodes. I add in this list the times I already checked for current job. */
-			//~ struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-			//~ time_or_data_already_checked_nb_of_copy_list->head = NULL;
-			
 			/* --- Reduced complexity nb of copy --- */
 			if (multiplier_nb_copy != 0)
 			{
 				time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
 			}
+			
+			Area_j = j->cores*j->walltime;
 
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
-				if (Planned_Area[i][j->index_node_list] > 0 || i == first_node_size_to_choose_from)
+				if (i == j->index_node_list || Temp_Planned_Area[i][j->index_node_list] - Area_j >= 0)
 				{
 					struct Node* n = head_node[i]->head;
 					while (n != NULL)
@@ -1996,46 +1985,27 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 									printf("Nb of copy for data %d at time %d on node %d is %d.\n", j->data, earliest_available_time, n->unique_id, nb_copy_file_to_load); fflush(stdout);
 									#endif
 									
-									if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy < min_score)
+									/* Compute node's score. */
+									score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
+																	
+									#ifdef PRINT		
+									printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+									#endif
+														
+									/* 2.6. Get minimum score/ */
+									if (min_score == -1)
 									{
-										if (i != first_node_size_to_choose_from && multiplier_area_bigger_nodes != 0)
-										{
-											#ifdef PRINT
-											printf("area_ratio_used = (%d*%d)/%lld.\n", j->cores, j->walltime, Planned_Area[i][j->index_node_list]); fflush(stdout);
-											#endif
-											
-											area_ratio_used = (float)(j->cores*j->walltime)/Planned_Area[i][j->index_node_list];
-											//~ printf("%f\n", area_ratio_used);
-										}
-										else
-										{
-											area_ratio_used = 0;
-										}
-									
-										/* Compute node's score. */
-										score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy + multiplier_area_bigger_nodes*area_ratio_used;
-										
-										#ifdef PRINT
-										//~ if (area_ratio_used != 0) {
-										printf("Score for job %d is %lld (EAT: %d + TL: %d + TRL: %f + NCP: %d + AREA: %f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, multiplier_area_bigger_nodes*area_ratio_used, n->unique_id); fflush(stdout); 
-										//~ }
-										#endif
-															
-										/* 2.6. Get minimum score/ */
-										if (min_score == -1)
-										{
-											min_time = earliest_available_time;
-											min_score = score;
-											j->node_used = n;
-											choosen_time_to_load_file = time_to_load_file;
-										}
-										else if (min_score > score)
-										{
-											min_time = earliest_available_time;
-											min_score = score;
-											j->node_used = n;
-											choosen_time_to_load_file = time_to_load_file;
-										}
+										min_time = earliest_available_time;
+										min_score = score;
+										j->node_used = n;
+										choosen_time_to_load_file = time_to_load_file;
+									}
+									else if (min_score > score)
+									{
+										min_time = earliest_available_time;
+										min_score = score;
+										j->node_used = n;
+										choosen_time_to_load_file = time_to_load_file;
 									}
 								}
 							}
@@ -2056,7 +2026,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 			j->start_time = min_time;
 			j->end_time = min_time + j->walltime;
 			
-			for (int k = 0; k < j->cores; k++)
+			for (k = 0; k < j->cores; k++)
 			{
 				j->cores_used[k] = j->node_used->cores[k]->unique_id;
 				if (j->node_used->cores[k]->available_time <= t)
@@ -2067,6 +2037,12 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 				
 				/* Maybe I need job queue or not not sure. TODO. */
 			}
+			
+			/* Reduced corresponding Planned_Area */
+			//~ if (choosen_size > j->index_node_list)
+			//~ {
+				//~ Temp_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
+			//~ }
 
 			/* Need to add here intervals for current scheduling. */
 			found = false;
@@ -2157,4 +2133,5 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	#ifdef PRINT_SCORES_DATA
 	fclose(f_fcfs_score);
 	#endif
+
 }
