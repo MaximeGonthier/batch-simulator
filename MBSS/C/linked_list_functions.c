@@ -342,25 +342,54 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	struct Job* temp = liste->head;
 	struct Job* prev = liste->head;
 	
-	 // If head node itself holds the key to be deleted
+	// If head node itself holds the key to be deleted
     if (temp != NULL && temp->unique_id == unique_id_to_delete) {
         liste->head = temp->next; // Changed head
+        //~ if (unique_id_to_delete == 11) {
+			//~ printf("Free the head.\n"); fflush(stdout); }
         free(temp); // free old head
+        //~ if (unique_id_to_delete == 11) {
+        //~ printf("Free the head Ok!\n"); fflush(stdout); }
         return;
     }
 	
 	while (temp->unique_id != unique_id_to_delete && temp != NULL)
 	{
+		//~ if (unique_id_to_delete == 11) {
+		//~ printf("prev (%d) get temp.\n", prev->unique_id); fflush(stdout); }
 		prev = temp;
+		//~ if (unique_id_to_delete == 11) {
+		//~ printf("temp is %d and next is %d.\n", temp->unique_id, temp->next->unique_id); fflush(stdout); }
 		temp = temp->next;
 	}
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("temp is %d. Next is %d\n", temp->unique_id, temp->next->unique_id); fflush(stdout); }
 	if (temp == NULL)
 	{
 		printf("Error, deletion of job %d failed.\n", unique_id_to_delete); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
+	//~ if (unique_id_to_delete == 11) {
+		//~ printf("Next.\n"); fflush(stdout); }
 	prev->next = temp->next;
-	free(temp);
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("Will free temp = %d.\n", temp->unique_id); fflush(stdout); }
+	
+	if (unique_id_to_delete != temp->unique_id)
+	{
+		printf("ERROR!\n"); fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	
+	/* OLD */
+	//~ free(temp);
+	/* NEW */
+	//~ free(temp->node_used);
+	free(temp->cores_used);
+	//~ free(temp);
+	
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("free temp ok!.\n"); fflush(stdout); }
 }
 
 /* Copy a job, delete it from list 1 and add it in tail of list 2. */
@@ -372,6 +401,10 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 		printf("Error list empty.\n");
         exit(EXIT_FAILURE);
     }
+    
+    //~ if (j->unique_id == 11) {
+		//~ printf("Adding 11 in a job_list\n");
+	//~ }
     
     /* New copy from j */
 	struct Job* new = (struct Job*) malloc(sizeof(struct Job));
@@ -398,8 +431,15 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 	new->node_used = (struct Node*) malloc(sizeof(struct Node));
 	new->node_used = j->node_used;
 	
-	new->cores_used = malloc(new->cores*sizeof(int));
-	new->cores_used = j->cores_used;
+	/* OLD */
+	//~ new->cores_used = malloc(new->cores*sizeof(int));
+	//~ new->cores_used = j->cores_used;
+	/* NEW */
+	new->cores_used = (int*) malloc(new->cores*sizeof(int));
+	for (int i = 0; i < new->cores; i++)
+	{
+		new->cores_used[i] = j->cores_used[i];
+	}
 
 	/* Delete */
 	delete_job_linked_list(to_delete_from, j->unique_id);

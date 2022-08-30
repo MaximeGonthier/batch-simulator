@@ -924,17 +924,9 @@ void start_jobs(int t, struct Job* head)
 			/* Remove from list of starting times. */
 			if (start_times->head != NULL && start_times->head->time == t)
 			{
-				//~ #ifdef PRINT
-				//~ printf("Before deleting starting time %d:\n", t); fflush(stdout);
-				//~ print_time_list(start_times->head, 0);
-				//~ #endif
 				
 				delete_next_time_linked_list(start_times, t);
 				
-				//~ #ifdef PRINT
-				//~ printf("After deleting starting time %d:\n", t); fflush(stdout);
-				//~ print_time_list(start_times->head, 0);
-				//~ #endif
 			}
 			
 			/* For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain some time ? */
@@ -966,7 +958,7 @@ void start_jobs(int t, struct Job* head)
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list)
 			{
-				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
+				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
 				{
 					Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
 				}
@@ -1025,28 +1017,9 @@ void start_jobs(int t, struct Job* head)
 				printf("Error end time job %d workload %d: %d -> %d\n min_between_delay_and_walltime is %d, walltime was %d, delay was %d\n", j->unique_id, j->workload, j->start_time, j->end_time, min_between_delay_and_walltime, j->walltime, j->delay);
 				exit(EXIT_FAILURE);
 			}
-			//~ if (j->unique_id == 27673)
-			//~ {
-				//~ printf("%d %d %d %d.\n", j->end_time, j->start_time, j->subtime, min_between_delay_and_walltime);
-			//~ }
-			/* Add in list of end times. */
-			//~ #ifdef PRINT
-			//~ printf("Before adding ending time %d:\n", j->end_time);
-			//~ print_time_list(end_times->head, 1);
-			//~ #endif
 			
 			insert_next_time_in_sorted_list(end_times, j->end_time);
 			
-			//~ #ifdef PRINT
-			//~ printf("After adding ending time %d:\n", j->end_time);
-			//~ print_time_list(end_times->head, 1);
-			//~ #endif
-			
-			/* Use next min end time from global variable here :) */
-			//~ if (next_end_time > j->end_time || next_end_time == -1)
-			//~ {
-				//~ next_end_time = j->end_time;
-			//~ }
 			#ifdef PRINT
 			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
 			#endif
@@ -1164,7 +1137,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			/* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
 			{
-				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
+				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
 				{
 					Allocated_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*(j->walltime - (j->end_time - j->start_time));
 				}
@@ -1232,7 +1205,9 @@ void end_jobs(struct Job* job_list_head, int t)
 			
 			if (j->data != 0)
 			{
+				//~ printf("Remove data...\n"); fflush(stdout);
 				remove_data_from_node(j, t);
+				//~ printf("Remove data Ok!\n"); fflush(stdout);
 			}
 			
 			//~ for (i = 0; i < j->cores; i++)
@@ -1258,7 +1233,12 @@ void end_jobs(struct Job* job_list_head, int t)
 			//~ print_job_list(running_jobs->head);
 			//~ printf("Deletion of job %d.\n", j->unique_id); fflush(stdout);
 			struct Job* temp = j->next;
+			//~ printf("delete_job_linked_list for %d...\n", j->unique_id); fflush(stdout);
+			//~ if (j->unique_id == 11) {
+				//~ printf("Job %d, %d %d %d %d %d %f %d %d %d %d %d cores: %d %d %d %d %d %d %d %d %d %d\n", j->unique_id, j->subtime, j->delay, j->walltime, j->cores, j->data, j->data_size, j->index_node_list, j->start_time, j->end_time, j->end_before_walltime, j->node_used->unique_id, j->cores_used[0],j->cores_used[1],j->cores_used[2],j->cores_used[3],j->cores_used[4], j->transfer_time, j->waiting_for_a_load_time, j->workload, j->start_time_from_history, j->node_from_history);
+			//~ }
 			delete_job_linked_list(running_jobs, j->unique_id);
+			//~ printf("delete_job_linked_list for %d Ok!\n", j->unique_id); fflush(stdout);
 			j = temp;
 			//~ print_job_list(running_jobs->head);
 		}

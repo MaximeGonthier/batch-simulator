@@ -653,7 +653,7 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 //~ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t, long long Planned_Area[3][3])
 void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List** head_node, int t)
 {
-	// care use long long for area!!
+	// Care use long long for area!!
 	#ifdef PRINT
 	printf("Start of planned area filling.\n");
 	printf("Planned areas are: [%lld, %lld, %lld] [%lld, %lld, %lld] [%lld, %lld, %lld]\n", Planned_Area[0][0], Planned_Area[0][1], Planned_Area[0][2], Planned_Area[1][0], Planned_Area[1][1], Planned_Area[1][2], Planned_Area[2][0], Planned_Area[2][1], Planned_Area[2][2]);
@@ -771,7 +771,7 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 
 void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** head_node, int t, float Ratio_Area[3][3])
 {
-	// care use long long for area!!
+	// Care use long long for area!!
 	#ifdef PRINT
 	printf("Start of ratio area filling.\n");
 	printf("Ratio areas are: [%f, %f, %f] [%f, %f, %f] [%f, %f, %f]\n", Ratio_Area[0][0], Ratio_Area[0][1], Ratio_Area[0][2], Ratio_Area[1][0], Ratio_Area[1][1], Ratio_Area[1][2], Ratio_Area[2][0], Ratio_Area[2][1], Ratio_Area[2][2]);

@@ -24,7 +24,7 @@ make -C C/
 # Truncate and init the main result file
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_Size_Constraint_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-for ((i=4; i<=6; i++))
+for ((i=0; i<=8; i++))
 do
 	# Schedulers
 	if [ $((i)) == 0 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"

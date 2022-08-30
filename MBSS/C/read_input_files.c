@@ -150,6 +150,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, s, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
 	{
 		total_number_jobs += 1;
+		
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
 		new->unique_id = atoi(id);
 		new->subtime = atoi(subtime);
@@ -161,6 +162,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->workload = atoi(workload);
 		new->start_time_from_history = atoi(start_time_from_history);
 		new->node_from_history = atoi(start_node_from_history);
+		
 		/* Get index_node */
 		if (constraint_on_sizes != 0)
 		{
@@ -196,16 +198,22 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->start_time = -1; 
 		new->end_time = 0; 
 		new->end_before_walltime = false;
+		
 		new->node_used = (struct Node*) malloc(sizeof(struct Node));
 		new->node_used = NULL;
 		
-		new->cores_used = malloc(new->cores*sizeof(int));
+		/* OLD */
+		//~ new->cores_used = malloc(new->cores*sizeof(int));
+		/* NEW */
+		new->cores_used = (int*) malloc(new->cores*sizeof(int));
+		
 		//~ new->cores_used = malloc(new->cores*sizeof(struct Core*));
 		//~ for (int i = 0; i < new->cores; i++)
 		//~ {
 			//~ new->cores_used[i] = malloc(sizeof(struct Core*));
 		//~ }
 		//~ printf("Mallocs ok.\n"); fflush(stdout);
+		
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
 		new->next = NULL;

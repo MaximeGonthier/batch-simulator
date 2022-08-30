@@ -15,3 +15,6 @@ print_distribution_queue_times: main.c read_input_files.c print_functions.c basi
 
 print_cluster_usage: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
 	gcc -DPRINT_CLUSTER_USAGE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I.
+
+clean:
+	rm *.o
