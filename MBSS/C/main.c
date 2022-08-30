@@ -35,6 +35,7 @@
 
 #include <main.h>
 
+int planned_or_ratio; /* O = planned, 1 = ratio */
 int constraint_on_sizes;
 int nb_cores;
 int nb_job_to_evaluate;
@@ -64,7 +65,7 @@ int main(int argc, char *argv[])
 {
 	/* random seed init. */
 	srand(time(NULL));
-	
+	planned_or_ratio = 0;
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
@@ -273,7 +274,6 @@ int main(int argc, char *argv[])
 		free(to_copy3);
 	}
 	
-	int planned_or_ratio = 0; /* O = planned, 1 = ratio */
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0)
 	{
 		FILE *f = NULL;

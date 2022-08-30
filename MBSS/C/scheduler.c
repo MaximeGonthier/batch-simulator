@@ -1828,6 +1828,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
+	int choosen_size = 0;
 	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
@@ -1999,6 +2000,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 										min_score = score;
 										j->node_used = n;
 										choosen_time_to_load_file = time_to_load_file;
+										choosen_size = i;
 									}
 									else if (min_score > score)
 									{
@@ -2006,6 +2008,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 										min_score = score;
 										j->node_used = n;
 										choosen_time_to_load_file = time_to_load_file;
+										choosen_size = i;
 									}
 								}
 							}
@@ -2039,10 +2042,10 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 			}
 			
 			/* Reduced corresponding Planned_Area */
-			//~ if (choosen_size > j->index_node_list)
-			//~ {
-				//~ Temp_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
-			//~ }
+			if (choosen_size > j->index_node_list)
+			{
+				Temp_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
+			}
 
 			/* Need to add here intervals for current scheduling. */
 			found = false;
@@ -2097,22 +2100,16 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
-			
-			/* --- Normal complexity nb of copy --- */
-			/* Free time already checked. */
-			//~ free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
-			
+						
 			/* --- Normal complexity nb of copy --- */
 			/* Increment nb of copy for current file if we scheduled at time t the current job. */
 			if (multiplier_nb_copy != 0 && j->start_time == t)
 			{
-				//~ printf("Need to increment for job %d Multi is %d.\n", j->unique_id, multiplier_nb_copy); fflush(stdout);
 				increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
-				//~ printf("Increment ok for job %d.\n", j->unique_id); fflush(stdout);
 			}
 			
 			j = j->next;
-		}				
+		}	
 		else
 		{
 			#ifdef PRINT

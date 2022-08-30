@@ -958,7 +958,7 @@ void start_jobs(int t, struct Job* head)
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list)
 			{
-				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
+				if (planned_or_ratio == 1)
 				{
 					Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
 				}
@@ -1137,7 +1137,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			/* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
 			{
-				if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
+				if (planned_or_ratio == 1)
 				{
 					Allocated_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*(j->walltime - (j->end_time - j->start_time));
 				}
