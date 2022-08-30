@@ -1033,7 +1033,7 @@ Data transfers are ignored.
 Data transfers and constraint on node sizes.
 The intuition is to use fcfs with a score. But If I can get a significantly better score on a node of size $x+1$, then I compute my job on a node of size $x+1$.
 
-\paragraph{Using fcfs with a score with backfill big nodes - strategy 1}
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 1: 95th percentile}
 If I want to schedule of job $J_i$ using a file of size $x$.
 \begin{enumerate}
 	\item Compute score on all nodes.
@@ -1045,7 +1045,7 @@ If I want to schedule of job $J_i$ using a file of size $x$.
 Advantage: Only use good scores when I schedule on bigger nodes.\\
 Disadvantage: If a score in a node of size $x$ is very close to a score in a node of size $x+1$, but not in the 95th percentile, it won't be choosen.
 
-\paragraph{Using fcfs with a score with backfill big nodes - strategy 2}
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 2: weighted random}
 If I want to schedule of job $J_i$ using a file of size $x$.
 \begin{enumerate}
 	\item Compute score on all nodes. Get the best score on each node size: $Best\_Score(x)$, $Best\_Score(x+1)$, $Best\_Score(x+2)$.
@@ -1058,7 +1058,7 @@ If I want to schedule of job $J_i$ using a file of size $x$.
 Advantage: If a node size has an extremly good score it will be choosen.\\
 Disadvantage: If the 3 scores are very close, nothing favor the smaller nodes even though it could make sense to use the smaller node when the difference is not significant.
 
-\paragraph{Using fcfs with a score with backfill big nodes - strategy 3}
+\paragraph{Using fcfs with a score with backfill big nodes - strategy 3: ?}
 Get $p(256)$ and $p(1024)$, the probability a job has of using a 256 or 1024 node.
 Get $mean\_cores$ the mean number of cores of a job from previous workloads.
 If I want to schedule of job $J_i$ using a file of size $x$.
@@ -1070,7 +1070,7 @@ If I want to schedule of job $J_i$ using a file of size $x$.
 	\item If $Loss < Gain$, compute $J_i$ on a node of size $x+1$. Else compute $J_i$ on a node of size $x$.
 \end{enumerate}
 
-\paragraph{Using fcfs with a score with area filling - strategy 1}
+\paragraph{Using fcfs with a score with area filling - strategy 1: classic area filling}
 From previous workloads get the possible allocated area.
 If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
