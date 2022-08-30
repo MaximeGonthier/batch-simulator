@@ -157,8 +157,7 @@ plt.hist(data4, align="mid")
 plt.savefig("plot/Distribution/" + FILENAME + "_data_size" + ".pdf")
 plt.close()
 
-# ~ # Subtimes but with jobs' sizes
-
+# Subtimes but with jobs' sizes
 data5 = pd.read_csv("outputs/" + FILENAME + "_subtime_all")
 plt.hist(data5, align="mid", color="blue")
 data5 = pd.read_csv("outputs/" + FILENAME + "_subtime_128")

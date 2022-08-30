@@ -1,0 +1,3 @@
+Planned_Area_1: 17863213500.0 0 0
+Planned_Area_2: 4476124680.0 347687160 0
+Planned_Area_3: 0 0 602976480

@@ -324,13 +324,26 @@ int main(int argc, char *argv[])
 		{
 			strcpy(file_to_open, "inputs/Planned_Ratio_areas/Planned_area_");
 		}
-		else
+		else /* Ratio case */
 		{
 			strcpy(file_to_open, "inputs/Planned_Ratio_areas/Ratio_area_");
 		}
-		strcat(file_to_open, subbuff_workload);
+		/* Different must bigger trace for ratio because we can, it's just a ratio. For the omniscient however we take the good one. */
+		if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") != 0)
+		{
+			strcat(file_to_open, subbuff_workload);
+		}
+		else /* There is a case of area_filling_with_ratio_7_days_earlier as well, it goes in the if */
+		{
+			strcat(file_to_open, "2021-10-02->2021-10-30_");
+			char* subbuff_workload_2 = malloc(sizeof(char)*(taille_subbuf+1));
+			memcpy(subbuff_workload_2, &input_job_file[50], taille_subbuf);
+			strcat(file_to_open, subbuff_workload_2);
+			free(subbuff_workload_2);
+			strcat(file_to_open, "_");
+		}
 		/* Non omniscient case take 7 days earlier. */
-		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0)
+		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
 		{
 			strcat(file_to_open, "7_days_earlier_");
 		}
@@ -356,7 +369,7 @@ int main(int argc, char *argv[])
 				i += 1;
 			}
 		}
-		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0)
+		else if (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
 		{
 			for (int ii = 0; ii < 3; ii++)
 			{
@@ -381,7 +394,7 @@ int main(int argc, char *argv[])
 		}
 		fclose(f);
 	}
-	exit(1);
+	//~ exit(1);
 	
 	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
 	{
@@ -581,7 +594,7 @@ int main(int argc, char *argv[])
 			{
 				fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
 			}
-			else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
+			else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
 			{
 				fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
 			}

@@ -34,7 +34,6 @@ print("K_2 =", K_2)
 print("K_3 =", K_3)
 print("K =", K)
 
-
 Area_Jobs = [0, 0, 0]
 Area_Jobset = 0
 with open(input_job_file) as f:
