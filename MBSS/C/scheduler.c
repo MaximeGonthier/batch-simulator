@@ -948,10 +948,10 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 	{
 		if (nb_non_available_cores < nb_cores)
 		{
-			#ifdef PRINT
+			//~ #ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
 			printf("\nNeed to schedule job %d using file %d.\n", j->unique_id, j->data); fflush(stdout);
-			#endif
+			//~ #endif
 			
 			/* 2. Choose a node. */		
 			/* Reset some values. */					
@@ -1054,7 +1054,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 					//~ printf("Tab of scores after sort by decreasing order is: ");
 					//~ print_tab_of_int(tab_scores_all_nodes, nb_nodes_evaluated);
 						
-					double percentile = 95;
+					double percentile = 50; /* TODO a changer */
 					double fractional_rank = 0;
 					fractional_rank = (percentile/100.0)*(nb_nodes_evaluated);
 					//~ printf("fractional_rank: %f = (%f/100.0)*(%d)\n", fractional_rank, percentile, nb_nodes_evaluated);
@@ -1064,7 +1064,8 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 					printf("result_percentile_computation for job %d size %d: %f\n", j->unique_id, i, result_percentile_computation);
 				}
 				
-				if (i != last_node_size_to_choose_from && min_score < result_percentile_computation)
+				//~ if (i != last_node_size_to_choose_from && min_score <= result_percentile_computation)
+				if (result_percentile_computation != -1 && min_score <= result_percentile_computation)
 				{
 					printf("Break earlier because my best score (%lld) will be in the 95th percentile!\n", min_score);
 					break;
@@ -1078,9 +1079,9 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 					time_to_reload_evicted_files = 0;
 					nb_copy_file_to_load = 0;
 					
-					#ifdef PRINT
+					//~ #ifdef PRINT
 					printf("On node %d?\n", n->unique_id); fflush(stdout);
-					#endif
+					//~ #endif
 					
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
@@ -1231,7 +1232,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 					
 					/* Add score in tab with all scores */
 					score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
-					//~ printf("Adding %lld to the score tab.\n", score);
+					printf("Adding %lld to the score tab.\n", score);
 					tab_scores_all_nodes[index_current_evaluated_node] = score;
 					index_current_evaluated_node += 1;
 					
@@ -1391,9 +1392,9 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(j->node_used);
 										
-			#ifdef PRINT
+			//~ #ifdef PRINT
 			print_decision_in_scheduler(j);
-			#endif
+			//~ #endif
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);

@@ -260,7 +260,7 @@ int main(int argc, char *argv[])
 		/* Multiplier 1 */
 		while (scheduler[i] != '_')
 		{
-			printf("1: ++ with %c\n", scheduler[i]);
+			//~ printf("1: ++ with %c\n", scheduler[i]);
 			i += 1;
 			number_of_char += 1;
 		}
@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
 		number_of_char = 0;
 		while (scheduler[i] != '_')
 		{
-			printf("2: ++ with %c\n", scheduler[i]);
+			//~ printf("2: ++ with %c\n", scheduler[i]);
 			i += 1;
 			number_of_char += 1;
 		}
@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
 		number_of_char = 0;
 		while (scheduler[i] != '_')
 		{
-			printf("3: ++ with %c\n", scheduler[i]);
+			//~ printf("3: ++ with %c\n", scheduler[i]);
 			i += 1;
 			number_of_char += 1;
 		}
@@ -308,7 +308,7 @@ int main(int argc, char *argv[])
 		number_of_char = 0;
 		while (scheduler[i])
 		{
-			printf("4: ++ with %c\n", scheduler[i]);
+			//~ printf("4: ++ with %c\n", scheduler[i]);
 			i += 1;
 			number_of_char += 1;
 		}
