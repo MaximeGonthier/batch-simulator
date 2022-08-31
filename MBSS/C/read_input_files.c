@@ -20,6 +20,10 @@ void read_cluster(char* input_node_file)
         exit(EXIT_FAILURE);
 	}
     
+	number_node_size[0] = 0;
+	number_node_size[1] = 0;
+	number_node_size[2] = 0;
+    
     char s[100];
     char id[100];
     char memory[100];
@@ -38,14 +42,17 @@ void read_cluster(char* input_node_file)
 		{
 			if (new->memory == 128)
 			{
+				number_node_size[0] += 1;
 				index_node = 0;
 			}
 			else if (new->memory == 256)
 			{
+				number_node_size[1] += 1;
 				index_node = 1;
 			}
 			else if (new->memory == 1024)
 			{
+				number_node_size[2] += 1;
 				index_node = 2;
 			}
 			else

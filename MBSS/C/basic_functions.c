@@ -924,9 +924,7 @@ void start_jobs(int t, struct Job* head)
 			/* Remove from list of starting times. */
 			if (start_times->head != NULL && start_times->head->time == t)
 			{
-				
 				delete_next_time_linked_list(start_times, t);
-				
 			}
 			
 			/* For constraint on sizes only. TODO : remove it or put it in an ifdef if I don't have this constraint to gain some time ? */

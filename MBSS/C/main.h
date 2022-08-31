@@ -35,6 +35,7 @@ extern int total_queue_time;
 extern int first_subtime_day_0;
 extern char* scheduler;
 extern long long Planned_Area[3][3];
+extern int number_node_size[3];
 
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
  * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of
@@ -251,41 +252,4 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int planned_or_ratio, float Ratio_Area[3][3]);
 void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int multiplier_area_bigger_nodes, int division_by_planned_area);
-
-//~ # Ce sont des listes de listes
-//~ # ~ sub_list = []
-//~ node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
-//~ available_node_list =  [[] for _ in range(3)] # Nb of different sizes of memory
-
-//~ to_print_list = [] # TODO : utilisé ?
-
-//~ job_list = []
-//~ job_list_to_start_from_history = []
-//~ # ~ job_list_0 = []
-//~ # ~ job_list_1 = []
-//~ # ~ job_list_2 = []
-//~ available_job_list = []
-//~ new_job_list = []
-//~ scheduled_job_list = []
-//~ to_print_list = []
-//~ end_times = []
-//~ # ~ nstart: int
-//~ # ~ node_list = []
-//~ # ~ available_node_list = [] # Contient aussi les coeurs disponibles
-
-
-//~ @dataclass
-//~ class To_print: # Struct used to know what to print later in csv
-    //~ job_unique_id: int
-    //~ job_subtime: int
-    //~ node_unique_id: int
-    //~ core_unique_id: list
-    //~ time: int
-    //~ time_used: int
-    //~ transfer_time: int
-    //~ job_start_time: int
-    //~ job_end_time: int
-    //~ job_cores: int
-    //~ waiting_for_a_load_time: int
-    //~ empty_cluster_time: float
-    //~ data_type: int
+void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);

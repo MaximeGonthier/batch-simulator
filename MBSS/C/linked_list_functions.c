@@ -384,9 +384,9 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	/* OLD */
 	//~ free(temp);
 	/* NEW */
-	//~ free(temp->node_used);
+	// free(temp->node_used);
 	free(temp->cores_used);
-	//~ free(temp);
+	// free(temp);
 	
 	//~ if (unique_id_to_delete == 11) {
 	//~ printf("free temp ok!.\n"); fflush(stdout); }

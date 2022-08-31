@@ -60,6 +60,7 @@ struct Next_Time_List* start_times;
 int nb_job_to_evaluate_started;
 long long Allocated_Area[3][3];
 long long Planned_Area[3][3];
+int number_node_size[3];
 
 int main(int argc, char *argv[])
 {
@@ -181,7 +182,7 @@ int main(int argc, char *argv[])
 	
 	/* Getting informations for certain schedulers. */
 	//~ if ((strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_x", 32) == 0) || (strncmp(scheduler, "Fcfs_with_a_score_area_filling_omniscient_x", 43) == 0))
-	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0)
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -243,51 +244,89 @@ int main(int argc, char *argv[])
 			i = 49;
 			j = 49;
 		}
+		else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0)
+		{
+			i = 57;
+			j = 57;
+		}
 		else
 		{
 			printf("Error.\n");
 			exit(EXIT_FAILURE);
 		}
 		
+		int number_of_char = 0;
+		
+		/* Multiplier 1 */
 		while (scheduler[i] != '_')
 		{
+			printf("1: ++ with %c\n", scheduler[i]);
 			i += 1;
+			number_of_char += 1;
 		}
-		char *to_copy1 = malloc(5*sizeof(char));
-		char *to_copy2 = malloc(5*sizeof(char));
-		char *to_copy3 = malloc(5*sizeof(char));
-		char *to_copy4 = malloc(5*sizeof(char));
-		strncpy(to_copy1, scheduler + j, i - j);
-		multiplier_file_to_load = atoi(to_copy1);
-		j = i + 2;
-		i = i + 1;
+		char to_copy1[number_of_char];
+		for (j = 0; j < number_of_char; j++)
+		{
+			to_copy1[j] = scheduler[i - number_of_char + j];
+		}
+		multiplier_file_to_load = (int) strtol(to_copy1, NULL, 10);
+		i = i + 2;
+		
+		/* Multiplier 2 */
+		number_of_char = 0;
 		while (scheduler[i] != '_')
 		{
+			printf("2: ++ with %c\n", scheduler[i]);
 			i += 1;
+			number_of_char += 1;
 		}
-		strncpy(to_copy2, scheduler + j, i - j);
-		multiplier_file_evicted = atoi(to_copy2);
-		j = i + 2;
-		i = i + 1;
+		char to_copy2[number_of_char];
+		for (j = 0; j < number_of_char; j++)
+		{
+			to_copy2[j] = scheduler[i - number_of_char + j];
+		}
+		multiplier_file_evicted = (int) strtol(to_copy2, NULL, 10);
+		i = i + 2;
+				
+		/* Multiplier 3 */
+		number_of_char = 0;
 		while (scheduler[i] != '_')
 		{
+			printf("3: ++ with %c\n", scheduler[i]);
 			i += 1;
+			number_of_char += 1;
 		}
-		strncpy(to_copy3, scheduler + j, i - j);
-		multiplier_nb_copy = atoi(to_copy3);
-		j = i + 2;
+		char to_copy3[number_of_char];
+		for (j = 0; j < number_of_char; j++)
+		{
+			to_copy3[j] = scheduler[i - number_of_char + j];
+		}
+		multiplier_nb_copy = (int) strtol(to_copy3, NULL, 10);
+		i = i + 2;
+				
+		/* Multiplier 4 */
+		number_of_char = 0;
 		while (scheduler[i])
 		{
+			printf("4: ++ with %c\n", scheduler[i]);
 			i += 1;
+			number_of_char += 1;
 		}
-		strncpy(to_copy4, scheduler + j, i - j);
-		multiplier_area_bigger_nodes = atoi(to_copy4);
-		
+		char to_copy4[number_of_char];
+		for (j = 0; j < number_of_char; j++)
+		{
+			to_copy4[j] = scheduler[i - number_of_char + j];
+		}
+		multiplier_area_bigger_nodes = (int) strtol(to_copy4, NULL, 10);
+						
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes);
-		free(to_copy1);
-		free(to_copy2);
-		free(to_copy3);
+		//~ free(to_copy1);
+		//~ free(to_copy2);
+		//~ free(to_copy3);
+		//~ free(to_copy4);
 	}
+	
+	//~ exit(1);
 	
 	int division_by_planned_area = 0;
 	
@@ -601,6 +640,10 @@ int main(int argc, char *argv[])
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
 			{
 				fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			}
+			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0)
+			{
+				fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
 			else if (strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0)
 			{

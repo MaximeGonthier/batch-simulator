@@ -288,7 +288,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
-			printf("\nNeed to schedule job %d using file %d.\n", j->unique_id, j->data); fflush(stdout);
+			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
 			#endif
 			
 			/* 2. Choose a node. */		
@@ -345,6 +345,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+					printf("%d %d %d %d\n", n->cores[0]->available_time, n->cores[1]->available_time, n->cores[2]->available_time, n->cores[3]->available_time); /* -1 because tab start at 0 */
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
 						earliest_available_time = t;
@@ -1497,7 +1498,7 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
-			printf("\nNeed to schedule job %d using file %d.\n", j->unique_id, j->data); fflush(stdout);
+			printf("\nNeed to schedule job %d using file %d category %d.\n", j->unique_id, j->data, j->index_node_list); fflush(stdout);
 			#endif
 			
 			/* 2. Choose a node. */		
@@ -1833,6 +1834,413 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 			#ifdef PRINT
 			print_decision_in_scheduler(j);
 			#endif
+						
+			/* Insert in start times. */
+			insert_next_time_in_sorted_list(start_times, j->start_time);
+						
+			/* --- Normal complexity nb of copy --- */
+			/* Increment nb of copy for current file if we scheduled at time t the current job. */
+			if (multiplier_nb_copy != 0 && j->start_time == t)
+			{
+				increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
+			}
+			
+			j = j->next;
+		}				
+		else
+		{
+			#ifdef PRINT
+			printf("No more available cores.\n"); fflush(stdout);
+			#endif
+			
+			break;
+		}
+	}
+	
+	/* --- Reduced complexity nb of copy --- */
+	/* Free time already checked. */
+	if (multiplier_nb_copy != 0)
+	{
+		free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
+	}
+	
+	free(tab_min_score);
+	free(tab_min_time);
+	free(tab_choosen_time_to_load_file);
+	free(tab_node_used);
+
+	#ifdef PRINT_SCORES_DATA
+	fclose(f_fcfs_score);
+	#endif
+}
+
+void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
+{
+	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
+	int i = 0;
+	int best_loss_gain_tradeoff = 0;
+	long long area_to_schedule_my_size = 0;
+	long long area_to_schedule_next_size = 0;
+	long long loss_my_size = 0;
+	long long loss_next_size = 0;
+	int node_size_choosen = 0;
+	long long min_score = -1;
+	int earliest_available_time = 0;
+	int first_node_size_to_choose_from = 0;
+	int last_node_size_to_choose_from = 0;
+	int time_to_load_file = 0;
+	bool is_being_loaded = false;
+	float time_to_reload_evicted_files = 0;
+	int nb_copy_file_to_load = 0;
+	int time_or_data_already_checked = 0;
+	long long score = 0;
+	bool found = false;
+	long long gain = 0;
+	long long loss = 0;
+	
+	long long* tab_min_score = malloc(sizeof(int)*3);
+	tab_min_score[0] = -1;
+	tab_min_score[1] = -1;
+	tab_min_score[2] = -1;
+	int* tab_min_time = malloc(sizeof(int)*3);
+	tab_min_time[0] = 0;
+	tab_min_time[1] = 0;
+	tab_min_time[2] = 0;
+	int* tab_choosen_time_to_load_file = malloc(sizeof(int)*3);
+	tab_choosen_time_to_load_file[0] = 0;
+	tab_choosen_time_to_load_file[1] = 0;
+	tab_choosen_time_to_load_file[2] = 0;
+	struct Node** tab_node_used = malloc(sizeof(struct Node)*3);
+	tab_node_used[0] = NULL;
+	tab_node_used[1] = NULL;
+	tab_node_used[2] = NULL;
+	
+	/* Get intervals of data. */ 
+	get_current_intervals(head_node, t);
+	
+	#ifdef PRINT
+	print_data_intervals(head_node, t);
+	#endif
+	
+	#ifdef PRINT_SCORES_DATA
+	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
+	#endif
+	
+	/* --- Reduced complexity nb of copy --- */	
+	struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
+	time_or_data_already_checked_nb_of_copy_list->head = NULL;
+
+	/* 1. Loop on available jobs. */
+	struct Job* j = head_job;
+	while (j != NULL)
+	{
+		if (nb_non_available_cores < nb_cores)
+		{
+			//~ #ifdef PRINT
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores); fflush(stdout);	
+			printf("\nNeed to schedule job %d using file %d category %d.\n", j->unique_id, j->data, j->index_node_list); fflush(stdout);
+			//~ #endif
+			
+			/* 2. Choose a node. */		
+			/* Reset some values. */					
+			min_score = -1;
+			earliest_available_time = 0;
+			first_node_size_to_choose_from = 0;
+			last_node_size_to_choose_from = 0;
+			is_being_loaded = false;
+			time_to_reload_evicted_files = 0;
+			nb_copy_file_to_load = 0;
+			
+			tab_min_score[0] = -1;
+			tab_min_score[1] = -1;
+			tab_min_score[2] = -1;
+			tab_min_time[0] = 0;
+			tab_min_time[1] = 0;
+			tab_min_time[2] = 0;
+			tab_choosen_time_to_load_file[0] = 0;
+			tab_choosen_time_to_load_file[1] = 0;
+			tab_choosen_time_to_load_file[2] = 0;
+			tab_node_used[0] = NULL;
+			tab_node_used[1] = NULL;
+			tab_node_used[2] = NULL;
+			
+			/* In which node size I can pick. */
+			if (j->index_node_list == 0)
+			{
+				first_node_size_to_choose_from = 0;
+				last_node_size_to_choose_from = 2;
+			}
+			else if (j->index_node_list == 1)
+			{
+				first_node_size_to_choose_from = 1;
+				last_node_size_to_choose_from = 2;
+			}
+			else if (j->index_node_list == 2)
+			{
+				first_node_size_to_choose_from = 2;
+				last_node_size_to_choose_from = 2;
+			}
+			else
+			{
+				printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+				exit(EXIT_FAILURE);
+			}
+									
+			/* --- Reduced complexity nb of copy --- */
+			if (multiplier_nb_copy != 0)
+			{
+				time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
+			}
+
+			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
+			{
+				struct Node* n = head_node[i]->head;
+				while (n != NULL)
+				{
+					//~ #ifdef PRINT
+					printf("On node %d size %d?\n", n->unique_id, i); fflush(stdout);
+					//~ #endif
+					
+					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
+					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
+					{
+						earliest_available_time = t;
+					}
+					
+					//~ #ifdef PRINT
+					printf("A: EAT is: %d.\n", earliest_available_time); fflush(stdout);
+					//~ #endif
+					
+					if (min_score == -1 || earliest_available_time < min_score)
+					{
+						/* 2.2. B = Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
+						if (j->data == 0)
+						{
+							time_to_load_file = 0;
+						}
+						else
+						{
+							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded); /* Use the intervals in each data to get this info. */
+						}
+						
+						//~ #ifdef PRINT
+						printf("B: Time to load file: %d. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						//~ #endif
+											
+						if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
+						{
+							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
+							if (multiplier_file_evicted == 0)
+							{
+								time_to_reload_evicted_files = 0;
+							}
+							else
+							{
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+							}
+							
+							//~ #ifdef PRINT
+							printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);
+							//~ #endif
+							
+							if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files < min_score)
+							{
+								/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
+								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
+								{									
+									/* --- Reduced complexity nb of copy --- */
+									if (time_or_data_already_checked == -1)
+									{
+										#ifdef PRINT
+										printf("Need to compute nb of copy it was never done.\n");
+										#endif
+										nb_copy_file_to_load = get_nb_valid_copy_of_a_file(t, head_node, j->data);
+										create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, j->data, nb_copy_file_to_load);
+										time_or_data_already_checked = nb_copy_file_to_load;
+										#ifdef PRINT
+										printf("Compute nb of copy done, it's %d.\n", nb_copy_file_to_load);
+										#endif
+									}
+									else
+									{
+										nb_copy_file_to_load = time_or_data_already_checked;
+										#ifdef PRINT
+										printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, t, nb_copy_file_to_load);
+										#endif
+									}
+								}
+								else
+								{
+									nb_copy_file_to_load = 0;
+								}
+								
+								#ifdef PRINT
+								printf("Nb of copy for data %d at time %d on node %d is %d.\n", j->data, earliest_available_time, n->unique_id, nb_copy_file_to_load); fflush(stdout);
+								#endif
+								
+								/* Compute node's score. */
+								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
+																
+								#ifdef PRINT		
+								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								#endif
+													
+								/* 2.6. Get minimum score/ */
+								if (min_score == -1)
+								{
+									printf("New best score: %lld on size %d.\n", score, i);
+									tab_min_time[i] = earliest_available_time;
+									tab_min_score[i] = score;
+									tab_node_used[i] = n;
+									tab_choosen_time_to_load_file[i] = time_to_load_file;
+									min_score = score;
+								}
+								else if (min_score > score)
+								{
+									printf("New best score: %lld on size %d.\n", score, i);
+									tab_min_time[i] = earliest_available_time;
+									tab_min_score[i] = score;
+									tab_node_used[i] = n;
+									tab_choosen_time_to_load_file[i] = time_to_load_file;
+									min_score = score;
+								}
+							}
+						}
+					}
+					
+					#ifdef PRINT_SCORES_DATA
+					fprintf(f_fcfs_score, "Node: %d EAT: %d C: %f CxX: %f Score: %f\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
+					#endif
+					
+					n = n->next;
+				}
+			}
+			
+			/* Si le min c'est ma taille pas de soucis on schedule sur ma taille. Sinon je dois trouver le min et calculer le gain/loss.
+			 * Dans le cas de la taille 2 on ne rentre pas dans le if naturellement. */
+			node_size_choosen = j->index_node_list;
+			if (min_score != tab_min_score[j->index_node_list])
+			{
+				printf("min_score is not on my size!\n");
+				best_loss_gain_tradeoff = 0;
+				
+				/* Regardons la taille i */
+				for (i = j->index_node_list + 1; i < 3; i++)
+				{
+					printf("Try size %d.\n", i);
+					if (tab_min_score[j->index_node_list] > tab_min_score[i] && tab_min_score[i] != -1)
+					{
+						area_to_schedule_my_size = 0;
+						area_to_schedule_next_size = 0;
+
+						gain = tab_min_score[j->index_node_list] - tab_min_score[i];
+						printf("Size %d is better with gain = %lld.\n", i, gain);
+						/* Calculons le queue time supplémentaire si je schedule j sur sa taille x ainsi que le queue time supplémentaire si je schedule j sur la taille x + 1 */
+						struct Job* j_to_simulate = j->next;
+						while (j_to_simulate != NULL)
+						{
+							/* Let's look if I will delete a file, if yes and a future job use it I have to count this loading time. */
+							//~ time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
+							
+							if (j_to_simulate->index_node_list == j->index_node_list) /* On size x */
+							{
+								printf("Adding area %d*%d on my size for job %d.\n", j_to_simulate->walltime, j_to_simulate->cores, j_to_simulate->unique_id);
+								area_to_schedule_my_size += j_to_simulate->walltime*j_to_simulate->cores;
+							}
+							else if (j_to_simulate->index_node_list == i) /* On size x + 1 */
+							{
+								printf("Adding area %d*%d on next size for job %d.\n", j_to_simulate->walltime, j_to_simulate->cores, j_to_simulate->unique_id);
+								area_to_schedule_next_size += j_to_simulate->walltime*j_to_simulate->cores;
+							}
+							j_to_simulate = j_to_simulate->next;
+						}
+						loss_my_size = (area_to_schedule_my_size + j->walltime*j->cores)/(number_node_size[j->index_node_list]*20) - area_to_schedule_my_size/(number_node_size[j->index_node_list]*20);
+						loss_next_size = (area_to_schedule_next_size + j->walltime*j->cores)/(number_node_size[i]*20) - area_to_schedule_next_size/(number_node_size[i]*20);
+						printf("loss_my_size: %lld = (%lld + %d*%d)/(%d*20) - %lld/%d*20\n", loss_my_size, area_to_schedule_my_size, j->walltime, j->cores, number_node_size[j->index_node_list], area_to_schedule_my_size, number_node_size[j->index_node_list]);
+						printf("loss_next_size: %lld = (%lld + %d*%d)/(%d*20) - %lld/%d*20\n", loss_next_size, area_to_schedule_next_size, j->walltime, j->cores, number_node_size[i], area_to_schedule_next_size, number_node_size[i]);
+						
+						loss = loss_next_size - loss_my_size;
+						printf("loss is %lld (next size) - %lld (my size) = %lld.\n", loss_next_size, loss_my_size, loss);
+						if (loss < gain && best_loss_gain_tradeoff < gain - loss)
+						{
+							printf("New best size %d!\n", i);
+							best_loss_gain_tradeoff = gain - loss;
+							node_size_choosen = i;
+						}
+					}
+				}
+			}
+			
+			j->node_used = tab_node_used[node_size_choosen];
+			j->transfer_time = tab_choosen_time_to_load_file[node_size_choosen];
+					
+			/* Get start time and update available times of the cores. */
+			j->start_time = tab_min_time[node_size_choosen];
+			j->end_time = tab_min_time[node_size_choosen] + j->walltime;
+			
+			for (int k = 0; k < j->cores; k++)
+			{
+				j->cores_used[k] = j->node_used->cores[k]->unique_id;
+				if (j->node_used->cores[k]->available_time <= t)
+				{
+					nb_non_available_cores += 1;
+				}
+				j->node_used->cores[k]->available_time = tab_min_time[node_size_choosen] + j->walltime;
+				
+				/* Maybe I need job queue or not not sure. TODO. */
+			}
+
+			/* Need to add here intervals for current scheduling. */
+			found = false;
+			struct Data* d = j->node_used->data->head;
+			while (d != NULL)
+			{
+				if (d->unique_id == j->data)
+				{
+					found = true;
+					create_and_insert_tail_interval_list(d->intervals, j->start_time);
+					create_and_insert_tail_interval_list(d->intervals, j->start_time + j->transfer_time);
+					create_and_insert_tail_interval_list(d->intervals, j->end_time);
+					break;
+				}
+				d = d->next;
+			}
+			
+			if (found == false)
+			{
+				#ifdef PRINT
+				printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
+				#endif
+				
+				/* Create a class Data for this node. */
+				struct Data* new = (struct Data*) malloc(sizeof(struct Data));
+				new->next = NULL;
+				new->unique_id = j->data;
+				new->start_time = -1;
+				new->end_time = -1;
+				new->nb_task_using_it = 0;
+				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+				new->intervals->head = NULL;
+				new->intervals->tail = NULL;
+				create_and_insert_tail_interval_list(new->intervals, j->start_time);
+				create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
+				create_and_insert_tail_interval_list(new->intervals, j->end_time);
+				new->size = j->data_size;
+				insert_tail_data_list(j->node_used->data, new);
+			}			
+			
+			#ifdef PRINT
+			printf("After add interval are:\n"); fflush(stdout);
+			print_data_intervals(head_node, t);
+			#endif
+			
+			/* Need to sort cores after each schedule of a job. */
+			sort_cores_by_available_time_in_specific_node(j->node_used);
+										
+			//~ #ifdef PRINT
+			print_decision_in_scheduler(j);
+			//~ #endif
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
