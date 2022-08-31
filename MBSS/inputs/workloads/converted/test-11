@@ -1,10 +1,13 @@
-{ id: 1 subtime: 0 delay: 5 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 128 workload: -2 start_time_from_history: 0 start_node_from_history: 34 }
+{ id: 1 subtime: 0 delay: 5 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 128 workload: -2 start_time_from_history: 0 start_node_from_history: 1 }
 { id: 2 subtime: 0 delay: 3000 walltime: 3100 cores: 5 user: torsteng data: 2 data_size: 32 workload: -1 start_time_from_history: 1646294412 start_node_from_history: 34 }
 { id: 3 subtime: 0 delay: 3600 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 128 workload: 0 start_time_from_history: 1646294412 start_node_from_history: 34 }
 { id: 4 subtime: 0 delay: 3600 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 256 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
-{ id: 5 subtime: 0 delay: 3600 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 1024 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
+{ id: 5 subtime: 0 delay: 3600 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 128 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
 { id: 6 subtime: 0 delay: 3600 walltime: 3600 cores: 20 user: torsteng data: 1 data_size: 128 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
 { id: 7 subtime: 0 delay: 2000 walltime: 3000 cores: 5 user: torsteng data: 3 data_size: 32 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
 { id: 8 subtime: 1000 delay: 2000 walltime: 3000 cores: 5 user: torsteng data: 3 data_size: 32 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
 { id: 9 subtime: 8000 delay: 3000 walltime: 3000 cores: 1 user: torsteng data: 4 data_size: 6.4 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
-{ id: 10 subtime: 10000 delay: 3000 walltime: 3000 cores: 1 user: torsteng data: 4 data_size: 6.4 workload: 2 start_time_from_history: 1646294412 start_node_from_history: 34 }
+{ id: 10 subtime: 10000 delay: 3000 walltime: 3000 cores: 20 user: torsteng data: 4 data_size: 128 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
+{ id: 11 subtime: 10000 delay: 3000 walltime: 3000 cores: 20 user: torsteng data: 4 data_size: 128 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
+{ id: 12 subtime: 10000 delay: 3000 walltime: 3000 cores: 20 user: torsteng data: 4 data_size: 128 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
+{ id: 13 subtime: 10000 delay: 3000 walltime: 3000 cores: 20 user: torsteng data: 4 data_size: 128 workload: 1 start_time_from_history: 1646294412 start_node_from_history: 34 }
