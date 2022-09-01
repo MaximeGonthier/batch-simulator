@@ -345,7 +345,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
-					printf("%d %d %d %d\n", n->cores[0]->available_time, n->cores[1]->available_time, n->cores[2]->available_time, n->cores[3]->available_time); /* -1 because tab start at 0 */
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
 						earliest_available_time = t;
@@ -1155,7 +1154,9 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 								/* update by category */
 								if (score < min_score || min_score == -1)
 								{
+									#ifdef PRINT
 									printf("New min score: %lld.\n", score);
+									#endif
 									min_score = score;
 									min_time = earliest_available_time;
 									node_used = n;
@@ -1171,7 +1172,9 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 					
 					/* Add score in tab with all scores */
 					score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
+					#ifdef PRINT
 					printf("Adding %lld to the score tab.\n", score);
+					#endif
 					tab_scores_all_nodes[index_current_evaluated_node] = score;
 					index_current_evaluated_node += 1;
 					
