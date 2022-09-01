@@ -380,9 +380,11 @@ int main(int argc, char *argv[])
 			printf("Mauvais nom de cluster.\n");
 			exit(EXIT_FAILURE);
 		}
-		char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf+1));
+		//~ char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf + 1));
+		char subbuff_workload[taille_subbuf];
 		memcpy(subbuff_workload, &input_job_file[27], taille_subbuf);
-		subbuff_workload[taille_subbuf] = '_';
+		//~ printf("Workload is %s\n", subbuff_workload);
+		//~ subbuff_workload[taille_subbuf] = '_';
 		printf("Workload is %s\n", subbuff_workload);
 
 		/* Normal case */
@@ -400,6 +402,7 @@ int main(int argc, char *argv[])
 		if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") != 0 && strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) != 0)
 		{
 			strcat(file_to_open, subbuff_workload);
+			strcat(file_to_open, "_");
 		}
 		else /* There is a case of area_filling_with_ratio_7_days_earlier as well, it goes in the if */
 		{
@@ -410,6 +413,8 @@ int main(int argc, char *argv[])
 			free(subbuff_workload_2);
 			strcat(file_to_open, "_");
 		}
+		
+		//~ free(subbuff_workload);
 		
 		/* Non omniscient case take 7 days earlier. */
 		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
