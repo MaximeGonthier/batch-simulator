@@ -1,6 +1,5 @@
 #!/bin/bash
-# oarsub -p nova -l core=16,walltime=02:00:00 -r '2022-07-08 12:12:00' "bash Compare_Size_And_Data_Constraint.sh inputs/workloads/converted/2022-01-24-\>2022-01-24 inputs/clusters/rackham_450_128_32_256_4_1024.txt"
-# oarsub -p nova -l core=16,walltime=02:00:00 -r '2022-08-18 16:36:00' "bash Compare_Size_And_Data_Constraint.sh inputs/workloads/converted/2022-03-08-\>2022-03-11 inputs/clusters/rackham_450_128_32_256_4_1024.txt"
+# oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-09-01 19:00:00' "bash Compare_Size_And_Data_Constraint.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9532 inputs/clusters/rackham_450_128_32_256_4_1024.txt"
 
 start=`date +%s`
 

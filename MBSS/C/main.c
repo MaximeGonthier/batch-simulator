@@ -380,10 +380,10 @@ int main(int argc, char *argv[])
 			printf("Mauvais nom de cluster.\n");
 			exit(EXIT_FAILURE);
 		}
-		//~ char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf + 1));
-		char subbuff_workload[taille_subbuf];
+		char* subbuff_workload = malloc(sizeof(char)*(taille_subbuf));
+		//~ char subbuff_workload[taille_subbuf + 1];
 		memcpy(subbuff_workload, &input_job_file[27], taille_subbuf);
-		//~ printf("Workload is %s\n", subbuff_workload);
+		printf("taille_subbuf is %d\n", taille_subbuf);
 		//~ subbuff_workload[taille_subbuf] = '_';
 		printf("Workload is %s\n", subbuff_workload);
 
@@ -414,7 +414,7 @@ int main(int argc, char *argv[])
 			strcat(file_to_open, "_");
 		}
 		
-		//~ free(subbuff_workload);
+		free(subbuff_workload);
 		
 		/* Non omniscient case take 7 days earlier. */
 		if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
