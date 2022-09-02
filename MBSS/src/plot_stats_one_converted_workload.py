@@ -32,6 +32,7 @@ nb_2 = 0
 
 line = f_input.readline()
 while line:
+	print(line)
 	r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19, r20, r21, r22, r23, r24 = line.split()
 	
 	f_output_subtime_all.write("%d\n" % int(str(r5)))
@@ -92,13 +93,12 @@ f_output_data_size_evaluated.close()
 f_output_number_jobs_each_workload.close()
 
 # Plotting
+print("Plotting...")
 
 # Subtimes
-# ~ plt.hold(True)
 data1 = pd.read_csv("outputs/" + FILENAME + "_subtime_all")
 data1bis = pd.read_csv("outputs/" + FILENAME + "_subtime_evaluated")
-# ~ plt.hist(data1, align="mid", bins=20, alpha=0.5)
-# ~ bins=np.histogram(np.hstack((data1,data1bis)), bins=40)[1] #get the bin edges
+print(data1)
 plt.hist(data1, align="mid")
 plt.hist(data1bis, align="mid")
 plt.title("Distribution of subtimes on a log scale")
@@ -177,3 +177,19 @@ plt.legend(custom_lines, ['All jobs', '128 jobs', '256 jobs', '1024 jobs'])
 plt.yscale('log')
 plt.savefig("plot/Distribution/" + FILENAME + "_subtime_with_nodes_size" + ".pdf")
 plt.close()
+
+
+# ~ import random
+# ~ import numpy
+# ~ from matplotlib import pyplot
+
+# ~ x = [random.gauss(3,1) for _ in range(400)]
+# ~ y = [random.gauss(4,2) for _ in range(400)]
+
+# ~ bins = numpy.linspace(-10, 10, 100)
+
+# ~ pyplot.hist(x, bins, alpha=0.5, label='x')
+# ~ pyplot.hist(y, bins, alpha=0.5, label='y')
+# ~ pyplot.legend(loc='upper right')
+# ~ pyplot.show()
+

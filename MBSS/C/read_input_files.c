@@ -112,7 +112,7 @@ void read_cluster(char* input_node_file)
 
 //~ struct Job* read_workload(char* input_job_file, int constraint_on_sizes)
 void read_workload(char* input_job_file, int constraint_on_sizes)
-{	
+{
 	//~ job_list = malloc(sizeof(*job_list));
 	job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	job_list->head = NULL;

@@ -1036,10 +1036,10 @@ void start_jobs(int t, struct Job* head)
 			{
 				running_nodes += 1;
 				
-				if (j->workload == -2)
-				{
-					running_nodes_workload_minus_2 += 1;
-				}
+				//~ if (j->workload == -2)
+				//~ {
+					//~ running_nodes_workload_minus_2 += 1;
+				//~ }
 			}
 			j->node_used->n_available_cores -= j->cores;
 			if (j->node_used->n_available_cores < 0)
@@ -1166,8 +1166,8 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			//~ if (finished_jobs%5000 == 0)
-			if (finished_jobs%50 == 0)
+			if (finished_jobs%5000 == 0)
+			//~ if (finished_jobs%50 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
@@ -1181,10 +1181,10 @@ void end_jobs(struct Job* job_list_head, int t)
 			{
 				running_nodes -= 1;
 				
-				if (j->workload == -2)
-				{
-					running_nodes_workload_minus_2 -= 1;
-				}
+				//~ if (j->workload == -2)
+				//~ {
+					//~ running_nodes_workload_minus_2 -= 1;
+				//~ }
 			}
 			if (j->node_used->n_available_cores > 20)
 			{
