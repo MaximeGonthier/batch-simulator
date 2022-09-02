@@ -530,7 +530,7 @@ int main(int argc, char *argv[])
 	}
 		
 	/* Start of simulation. */
-	printf("Start simulation.\n");
+	printf("Start simulation.\n"); fflush(stdout);
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
 		/* Get ended job. */

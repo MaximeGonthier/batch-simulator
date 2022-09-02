@@ -948,7 +948,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
-			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores); fflush(stdout);	
 			printf("\nNeed to schedule job %d using file %d.\n", j->unique_id, j->data); fflush(stdout);
 			#endif
 			
@@ -1022,7 +1022,8 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
 				/* Computing 95th percentile */
-				double result_percentile_computation = 0;
+				//~ double result_percentile_computation = 0;
+				double result_percentile_computation = -1;
 				if (j->index_node_list != 2)
 				{
 					sort_tab_of_int_decreasing_order(tab_scores_all_nodes, nb_nodes_evaluated);
@@ -1033,19 +1034,19 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 					double percentile = 95; /* TODO a changer */
 					double fractional_rank = 0;
 					fractional_rank = (percentile/100.0)*(nb_nodes_evaluated);
-					//~ printf("fractional_rank: %f = (%f/100.0)*(%d)\n", fractional_rank, percentile, nb_nodes_evaluated);
+					//~ printf("fractional_rank: %f = (%f/100.0)*(%d)\n", fractional_rank, percentile, nb_nodes_evaluated); fflush(stdout);
 					int index = ceil(fractional_rank) - 1;
-					//~ printf("Index of the tab for the 95yh percentile is %d.\n", index);
+					//~ printf("Index of the tab for the 95yh percentile is %d.\n", index); fflush(stdout);
 					result_percentile_computation = tab_scores_all_nodes[index];
 					#ifdef PRINT
-					printf("result_percentile_computation for job %d size %d: %f\n", j->unique_id, i, result_percentile_computation);
+					printf("result_percentile_computation for job %d size %d: %f\n", j->unique_id, i, result_percentile_computation); fflush(stdout);
 					#endif
 				}
 				
 				if (result_percentile_computation != -1 && min_score <= result_percentile_computation)
 				{
 					#ifdef PRINT
-					printf("Break earlier because my best score (%lld) will be in the 95th percentile!\n", min_score);
+					printf("Break earlier because my best score (%lld) will be in the 95th percentile!\n", min_score); fflush(stdout);
 					#endif
 					break;
 				}
