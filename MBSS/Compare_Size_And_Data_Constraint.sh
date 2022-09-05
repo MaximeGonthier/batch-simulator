@@ -22,7 +22,7 @@ make -C C/
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-for ((i=1; i<=20; i++))
+for ((i=19; i<=20; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
@@ -55,32 +55,32 @@ done
 echo "Final results are:"
 cat outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-echo "Plotting results..."
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py  Results_Size_And_Data_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Max_Stretch ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Max_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_128 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_256 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_1024 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_128 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_256 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_1024 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ echo "Plotting results..."
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py  Results_Size_And_Data_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Max_Stretch ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Max_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_128 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_256 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_1024 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_128 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_256 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_Size_And_Data_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_1024 ${CLUSTER_TP} 0 outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-# Moving main csv data file
-mv outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ # Moving main csv data file
+#~ mv outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 end=`date +%s` 
 runtime=$((end-start))
