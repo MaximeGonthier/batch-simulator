@@ -22,7 +22,7 @@ make -C C/
 
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_Size_And_Data_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-for ((i=1; i<=14; i++))
+for ((i=1; i<=11; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_no_use_bigger_nodes"
@@ -42,11 +42,11 @@ do
 	#~ elif [ $((i)) == 15 ]; then SCHEDULER="Fcfs_area_filling_omniscient_with_ratio_with_a_score_x500_x500_x0_x0"
 	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_x500_x500_x0_x500"
 	elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_x500_x500_x0_x1000"
-	elif [ $((i)) == 11 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_with_planned_area_x500_x500_x0_x500"
-	elif [ $((i)) == 12 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_with_planned_area_x500_x500_x0_x1000"
+	#~ elif [ $((i)) == 11 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_with_planned_area_x500_x500_x0_x500"
+	#~ elif [ $((i)) == 12 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_with_planned_area_x500_x500_x0_x1000"
 	#~ elif [ $((i)) == 18 ]; then SCHEDULER="Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x500_x500_x0_x1000"
-	elif [ $((i)) == 13 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x500_x500_x0_x0"
-	elif [ $((i)) == 14 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x500_x500_x0_x0"
+	elif [ $((i)) == 11 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x500_x500_x0_x0"
+	#~ elif [ $((i)) == 14 ]; then SCHEDULER="Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x500_x500_x0_x0"
 	fi
 	
 	truncate -s 0 outputs/Results_${SCHEDULER}.csv
