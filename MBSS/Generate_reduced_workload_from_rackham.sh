@@ -40,12 +40,12 @@ do
 		#~ tail -1 ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
 	#~ fi
 	
-	# Day 1
+	# Day 0 and 1
 	if [ $((i)) == $((start)) ]
 	then
 		head -1 ${@:$i:1} > outputs/start_end_date_evaluated_jobs.txt
-		sed -n '2 p' ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
-		sed -n '4 p' ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
+		sed -n '500 p' ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
+		sed -n '501 p' ${@:$i:1} >> outputs/start_end_date_evaluated_jobs.txt
 	fi
 	if [ $((i)) == $((end)) ]
 	then
@@ -91,24 +91,31 @@ echo "Converting job history..."
 #~ then
 VARIANCE=10000
 python3 src/generate_workload_from_rackham.py $START"->"$END 0 0 1 $((VARIANCE))
+#~ exit
+python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
+
+
 #~ elif [ $((VARIANCE)) == 85105 ]
 #~ then
 VARIANCE=85105
 python3 src/generate_workload_from_rackham.py $START"->"$END 10 5 1 $((VARIANCE))
+python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
+
 #~ elif [ $((VARIANCE)) == 9532 ]
 #~ then
 VARIANCE=9532
 python3 src/generate_workload_from_rackham.py $START"->"$END 3 2 1 $((VARIANCE))
+python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
+
 #~ elif [ $((VARIANCE)) == 9271 ]
 #~ then
 VARIANCE=9271
 python3 src/generate_workload_from_rackham.py $START"->"$END 7 1 1 $((VARIANCE))
-#~ else
-	#~ echo "Taille pas pris en compte"
-#~ fi
-echo "Conversion done!"
+python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
 
-echo "Plotting stats on the workload..."
+echo "Done!"
+
+#~ echo "Plotting stats on the workload..."
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
-echo "Plotting stats done!"
+#~ echo "Plotting stats done!"

@@ -96,7 +96,10 @@ plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orang
 plt.xticks(rotation=90)
 plt.title(plot_title)
 plt.xlabel("Scheduler")
-plt.ylabel("Seconds")
+if (comparaison == "Nb_Upgraded_Jobs"):
+	plt.ylabel("Number of upgraded jobs")
+else:
+	plt.ylabel("Seconds")
   
 # Show the plot
 # ~ plt.show()

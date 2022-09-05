@@ -61,7 +61,7 @@ print("Time of last job day 1", last_time_day_1)
 print("Time of first job day 2", first_time_day_2)
 print("Time of last job day 2", last_time_day_2)
 
-f_input = open("inputs/workloads/raw/" + FILENAME, "r")
+f_input = open("inputs/workloads/raw/" + FILENAME, "r", errors='ignore')
 line = f_input.readline()
 id_count = 1
 workload = []	
@@ -154,8 +154,9 @@ while line:
 			else:
 				print("Error walltime is 0.")
 				exit(1)
-					
+	# ~ print(line)			
 	line = f_input.readline()
+	# ~ print(line)		
 f_input.close()
 
 # Min sub time takes 0

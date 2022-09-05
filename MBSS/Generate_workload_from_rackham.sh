@@ -104,5 +104,5 @@ echo "Conversion done!"
 
 echo "Plotting stats on the workload..."
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END
-#~ python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
+python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
 echo "Plotting stats done!"
