@@ -142,7 +142,7 @@
 		\item code backfill strat 1 corrigé et vérifié
 		\item code area filling strat 1 vérifié
 		\item code area filling strat 2 et 2bis et vérifié
-		\item new plot size constraint: not shown but we are also better in total flow and total queue time
+		\item new plot size constraint pour non omniscient: not shown but we are also better in total flow and total queue time
 		\item code backfill start 3 et vérifié
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 	\end{enumerate}
@@ -150,11 +150,7 @@
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Ajouter bf a tous et retester ?
-		\item modif de gramaire, phrases trop longues et caption sur les tableaux + modification de phrase. On ne met pas ca dans une couleur différente ?
-		\item on va dépasser les 18 pages
-		\item visu figure 4 que je propose ?
-		\item reponse a une critique sur la mémoire
-		\item debut de lecture des articles proposées par les reviewers
+		\item plan une réu avec elizabeth ?
 	\end{enumerate}
 	
 \section{Todo}
@@ -174,8 +170,23 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item faire 2 workloads, 1 chargé et 1 non et tester Fcfs et Fcfs with a score. Si fcfs with a score s'en sort mal en cluster vide, il faut des multiplicateurs qui s'adaptent. et tester avec EATx500
+			\item Tester x500 au EAT
+			
+			\item il y a des runtime qui n'ont pas poussé mais qui ont lidée de re utilistion mais pas etudié: exemple parsec. L'idée est de mettre a la suite tous les gemms dispo sur cholesky. voir la bilbio si ils ont quelquechose la dessus. Georges Bosilca lui demander
+			\item si je trouve un scheduler de legion qui gere la localité des données, le tester. Regarder les articles et les sommaires des thèses.
+			\item fig 4, mettre 1 couleur dans les cases par phase + barres au dessus pour les charegeents avec M=4. Ne montrer que les chargements de lignes. Avec U on a une phase en moins.
+			\item chiffre plus gros axe des visu pour tous. faire la figure plus petite mais avec des carré plus gors et accentuer le gradient.
+			\item expliquer ce qu'on vois sur les captions de toutes les visualisations. Par exemple, la ligne ne change pas de luminosité alors que de haut en bas oui. Donc l'ordre est par ligne. Si j'explique dans la caption, enlever un peu dans le texte pour ne pas faire doublon.
+			\item reviewer 1: "use like recent article library": we have independnet task only, so cholesky and marix are our best bet to compare our schedulers
+			\item reviewer 1 point 3: expliquer ce qui existe (heft etc...) dmda lui prend en compte la localité en plus de heft donc on se compare a lui. Peu de runtime font de la localité automatiquement, on ne veux pas flag a la main les data a re utilisé.
+			\item parler dans le related work des runtime mentionné avec des articles à l'appui, et pourquoi ils sont diférents de notre approche. Legion en particulier. Parsec et plasma l'utilisateur place a la main la localité mais ne la prévois pas. : https://legion.stanford.edu/publications/
+			\item on va dépasser les 18 pages. Demander si on a le droit.
+			\item modif de gramaire, phrases trop longues et caption sur les tableaux + modification de phrase. On ne met pas ca dans une couleur différente ? Mettre en bleu la phrase reformulé et peut etre en voir d'autres
+			\item reviewer 1: sur 1 runtime c'est bcp d travail, donc encore plus si on veux comparer 3 runtimes.
+			\item regarder dernier journaux cité par reviewers 1 des dernières années (https://dblp.org/db/conf/ics/ics2021.html) voir ce qui parle de localité/runtime/GPU parel pour SC et ipdps en plus précis que ce qu'ils nous ont fourni
+			
 			\item prep cours re216
-			\item tester algo une première fois
 			\item tester multiplicateur pour area factor
 			\item ajouter bf a tous et retester ?
 			\item voir preparation cours RE216 et intro à l'algo faut qu'il me réponde

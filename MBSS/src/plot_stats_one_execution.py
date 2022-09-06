@@ -28,6 +28,8 @@ if (comparaison == "Used_cores"):
 		line = 4000
 	elif (cluster == "450_128_32_256_4_1024"):
 		line = 9720
+	elif (cluster == "675_128_48_256_6_1024"):
+		line = 14580
 	else:
 		print("error")
 		exit(1)
@@ -46,6 +48,8 @@ elif (comparaison == "Used_nodes"):
 		line = 200
 	elif (cluster == "450_128_32_256_4_1024"):
 		line = 486
+	elif (cluster == "675_128_48_256_6_1024"):
+		line = 729
 	else:
 		print("error")
 		exit(1)
