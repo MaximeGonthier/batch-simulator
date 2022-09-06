@@ -147,13 +147,15 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item En bleu ajouts tableau et phrases re-formulées
+		\item En bleu ajout phrases re-formulées et des captions des tables
+		\item nouvelle figure 4 + nouvelle description dans le texte + réponse au reviewer
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
 		%~ \item Ajouter bf a tous et retester ?
 		\item Data in Brief pour ajouter des pages en plus ?
+		\item Que pensez vous de la nouvelle figure 4 ? Devrais-je mettre l'explication dans la caption plutot que dans le texte plus haut comme j'ai fais ?
 	\end{enumerate}
 	
 \section{Todo}
@@ -168,7 +170,7 @@
 			\item Check rendu rapports le 30 Aout pour les 3A dont je suis rapporteur
 			\item Date redu rapport des 2A ?
 			\item att mail de sandrine truffier cours lundi et status et contrat
-			\item att mail de delphine en telecomm car elle me dois 1500e
+			\item att mail de delphine en telecomm car elle me dois 1500e: normalement je suis payé en octobre
 			\item demander a mathieu d'attraper denis
 		\end{enumerate}
 	\subsection{Uppsala}
@@ -178,10 +180,9 @@
 			
 			\item il y a des runtime qui n'ont pas poussé mais qui ont lidée de re utilistion mais pas etudié: exemple parsec. L'idée est de mettre a la suite tous les gemms dispo sur cholesky. voir la bilbio si ils ont quelquechose la dessus. Georges Bosilca lui demander. L'implémenter ?
 			\item si je trouve un scheduler de legion qui gere la localité des données, le tester. Regarder les articles et les sommaires des thèses.
-			\item fig 4, mettre 1 couleur dans les cases par phase + barres au dessus pour les charegeents avec M=4. Ne montrer que les chargements de lignes. Avec U on a une phase en moins.
 			\item chiffre plus gros axe des visu pour tous. faire la figure plus petite mais avec des carré plus gors et accentuer le gradient.
 			\item expliquer ce qu'on vois sur les captions de toutes les visualisations. Par exemple, la ligne ne change pas de luminosité alors que de haut en bas oui. Donc l'ordre est par ligne. Si j'explique dans la caption, enlever un peu dans le texte pour ne pas faire doublon.
-			\item reviewer 1: "use like recent article library": we have independnet task only, so cholesky and marix are our best bet to compare our schedulers
+			\item reviewer 1 point 1: "use like recent article library": we have independnet task only, so cholesky and marix are our best bet to compare our schedulers
 			\item reviewer 1 point 3: expliquer ce qui existe (heft etc...) dmda lui prend en compte la localité en plus de heft donc on se compare a lui. Peu de runtime font de la localité automatiquement, on ne veux pas flag a la main les data a re utilisé.
 			\item parler dans le related work des runtime mentionné avec des articles à l'appui, et pourquoi ils sont diférents de notre approche. Legion en particulier. Parsec et plasma l'utilisateur place a la main la localité mais ne la prévois pas. : https://legion.stanford.edu/publications/ & https://legion.stanford.edu/publications/#soi_thesis
 			\item on va dépasser les 18 pages. Demander si on a le droit.

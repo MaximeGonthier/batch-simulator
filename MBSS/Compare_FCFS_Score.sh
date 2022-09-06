@@ -252,7 +252,8 @@ SCHEDULER="Fcfs"
 echo "Starting ${SCHEDULER}"
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.
+cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+
 SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
 echo "Starting ${SCHEDULER}"
 truncate -s 0 outputs/Results_${SCHEDULER}.csv
