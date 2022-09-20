@@ -77,8 +77,6 @@
 \newcommand{\oktext}[1]{\textcolor{ForestGreen}{OK \greencheck}~\textcolor{ForestGreen}{#1}}
 
 \begin{document}
-
-%~ \tableofcontents
 \newpage
 
 %~ /data-aware-batch-scheduling/MBSS$ oarsub -p orion -l core=2,walltime=08:00:00 -r '2022-06-14 19:00:00' "bash Stats_single_workload.sh inputs/workloads/converted/test-11 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0"
@@ -147,63 +145,55 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item En bleu ajout phrases re-formulées et des captions des tables
-		\item nouvelle figure 4 + nouvelle description dans le texte + réponse au reviewer
-		\item articles et notes sur parsec entre autres
-		\item J'ai refais toutes les visu en divisant par 2
-		\item plot sparse 10\%. On a aussi 2\%.
-		\item regarder papier de l'auteur Celerity-SYCL-2019.pdf
+		\item Citation QR-heft-tmdp-pr dans réponse au reviewer 2
+		\item Revoir parla et optimal locality scheduling et refaire dans les related works
+		\item expliquer sparse dans settings
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item il faudra refaire le dépot ?
-		\item nouvelle fig 11, si elle est ok je fais ca pour tous.
+		\item Garder N en abscisse des courbes sparses ?
+		\item J'ai enlevé des random order HFP les sous paquets de la visu et des explications. Est-ce toujours facile à comprendre (en bas de la page 17) ?
+		\item 4 figures en 1. Peut etre enlever les points et mettre un trait plus large ?
+		\item Pour les courbes par 4 on peut aussi le faire avec 3D/3D simu/3D DT/Cholesky
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item se renseigner payement enseirb semestre 1: attendre mail
+			\item se renseigner payement enseirb semestre 1: attendre octobre
 			\item payer ré inscription: déposer le dossier de l'écolde doctorale sur siged recap
 			\item Répondre a Bora
 			\item transmettre dossier siged  et payer une fois tous les avis saisies (5/6 ou 6/6)
-			\item Date redu rapport des 2A ?
+		\end{enumerate}
+	\subsection{FGCS}
+		\begin{enumerate}
+			\item j'ai trouvé des articles qui parle de gemm/cholesky comme c'est dans chameleon. Les citer et parler de DMDAR comme state of the art result from chameleon gemm/cholesky ? Le renommer partout dans les textest et courbes ou seulement le mentionner ? (appeller dmdar comme un state of the art result pour le produit de matrice l'appeller "chameleon gemm" et citer un papier chamelon et son noyau gemm): le présenter comme ordo par défaut de chameleon (utilisé par airbus) (qui est dmdas sans prio et le r ajoute la localité)
+			\item Faut-il mettre les ref de ce qu'on a ajouté come citation dans les réponses aux reviewers ? pas pour tout mais globalement oui mais plus rapidement
+			\item Reviewer 1 demande à propos du multi GPU ? On cite le papier d'ipdps ou on parle de mHFP ?
+			\item les questions du reviewers 1, est-ce que les réponses doivent aussi aparaitre dans l'article ? Notamment quand il dit "must better justify the benchmark selection" et "This may not be a problem if the article clearly explain the experimental methodology"
+			\item expliquer ce qu'on vois sur les captions de toutes les visualisations: je ne l'ai fais que pour la première figure du genre
+			\item refaire toutes les visu avec nouvelles couleurs et sans ligne noires HFP puis les metres cote a cote
+			\item Refaire le dépôt, attention enlever les define print des 4 schedulers queje visualise et revoir script r par raport ax chemins et ajouter script r 4 panel si utilisé
+			\item dernière question: il faut du recouvrement, taille classiquement choisi (cité un truc ?)
+			\item vérifier les "s"
+			\item revierwer 2.1: y en a pour les cu, et peuvent etre utilisé (exemple ref1 de mst)
+			\item Reviewer 2. fin de page 4, on a state of the art dmdar
+			\item dans l'abstract clarifié le 1GPU et répondre au reviewer en parlant de future work
+			\item concurrent: starpu le permet mais pas pertinent sur ces app.
+			\item multi gpu: future work
+			\item réponse DAG: ni l'un ni l'autres c'est un bit, la on a juste des taches
+			\item citation en footnote pour answer si on parle d'un papieren particulier. Parla par ex
+			\item mettre fig 18 19 visu cote a cote
+			\item insérer les figures sparses
+			\item regarder hdr sam pour biblio runtimes
+			\item reviewer 1 point 3: expliquer ce qui existe (heft etc...) dmda lui prend en compte la localité en plus de heft donc on se compare a lui. Peu de runtime font de la localité automatiquement, on ne veux pas flag a la main les data a re utilisé.
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item faire 2 workloads, 1 chargé et 1 non et tester Fcfs et Fcfs with a score. Si fcfs with a score s'en sort mal en cluster vide, il faut des multiplicateurs qui s'adaptent. et tester avec EATx500
-			
-			\item corriger alignement table 1
-			\item appeller dmda comme un state of the art result pour le produit de matrice l'appeller "chameleon gemm" et citer un papier chamelon et son noyau gemm
-			\item ajouter une ref à Parla et MICCO ?
-			\item expliquer visu
-			\item insérer sparse 10\%
-			\item se renseigner SOOP et si y a rien le dire dans l'article
-			\item 29, a la place de automate dire allow to direct et vérifier
-			\item corriger refinded
-			\item revoir la partie ovverlap section PGAS et vérifier
-			\item finir QR, tester QR
-			\item une fois les visus remplacé et validé, modifier le texte correspondant et les captions et répondre au reviewer.
-			\item commencer a compléter la selection related work: data locality in runtime et data locality for gpus
-			\item paragrahphe sur mapping legion hpx chapel mais lonins de nous car monogpu dans notre cas. Regarder librairie PHAST et celerity.
-			\item lire papiers sur des runtime
-			\item essayer de coder QR
-			\item pour les runtime juste regarder ce qu'ils font pour la localité et l'eviction, et est-ce que ils font du GPU
-			\item regarder hdr sam pour biblio runtimes
-			\item il y a des runtime qui n'ont pas poussé mais qui ont lidée de re utilistion mais pas etudié: exemple parsec. L'idée est de mettre a la suite tous les gemms dispo sur cholesky. voir la bilbio si ils ont quelquechose la dessus. Georges Bosilca lui demander. L'implémenter ?
-			\item expliquer ce qu'on vois sur les captions de toutes les visualisations. Par exemple, la ligne ne change pas de luminosité alors que de haut en bas oui. Donc l'ordre est par ligne. Si j'explique dans la caption, enlever un peu dans le texte pour ne pas faire doublon.
-			\item reviewer 1 point 1: "use like recent article library": we have independnet task only, so cholesky and marix are our best bet to compare our schedulers
-			\item reviewer 1 point 3: expliquer ce qui existe (heft etc...) dmda lui prend en compte la localité en plus de heft donc on se compare a lui. Peu de runtime font de la localité automatiquement, on ne veux pas flag a la main les data a re utilisé.
-			\item parler dans le related work des runtime mentionné avec des articles à l'appui, et pourquoi ils sont diférents de notre approche. Legion en particulier. Parsec et plasma l'utilisateur place a la main la localité mais ne la prévois pas. : https://legion.stanford.edu/publications/ & https://legion.stanford.edu/publications/#soi_thesis
-			\item on va dépasser les 18 pages. Demander si on a le droit.
-			\item reviewer 1: sur 1 runtime c'est bcp d travail, donc encore plus si on veux comparer 3 runtimes.
-			\item regarder dernier journaux cité par reviewers 1 des dernières années (https://dblp.org/db/conf/ics/ics2021.html) voir ce qui parle de localité/runtime/GPU parel pour SC et ipdps en plus précis que ce qu'ils nous ont fourni
-			
-			\item prep cours re216
+			\item faire 2 workloads, 1 chargé et 1 non et tester Fcfs et Fcfs with a score. Si fcfs with a score s'en sort mal en cluster vide, il faut des multiplicateurs qui s'adaptent. et tester avec EATx500 ?? Non je pense pas pour ce dernier point.
 			\item tester multiplicateur pour area factor
 			\item ajouter bf a tous et retester ?
-			
 			\item corriger histogrammes stats workloads
 			\item tester avec data sur jobs de plus de 5 cores seulement
 			\item regarder qui sont les jobs delaier de plus de 25000
@@ -211,6 +201,5 @@
 			\item mettre a jour planned area pour fcfs score area filling quand j'upgrade des jobs ?
 			\item generation de workload : aller chercher loin puis cut le fichier plus tôt pour pas avoir trop de jobs non plus ?
 			\item Ne pas oublier que j'ai les courbes VS sur flow stretch et queue times aussi que je peux tracer						
-			\item Rendre le code général (20 pour cores par node et 3 pour nb tailles de noeuds différents)
 		\end{enumerate}
 \end{document}
