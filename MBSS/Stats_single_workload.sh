@@ -3,6 +3,11 @@
 # bash Stats_single_workload.sh WORKLOAD CLUSTER SCHEDULER CONTRAINTES_TAILLES
 start=`date +%s`
 
+if [ "$#" -ne 4 ]; then
+    echo "Usage is bash zzzzz.sh converted_workload cluster scheduler size_constraint(0, 1 or 2)"
+    exit
+fi
+
 # Get arguments
 WORKLOAD=$1
 WORKLOAD_TP=${WORKLOAD:27}

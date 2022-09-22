@@ -1,11 +1,13 @@
 #!/bin/bash
 # bash Compare_FCFS_Score.sh workload cluster contrainte_taille
+# oarsub -p nova -l core=16,walltime=04:00:00 -r '2022-09-22 14:00:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9532 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0"
+
 start=`date +%s`
 
-#~ if [ "$#" -ne 3 ]; then
-    #~ echo "Usage is bash Compare_algorithms.sh workload cluster contraintes_tailles_données"
-    #~ exit
-#~ fi
+if [ "$#" -ne 3 ]; then
+    echo "Usage is bash Compare_FCFS_Score.sh converted_workload cluster size_constraint(0, 1 or 2)"
+    exit
+fi
 
 # Get arguments
 WORKLOAD=$1
@@ -246,50 +248,74 @@ make -C C/
 #~ cat outputs/Results_${SCHEDULER}.csv >> data/Results_FCFS_Score_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 # 6. Comparer fcfs et Fcfs score avec deux workloads différents
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-SCHEDULER="Fcfs"
-echo "Starting ${SCHEDULER}"
-truncate -s 0 outputs/Results_${SCHEDULER}.csv
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ SCHEDULER="Fcfs"
+#~ echo "Starting ${SCHEDULER}"
+#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-SCHEDULER="Fcfs_with_a_score_x1_x1_x0_x0"
-echo "Starting ${SCHEDULER}"
-truncate -s 0 outputs/Results_${SCHEDULER}.csv
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ SCHEDULER="Fcfs_with_a_score_x1_x1_x0_x0"
+#~ echo "Starting ${SCHEDULER}"
+#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
-mv outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ mv outputs/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_FCFS_Score_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
 
-WORKLOAD=${WORKLOAD}_reduced
+#~ WORKLOAD=${WORKLOAD}_reduced
 
-SCHEDULER="Fcfs"
-echo "Starting ${SCHEDULER}"
-truncate -s 0 outputs/Results_${SCHEDULER}.csv
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ SCHEDULER="Fcfs"
+#~ echo "Starting ${SCHEDULER}"
+#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
 
-SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
-echo "Starting ${SCHEDULER}"
-truncate -s 0 outputs/Results_${SCHEDULER}.csv
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
-cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
+#~ echo "Starting ${SCHEDULER}"
+#~ truncate -s 0 outputs/Results_${SCHEDULER}.csv
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+#~ cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
 
-python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
-python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
-python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
-python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP}_reduced 0 outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
 
-mv outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv data/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+#~ mv outputs/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv data/Results_FCFS_Score_Non_Saturated_Cluster_${WORKLOAD_TP}_${CLUSTER_TP}_reduced.csv
+
+# 7. Comparer fcfs, fcfs_score et fcfs_score_adaptative_multiplier
+echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+for ((i=1; i<=3; i++))
+do
+	# Schedulers
+	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_x500_x500_x0_x0"
+	fi
+	truncate -s 0 outputs/Results_${SCHEDULER}.csv
+	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES
+	cat outputs/Results_${SCHEDULER}.csv >> outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+done
+echo "Final results are:"
+cat outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+echo "Plotting results..."
+python3 src/plot_barplot.py Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py  Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+python3 src/plot_barplot.py Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+mv outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv data/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+
 
 end=`date +%s` 
 runtime=$((end-start))

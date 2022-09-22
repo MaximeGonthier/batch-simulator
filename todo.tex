@@ -148,6 +148,9 @@
 		\item Citation QR-heft-tmdp-pr dans réponse au reviewer 2
 		\item Revoir parla et optimal locality scheduling et refaire dans les related works
 		\item expliquer sparse dans settings
+		\item parler de dmdar comme default chameleon scheduler
+		\item visu cote a cote. Le faire aussi pour les autres sauf la première ? ou sauf HFP ?
+		\item clarification single GPU dans abstract et intro. Faut-il en faire encore plus dans l'abstract en modifiant par exemple la première phrase ?
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -155,7 +158,8 @@
 		\item Garder N en abscisse des courbes sparses ?
 		\item J'ai enlevé des random order HFP les sous paquets de la visu et des explications. Est-ce toujours facile à comprendre (en bas de la page 17) ?
 		\item 4 figures en 1. Peut etre enlever les points et mettre un trait plus large ?
-		\item Pour les courbes par 4 on peut aussi le faire avec 3D/3D simu/3D DT/Cholesky
+		\item Pour les courbes par 4 on peut aussi le faire avec 3D/3D simu/3D DT/Cholesky. Changer le texte une fois la configuration validé pour ne pas parlé des méthodes non montrées
+		\item Besoin d'aide pour reviewer 2 dernière question.
 	\end{enumerate}
 	
 \section{Todo}
@@ -164,36 +168,18 @@
 			\item se renseigner payement enseirb semestre 1: attendre octobre
 			\item payer ré inscription: déposer le dossier de l'écolde doctorale sur siged recap
 			\item Répondre a Bora
-			\item transmettre dossier siged  et payer une fois tous les avis saisies (5/6 ou 6/6)
+			\item voir siged inscription validé
+			\item envoer certificat enseirb une fois validé
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
-			\item j'ai trouvé des articles qui parle de gemm/cholesky comme c'est dans chameleon. Les citer et parler de DMDAR comme state of the art result from chameleon gemm/cholesky ? Le renommer partout dans les textest et courbes ou seulement le mentionner ? (appeller dmdar comme un state of the art result pour le produit de matrice l'appeller "chameleon gemm" et citer un papier chamelon et son noyau gemm): le présenter comme ordo par défaut de chameleon (utilisé par airbus) (qui est dmdas sans prio et le r ajoute la localité)
-			\item Faut-il mettre les ref de ce qu'on a ajouté come citation dans les réponses aux reviewers ? pas pour tout mais globalement oui mais plus rapidement
-			\item Reviewer 1 demande à propos du multi GPU ? On cite le papier d'ipdps ou on parle de mHFP ?
-			\item les questions du reviewers 1, est-ce que les réponses doivent aussi aparaitre dans l'article ? Notamment quand il dit "must better justify the benchmark selection" et "This may not be a problem if the article clearly explain the experimental methodology"
-			\item expliquer ce qu'on vois sur les captions de toutes les visualisations: je ne l'ai fais que pour la première figure du genre
-			\item refaire toutes les visu avec nouvelles couleurs et sans ligne noires HFP puis les metres cote a cote
 			\item Refaire le dépôt, attention enlever les define print des 4 schedulers queje visualise et revoir script r par raport ax chemins et ajouter script r 4 panel si utilisé
-			\item dernière question: il faut du recouvrement, taille classiquement choisi (cité un truc ?)
-			\item vérifier les "s"
-			\item revierwer 2.1: y en a pour les cu, et peuvent etre utilisé (exemple ref1 de mst)
-			\item Reviewer 2. fin de page 4, on a state of the art dmdar
-			\item dans l'abstract clarifié le 1GPU et répondre au reviewer en parlant de future work
-			\item concurrent: starpu le permet mais pas pertinent sur ces app.
-			\item multi gpu: future work
-			\item réponse DAG: ni l'un ni l'autres c'est un bit, la on a juste des taches
-			\item citation en footnote pour answer si on parle d'un papieren particulier. Parla par ex
-			\item mettre fig 18 19 visu cote a cote
-			\item insérer les figures sparses
-			\item regarder hdr sam pour biblio runtimes
-			\item reviewer 1 point 3: expliquer ce qui existe (heft etc...) dmda lui prend en compte la localité en plus de heft donc on se compare a lui. Peu de runtime font de la localité automatiquement, on ne veux pas flag a la main les data a re utilisé.
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item faire 2 workloads, 1 chargé et 1 non et tester Fcfs et Fcfs with a score. Si fcfs with a score s'en sort mal en cluster vide, il faut des multiplicateurs qui s'adaptent. et tester avec EATx500 ?? Non je pense pas pour ce dernier point.
+			\item faire 2 workloads, 1 chargé et 1 non et tester Fcfs et Fcfs with a score. Si fcfs with a score s'en sort mal en cluster vide, il faut des multiplicateurs qui s'adaptent. et tester avec EATx500 ?? Non je pense pas pour ce dernier point car ce qu'on veut c'est la diff avec la autres, pas une emphase la dessus.
 			\item tester multiplicateur pour area factor
-			\item ajouter bf a tous et retester ?
+			\item ajouter bf a tous et retester ? J'ai deja quelques courbes et algo codé avec la dessus.
 			\item corriger histogrammes stats workloads
 			\item tester avec data sur jobs de plus de 5 cores seulement
 			\item regarder qui sont les jobs delaier de plus de 25000
