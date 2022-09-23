@@ -1215,8 +1215,8 @@ A solution would be to adapt the multiplier to the size file. If it's big I don'
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
 \caption{Size and constraint - Workload January 21 (45000 jobs) with 95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
 
-Idée: quand la taille de la liste de jobs a schedule est plus grande que le nombre de noeud disponibles (par catégorie si on prend la contrante de taille), alors on fais
-avec les multiplicateur. Les multiplicateurs dépendnet de la taille de la donnée. Pour 128 et moins: x1 x1 x0 x0, pour entre 128 et 256 on fais ? et voir les stats pour chaque type de taille.
+Idée: quand la taille de la liste de jobs a schedule est plus grande que le nombre de noeud disponibles (par catégorie si on prend la contrainte de tailles), alors on fais
+avec les multiplicateur. Les multiplicateurs dépandent de la taille de la donnée. Pour 128 et moins: x1 x1 x0 x0, pour entre 128 et 256 on fais ? et entre 256 et 1024 ?.
 Sinon on fais fcfs\_score\_x1\_x1\_x0\_x0.
 
 Test sur le dernier workload = 2h15 par Fcfs with a score.
