@@ -361,11 +361,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 						/* Update the dividor of the multiplier in function of the file size; */
 						if (adaptative_multiplier == 1)
 						{
-							if(j->data_size == 128)
+							if(j->data_size <= 128)
 							{
 								div_multiplier = 500;
 							}
-							else if (j->data_size == 256)
+							else if (j->data_size <= 256)
 							{
 								div_multiplier = 1;
 							}

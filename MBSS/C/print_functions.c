@@ -131,6 +131,7 @@ void to_print_job_csv(struct Job* job, int time)
 		new->waiting_for_a_load_time = job->waiting_for_a_load_time;
 		new->empty_cluster_time = job->delay + (job->data_size)/0.1;
 		new->data_type = job->index_node_list;
+		new->job_data_size = job->data_size;
 		if (job->node_used->index_node_list > job->index_node_list)
 		{
 			new->upgraded = 1;
@@ -336,21 +337,21 @@ void print_csv(struct To_Print* head_to_print)
 				
 		/* Flow stretch */
 		total_flow_stretch += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
-		if (head_to_print->data_type == 0)
+		if (head_to_print->job_data_size <= 128)
 		{
 			total_flow_stretch_128 += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
 		}
-		else if (head_to_print->data_type == 1)
+		else if (head_to_print->job_data_size <= 256)
 		{
 			total_flow_stretch_256 += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
 		}
-		else if (head_to_print->data_type == 2)
+		else if (head_to_print->job_data_size <= 1024)
 		{
 			total_flow_stretch_1024 += (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
 		}
 		else
 		{
-			printf("error print csv data type.\n");
+			printf("error print csv data type %f.\n", head_to_print->job_data_size);
 			exit(EXIT_FAILURE);
 		}
 		
@@ -364,21 +365,21 @@ void print_csv(struct To_Print* head_to_print)
 			denominator_bounded_stretch = 300;
 		}
 		total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
-		if (head_to_print->data_type == 0)
+		if (head_to_print->job_data_size <= 128)
 		{
 			total_flow_stretch_with_a_minimum_128 += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
 		}
-		else if (head_to_print->data_type == 1)
+		else if (head_to_print->job_data_size <= 256)
 		{
 			total_flow_stretch_with_a_minimum_256 += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
 		}
-		else if (head_to_print->data_type == 2)
+		else if (head_to_print->job_data_size <= 1024)
 		{
 			total_flow_stretch_with_a_minimum_1024 += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
 		}
 		else
 		{
-			printf("error print csv data type.\n");
+			printf("error print csv data type %f.\n", head_to_print->job_data_size);
 			exit(EXIT_FAILURE);
 		}
 
@@ -460,9 +461,10 @@ void print_csv(struct To_Print* head_to_print)
 	/* Main file of results */
 	char* file_to_open_2 = malloc(100*sizeof(char));
 	file_to_open_2 = malloc(100*sizeof(char));
-	strcpy(file_to_open_2, "outputs/Results_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".csv");
+	//~ strcpy(file_to_open_2, "outputs/Results_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".csv");
+	strcpy(file_to_open_2, output_file);
 	FILE* f = fopen(file_to_open_2, "a");
 	if (!f)
 	{

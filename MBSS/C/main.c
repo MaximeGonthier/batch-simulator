@@ -55,6 +55,7 @@ int running_nodes_workload_minus_2;
 int total_queue_time;
 int first_subtime_day_0;
 char* scheduler;
+char* output_file;
 struct Next_Time_List* end_times;
 struct Next_Time_List* start_times;
 int nb_job_to_evaluate_started;
@@ -93,6 +94,7 @@ int main(int argc, char *argv[])
 	char* input_node_file = argv[2];
 	scheduler = argv[3]; /* malloc ? */
 	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
+	output_file = argv[5];
 	
 	printf("Workloads: %s\n", input_job_file);
 	printf("Cluster: %s\n", input_node_file);

@@ -34,6 +34,7 @@ extern int running_nodes_workload_minus_2;
 extern int total_queue_time;
 extern int first_subtime_day_0;
 extern char* scheduler;
+extern char* output_file;
 extern long long Planned_Area[3][3];
 extern int number_node_size[3];
 
@@ -156,6 +157,7 @@ struct To_Print {
     int waiting_for_a_load_time;
     float empty_cluster_time;
     int data_type;
+    float job_data_size;
     int upgraded; /* Was it on bigger nodes ? 0 or 1 */
 };
 
