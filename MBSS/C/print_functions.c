@@ -354,7 +354,7 @@ void print_csv(struct To_Print* head_to_print)
 			printf("error print csv data type %f.\n", head_to_print->job_data_size);
 			exit(EXIT_FAILURE);
 		}
-		
+		//~ printf("here2\n");
 		/* Bounded flow stretch */
 		if (head_to_print->empty_cluster_time > 300)
 		{
@@ -394,7 +394,7 @@ void print_csv(struct To_Print* head_to_print)
 		}
 			
 		core_time_used += head_to_print->time_used*head_to_print->job_cores;
-		
+		//~ printf("here3\n");
 		if (head_to_print->job_start_time - head_to_print->job_subtime < 0)
 		{
 			printf("Error queue time is %d for job %d.\n", head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->job_unique_id);
@@ -427,7 +427,6 @@ void print_csv(struct To_Print* head_to_print)
 		{
 			makespan = head_to_print->job_end_time;
 		}
-		
 		#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 		/* For distribution of flow and queue times on each job to show VS curves */
 		fprintf(f_queue, "%d %d %d %d %d\n", head_to_print->job_unique_id, head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
@@ -445,7 +444,7 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_stretch);
 	fclose(f_bounded_stretch);
 	#endif
-		
+	//~ printf("here5\n");
 	/* Compute mean values */
 	mean_queue_time = total_queue_time/nb_job_to_evaluate;
 	mean_flow = total_flow/nb_job_to_evaluate;
@@ -457,21 +456,22 @@ void print_csv(struct To_Print* head_to_print)
 	mean_flow_stretch_with_a_minimum_128 = total_flow_stretch_with_a_minimum_128/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum_256 = total_flow_stretch_with_a_minimum_256/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum_1024 = total_flow_stretch_with_a_minimum_1024/nb_job_to_evaluate;
-	
+	//~ printf("here6\n");
 	/* Main file of results */
 	char* file_to_open_2 = malloc(100*sizeof(char));
-	file_to_open_2 = malloc(100*sizeof(char));
+	//~ file_to_open_2 = malloc(100*sizeof(char));
 	//~ strcpy(file_to_open_2, "outputs/Results_");
 	//~ strcat(file_to_open_2, scheduler);
 	//~ strcat(file_to_open_2, ".csv");
 	strcpy(file_to_open_2, output_file);
 	FILE* f = fopen(file_to_open_2, "a");
+	//~ printf("here7\n");
 	if (!f)
 	{
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
 	}
-	
+	//~ printf("here8\n");
 	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d, Nb large queue times (>%d): %d, Mean flow stretch 128 256 1024: %f %f %f, Mean flow stretch with a minimum 128 256 1024: %f %f %f\n\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, what_is_a_large_queue_time, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	fclose(f);

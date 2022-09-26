@@ -244,7 +244,7 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	}
 }
 
-void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier)
+void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes)
 {
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;
@@ -261,9 +261,31 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
+	double multiplier_file_to_load_increment = 0;
 	
-	int div_multiplier = 1; /* Useful if adaptative_multiplier is set to 1. Else it stays at 1 and does nothing. */
+	//~ int div_multiplier = 1; /* Useful if adaptative_multiplier is set to 1. Else it stays at 1 and does nothing. */
+	if (adaptative_multiplier == 1)
+	{
+		//~ printf("busy_cluster in fcfs with a score == %d.\n", busy_cluster);
+		if (busy_cluster == 0)
+		{
+			if (multiplier_file_to_load != 0)
+			{
+				multiplier_file_to_load = 1;
+			}
+			if (multiplier_file_evicted != 0)
+			{
+				multiplier_file_evicted = 1;
+			}
+			if (multiplier_nb_copy != 0)
+			{
+				multiplier_nb_copy = 1;
+			}
+		}
+	}
 	
+	//~ printf("Multiplier are %d %d %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+					
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
@@ -359,22 +381,25 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					if (min_score == -1 || earliest_available_time < min_score)
 					{
 						/* Update the dividor of the multiplier in function of the file size; */
-						if (adaptative_multiplier == 1)
-						{
-							if(j->data_size <= 128)
-							{
-								div_multiplier = 500;
-							}
-							else if (j->data_size <= 256)
-							{
-								div_multiplier = 1;
-							}
-							else /* cas 1024 */
-							{
-								div_multiplier = 1;
-							}
-						}
+						//~ if (adaptative_multiplier == 1)
+						//~ {
+							/* Ancien adapatative multiplier que j'ai testé une première fois. */
+							//~ if(j->data_size <= 128)
+							//~ {
+								//~ div_multiplier = 500;
+							//~ }
+							//~ else if (j->data_size <= 256)
+							//~ {
+								//~ div_multiplier = 1;
+							//~ }
+							//~ else /* cas 1024 */
+							//~ {
+								//~ div_multiplier = 1;
+							//~ }
+						//~ }s
 						//~ printf("For job %d using file of size %f, div is %d.\n", j->unique_id, j->data_size, div_multiplier);
+						
+						multiplier_file_to_load_increment = 0;
 						
 						/* 2.2. B = Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
 						if (j->data == 0)
@@ -384,13 +409,20 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 						else
 						{
 							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded); /* Use the intervals in each data to get this info. */
+							
+							/* Cas avec pénalité sur les gros jobs */
+							if (penalty_on_job_sizes != 0 && time_to_load_file != 0)
+							{
+								multiplier_file_to_load_increment = ((double) time_to_load_file*5)/10240; /* Max de chargement, echelle de 0 à 5 */
+								//~ printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);
+							}
 						}
 						
 						#ifdef PRINT
 						printf("B: Time to load file: %d. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 											
-						if (min_score == -1 || earliest_available_time + (multiplier_file_to_load/div_multiplier)*time_to_load_file < min_score)
+						if (min_score == -1 || earliest_available_time + (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file < min_score)
 						{
 							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
 							if (multiplier_file_evicted == 0)
@@ -406,7 +438,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 							printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);
 							#endif
 							
-							if (min_score == -1 || earliest_available_time + (multiplier_file_to_load/div_multiplier)*time_to_load_file + (multiplier_file_evicted/div_multiplier)*time_to_reload_evicted_files < min_score)
+							if (min_score == -1 || earliest_available_time + (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files < min_score)
 							{
 								/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
 								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
@@ -462,7 +494,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								#endif
 								
 								/* Compute node's score. */
-								score = earliest_available_time + (multiplier_file_to_load/div_multiplier)*time_to_load_file + (multiplier_file_evicted/div_multiplier)*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*(multiplier_nb_copy/div_multiplier);
+								score = earliest_available_time + (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
 								
 								/* Je dépasse les int max ? */
 								//~ if (score > 1000000000)
@@ -471,8 +503,9 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 									//~ exit(EXIT_FAILURE);
 								//~ }
 								
-								#ifdef PRINT		
-								printf("Score for job %d is %lld (EAT: %d + TL %d + TRL %f +NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								#ifdef PRINT	
+								printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);	
+								printf("Score for job %d is %lld (EAT: %d + TL %f + TRL %f + NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
 													
 								/* 2.6. Get minimum score/ */

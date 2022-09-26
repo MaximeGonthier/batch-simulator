@@ -145,22 +145,23 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item Citation QR-heft-tmdp-pr dans réponse au reviewer 2
+		\item Citation QR-heft-tmdp-pr dans réponse au reviewer 2. A retirer.
 		\item Revoir parla et optimal locality scheduling et refaire dans les related works
 		\item expliquer sparse dans settings
 		\item parler de dmdar comme default chameleon scheduler
-		\item visu cote a cote. Le faire aussi pour les autres sauf la première ? ou sauf HFP ?
+		\item
 		\item clarification single GPU dans abstract et intro. Faut-il en faire encore plus dans l'abstract en modifiant par exemple la première phrase ?
-		\item avancement projet Suède
+		\item avancement projet Suède: le point de basculement de charge c'est la quantité de job dans la queue (pret mais qui run pas). Mettre une pénalité constante sur les gros fichiers. tester x1 x1 et x1 x1 mais qui depend de l'utilisation du cluster. Tester la pénalité sur les gros jobs. 
+		\item Tester en prenant le même jour et le rendre sparse.
+		
+		% Uppsala
+		\item Code pour faire workload sparse
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Garder N en abscisse des courbes sparses ?
-		\item J'ai enlevé des random order HFP les sous paquets de la visu et des explications. Est-ce toujours facile à comprendre (en bas de la page 17) ?
-		\item 4 figures en 1. Peut etre enlever les points et mettre un trait plus large ?
-		\item Pour les courbes par 4 on peut aussi le faire avec 3D/3D simu/3D DT/Cholesky. Changer le texte une fois la configuration validé pour ne pas parlé des méthodes non montrées
-		\item Besoin d'aide pour reviewer 2 dernière question.
+		\item Garder N en abscisse des courbes sparses ? Mettre working set size
+		\item visu cote a cote. Le faire aussi pour les autres sauf la première ? ou sauf HFP ?
 	\end{enumerate}
 	
 \section{Todo}
@@ -175,6 +176,10 @@
 	\subsection{FGCS}
 		\begin{enumerate}
 			\item Refaire le dépôt, attention enlever les define print des 4 schedulers queje visualise et revoir script r par raport ax chemins et ajouter script r 4 panel si utilisé
+			\item fusionner fig 5 et 6. Mettre fond blanc à tous. Garder les points. Enlever fig13. Les 6 dernières, les mettres ne 2 colonnes 3 lignes. Alleger les schedulers. Enlever le HFP with sched time fast start de 3D. Simplifier les lignes horizontales et verticales et bien les expliquer avant dans le texte au moment de 2D. Garder only belady et only flip. Enlever mst.
+			\item dire que on a enlever mst pour la lisibilité. et qu'il est mins bon que RCM ou aussi bien. Mais apprait dans les \%.
+			\item Faire tab de pourcentage de sparse
+			\item enlever annotations lignes pour 6 courbes ensemble
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}

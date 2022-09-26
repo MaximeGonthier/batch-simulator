@@ -972,17 +972,6 @@ void start_jobs(int t, struct Job* head)
 				}
 			}
 			
-			//~ if (j->unique_id <= 1382)
-			//~ {
-				//~ printf("%d and %d.\n", j->transfer_time, j->waiting_for_a_load_time);
-			//~ }
-			
-			//~ if (constraint_on_sizes == 2 || j->data == 0)
-			//~ {
-				//~ overhead_of_load = 0;
-			//~ }
-			//~ else
-			//~ {
 			overhead_of_load = 0;
 				//~ printf("%d %d.\n", transfer_time, waiting_for_a_load_time);
 				if (transfer_time == 0)
@@ -1031,24 +1020,26 @@ void start_jobs(int t, struct Job* head)
 			/*For easy bf */
 			running_cores += j->cores;
 			
-			#ifdef PRINT_CLUSTER_USAGE
+			
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes += 1;
 				
-				//~ if (j->workload == -2)
-				//~ {
-					//~ running_nodes_workload_minus_2 += 1;
-				//~ }
+				// if (j->workload == -2)
+				// {
+					// running_nodes_workload_minus_2 += 1;
+				//~}
 			}
 			j->node_used->n_available_cores -= j->cores;
+			//~ #ifdef PRINT_CLUSTER_USAGE
 			if (j->node_used->n_available_cores < 0)
 			{
 				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
 				j->node_used->n_available_cores = 0; /* Test */
-				//~ exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);
 			}
-			#endif
+			//~ #endif
+			
 						
 			for (i = 0; i < j->cores; i++)
 			{
@@ -1175,24 +1166,26 @@ void end_jobs(struct Job* job_list_head, int t)
 			/* For easybf */
 			running_cores -= j->cores;				
 			
-			#ifdef PRINT_CLUSTER_USAGE
+			
 			j->node_used->n_available_cores += j->cores;
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes -= 1;
 				
-				//~ if (j->workload == -2)
-				//~ {
-					//~ running_nodes_workload_minus_2 -= 1;
-				//~ }
+				// if (j->workload == -2)
+				// {
+					// running_nodes_workload_minus_2 -= 1;
+				// }
 			}
+			//~ #ifdef PRINT_CLUSTER_USAGE
 			if (j->node_used->n_available_cores > 20)
 			{
 				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
 				j->node_used->n_available_cores = 20; /* Test */
-				//~ exit(EXIT_FAILURE);
+				exit(EXIT_FAILURE);
 			}
-			#endif
+			//~ #endif
+			
 						
 			//~ #ifdef PRINT
 			//~ if (j->node_used->unique_id == 183) {

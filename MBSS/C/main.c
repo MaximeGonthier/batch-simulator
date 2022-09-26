@@ -62,10 +62,12 @@ int nb_job_to_evaluate_started;
 long long Allocated_Area[3][3];
 long long Planned_Area[3][3];
 int number_node_size[3];
+int busy_cluster;
 
 int main(int argc, char *argv[])
 {
 	/* random seed init. */
+	busy_cluster = 0; /* Not busy initially */
 	srand(time(NULL));
 	planned_or_ratio = 0;
 	/* Init global variables */
@@ -95,6 +97,11 @@ int main(int argc, char *argv[])
 	scheduler = argv[3]; /* malloc ? */
 	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
 	output_file = argv[5];
+	if (output_file == NULL)
+	{
+		printf("Need file output\n");
+		exit(1);
+	}
 	
 	printf("Workloads: %s\n", input_job_file);
 	printf("Cluster: %s\n", input_node_file);
@@ -193,6 +200,7 @@ int main(int argc, char *argv[])
 	int multiplier_nb_copy = 0;
 	int multiplier_area_bigger_nodes = 0;
 	int adaptative_multiplier = 0; /* 0 = no, 1 = yes */
+	int penalty_on_job_sizes = 0; /* 0 = no, 1 = yes */
 	int backfill_big_node_mode = 0;
 	bool use_bigger_nodes = true;
 	//~ long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
@@ -200,7 +208,7 @@ int main(int argc, char *argv[])
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	
 	/* Getting informations for certain schedulers. */
-	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0)
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0)
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -273,6 +281,12 @@ int main(int argc, char *argv[])
 			j = 41;
 			adaptative_multiplier = 1;
 		}
+		else if (strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0)
+		{
+			i = 39;
+			j = 39;
+			penalty_on_job_sizes = 1;
+		}
 		else
 		{
 			printf("Error.\n");
@@ -343,7 +357,7 @@ int main(int argc, char *argv[])
 		}
 		multiplier_area_bigger_nodes = (int) strtol(to_copy4, NULL, 10);
 						
-		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multipliers :%d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier);
+		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multipliers : %d / Penalty on sizes : %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes);
 	}
 		
 	int division_by_planned_area = 0;
@@ -564,7 +578,37 @@ int main(int argc, char *argv[])
 			{
 				start_jobs(t, scheduled_job_list->head);
 			}
-		}			
+		}	
+		
+		/* Marche pas car y a tjr un job 1024 en attente je pense. */
+		//~ if (scheduled_job_list->head != NULL)
+		/* TODO : gérérer le cas de plsuieurs tailles de noeuds! */
+		if (running_nodes > 485)
+		{
+			//~ if (scheduled_job_list->head->next != NULL)
+			//~ {
+				busy_cluster = 1;
+				//~ printf("busy_cluster in main == %d at T = %d.\n", busy_cluster, t);
+				//~ exit(1);
+			//~ }
+			//~ else
+			//~ {
+				//~ busy_cluster = 0;
+			//~ }
+		}
+		else
+		{
+			busy_cluster = 0;
+		}
+		//~ if (busy_cluster == 0)
+		//~ {
+			//~ printf("busy_cluster in main == %d at T = %d.\n", busy_cluster, t);
+		//~ }
+		//~ exit(1);
+		//~ if (t > 4706277)
+		//~ {
+			//~ exit(1); 
+		//~ }
 		
 		new_jobs = false;
 		/* Get the set of available jobs at time t */
@@ -642,9 +686,9 @@ int main(int argc, char *argv[])
 			printf("Reschedule.\n");
 			#endif
 			
-			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0)
+			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0)
 			{
-				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier);
+				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0)
 			{
