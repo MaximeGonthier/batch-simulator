@@ -262,7 +262,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	double multiplier_file_to_load_increment = 0;
-	
+	//~ printf("here\n");
 	//~ int div_multiplier = 1; /* Useful if adaptative_multiplier is set to 1. Else it stays at 1 and does nothing. */
 	if (adaptative_multiplier == 1)
 	{
