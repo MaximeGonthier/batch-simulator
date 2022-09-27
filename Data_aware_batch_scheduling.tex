@@ -1205,15 +1205,15 @@ I suffer on underused workloads.
 We need parameters that won't cripple the choice with data locality over earliest available time because of the multiplier.
 A solution would be to adapt the multiplier to the size file. If it's big I don't want to duplicate it. Else I do. 
 
-\begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-03-01->2022-03-03_V9532_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-03-01->2022-03-03_V9532_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
-\caption{Size and constraint - Workload from March 1st to 3rd (19000 jobs) with 95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
+%~ \begin{figure}[H]\centering
+%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-03-01->2022-03-03_V9532_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
+%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-03-01->2022-03-03_V9532_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
+%~ \caption{Size and constraint - Workload from March 1st to 3rd (19000 jobs) with 95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
 
-\begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
-\caption{Size and constraint - Workload January 21 (45000 jobs) with 95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
+%~ \begin{figure}[H]\centering
+%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
+%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
+%~ \caption{Size and constraint - Workload January 21 (45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
 
 Idée: quand la taille de la liste de jobs a schedule est plus grande que le nombre de noeud disponibles (par catégorie si on prend la contrainte de tailles), alors on fais
 avec les multiplicateur. Les multiplicateurs dépandent de la taille de la donnée. Pour 128 et moins: x1 x1 x0 x0, pour entre 128 et 256 on fais ? et entre 256 et 1024 ?.
@@ -1224,6 +1224,18 @@ Test sur le dernier workload = 2h15 par Fcfs with a score.
 Pb, des que le cluster est un peu rempli, si je passe à 500 500 ca fais que je ne vide jamais a liste et donc 
 que le cluster est sous utlisé. Il me faut donc regarder les noeuds dispoibles et non pas le nombre de jobs dans lal iste.
 Ce qu iest different en sois que de faire avec la liste
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_sparse_50_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_sparse_50_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_sparse_50_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{data transfers}\label{45}\end{subfigure}
+\caption{Size and constraint - Workload sparse 50\% January 21 (45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 27}\label{49}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Data transfers}\label{45}\end{subfigure}
+\caption{Size and constraint - Workload January 21 (45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 27}\label{49}\end{figure}
 
 \subsection{Plotting statistics}
 

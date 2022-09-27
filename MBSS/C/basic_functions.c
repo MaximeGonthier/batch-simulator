@@ -1040,7 +1040,7 @@ void start_jobs(int t, struct Job* head)
 				{
 					printf("%d\n", j->node_used->cores[i]->available_time);
 				}
-				j->node_used->n_available_cores = 0; /* Test */
+				//~ j->node_used->n_available_cores = 0; /* Test */
 				//~ exit(EXIT_FAILURE);
 			}
 			//~ #endif
@@ -1191,7 +1191,7 @@ void end_jobs(struct Job* job_list_head, int t)
 				{
 					printf("%d\n", j->node_used->cores[i]->available_time);
 				}
-				j->node_used->n_available_cores = 20; /* Test */
+				//~ j->node_used->n_available_cores = 20; /* Test */
 				//~ exit(EXIT_FAILURE);
 			}
 			//~ #endif
