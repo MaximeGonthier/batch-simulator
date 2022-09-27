@@ -125,6 +125,13 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+			
 			break;
 		}
 	}
@@ -183,6 +190,13 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+
 			break;
 		}
 	}
@@ -647,8 +661,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
 			
-			/* Need to put -1 at remaining start times of jobs. */
-			/* Test. TODO: a suppr ? */
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
 			while (j != NULL)
 			{
 				j->start_time = -1;
@@ -676,7 +689,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
  **/
 void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
-	printf("LOCALITY\n");
+	//~ printf("LOCALITY\n");
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	long long min_score_locality = -1;
 	int i = 0;
@@ -946,6 +959,13 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+
 			break;
 		}
 	}
@@ -967,7 +987,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
  **/
 void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
-	printf("HEFT\n");
+	//~ printf("HEFT\n");
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	long long min_score = -1;
 	int i = 0;
@@ -1217,6 +1237,13 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+
 			break;
 		}
 	}
@@ -1275,6 +1302,13 @@ void fcfs_scheduler_backfill_big_nodes(struct Job* head_job, struct Node_List** 
 			#ifdef PRINT
 			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}
@@ -1395,6 +1429,13 @@ void fcfs_scheduler_planned_area_filling(struct Job* head_job, struct Node_List*
 			#ifdef PRINT
 			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}
@@ -1518,6 +1559,13 @@ void fcfs_scheduler_ratio_area_filling(struct Job* head_job, struct Node_List** 
 			#ifdef PRINT
 			printf("There are %d/%d available cores. Break.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}
@@ -1907,6 +1955,13 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 			#ifdef PRINT
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}
@@ -2367,6 +2422,13 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+			
 			break;
 		}
 	}
@@ -2789,6 +2851,13 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+			
 			break;
 		}
 	}
@@ -3158,6 +3227,13 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
 			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+			
 			break;
 		}
 	}
@@ -3498,6 +3574,13 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 			#ifdef PRINT
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}

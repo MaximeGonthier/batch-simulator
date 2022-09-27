@@ -50,7 +50,7 @@ struct Job_List* running_jobs; /* Started */
 struct Node_List** node_list;
 struct To_Print_List* jobs_to_print_list;
 int running_cores;
-int running_nodes;
+float running_nodes;
 int running_nodes_workload_minus_2;
 int total_queue_time;
 int first_subtime_day_0;
@@ -359,6 +359,17 @@ int main(int argc, char *argv[])
 						
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multipliers : %d / Penalty on sizes : %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes);
 	}
+	
+	/* Récupération du pourcentage à partir duquel on est sur un cluster occupé. */
+	int busy_cluster_threshold = 0; /* 0-100% */
+	if (strncmp(scheduler, "Mixed_strategy", 14) == 0)
+	{
+		char to_copy5[2];
+		to_copy5[0] = scheduler[15];
+		to_copy5[1] = scheduler[16];
+		busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
+		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
+	}
 		
 	int division_by_planned_area = 0;
 	
@@ -584,34 +595,15 @@ int main(int argc, char *argv[])
 		//~ if (scheduled_job_list->head != NULL)
 		/* TODO : gérérer le cas de plsuieurs tailles de noeuds! */
 		//~ if (running_nodes > 485) /* A faire correctement cette histoire de busy cluster */
-		//~ printf("Cluster usage: %d/4.\n", running_nodes);
-		if (running_nodes == 486)
+		//~ printf("Cluster usage: %f (%f nodes running) - threshold is %d.\n", (running_nodes*100)/486, running_nodes, busy_cluster_threshold);
+		if ((running_nodes*100)/486 >= busy_cluster_threshold)
 		{
-			//~ printf("Cluster usage: %d/4.\n", running_nodes);
-			//~ if (scheduled_job_list->head->next != NULL)
-			//~ {
-				busy_cluster = 1;
-				//~ printf("busy_cluster in main == %d at T = %d.\n", busy_cluster, t);
-				//~ exit(1);
-			//~ }
-			//~ else
-			//~ {
-				//~ busy_cluster = 0;
-			//~ }
+			busy_cluster = 1;
 		}
 		else
 		{
 			busy_cluster = 0;
 		}
-		//~ if (busy_cluster == 0)
-		//~ {
-			//~ printf("busy_cluster in main == %d at T = %d.\n", busy_cluster, t);
-		//~ }
-		//~ exit(1);
-		//~ if (t > 4706277)
-		//~ {
-			//~ exit(1); 
-		//~ }
 		
 		new_jobs = false;
 		/* Get the set of available jobs at time t */
