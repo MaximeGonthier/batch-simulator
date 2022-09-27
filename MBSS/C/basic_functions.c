@@ -1038,7 +1038,7 @@ void start_jobs(int t, struct Job* head)
 				printf("Error n avail cores start_jobs is %d on node %d. T = %d. Times of the cores on the node are:\n", j->node_used->n_available_cores, j->node_used->unique_id, t);
 				for (i = 0; i < 20; i++)
 				{
-					printf("%d", j->node_used->cores[i]->available_time);
+					printf("%d\n", j->node_used->cores[i]->available_time);
 				}
 				j->node_used->n_available_cores = 0; /* Test */
 				exit(EXIT_FAILURE);
