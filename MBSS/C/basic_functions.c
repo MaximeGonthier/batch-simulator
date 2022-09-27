@@ -1021,6 +1021,7 @@ void start_jobs(int t, struct Job* head)
 			running_cores += j->cores;
 			
 			
+			/** Defining cluster usage **/
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes += 1;
@@ -1034,7 +1035,11 @@ void start_jobs(int t, struct Job* head)
 			//~ #ifdef PRINT_CLUSTER_USAGE
 			if (j->node_used->n_available_cores < 0)
 			{
-				printf("error n avail cores start_jobs is %d on node %d.\n", j->node_used->n_available_cores, j->node_used->unique_id);
+				printf("Error n avail cores start_jobs is %d on node %d. T = %d. Times of the cores on the node are:\n", j->node_used->n_available_cores, j->node_used->unique_id, t);
+				for (i = 0; i < 20; i++)
+				{
+					printf("%d", j->node_used->cores[i]->available_time);
+				}
 				j->node_used->n_available_cores = 0; /* Test */
 				exit(EXIT_FAILURE);
 			}
@@ -1158,7 +1163,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			
 			/* Just printing, can remove */
 			//~ if (finished_jobs%5000 == 0)
-			if (finished_jobs%4000 == 0)
+			if (finished_jobs%5000 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
