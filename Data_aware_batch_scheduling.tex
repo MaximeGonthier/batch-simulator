@@ -24,6 +24,7 @@
 \newcommand{\start}{\mathit{Starttime}\xspace}
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
+\newcommand{\nodeset}{\ensuremath{\mathbb{N}}\xspace}
 \newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
 \newcommand{\nbloads}{\ensuremath{\mathit{\mathit{Loads}}}\xspace}
 \newcommand{\live}{\ensuremath{L}\xspace}
@@ -1236,6 +1237,54 @@ Ce qu iest different en sois que de faire avec la liste
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Data transfers}\label{45}\end{subfigure}
 \caption{Size and constraint - Workload January 21 (45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 27}\label{49}\end{figure}
+
+ecrire heuristique sois heft (x1 x0 x0 x0), sois localité (avec les 2 trucs de localité+comm first et en 2eme critère le EAT) dans le cas 95 ou 90\%.
+\begin{algorithm}[htbp]
+\caption{Mix locality/heft}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\State $occupation\_threshold \gets ???$
+\State We want to compute the set of jobs J at time t
+\State $occupation \gets$ the occupation percentage of the cluster \Comment{If a node is running at least 1 job (even if it uses only 1 core), we consider that the node is occupied. Note that we could also compute the occupation after each schedule of a job. Which would change the strategy during the scheduling.}
+\If{$occupation < occupation\_threshold$}
+	\State $Heft(\jobset,\nodeset)$
+\Else
+	\State $Locality(\jobset,\nodeset)$
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Heft}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\ForEach {$J_i \in \jobset$}
+	\State Schedule $J_i$ on the node with the earliest completion time. \Comment{Thus taking into consideration the transfer time. Basically it's Fcfs\_with\_a\_score\_x1\_x0\_x0\_x0.}
+	\State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{Locality}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\ForEach {$J_i \in \jobset$}
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
+		\State $score_{\Node{k}} \gets \frac{\memory(\inputs(J_i) \notin \inputs(\Node{k}))}{\bandwidth} + \frac{\memory(\inputs(\Node{k}) \notin \inputs(J_i)~and~that~end~before~or~at~EAT)~ \times \frac{\core(J_i)}{\core(\Node{i})}}{\bandwidth}$
+	\EndFor
+	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie. \Comment{It's Fcfs\_with\_a\_score\_x1\_x1\_x0\_x0 but the earliest available time is only used as a tie-breaker.}
+	\State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+%~ For each node, B = compute the time it will take to load all the files from $J_i$ not yet in memory.
+
+%~ For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of number of cores on the node the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
+%~ To do this we do: $C = \inputs(\Node{i})~that~end~before~predicted~start~time~ \times \frac{\core(J_i)}{\core(\Node{i})}$
+
 
 \subsection{Plotting statistics}
 
