@@ -300,7 +300,7 @@ OUTPUT_FILE=outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CL
 #~ SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
 #~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
 
-for ((i=1; i<=5; i++))
+for ((i=1; i<=6; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
@@ -308,6 +308,7 @@ do
 	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_x500_x500_x0_x0"
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_penalty_on_big_jobs_x1_x1_x0_x0" # Les jobs ont leurs temps pour charger un fichier a qui on ajoute une pénalité constante (en plus d'un multiplicateur possible par la suite) sur le multiplicateur. de 0 à +5 en fonction de la taille du fichiers. Donc on a par exemple x1+0.6 pour 128, ou x1+5 pour 1024.
 	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_x500_x500_x0_x0" # Quand le cluster est chargé (il y a des nodes non utilisées) je passe à 500 500, sinon je suis à 1 1
+	elif [ $((i)) == 6 ]; then SCHEDULER="Mixed_strategy_90"
 	fi
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
 done
