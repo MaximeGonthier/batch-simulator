@@ -1044,7 +1044,7 @@ void start_jobs(int t, struct Job* head)
 				//~ exit(EXIT_FAILURE);
 			}
 			//~ #endif
-			
+			/** End of defining cluster usage **/
 						
 			for (i = 0; i < j->cores; i++)
 			{
@@ -1195,7 +1195,7 @@ void end_jobs(struct Job* job_list_head, int t)
 				//~ exit(EXIT_FAILURE);
 			}
 			//~ #endif
-			
+			/** End of defining cluster usage **/
 						
 			//~ #ifdef PRINT
 			//~ if (j->node_used->unique_id == 183) {
