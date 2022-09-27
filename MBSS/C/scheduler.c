@@ -308,6 +308,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	struct Job* j = head_job;
 	while (j != NULL)
 	{
+		
+				//~ /* Test. TODO: a suppr ? PAs besoin normalement car je le fais en bas */
+		//~ j->start_time = -1;
+		
+
+		
 		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
@@ -366,13 +372,15 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					#ifdef PRINT
 					printf("On node %d?\n", n->unique_id); fflush(stdout);
 					#endif
-					
+										
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
 						earliest_available_time = t;
 					}
+					
+					//~ if (j->unique_id == 969 && n->unique_id == 28) { printf("testing node %d.\n", n->unique_id); print_cores_in_specific_node(n); }
 					
 					#ifdef PRINT
 					printf("A: EAT is: %d.\n", earliest_available_time); fflush(stdout);
@@ -507,6 +515,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);	
 								printf("Score for job %d is %lld (EAT: %d + TL %f + TRL %f + NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
 								#endif
+								
+								//~ if (n->unique_id == 28 && (j->unique_id == 895 || j->unique_id == 968 || j->unique_id == 969)) 
+								//~ {
+									//~ printf("Score for job %d is %lld (EAT: %d + TL %f + TRL %f + NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								//~ }
 													
 								/* 2.6. Get minimum score/ */
 								if (min_score == -1)
@@ -603,6 +616,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			#ifdef PRINT
 			print_decision_in_scheduler(j);
 			#endif
+			
+			if (j->node_used->unique_id == 28 || j->unique_id == 968)
+			{
+				printf("T = %d | ", t);
+				print_decision_in_scheduler(j);
+			}
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
@@ -627,6 +646,14 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			#ifdef PRINT
 			printf("No more available cores.\n"); fflush(stdout);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs. */
+			/* Test. TODO: a suppr ? */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}

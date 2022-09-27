@@ -147,7 +147,7 @@ void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_i
     /* Special case for the head end */
     if (liste->head == NULL || liste->head->time >= time_to_insert) {
 		
-		/* I don't want the same time twice. So I addthis condition. */
+		/* I don't want the same time twice. So I add this condition. */
 		if (liste->head != NULL)
 		{
 			if (liste->head->time == time_to_insert)

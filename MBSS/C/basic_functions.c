@@ -913,7 +913,6 @@ void start_jobs(int t, struct Job* head)
 		if (j->start_time == t)
 		//~ if (j->start_time <= t)
 		{
-			
 			if (j->delay <= 0)
 			{
 				printf("Error delay is %d for job %d.\n", j->delay, j->unique_id);
@@ -989,17 +988,19 @@ void start_jobs(int t, struct Job* head)
 				}
 			//~ }
 			
-			//~ #ifdef PRINT
-			//~ printf("For job %d: %d transfer time and %d waiting for a load time. Overhead is %d\n", j->unique_id, transfer_time, waiting_for_a_load_time, overhead_of_load); fflush(stdout);
-			//~ #endif
+			#ifdef PRINT
+			printf("For job %d (delay = %d): %d transfer time and %d waiting for a load time. Overhead is %d\n", j->unique_id, j->delay, transfer_time, waiting_for_a_load_time, overhead_of_load); fflush(stdout);
+			#endif
 			
 			if (j->delay + overhead_of_load < j->walltime)
 			{
+				//~ printf("end before walltime\n");
 				min_between_delay_and_walltime = j->delay + overhead_of_load;
 				j->end_before_walltime = true;
 			}
 			else
 			{
+				//~ printf("end at walltime\n");
 				min_between_delay_and_walltime = j->walltime;
 				j->end_before_walltime = false;
 			}
@@ -1032,17 +1033,24 @@ void start_jobs(int t, struct Job* head)
 				//~}
 			}
 			j->node_used->n_available_cores -= j->cores;
-			//~ #ifdef PRINT_CLUSTER_USAGE
-			if (j->node_used->n_available_cores < 0)
+			if (j->node_used->unique_id == 28)
 			{
-				printf("Error n avail cores start_jobs is %d on node %d. T = %d. Times of the cores on the node are:\n", j->node_used->n_available_cores, j->node_used->unique_id, t);
-				for (i = 0; i < 20; i++)
-				{
-					printf("%d\n", j->node_used->cores[i]->available_time);
-				}
-				//~ j->node_used->n_available_cores = 0; /* Test */
-				//~ exit(EXIT_FAILURE);
+				printf("New available core is %d after job %d start using %d cores at t=%d.\n", j->node_used->n_available_cores, j->unique_id, j->cores, t);
+				printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
+				printf("Used cores are:");
+				for (i = 0; i < j->cores; i++) { printf(" %d", j->cores_used[i]); } printf("\n");
+				print_cores_in_specific_node(j->node_used);
+			//~ #ifdef PRINT_CLUSTER_USAGE
+			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
+			{
+				printf("ERROR ERROR\n"); 
+				exit(1);
+				//~ printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
+				//~ printf("Error n avail in start_jobs: %d on node %d for job %d. T = %d.\n", j->node_used->n_available_cores, j->node_used->unique_id, j->unique_id, t);
+				//~ print_single_node(j->node_used);
+				//~ print_cores_in_specific_node(j->node_used);
 			}
+			printf("\n"); }
 			//~ #endif
 			/** End of defining cluster usage **/
 						
@@ -1184,16 +1192,19 @@ void end_jobs(struct Job* job_list_head, int t)
 				// }
 			}
 			//~ #ifdef PRINT_CLUSTER_USAGE
-			if (j->node_used->n_available_cores > 20)
+			if (j->node_used->unique_id == 28)
 			{
-				printf("Error n avail cores end_jobs is %d on node %d. T = %d. Times of the cores on the node are:\n", j->node_used->n_available_cores, j->node_used->unique_id, t);
-				for (i = 0; i < 20; i++)
-				{
-					printf("%d\n", j->node_used->cores[i]->available_time);
-				}
-				//~ j->node_used->n_available_cores = 20; /* Test */
-				//~ exit(EXIT_FAILURE);
-			}
+				printf("New available core is %d after job %d end using %d cores at t=%d.\n", j->node_used->n_available_cores, j->unique_id, j->cores, t);
+				printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
+			//~ }
+			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
+			{
+				printf("ERROR ERROR\n");
+				//~ printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
+				//~ printf("Error n avail in end_jobs: %d on node %d for job %d. T = %d.\n", j->node_used->n_available_cores, j->node_used->unique_id, j->unique_id, t);
+				//~ print_single_node(j->node_used);
+				//~ print_cores_in_specific_node(j->node_used);
+			} printf("\n"); }
 			//~ #endif
 			/** End of defining cluster usage **/
 						
