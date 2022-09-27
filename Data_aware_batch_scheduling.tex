@@ -1238,7 +1238,7 @@ Ce qu iest different en sois que de faire avec la liste
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Data transfers}\label{45}\end{subfigure}
 \caption{Size and constraint - Workload January 21 (45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 27}\label{49}\end{figure}
 
-ecrire heuristique sois heft (x1 x0 x0 x0), sois localité (avec les 2 trucs de localité+comm first et en 2eme critère le EAT) dans le cas 95 ou 90\%.
+New mixed strategy:
 \begin{algorithm}[htbp]
 \caption{Mix locality/heft}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
@@ -1279,12 +1279,6 @@ ecrire heuristique sois heft (x1 x0 x0 x0), sois localité (avec les 2 trucs de 
 \EndFor
 \end{algorithmic}
 \end{algorithm}
-
-%~ For each node, B = compute the time it will take to load all the files from $J_i$ not yet in memory.
-
-%~ For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of number of cores on the node the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
-%~ To do this we do: $C = \inputs(\Node{i})~that~end~before~predicted~start~time~ \times \frac{\core(J_i)}{\core(\Node{i})}$
-
 
 \subsection{Plotting statistics}
 
