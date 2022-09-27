@@ -1033,13 +1033,6 @@ void start_jobs(int t, struct Job* head)
 				//~}
 			}
 			j->node_used->n_available_cores -= j->cores;
-			if (j->node_used->unique_id == 28)
-			{
-				printf("New available core is %d after job %d start using %d cores at t=%d.\n", j->node_used->n_available_cores, j->unique_id, j->cores, t);
-				printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
-				printf("Used cores are:");
-				for (i = 0; i < j->cores; i++) { printf(" %d", j->cores_used[i]); } printf("\n");
-				print_cores_in_specific_node(j->node_used);
 			//~ #ifdef PRINT_CLUSTER_USAGE
 			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
 			{
@@ -1050,7 +1043,6 @@ void start_jobs(int t, struct Job* head)
 				//~ print_single_node(j->node_used);
 				//~ print_cores_in_specific_node(j->node_used);
 			}
-			printf("\n"); }
 			//~ #endif
 			/** End of defining cluster usage **/
 						
@@ -1192,19 +1184,16 @@ void end_jobs(struct Job* job_list_head, int t)
 				// }
 			}
 			//~ #ifdef PRINT_CLUSTER_USAGE
-			if (j->node_used->unique_id == 28)
-			{
-				printf("New available core is %d after job %d end using %d cores at t=%d.\n", j->node_used->n_available_cores, j->unique_id, j->cores, t);
-				printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
 			//~ }
 			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
 			{
 				printf("ERROR ERROR\n");
+				exit(1); 
 				//~ printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
 				//~ printf("Error n avail in end_jobs: %d on node %d for job %d. T = %d.\n", j->node_used->n_available_cores, j->node_used->unique_id, j->unique_id, t);
 				//~ print_single_node(j->node_used);
 				//~ print_cores_in_specific_node(j->node_used);
-			} printf("\n"); }
+			}
 			//~ #endif
 			/** End of defining cluster usage **/
 						

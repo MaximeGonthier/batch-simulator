@@ -684,10 +684,7 @@ int main(int argc, char *argv[])
 			
 			/* Reset planned starting times. */
 			free_next_time_linked_list(&start_times->head);
-			
-			printf("Reschedule.\n");
-			//~ print_time_list(start_times->head, 0);
-			
+						
 			#ifdef PRINT
 			printf("Reschedule.\n");
 			#endif
@@ -767,16 +764,9 @@ int main(int argc, char *argv[])
 			printf("End of reschedule.\n");
 			#endif
 			
-					//~ /* Get ended job. */
-		//~ old_finished_jobs = finished_jobs;
-		//~ if (end_times->head != NULL && end_times->head->time == t)
-		//~ {
-			//~ end_jobs(running_jobs->head, t);
-		//~ }	
 
 			/* Get started jobs. */
-			printf("Starts after reschedule\n");
-			print_time_list(start_times->head, 0);
+			//~ print_time_list(start_times->head, 0);
 			if (start_times->head != NULL)
 			{
 				if (start_times->head->time == t)

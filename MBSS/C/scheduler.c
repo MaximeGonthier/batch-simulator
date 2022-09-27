@@ -617,11 +617,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			print_decision_in_scheduler(j);
 			#endif
 			
-			if (j->node_used->unique_id == 28 || j->unique_id == 968)
-			{
-				printf("T = %d | ", t);
-				print_decision_in_scheduler(j);
-			}
+			//~ if (j->node_used->unique_id == 28 || j->unique_id == 968)
+			//~ {
+				//~ printf("T = %d | ", t);
+				//~ print_decision_in_scheduler(j);
+			//~ }
 						
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
