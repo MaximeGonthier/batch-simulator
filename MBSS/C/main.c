@@ -583,8 +583,11 @@ int main(int argc, char *argv[])
 		/* Marche pas car y a tjr un job 1024 en attente je pense. */
 		//~ if (scheduled_job_list->head != NULL)
 		/* TODO : gérérer le cas de plsuieurs tailles de noeuds! */
-		if (running_nodes > 485)
+		//~ if (running_nodes > 485) /* A faire correctement cette histoire de busy cluster */
+		//~ printf("Cluster usage: %d/4.\n", running_nodes);
+		if (running_nodes == 4)
 		{
+			//~ printf("Cluster usage: %d/4.\n", running_nodes);
 			//~ if (scheduled_job_list->head->next != NULL)
 			//~ {
 				busy_cluster = 1;
