@@ -372,7 +372,7 @@ int main(int argc, char *argv[])
 	}
 	if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0)
 	{
-		busy_cluster_threshold = 99;
+		busy_cluster_threshold = 80;
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
 		
@@ -586,7 +586,7 @@ int main(int argc, char *argv[])
 		if (end_times->head != NULL && end_times->head->time == t)
 		{
 			end_jobs(running_jobs->head, t);
-		}	
+		}
 		/* Get started jobs. */
 		if (start_times->head != NULL)
 		{
@@ -594,7 +594,7 @@ int main(int argc, char *argv[])
 			{
 				start_jobs(t, scheduled_job_list->head);
 			}
-		}	
+		}
 		
 		/* Marche pas car y a tjr un job 1024 en attente je pense. */
 		//~ if (scheduled_job_list->head != NULL)
