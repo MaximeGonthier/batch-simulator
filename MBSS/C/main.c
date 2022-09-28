@@ -370,6 +370,11 @@ int main(int argc, char *argv[])
 		busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
+	if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0)
+	{
+		busy_cluster_threshold = 99;
+		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
+	}
 		
 	int division_by_planned_area = 0;
 	
