@@ -382,7 +382,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			{
 				struct Node* n = head_node[i]->head;
 				while (n != NULL)
-				{	
+				{
 					#ifdef PRINT
 					printf("On node %d?\n", n->unique_id); fflush(stdout);
 					#endif
@@ -833,14 +833,8 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 						if (min_score_locality == -1 || time_to_load_file <= min_score_locality)
 						{
 							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
-							//~ if (multiplier_file_evicted == 0)
-							//~ {
-								//~ time_to_reload_evicted_files = 0;
-							//~ }
-							//~ else
-							//~ {
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
-							//~ }
+							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+							time_to_reload_evicted_files = 0;
 							
 							#ifdef PRINT
 							printf("Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);

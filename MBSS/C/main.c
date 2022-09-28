@@ -372,7 +372,9 @@ int main(int argc, char *argv[])
 	}
 	if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0)
 	{
-		busy_cluster_threshold = 80;
+		//~ busy_cluster_threshold = 80;
+		busy_cluster_threshold = 99;
+		//~ busy_cluster_threshold = 100;
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
 		
@@ -783,7 +785,7 @@ int main(int argc, char *argv[])
 		//~ }
 		
 		#ifdef PRINT_CLUSTER_USAGE
-		fprintf(f_stats, "%d,%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head), running_nodes_workload_minus_2);
+		fprintf(f_stats, "%d,%f,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head), running_nodes_workload_minus_2);
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)

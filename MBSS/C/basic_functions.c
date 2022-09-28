@@ -1163,7 +1163,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			
 			/* Just printing, can remove */
 			//~ if (finished_jobs%5000 == 0)
-			if (finished_jobs%1000 == 0)
+			if (finished_jobs%2500 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
