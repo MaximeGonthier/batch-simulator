@@ -693,6 +693,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	long long min_score_locality = -1;
 	int i = 0;
+	bool best_score_is_null = false;
 	//~ long long min_score = -1;
 	long long earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
@@ -755,6 +756,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			//~ nb_copy_file_to_load = 0;
+			best_score_is_null = false;
 			
 			/* In which node size I can pick. */
 			if (j->index_node_list == 0)
@@ -806,8 +808,9 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 					printf("EAT is: %lld.\n", earliest_available_time); fflush(stdout);
 					#endif
 					
-					//~ if (min_score == -1 || earliest_available_time < min_score)
-					//~ {						
+					//~ if (min_score_locality == -1 || earliest_available_time < min_score_locality)
+					if (best_score_is_null == false || earliest_available_time < min_time)
+					{
 						//~ multiplier_file_to_load_increment = 0;
 						
 						/* 2.2. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
@@ -845,36 +848,34 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 															
 								/* Compute node's score. */
 								score = time_to_load_file + time_to_reload_evicted_files;
-								
+								//~ printf("%lld\n", score);
 								/* Je dépasse les long long max ? */
-								if (score > 9223372036854775807)
-								{
-									printf("Risque de dépasser les int max.\n");
-									exit(EXIT_FAILURE);
-								}
+								//~ if (score > 9223372036854775807)
+								//~ {
+									//~ printf("Risque de dépasser les int max.\n");
+									//~ exit(EXIT_FAILURE);
+								//~ }
 								
 								#ifdef PRINT	
 								printf("Score for job %d is %lld with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
 								#endif
 													
 								/* 2.6. Get minimum score/ */
-								if (min_score_locality == -1)
+								if (min_score_locality == -1 || min_score_locality > score || (min_score_locality == score && min_time > earliest_available_time))
 								{
 									min_time = earliest_available_time;
 									min_score_locality = score;
 									j->node_used = n;
 									choosen_time_to_load_file = time_to_load_file;
-								}
-								else if (min_score_locality > score || (min_score_locality == score && min_time > earliest_available_time))
-								{
-									min_time = earliest_available_time;
-									min_score_locality = score;
-									j->node_used = n;
-									choosen_time_to_load_file = time_to_load_file;
+									
+									if (score == 0) /* To try and reduce complexity by not computing time to load if the best is 0 and our EAT is worse. */
+									{
+										best_score_is_null = true;
+									}
 								}
 							//~ }
 						}
-					//~ }
+					}
 					n = n->next;
 				}
 			}
@@ -947,7 +948,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			#ifdef PRINT
 			print_decision_in_scheduler(j);
 			#endif
-						
+
 			/* Insert in start times. */
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 						
@@ -969,17 +970,6 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			break;
 		}
 	}
-	
-	//~ /* --- Reduced complexity nb of copy --- */
-	//~ /* Free time already checked. */
-	//~ if (multiplier_nb_copy != 0)
-	//~ {
-		//~ free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
-	//~ }
-
-	//~ #ifdef PRINT_SCORES_DATA
-	//~ fclose(f_fcfs_score);
-	//~ #endif
 }
 
 /** Utilise la variable globale busy_cluster pour
@@ -1105,7 +1095,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 					#endif
 					
 					if (min_score == -1 || earliest_available_time < min_score)
-					{						
+					{
 						//~ multiplier_file_to_load_increment = 0;
 						
 						/* 2.2. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
