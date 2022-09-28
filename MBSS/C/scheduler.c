@@ -809,7 +809,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 					#endif
 					
 					//~ if (min_score_locality == -1 || earliest_available_time < min_score_locality)
-					if (best_score_is_null == false || earliest_available_time < min_time)
+					if (min_score_locality == -1 || best_score_is_null == false || earliest_available_time < min_time)
 					{
 						//~ multiplier_file_to_load_increment = 0;
 						
@@ -833,8 +833,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 						if (min_score_locality == -1 || time_to_load_file <= min_score_locality)
 						{
 							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
-							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
-							time_to_reload_evicted_files = 0;
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
 							
 							#ifdef PRINT
 							printf("Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);
@@ -1108,14 +1107,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 						
 								/* Compute node's score. */
 								score = earliest_available_time + time_to_load_file;
-								
-								/* Je dépasse les long long max ? */
-								if (score > 9223372036854775807)
-								{
-									printf("Risque de dépasser les int max.\n");
-									exit(EXIT_FAILURE);
-								}
-								
+																
 								#ifdef PRINT	
 								printf("Score for job %d is %lld with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
 								#endif
