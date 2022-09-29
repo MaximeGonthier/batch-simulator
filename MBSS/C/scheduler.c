@@ -973,7 +973,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	int last_node_size_to_choose_from = 0;
 	long long time_to_load_file = 0;
 	bool is_being_loaded = false;
-	float time_to_reload_evicted_files = 0;
+	//~ float time_to_reload_evicted_files = 0;
 	//~ int nb_copy_file_to_load = 0;
 	//~ int time_or_data_already_checked = 0;
 	long long score = 0;
@@ -1069,18 +1069,18 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 						printf("Time to load file: %lld. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 						
-						/* To test with 1 1 instead of heft. To remove. */
-						if (min_score == -1 || earliest_available_time + time_to_load_file < min_score)
-						{
+						/* To test with 1 1 instead of heft. To remove. J'ai testé, c'est pas ça qui explique lesm oins bonnes perf que fcfs score adaptative multiplier 500 500*/
+						//~ if (min_score == -1 || earliest_available_time + time_to_load_file < min_score)
+						//~ {
 							/* To test with 1 1 instead of heft. To remove. */
-							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
 							
 						
 								/* Compute node's score. */
-								//~ score = earliest_available_time + time_to_load_file;
+								score = earliest_available_time + time_to_load_file;
 								
 								/* To test with 1 1 instead of heft. To remove. */
-								score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files;
+								//~ score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files;
 																
 								#ifdef PRINT	
 								printf("Score for job %d is %lld with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
@@ -1101,7 +1101,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 									j->node_used = n;
 									choosen_time_to_load_file = time_to_load_file;
 								}
-						}
+						//~ }
 					}
 					n = n->next;
 				}

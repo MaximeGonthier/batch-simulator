@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	
 	/* Getting informations for certain schedulers. */
-	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0)
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -286,6 +286,11 @@ int main(int argc, char *argv[])
 			i = 39;
 			j = 39;
 			penalty_on_job_sizes = 1;
+		}
+		else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
+		{
+			i = 34;
+			j = 34;
 		}
 		else
 		{
@@ -370,7 +375,7 @@ int main(int argc, char *argv[])
 		busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
-	if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0)
+	if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
 	{
 		//~ busy_cluster_threshold = 80;
 		busy_cluster_threshold = 99;
@@ -707,12 +712,17 @@ int main(int argc, char *argv[])
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			/* OLD */
-			//~ else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_0_x", 40) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_1_x", 40) == 0)
-			//~ {
-				//~ fcfs_with_a_score_backfill_big_nodes_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, backfill_big_node_mode, total_queue_time, finished_jobs);
-			//~ }
-			/* NEW */
+			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
+			{
+				if (busy_cluster == 1)
+				{
+					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes);
+				}
+				else
+				{
+					heft_scheduler(scheduled_job_list->head, node_list, t);
+				}
+			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
 			{
 				fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
