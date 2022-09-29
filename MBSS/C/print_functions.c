@@ -330,8 +330,12 @@ void print_csv(struct To_Print* head_to_print)
 	
 	//~ printf("Nb of job evaluated: %d.\n", nb_job_to_evaluate);
 	
+	int verify_nb_job_to_evaluate = 0;
+	
 	while (head_to_print != NULL)
 	{
+		verify_nb_job_to_evaluate += 1;
+		
 		/* Get smaller jobs on bigger nodes */
 		nb_upgraded_jobs += head_to_print->upgraded;
 				
@@ -437,6 +441,13 @@ void print_csv(struct To_Print* head_to_print)
 		
 		head_to_print = head_to_print->next;
 	}
+	
+	if (verify_nb_job_to_evaluate != nb_job_to_evaluate)
+	{
+		printf("Error verify_nb_job_to_evaluate %d != nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate);
+		exit(EXIT_FAILURE);
+	}
+	
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	fclose(f_queue);

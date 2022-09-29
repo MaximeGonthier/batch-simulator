@@ -841,13 +841,6 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 															
 								/* Compute node's score. */
 								score = time_to_load_file + time_to_reload_evicted_files;
-								//~ printf("%lld\n", score);
-								/* Je dépasse les long long max ? */
-								//~ if (score > 9223372036854775807)
-								//~ {
-									//~ printf("Risque de dépasser les int max.\n");
-									//~ exit(EXIT_FAILURE);
-								//~ }
 								
 								#ifdef PRINT	
 								printf("Score for job %d is %lld with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
@@ -980,30 +973,13 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	int last_node_size_to_choose_from = 0;
 	long long time_to_load_file = 0;
 	bool is_being_loaded = false;
-	//~ float time_to_reload_evicted_files = 0;
+	float time_to_reload_evicted_files = 0;
 	//~ int nb_copy_file_to_load = 0;
 	//~ int time_or_data_already_checked = 0;
 	long long score = 0;
 	long long min_time = 0;
 	int choosen_time_to_load_file = 0;
-	bool found = false;
-	//~ double multiplier_file_to_load_increment = 0;
-		//~ if (busy_cluster == 0)
-		//~ {
-			//~ if (multiplier_file_to_load != 0)
-			//~ {
-				//~ multiplier_file_to_load = 1;
-			//~ }
-			//~ if (multiplier_file_evicted != 0)
-			//~ {
-				//~ multiplier_file_evicted = 1;
-			//~ }
-			//~ if (multiplier_nb_copy != 0)
-			//~ {
-				//~ multiplier_nb_copy = 1;
-			//~ }
-		//~ }
-	
+	bool found = false;	
 					
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
@@ -1011,10 +987,6 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	#ifdef PRINT
 	print_data_intervals(head_node, t);
 	#endif
-		
-	//~ /* --- Reduced complexity nb of copy --- */	
-	//~ struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-	//~ time_or_data_already_checked_nb_of_copy_list->head = NULL;
 
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
@@ -1059,12 +1031,6 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 				exit(EXIT_FAILURE);
 			}
 						
-			//~ /* --- Reduced complexity nb of copy --- */
-			//~ if (multiplier_nb_copy != 0)
-			//~ {
-				//~ time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
-			//~ }
-
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
 				struct Node* n = head_node[i]->head;
@@ -1088,9 +1054,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 					#endif
 					
 					if (min_score == -1 || earliest_available_time < min_score)
-					{
-						//~ multiplier_file_to_load_increment = 0;
-						
+					{						
 						/* 2.2. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
 						if (j->data == 0)
 						{
@@ -1105,8 +1069,18 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 						printf("Time to load file: %lld. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 						
+						/* To test with 1 1 instead of heft. To remove. */
+						if (min_score == -1 || earliest_available_time + time_to_load_file < min_score)
+						{
+							/* To test with 1 1 instead of heft. To remove. */
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+							
+						
 								/* Compute node's score. */
-								score = earliest_available_time + time_to_load_file;
+								//~ score = earliest_available_time + time_to_load_file;
+								
+								/* To test with 1 1 instead of heft. To remove. */
+								score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files;
 																
 								#ifdef PRINT	
 								printf("Score for job %d is %lld with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
@@ -1127,7 +1101,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 									j->node_used = n;
 									choosen_time_to_load_file = time_to_load_file;
 								}
-							//~ }
+						}
 					}
 					n = n->next;
 				}
