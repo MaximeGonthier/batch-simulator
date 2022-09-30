@@ -78,7 +78,6 @@ struct Job_List {
 };
 
 struct Node_List {
-	//~ int number_of_node;
 	struct Node* head;
 	struct Node* tail;
 };
@@ -103,7 +102,6 @@ struct Job {
     bool end_before_walltime;
     struct Node* node_used;
     int* cores_used; /* list */
-    //~ struct Core** cores_used; /* Need it ? */
     int transfer_time;
     int waiting_for_a_load_time;
     int workload;
@@ -129,12 +127,12 @@ struct Data {
     int end_time;
     int nb_task_using_it;
     struct Interval_List* intervals;
-    int size;
+    //~ int size;
+    float size;
 };
 
 struct Core {
     int unique_id;
-    //~ struct Job_List* job_queue; /* TODO maybe need it ? If yes put it in both read functions */
     int available_time;
     bool running_job;
     int running_job_end;
@@ -198,13 +196,14 @@ void start_jobs(int t, struct Job* scheduled);
 void end_jobs(struct Job* job_list_head, int t);
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
 int get_nb_non_available_cores(struct Node_List** n, int t);
-//~ int get_nb_running_cores(struct Node_List** n, int t);
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes);
 void reset_cores(struct Node_List** l, int t);
 void remove_data_from_node(struct Job* j, int t);
 void get_current_intervals(struct Node_List** head_node, int t);
-int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded);
-float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied);
+//~ int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded);
+float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, float current_data_size, bool* is_being_loaded);
+//~ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied);
+float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, float percentage_occupied);
 int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node, int current_data);
 int was_time_or_data_already_checked_for_nb_copy(int t_or_d, struct Time_or_Data_Already_Checked_Nb_of_Copy_List* list);
 int schedule_job_to_start_immediatly_on_specific_node_size(struct Job* j, struct Node_List* head_node_size_i, int t, int backfill_big_node_mode, int total_queue_time, int nb_finished_jobs, int nb_non_available_cores, bool* result);

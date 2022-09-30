@@ -260,27 +260,29 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 
 void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes)
 {
+	#ifdef PRINT
+	printf("\nFcfs_score\n");
+	#endif
+	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;
-	long long min_score = -1;
+	int min_score = -1;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	int time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	long long score = 0;
+	int score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
-	double multiplier_file_to_load_increment = 0;
-	//~ printf("here\n");
-	//~ int div_multiplier = 1; /* Useful if adaptative_multiplier is set to 1. Else it stays at 1 and does nothing. */
+	float multiplier_file_to_load_increment = 0;
+	
 	if (adaptative_multiplier == 1)
 	{
-		//~ printf("busy_cluster in fcfs with a score == %d.\n", busy_cluster);
 		if (busy_cluster == 0)
 		{
 			if (multiplier_file_to_load != 0)
@@ -303,9 +305,9 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
-	#ifdef PRINT
-	print_data_intervals(head_node, t);
-	#endif
+	//~ #ifdef PRINT
+	//~ print_data_intervals(head_node, t);
+	//~ #endif
 	
 	#ifdef PRINT_SCORES_DATA
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
@@ -393,9 +395,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					{
 						earliest_available_time = t;
 					}
-					
-					//~ if (j->unique_id == 969 && n->unique_id == 28) { printf("testing node %d.\n", n->unique_id); print_cores_in_specific_node(n); }
-					
+										
 					#ifdef PRINT
 					printf("A: EAT is: %d.\n", earliest_available_time); fflush(stdout);
 					#endif
@@ -436,12 +436,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 							if (penalty_on_job_sizes != 0 && time_to_load_file != 0)
 							{
 								multiplier_file_to_load_increment = ((double) time_to_load_file*5)/10240; /* Max de chargement, echelle de 0 à 5 */
-								//~ printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);
 							}
 						}
 						
 						#ifdef PRINT
-						printf("B: Time to load file: %d. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 											
 						if (min_score == -1 || earliest_available_time + (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file < min_score)
@@ -453,7 +452,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
 							
 							#ifdef PRINT
@@ -465,26 +464,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
 								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
 								{
-									/* Did I already try this time with this job ? */
-									
-									/* --- Normal complexity nb of copy --- */
-									//~ time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(earliest_available_time, time_or_data_already_checked_nb_of_copy_list);								
-									//~ if (time_or_data_already_checked == -1)
-									//~ {
-										//~ #ifdef PRINT
-										//~ printf("Need to compute nb of copy it was never done.\n"); fflush(stdout);
-										//~ #endif
-										//~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(earliest_available_time, head_node, j->data);
-										//~ create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, earliest_available_time, nb_copy_file_to_load);
-									//~ }
-									//~ else
-									//~ {
-										//~ nb_copy_file_to_load = time_or_data_already_checked;
-										//~ #ifdef PRINT
-										//~ printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, earliest_available_time, nb_copy_file_to_load); fflush(stdout);
-										//~ #endif
-									//~ }
-									
 									/* --- Reduced complexity nb of copy --- */
 									if (time_or_data_already_checked == -1)
 									{
@@ -526,8 +505,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								//~ }
 								
 								#ifdef PRINT	
-								printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);	
-								printf("Score for job %d is %lld (EAT: %d + TL %f + TRL %f + NCP %d) with node %d.\n", j->unique_id, score, earliest_available_time, (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file, multiplier_file_evicted*time_to_reload_evicted_files, nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy, n->unique_id); fflush(stdout);
+								//~ printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);	
+								printf("Score for job %d is %d (EAT: %d + TL %f*%f + TRL %d*%f + NCP %d*%d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, (multiplier_file_to_load + multiplier_file_to_load_increment), time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, nb_copy_file_to_load, multiplier_nb_copy, time_to_load_file, n->unique_id); fflush(stdout);
 								#endif
 								
 								//~ if (n->unique_id == 28 && (j->unique_id == 895 || j->unique_id == 968 || j->unique_id == 969)) 
@@ -619,10 +598,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				insert_tail_data_list(j->node_used->data, new);
 			}			
 			
-			#ifdef PRINT
-			printf("After add interval are:\n"); fflush(stdout);
-			print_data_intervals(head_node, t);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("After add interval are:\n"); fflush(stdout);
+			//~ print_data_intervals(head_node, t);
+			//~ #endif
 			
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(j->node_used);
@@ -963,7 +942,10 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
  **/
 void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
-	//~ printf("HEFT\n");
+	#ifdef PRINT
+	printf("\nHEFT\n");
+	#endif
+	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	long long min_score = -1;
 	int i = 0;

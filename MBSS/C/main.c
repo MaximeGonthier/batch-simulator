@@ -613,6 +613,8 @@ int main(int argc, char *argv[])
 		/* TODO : gérérer le cas de plsuieurs tailles de noeuds! */
 		//~ if (running_nodes > 485) /* A faire correctement cette histoire de busy cluster */
 		//~ printf("Cluster usage: %f (%f nodes running) - threshold is %d.\n", (running_nodes*100)/486, running_nodes, busy_cluster_threshold);
+		
+		//~ if ((running_nodes*100)/4 >= busy_cluster_threshold)
 		if ((running_nodes*100)/486 >= busy_cluster_threshold)
 		{
 			busy_cluster = 1;
@@ -666,10 +668,10 @@ int main(int argc, char *argv[])
 				}
 			}
 			
-			#ifdef PRINT
-			printf("Job list after new jobs:\n");
-			print_job_list(scheduled_job_list->head);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("Job list after new jobs:\n");
+			//~ print_job_list(scheduled_job_list->head);
+			//~ #endif
 						
 			if (job_pointer != NULL)
 			{
@@ -679,7 +681,6 @@ int main(int argc, char *argv[])
 			{
 				next_submit_time = -1;
 			}		
-			//~ exit(1);	
 		}
 
 		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */

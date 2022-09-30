@@ -1299,7 +1299,8 @@ void reset_cores(struct Node_List** l, int t)
 	}
 }
 
-int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded)
+//~ int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded)
+float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, float current_data_size, bool* is_being_loaded)
 {
 	struct Data* d = n->data->head;
 	int* temp_interval_usage_time = malloc(3*sizeof(int));
@@ -1353,9 +1354,11 @@ int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, str
 }
 
 /* % of space you will take and thus time it will take to reload evicted data. */
-float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied)
+//~ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, int percentage_occupied)
+float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_time, struct Node* n, int current_data, float percentage_occupied)
 {
-	int size_file_ended = 0;
+	//~ int size_file_ended = 0;
+	float size_file_ended = 0;
 	struct Data* d = n->data->head;
 	while (d != NULL)
 	{
@@ -1371,7 +1374,7 @@ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_tim
 				size_file_ended += d->size;
 				
 				#ifdef PRINT
-				printf("Add size %d->\n", d->size); fflush(stdout);
+				printf("Add size %f->\n", d->size); fflush(stdout);
 				#endif
 			}
 		}
@@ -1379,7 +1382,7 @@ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_tim
 	}
 	
 	#ifdef PRINT
-	printf("Total size of data on node ending before my EAT is: %d but I return (%d*%d)/%f = %f.\n", size_file_ended, percentage_occupied, size_file_ended, n->bandwidth, (size_file_ended*percentage_occupied)/n->bandwidth); fflush(stdout);
+	printf("Total size of data on node ending before my EAT is: %f but I return (%f*%f)/%f = %f.\n", size_file_ended, percentage_occupied, size_file_ended, n->bandwidth, (size_file_ended*percentage_occupied)/n->bandwidth); fflush(stdout);
 	#endif
 	
 	return (size_file_ended*percentage_occupied)/n->bandwidth;
