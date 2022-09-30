@@ -670,20 +670,20 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 {
 	//~ printf("LOCALITY\n");
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
-	long long min_score_locality = -1;
+	int min_score_locality = -1;
 	int i = 0;
 	bool best_score_is_null = false;
 	//~ long long min_score = -1;
-	long long earliest_available_time = 0;
+	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	long long time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	//~ int nb_copy_file_to_load = 0;
 	//~ int time_or_data_already_checked = 0;
-	long long score = 0;
-	long long min_time = 0;
+	int score = 0;
+	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	//~ double multiplier_file_to_load_increment = 0;
@@ -803,7 +803,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 						}
 						
 						#ifdef PRINT
-						printf("Time to load file: %lld. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 						
 						/* Pour réduire la complexité. Si je n'ai pas la possiblité de faire au moins aussi mieux j'arrête
@@ -812,7 +812,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 						if (min_score_locality == -1 || time_to_load_file <= min_score_locality)
 						{
 							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
-							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							
 							#ifdef PRINT
 							printf("Time to reload evicted files %f.\n", time_to_reload_evicted_files); fflush(stdout);
@@ -822,7 +822,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 								score = time_to_load_file + time_to_reload_evicted_files;
 								
 								#ifdef PRINT	
-								printf("Score for job %d is %lld with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %d with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
 								#endif
 													
 								/* 2.6. Get minimum score/ */
@@ -947,19 +947,19 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	#endif
 	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
-	long long min_score = -1;
+	int min_score = -1;
 	int i = 0;
 	//~ long long min_score = -1;
-	long long earliest_available_time = 0;
+	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	long long time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	//~ float time_to_reload_evicted_files = 0;
 	//~ int nb_copy_file_to_load = 0;
 	//~ int time_or_data_already_checked = 0;
-	long long score = 0;
-	long long min_time = 0;
+	int score = 0;
+	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;	
 					
@@ -1055,7 +1055,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 						//~ if (min_score == -1 || earliest_available_time + time_to_load_file < min_score)
 						//~ {
 							/* To test with 1 1 instead of heft. To remove. */
-							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							
 						
 								/* Compute node's score. */
@@ -1519,12 +1519,12 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	int time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
 	int time_or_data_already_checked = 0;
-	long long score = 0;
+	int score = 0;
 	//~ int min_time = 0;
 	bool found = false;
 	
@@ -1712,7 +1712,7 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
 							
 							#ifdef PRINT
@@ -1931,7 +1931,7 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	int time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
@@ -2071,7 +2071,7 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
 							
 							#ifdef PRINT
@@ -2396,7 +2396,7 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	int time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
@@ -2545,7 +2545,7 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
 							
 							#ifdef PRINT
@@ -2840,7 +2840,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	int time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
@@ -2980,7 +2980,7 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 								}
 								else
 								{
-									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 								}
 								
 								#ifdef PRINT
@@ -3195,7 +3195,7 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
-	int time_to_load_file = 0;
+	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
@@ -3318,7 +3318,7 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 								}
 								else
 								{
-									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 								}
 								
 								#ifdef PRINT
