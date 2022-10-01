@@ -782,7 +782,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 					/* OLD */
 					//~ if (min_score_locality == -1 || best_score_is_null == false || earliest_available_time < min_time)
 					/* NEW */
-					if (min_score_locality == -1 || earliest_available_time < min_time)
+					if (min_score_locality == -1 || earliest_available_time < min_score_locality)
 					{
 						/* 2.2. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
 						if (j->data == 0)
@@ -830,7 +830,10 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 								#endif
 								
 								/* 2.6. Get minimum score/ */
-								if (min_score_locality == -1 || min_score_locality > score || (min_score_locality == score && min_time > earliest_available_time))
+								/* OLD */
+								//~ if (min_score_locality == -1 || min_score_locality > score || (min_score_locality == score && min_time > earliest_available_time))
+								/* NEW */
+								if (min_score_locality == -1 || min_score_locality > score)
 								{
 									min_time = earliest_available_time;
 									min_score_locality = score;
