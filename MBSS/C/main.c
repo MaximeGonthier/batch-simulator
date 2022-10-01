@@ -368,23 +368,44 @@ int main(int argc, char *argv[])
 		multiplier_area_bigger_nodes = (int) strtol(to_copy4, NULL, 10);
 						
 		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multipliers : %d / Penalty on sizes : %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes);
+		
+		/* Error I have sometimes when the int is not what I putted */
+		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
+		{
+			printf("Error multiplier.\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	
 	/* Récupération du pourcentage à partir duquel on est sur un cluster occupé. */
 	int busy_cluster_threshold = 0; /* 0-100% */
-	if (strncmp(scheduler, "Mixed_strategy", 14) == 0)
+	int mixed_strategy_version = 0;
+	if (strncmp(scheduler, "Mixed_strategy", 14) == 0) /* For Mixed_startegy_V1 and Mixed_strategy_V2 */
 	{
+		if (strcmp(scheduler, "Mixed_strategy_V1") == 0)
+		{
+			mixed_strategy_version = 1;
+			printf("Does not exist for now.\n");
+			exit(EXIT_FAILURE);
+		}
+		else if (strcmp(scheduler, "Mixed_strategy_V2") == 0)
+		{
+			mixed_strategy_version = 2;
+		}
+		else
+		{
+			printf("Error mixed strategy\n");
+			exit(EXIT_FAILURE);
+		}
 		char to_copy5[2];
-		to_copy5[0] = scheduler[15];
-		to_copy5[1] = scheduler[16];
+		to_copy5[0] = scheduler[18];
+		to_copy5[1] = scheduler[19];
 		busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
-	if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43 == 0))
+	else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43 == 0))
 	{
-		//~ busy_cluster_threshold = 80;
 		busy_cluster_threshold = 99;
-		//~ busy_cluster_threshold = 100;
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
 		
@@ -614,8 +635,8 @@ int main(int argc, char *argv[])
 		//~ if (running_nodes > 485) /* A faire correctement cette histoire de busy cluster */
 		//~ printf("Cluster usage: %f (%f nodes running) - threshold is %d.\n", (running_nodes*100)/486, running_nodes, busy_cluster_threshold);
 		
-		//~ if ((running_nodes*100)/4 >= busy_cluster_threshold)
-		if ((running_nodes*100)/486 >= busy_cluster_threshold)
+		if ((running_nodes*100)/4 >= busy_cluster_threshold)
+		//~ if ((running_nodes*100)/486 >= busy_cluster_threshold)
 		{
 			busy_cluster = 1;
 		}
@@ -711,7 +732,7 @@ int main(int argc, char *argv[])
 			{
 				if (busy_cluster == 1)
 				{
-					locality_scheduler(scheduled_job_list->head, node_list, t);
+					locality_scheduler(scheduled_job_list->head, node_list, t, mixed_strategy_version);
 				}
 				else
 				{

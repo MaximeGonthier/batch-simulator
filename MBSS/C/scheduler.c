@@ -666,55 +666,42 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 /** Utilise la variable globale busy_cluster pour
  *  adapter sa stratégie. Version localité içi
  **/
-void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int mixed_strategy_version)
 {
-	//~ printf("LOCALITY\n");
+	#ifdef PRINT
+	printf("LOCALITY\n");
+	#endif
+	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+	/* OLD */
+	//~ int min_score_locality = -1;
+	/* NEW */
 	int min_score_locality = -1;
 	int i = 0;
-	bool best_score_is_null = false;
-	//~ long long min_score = -1;
+	/* OLD */
+	//~ bool best_score_is_null = false;
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
+	
 	float time_to_reload_evicted_files = 0;
-	//~ int nb_copy_file_to_load = 0;
-	//~ int time_or_data_already_checked = 0;
-	int score = 0;
+	/* OLD */
+	//~ int score = 0;
+	/* NEW */
+	float score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
-	//~ double multiplier_file_to_load_increment = 0;
-		//~ if (busy_cluster == 0)
-		//~ {
-			//~ if (multiplier_file_to_load != 0)
-			//~ {
-				//~ multiplier_file_to_load = 1;
-			//~ }
-			//~ if (multiplier_file_evicted != 0)
-			//~ {
-				//~ multiplier_file_evicted = 1;
-			//~ }
-			//~ if (multiplier_nb_copy != 0)
-			//~ {
-				//~ multiplier_nb_copy = 1;
-			//~ }
-		//~ }
 	
-					
+	/* NEW */
+	float amount_of_file_remaining_to_load = 0; /* Entre 0 et 1 */
+	float time_to_load_penalty = 0;
+	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
-	#ifdef PRINT
-	print_data_intervals(head_node, t);
-	#endif
-		
-	//~ /* --- Reduced complexity nb of copy --- */	
-	//~ struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-	//~ time_or_data_already_checked_nb_of_copy_list->head = NULL;
-
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
 	while (j != NULL)
@@ -730,12 +717,10 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			/* Reset some values. */					
 			min_score_locality = -1;
 			earliest_available_time = 0;
-			//~ first_node_size_to_choose_from = 0;
-			//~ last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
-			//~ nb_copy_file_to_load = 0;
-			best_score_is_null = false;
+			/* OLD */
+			//~ best_score_is_null = false;
 			
 			/* In which node size I can pick. */
 			if (j->index_node_list == 0)
@@ -758,13 +743,19 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
 				exit(EXIT_FAILURE);
 			}
+			
+			/* NEW */
+			/* Calcul du threshold dans lequel on regarde le EAT */
+			if (mixed_strategy_version == 2)
+			{
+				time_to_load_penalty = ((5.830780553511172 - 1)/2 + 1)*(j->data_size/0.1);
+			}
+			else
+			{
+				time_to_load_penalty = 0;
+			}
+			printf("Time to load penalty is %f.\n", time_to_load_penalty);
 						
-			//~ /* --- Reduced complexity nb of copy --- */
-			//~ if (multiplier_nb_copy != 0)
-			//~ {
-				//~ time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
-			//~ }
-
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
 				struct Node* n = head_node[i]->head;
@@ -774,9 +765,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 					printf("On node %d?\n", n->unique_id); fflush(stdout);
 					#endif
 					
-					/* 2.1. A = Get the earliest available time from the number of cores required by the job. 
-					 * It's used in case of a tie on the locality, as well as to look at the intervals of
-					 * available data at the predicted start time. */
+					/* 2.1. A = Get the earliest available time from the number of cores required by the job. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
@@ -784,14 +773,14 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 					}
 					
 					#ifdef PRINT
-					printf("EAT is: %lld.\n", earliest_available_time); fflush(stdout);
+					printf("EAT is: %d.\n", earliest_available_time); fflush(stdout);
 					#endif
 					
-					//~ if (min_score_locality == -1 || earliest_available_time < min_score_locality)
-					if (min_score_locality == -1 || best_score_is_null == false || earliest_available_time < min_time)
+					/* OLD */
+					//~ if (min_score_locality == -1 || best_score_is_null == false || earliest_available_time < min_time)
+					/* NEW */
+					if (min_score_locality == -1 || earliest_available_time < min_time)
 					{
-						//~ multiplier_file_to_load_increment = 0;
-						
 						/* 2.2. Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
 						if (j->data == 0)
 						{
@@ -802,14 +791,25 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded); /* Use the intervals in each data to get this info. */
 						}
 						
+						if (time_to_load_file == 0)
+						{
+							amount_of_file_remaining_to_load = 0;
+						}
+						else
+						{
+							amount_of_file_remaining_to_load = time_to_load_file/(j->data_size*10);
+						}
+						
 						#ifdef PRINT
-						printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						printf("Time to load file is %f. Amount of file to load is %f. Is being loaded? %d.\n", time_to_load_file, amount_of_file_remaining_to_load, is_being_loaded); fflush(stdout);
 						#endif
 						
-						/* Pour réduire la complexité. Si je n'ai pas la possiblité de faire au moins aussi mieux j'arrête
-						 * de calculer le score. Attention, içi comparé à Fcfs_with_a_score, je met <= car ne cas de tie 
-						 * on veut choisir avec EAT. */
-						if (min_score_locality == -1 || time_to_load_file <= min_score_locality)
+
+						
+						/* OLD */
+						//~ if (min_score_locality == -1 || time_to_load_file <= min_score_locality)
+						/* NEW */
+						if (min_score_locality == -1 || earliest_available_time + time_to_load_penalty*amount_of_file_remaining_to_load < min_score_locality)
 						{
 							/* 2.5. Get the amount of files that will be lost because of this load by computing the amount of data that end at the earliest time only on the supposely choosen cores, excluding current file of course. */
 							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
@@ -819,12 +819,15 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 							#endif
 															
 								/* Compute node's score. */
-								score = time_to_load_file + time_to_reload_evicted_files;
+								/* OLD */
+								//~ score = time_to_load_file + time_to_reload_evicted_files;
+								/* NEW */
+								score = earliest_available_time + time_to_load_penalty*amount_of_file_remaining_to_load + time_to_reload_evicted_files;
 								
 								#ifdef PRINT	
-								printf("Score for job %d is %d with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
+								printf("Score for job %d is %f (EAT %d + TLP*ATL %f*%f + TLE %f) with node %d.\n", j->unique_id, score, earliest_available_time, time_to_load_penalty, amount_of_file_remaining_to_load, time_to_reload_evicted_files, n->unique_id); fflush(stdout);
 								#endif
-													
+								
 								/* 2.6. Get minimum score/ */
 								if (min_score_locality == -1 || min_score_locality > score || (min_score_locality == score && min_time > earliest_available_time))
 								{
@@ -833,10 +836,11 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 									j->node_used = n;
 									choosen_time_to_load_file = time_to_load_file;
 									
-									if (score == 0) /* To try and reduce complexity by not computing time to load if the best is 0 and our EAT is worse. */
-									{
-										best_score_is_null = true;
-									}
+									/* OLD */
+									//~ if (score == 0) /* To try and reduce complexity by not computing time to load if the best is 0 and our EAT is worse. */
+									//~ {
+										//~ best_score_is_null = true;
+									//~ }
 								}
 							//~ }
 						}
@@ -1032,7 +1036,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 					}
 					
 					#ifdef PRINT
-					printf("EAT is: %lld.\n", earliest_available_time); fflush(stdout);
+					printf("EAT is: %d.\n", earliest_available_time); fflush(stdout);
 					#endif
 					
 					if (min_score == -1 || earliest_available_time < min_score)
@@ -1048,7 +1052,7 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 						}
 						
 						#ifdef PRINT
-						printf("Time to load file: %lld. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 						
 						/* To test with 1 1 instead of heft. To remove. J'ai testé, c'est pas ça qui explique lesm oins bonnes perf que fcfs score adaptative multiplier 500 500*/
