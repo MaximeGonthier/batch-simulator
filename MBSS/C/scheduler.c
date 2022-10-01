@@ -754,8 +754,11 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			{
 				time_to_load_penalty = 0;
 			}
+			
+			#ifdef PRINT
 			printf("Time to load penalty is %f.\n", time_to_load_penalty);
-						
+			#endif
+			
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
 				struct Node* n = head_node[i]->head;
@@ -803,8 +806,6 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 						#ifdef PRINT
 						printf("Time to load file is %f. Amount of file to load is %f. Is being loaded? %d.\n", time_to_load_file, amount_of_file_remaining_to_load, is_being_loaded); fflush(stdout);
 						#endif
-						
-
 						
 						/* OLD */
 						//~ if (min_score_locality == -1 || time_to_load_file <= min_score_locality)
