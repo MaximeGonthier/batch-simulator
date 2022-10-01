@@ -408,7 +408,9 @@ int main(int argc, char *argv[])
 		busy_cluster_threshold = 99;
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
-		
+	
+	//~ exit(1);
+	
 	int division_by_planned_area = 0;
 	
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
@@ -635,8 +637,8 @@ int main(int argc, char *argv[])
 		//~ if (running_nodes > 485) /* A faire correctement cette histoire de busy cluster */
 		//~ printf("Cluster usage: %f (%f nodes running) - threshold is %d.\n", (running_nodes*100)/486, running_nodes, busy_cluster_threshold);
 		
-		if ((running_nodes*100)/4 >= busy_cluster_threshold)
-		//~ if ((running_nodes*100)/486 >= busy_cluster_threshold)
+		//~ if ((running_nodes*100)/4 >= busy_cluster_threshold)
+		if ((running_nodes*100)/486 >= busy_cluster_threshold)
 		{
 			busy_cluster = 1;
 		}
