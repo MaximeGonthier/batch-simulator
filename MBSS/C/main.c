@@ -382,13 +382,13 @@ int main(int argc, char *argv[])
 	int mixed_strategy_version = 0;
 	if (strncmp(scheduler, "Mixed_strategy", 14) == 0) /* For Mixed_startegy_V1 and Mixed_strategy_V2 */
 	{
-		if (strcmp(scheduler, "Mixed_strategy_V1") == 0)
+		if (strncmp(scheduler, "Mixed_strategy_V1", 17) == 0)
 		{
 			mixed_strategy_version = 1;
 			printf("Does not exist for now.\n");
 			exit(EXIT_FAILURE);
 		}
-		else if (strcmp(scheduler, "Mixed_strategy_V2") == 0)
+		else if (strncmp(scheduler, "Mixed_strategy_V2", 17) == 0)
 		{
 			mixed_strategy_version = 2;
 		}
