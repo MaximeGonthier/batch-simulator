@@ -31,6 +31,11 @@
 				//~ printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
 				//~ exit(EXIT_FAILURE);
 			//~ }
+			
+//~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_99 0 outputs/test.csv"
+//~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_95 0 outputs/test.csv"
+//~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_99 0 outputs/test.csv"
+//~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_95 0 outputs/test.csv"
 
 
 #include <main.h>
