@@ -90,7 +90,7 @@ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
   
 # Plot the data using bar() method
-plt.bar(X, Y, color=["red", "green", "blue", "yellow", "cyan", "magenta", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
+plt.bar(X, Y, color=["red", "green", "darkblue", "lightblue", "magenta", "yellow", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
 # ~ plt.bar(X, Y)
 # ~ plt.bar(X, Y)
 plt.xticks(rotation=90)

@@ -145,22 +145,18 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item Refais 6 fig in 1 mais légende en haut
-		\item Dépôt mis à jour
-		
+		\item Fig 6 titre plus grand et plus d'espace vertical
+		\item Enlever le bleu de l'intro et de l'abstract quand c'était 1 seul mot
+
 		% Uppsala
-		\item Correction eviction
-		\item nouvelle strat avec temps moyen perdu mais moins bonne que fcfs score adaptative multiplier
+		\item Plots
+		\item New way to show statistics and gantt charts
+		\item New way to build a workload
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item J'ai mis des majuscules aux noms d'appli comme lors de la présentation du benchmark dès qu'on les cites dans les figures et captions de tableaux etc...
-		\item Enelever le bleu de l'intro et de l'abstract
-		\item Citation pour chameleon page 6 quand on parle de DMDAR ?
-		\item on veux garder le bleu sur les figurs qui ont changé ? Ou sur les captions qui ont changé ?
-		\item Reu Jeudi 16h ?
-		\item Strat multiplicateur degressif avec nb de tache restante ayant cette donnée
+		\item 
 	\end{enumerate}
 	
 \section{Todo}
@@ -175,10 +171,14 @@
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
-			\item relire bleu + expé
+			\item rechnager cholesky en avec depedandaces
+			\item relire
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item faire 1 première exec heft qui calcule le flow moyen. Si on est en dessous à t on fais de la localité sinon heft. Le faire en pseudocode.
+			\item faire tourner opti (x50 et x1) et avec fcfs et heft sur plus de workloads
+			
 			\item test Fcfs\_with\_a\_score\_mixed\_strategy\_x mais avec different cluster usage
 			\item code et test mixed strategy mais avec le eat pour les petits jobs (et avec un multiplicateur qui vaut ???), sinon locality only.
 			\item mail recap uppsala (quand calculer le busy ? Quel threshold ? Quel multiplier).
