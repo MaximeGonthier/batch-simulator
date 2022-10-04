@@ -321,15 +321,16 @@ make -C C/
 #~ mv ${OUTPUT_FILE} data/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 
-# 8. Comparer fcfs et fcfs_score_adaptative_multiplier seulement
+# 8. Comparer fcfs, fcfs_score_mixed, heft seulement
 echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 OUTPUT_FILE=outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-
-for ((i=1; i<=2; i++))
+for ((i=1; i<=4; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
-	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_x500_x500_x0_x0" # Quand le cluster est chargé (il y a des nodes non utilisées) je passe à 500 500, sinon je suis à 1 1
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score_x1_x0_x0_x0"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x50_x0_x0"
 	fi
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
 done

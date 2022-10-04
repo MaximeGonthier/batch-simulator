@@ -55,8 +55,8 @@ if [ $MOIS == "Décembre" ]
 	id_mois="12"
 fi
 echo "$MOIS"
-#~ if [ $MOIS=="Janvier" ] || [ $MOIS == "Mars" ] || [ $MOIS == "Mai" ] || [ $MOIS == "Juillet" ] || [ $MOIS == "Aout" ] || [ $MOIS == "Octobre" ] || [ $MOIS == "Décembre" ]
-if [ $MOIS=="Mars" ] || [ $MOIS=="Décembre" ] # Décembre a que 30 jours en fait personne travaille le 31
+if [ $MOIS=="Janvier" ] || [ $MOIS == "Mars" ] || [ $MOIS == "Mai" ] || [ $MOIS == "Juillet" ] || [ $MOIS == "Aout" ] || [ $MOIS == "Octobre" ] || [ $MOIS == "Décembre" ]
+#~ if [ $MOIS=="Mars" ] || [ $MOIS=="Décembre" ] # Décembre a que 30 jours en fait personne travaille le 31
 	then
 	echo "31 jours"
 	for ((i = 1 ; i <= 9 ; i++))
@@ -75,6 +75,7 @@ if [ $MOIS=="Mars" ] || [ $MOIS=="Décembre" ] # Décembre a que 30 jours en fa
 	last_day=31
 elif [[ $MOIS == "Avril" || $MOIS == "Juin" || $MOIS == "Septembre" || $MOIS == "Novembre" ]]
 	then
+	cho "30 jours"
 	for ((i = 1 ; i <= 9 ; i++))
 		do
 		string+=${ANNEE}"-"${id_mois}"-0"${i},
@@ -91,6 +92,7 @@ elif [[ $MOIS == "Avril" || $MOIS == "Juin" || $MOIS == "Septembre" || $MOIS ==
 	last_day=30
 elif [ $MOIS == "Février" ]
 	then
+	cho "28 jours"
 	for ((i = 1 ; i <= 9 ; i++))
 		do
 		string+=${ANNEE}"-02-0"${i},
@@ -109,7 +111,7 @@ fi
 echo ${string}
 scp maxim@rackham.uppmax.uu.se:../../../sw/share/slurm/rackham/accounting/\{${string}\} /home/gonthier/data-aware-batch-scheduling/MBSS/inputs/workloads/raw/
 
-#~ python3 src/convert_stats_workload.py ${id_mois} ${ANNEE} ${last_day}
-#~ python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} cores
-#~ python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} walltime
-#~ python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} delay
+python3 src/convert_stats_workload.py ${id_mois} ${ANNEE} ${last_day}
+python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} cores
+python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} walltime
+python3 src/plot_stats_workload.py ${ANNEE}_${id_mois} delay
