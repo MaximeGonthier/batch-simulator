@@ -1199,45 +1199,52 @@ Disadvantage: it's not really a time like the other factors of the score.s
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.7\linewidth]{MBSS/plot/Results_Size_And_Data_2022-03-01->2022-03-03_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Transfer time}\label{45}\end{subfigure}
 \caption{Size and constraint - Workload from March 1st to 3rd (19000 jobs) with 100\% of 128 jobs, 0\% of 256 jobs, 0\% of 1024 jobs - Normal cluster - September 06}\label{49}\end{figure}
 
-\subsection{Getting back only on the data locality constraint and ignoring the size constraint in order to really find the best parameters for fcfs with a score.}
+\subsection{Getting back only on the data locality constraint}
 
-I suffer on underused workloads.
+I suffer on underused parts of the workloads -> new mixed strategy for FCFS with a score:\\
+\begin{algorithm}[htbp]
+\caption{Mix SCORE/HEFT}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\State $occupation\_threshold \gets 99$ \Comment{How to define it ?}
+\State $occupation \gets$ the occupation percentage of the cluster \Comment{If a node is running at least 1 job (even if it uses only 1 core), we consider that the node is occupied. Note that we could also compute the occupation after each schedule of a job. Which would change the strategy during the scheduling.}
+\ForEach {$J_i \in \jobset$}
+	\If{$occupation < occupation\_threshold$}
+		\State $HEFT(\jobset,\nodeset)$
+	\Else
+		\State $SCORE(\jobset,\nodeset)$
+	\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
-We need parameters that won't cripple the choice with data locality over earliest available time because of the multiplier.
-A solution would be to adapt the multiplier to the size file. If it's big I don't want to duplicate it. Else I do. 
+\begin{algorithm}[htbp]
+\caption{HEFT}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\ForEach {$J_i \in \jobset$}
+	\State Schedule $J_i$ on the node with the earliest completion time. \Comment{Thus taking into consideration the transfer time.}
+	\State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
-%~ \begin{figure}[H]\centering
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-03-01->2022-03-03_V9532_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-03-01->2022-03-03_V9532_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
-%~ \caption{Size and constraint - Workload from March 1st to 3rd (19000 jobs) with 95\% of 128 jobs, 3\% of 256 jobs, 2\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
-
-%~ \begin{figure}[H]\centering
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{45}\end{subfigure}
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\label{45}\end{subfigure}
-%~ \caption{Size and constraint - Workload January 21 (45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 23}\label{49}\end{figure}
-
-Idée: quand la taille de la liste de jobs a schedule est plus grande que le nombre de noeud disponibles (par catégorie si on prend la contrainte de tailles), alors on fais
-avec les multiplicateur. Les multiplicateurs dépandent de la taille de la donnée. Pour 128 et moins: x1 x1 x0 x0, pour entre 128 et 256 on fais ? et entre 256 et 1024 ?.
-Sinon on fais fcfs\_score\_x1\_x1\_x0\_x0.
-
-Test sur le dernier workload = 2h15 par Fcfs with a score.
-
-Pb, des que le cluster est un peu rempli, si je passe à 500 500 ca fais que je ne vide jamais a liste et donc 
-que le cluster est sous utlisé. Il me faut donc regarder les noeuds dispoibles et non pas le nombre de jobs dans lal iste.
-Ce qu iest different en sois que de faire avec la liste
-
-%~ \begin{figure}[H]\centering
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_sparse_50_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\end{subfigure}
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_sparse_50_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-%~ \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_sparse_50_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{data transfers}\end{subfigure}
-%~ \caption{Data constraint - Workload sparse 50\% January 21 (14000/45000 jobs) with 92\% of 128 jobs, 7\% of 256 jobs, 1\% of 1024 jobs - Normal cluster - September 27}\end{figure}
-
-\begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
-\caption{Locality constraint only - Workload of Jan 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
+\begin{algorithm}[htbp]
+\caption{SCORE}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\ForEach {$J_i \in \jobset$}
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ \Comment{Or time waiting for the file to be loaded by another job.}
+		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~predicted~start~time) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + 500 \times B + 50 \times C$
+	\EndFor
+	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
+	\State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-17->2022-01-17_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
@@ -1247,44 +1254,19 @@ Ce qu iest different en sois que de faire avec la liste
 \caption{Locality constraint only - Workload of Jan 17 (16000/68000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
 
 \begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of Jan 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
+
+\begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-02-02->2022-02-03_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02->2022-02-03_V85105_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02->2022-02-03_V85105_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02->2022-02-03_V85105_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
 \caption{Locality constraint only - Workload of Mar 2-3 (8000/47000 jobs) with resp. 85, 10 and 5\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
 
-New mixed strategy for FCFS with a score:\\
-\begin{algorithm}[htbp]
-\caption{Mix locality/heft}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
-\State $occupation\_threshold \gets ???$
-\State We want to compute the set of jobs J at time t
-\State $occupation \gets$ the occupation percentage of the cluster \Comment{If a node is running at least 1 job (even if it uses only 1 core), we consider that the node is occupied. Note that we could also compute the occupation after each schedule of a job. Which would change the strategy during the scheduling.}
-\If{$occupation < occupation\_threshold$}
-	\State $Heft(\jobset,\nodeset)$
-\Else
-	\State $Locality(\jobset,\nodeset)$
-\EndIf
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[htbp]
-\caption{Heft}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
-\ForEach {$J_i \in \jobset$}
-	\State Schedule $J_i$ on the node with the earliest completion time. \Comment{Thus taking into consideration the transfer time. Basically it's Fcfs\_with\_a\_score\_x1\_x0\_x0\_x0.}
-	\State Remove $J_i$ from $\jobset$
-\EndFor
-\end{algorithmic}
-\end{algorithm}
-
-%~ \begin{algorithm}[htbp]
-%~ \caption{Locality}
-%~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-%~ \begin{algorithmic}[0]
-%~ \ForEach {$J_i \in \jobset$}
 	%~ \State $time\_to\_load\_penalty \gets ((5.830780553511172 - 1)/2 + 1)*(\memory(\inputs(J_i))/\bandwidth)$
 	%~ \ForEach {$\Node{k} \in \nodeset$}
 		%~ \State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
@@ -1296,11 +1278,9 @@ New mixed strategy for FCFS with a score:\\
 	%~ \State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie. \Comment{It's Fcfs\_with\_a\_score\_x1\_x1\_x0\_x0 but the earliest available time is only used as a tie-breaker.}
 	%~ \State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
 	%~ \State Remove $J_i$ from $\jobset$
-%~ \EndFor
-%~ \end{algorithmic}
-%~ \end{algorithm}
 
-\subsection{Plotting statistics}
+
+\subsection{New way to plot statistics}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-17->2022-01-19_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster usage}\label{37}\end{subfigure}
