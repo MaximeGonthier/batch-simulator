@@ -496,16 +496,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								
 								/* Compute node's score. */
 								score = earliest_available_time + (multiplier_file_to_load + multiplier_file_to_load_increment)*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files + nb_copy_file_to_load*time_to_load_file*multiplier_nb_copy;
-								
-								/* Je dépasse les int max ? */
-								//~ if (score > 1000000000)
-								//~ {
-									//~ printf("Risque de dépasser les int max.\n");
-									//~ exit(EXIT_FAILURE);
-								//~ }
-								
+																
 								#ifdef PRINT	
-								//~ printf("%f on multiplier_file_to_load_increment\n", multiplier_file_to_load_increment);	
 								printf("Score for job %d is %d (EAT: %d + TL %f*%f + TRL %d*%f + NCP %d*%d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, (multiplier_file_to_load + multiplier_file_to_load_increment), time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, nb_copy_file_to_load, multiplier_nb_copy, time_to_load_file, n->unique_id); fflush(stdout);
 								#endif
 								
@@ -665,6 +657,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 
 /** Utilise la variable globale busy_cluster pour
  *  adapter sa stratégie. Version localité içi
+ *  mixed_strategy_version = 2 veut dire qu'on prend le temps moyen perdu par une donnée qu'on charge sur des noeuds différents.
  **/
 void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int mixed_strategy_version)
 {
