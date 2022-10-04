@@ -741,9 +741,9 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			/* Calcul du threshold dans lequel on regarde le EAT */
 			if (mixed_strategy_version == 2)
 			{
-				//~ time_to_load_penalty = ((5.830780553511172 - 1)/2 + 1)*(j->data_size/0.1); /* Base mean */
-				//~ time_to_load_penalty = ((200 - 1)/2 + 1)*(j->data_size/0.1); /* Exagerated mean */
-				time_to_load_penalty = ((400 - 1)/2 + 1)*(j->data_size/0.1); /* Very exagerated mean */
+				//~ time_to_load_penalty = ((5.830780553511172 - 1)/2 + 1)*(j->data_size/0.1); /* Base mean 3* */
+				//~ time_to_load_penalty = ((200 - 1)/2 + 1)*(j->data_size/0.1); /* Exagerated mean 100* */
+				time_to_load_penalty = ((400 - 1)/2 + 1)*(j->data_size/0.1); /* Very exagerated mean 200* */
 			}
 			else
 			{

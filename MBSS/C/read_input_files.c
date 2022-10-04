@@ -115,6 +115,9 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 {
 	//~ job_list = malloc(sizeof(*job_list));
 	job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
+	/** For mixed decreasing strategy **/
+	data_list = (struct Data_List*) malloc(sizeof(struct Data_List));
+	/** For mixed decreasing strategy **/
 	job_list->head = NULL;
 	job_list->tail = NULL;
 	//~ job_list_to_start_from_history = malloc(sizeof(*job_list_to_start_from_history));
@@ -154,6 +157,10 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     char start_time_from_history[100];
     char start_node_from_history[100];
     
+    /** For mixed decreasing strategy **/
+    struct Data* d = data_list->head;
+    /** For mixed decreasing strategy **/
+    
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, s, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
 	{
 		total_number_jobs += 1;
@@ -164,11 +171,37 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->delay = atoi(delay);	
 		new->walltime = atoi(walltime);
 		new->cores = atoi(cores);
-		new->data = atoi(data);
-		new->data_size = atof(data_size);
+		/** For mixed decreasing strategy **/
+		//~ new->data = atoi(data);
+		//~ new->data_size = atof(data_size);
+		/** For mixed decreasing strategy **/
 		new->workload = atoi(workload);
 		new->start_time_from_history = atoi(start_time_from_history);
 		new->node_from_history = atoi(start_node_from_history);
+		
+		/** For mixed decreasing strategy **/
+		/* Need to create the data if it does not exist. 
+		 * I don't have to look at everything because similar data are always consecutive. */
+		if (d->unique_id == atoi(data)) /* The data already exist. */
+		{
+			d->number_of_task_using_it_not_running += 1;
+		}
+		else /* Need to create the data */
+		{
+			struct Data* d = (struct Data*) malloc(sizeof(struct Data));
+			d->next = NULL;
+			d->unique_id = atoi(data);
+			d->start_time = -1;
+			d->end_time = -1;
+			d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+			d->intervals->head = NULL;
+			d->intervals->tail = NULL;
+			d->size = atof(data_size);
+			d->number_of_task_using_it_not_running = 1;
+			insert_tail_data_list(data_list, d);	
+		}
+		new->data = d;
+		/** For mixed decreasing strategy **/
 		
 		/* Get index_node */
 		if (constraint_on_sizes != 0)

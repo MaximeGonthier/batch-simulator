@@ -28,6 +28,9 @@ extern struct Job_List* scheduled_job_list; /* Scheduled or available */
 extern struct Job_List* running_jobs; /* Started */
 extern struct Node_List** node_list;
 extern struct To_Print_List* jobs_to_print_list;
+/** For mixed decreasing strategy **/
+extern struct Data_List* data_list;
+/** For mixed decreasing strategy **/
 extern int running_cores;
 extern float running_nodes;
 extern int running_nodes_workload_minus_2;
@@ -94,8 +97,10 @@ struct Job {
     int delay;
     int walltime;
     int cores;
-    int data;
-    float data_size;
+    /** For mixed decreasing strategy **/
+    //~ int data;
+    //~ float data_size;
+    /** For mixed decreasing strategy **/
     int index_node_list;
     int start_time;
     int end_time;
@@ -107,6 +112,9 @@ struct Job {
     int workload;
     int start_time_from_history;
     int node_from_history;
+    /** For mixed decreasing strategy **/
+    struct Data* data;
+    /** For mixed decreasing strategy **/
 };
 
 struct Node {
@@ -125,10 +133,14 @@ struct Data {
     int unique_id;
     int start_time;
     int end_time;
-    int nb_task_using_it;
+    /** For mixed decreasing strategy **/
+    //~ int nb_task_using_it;
+    /** For mixed decreasing strategy **/
     struct Interval_List* intervals;
-    //~ int size;
     float size;
+    /** For mixed decreasing strategy **/
+    int number_of_task_using_it_not_running;
+    /** For mixed decreasing strategy **/
 };
 
 struct Core {
