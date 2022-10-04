@@ -413,9 +413,7 @@ int main(int argc, char *argv[])
 		busy_cluster_threshold = 99;
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
-	
-	//~ exit(1);
-	
+		
 	int division_by_planned_area = 0;
 	
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)

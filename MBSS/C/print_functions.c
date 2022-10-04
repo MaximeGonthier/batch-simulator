@@ -589,5 +589,4 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	free(file_to_open_2);
-	printf("Fin print\n");
 }
