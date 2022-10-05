@@ -410,7 +410,8 @@ int main(int argc, char *argv[])
 	}
 	else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43 == 0))
 	{
-		busy_cluster_threshold = 99;
+		//~ busy_cluster_threshold = 99;
+		busy_cluster_threshold = 100;
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
 		
@@ -755,17 +756,17 @@ int main(int argc, char *argv[])
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43) == 0)
-			{
-				if (busy_cluster == 1)
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes);
-				}
-				else
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 1, 1, 0, adaptative_multiplier, penalty_on_job_sizes);
-				}
-			}
+			//~ else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43) == 0)
+			//~ {
+				//~ if (busy_cluster == 1)
+				//~ {
+					//~ fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes);
+				//~ }
+				//~ else
+				//~ {
+					//~ fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 1, 1, 0, adaptative_multiplier, penalty_on_job_sizes);
+				//~ }
+			//~ }
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
 			{
 				fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
