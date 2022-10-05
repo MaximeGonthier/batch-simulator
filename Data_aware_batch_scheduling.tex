@@ -1280,6 +1280,37 @@ I suffer on underused parts of the workloads -> new mixed strategy for FCFS with
 	%~ \State Remove $J_i$ from $\jobset$
 
 
+\begin{algorithm}[htbp]
+\caption{FLOW ADAPTATION}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+	\State Before the computation do: $Flow \gets$ HEFT($\jobset$, $\nodeset$) \Comment{insérer aussi l'idée de cluster occupé/vide ?}
+	\While{$t$}
+		\If{$Current\_Flow(t) \leq Flow(t)$}
+			\State $Current\_Flow \gets$ LOCALITY($\jobset$, $\nodeset$)
+		\Else
+			\State $Current\_Flow \gets$ HEFT($\jobset$, $\nodeset$)
+		\EndIf
+	\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+
+\begin{algorithm}[htbp]
+\caption{LOCALITY}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+	\ForEach{$J_i \in \jobset$}
+		\ForEach {$\Node{k} \in \nodeset$}
+			\State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
+			\State $score_{\Node{k}} \gets \frac{\memory(\inputs(J_i) \notin \inputs(\Node{k}))}{\bandwidth} + \frac{\memory(\inputs(\Node{k}) \notin \inputs(J_i)~and~that~end~before~or~at~EAT)~ \times \frac{\core(J_i)}{\core(\Node{i})}}{\bandwidth}$
+		\EndFor
+	\EndFor
+	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
+	\State Remove $J_i$ from $\jobset$
+\end{algorithmic}
+\end{algorithm}
+
 \subsection{New way to plot statistics}
 
 \begin{figure}[H]\centering
