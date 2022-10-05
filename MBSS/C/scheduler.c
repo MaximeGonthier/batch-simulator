@@ -296,7 +296,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			//~ multiplier_nb_copy = 1;
 		//~ }
 	}
-	printf("multiplier_file_to_load = %d\n", multiplier_file_to_load);
 	
 	//~ printf("Multiplier are %d %d %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 					
