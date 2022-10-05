@@ -149,6 +149,7 @@
 		\item Enlever le bleu de l'intro et de l'abstract quand c'était 1 seul mot
 
 		% Uppsala
+		\item I did area filling for size constraint (it was slighltly better than FCFS in some case, similar to FCFS in other cases). tried easy backfilling with fcfs but not far. Then went back to only the locality constraint because I saw limitations of FCFS with a score.
 		\item Plots
 		\item New way to show statistics and gantt charts
 		\item New way to build a workload
@@ -156,14 +157,14 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item 
+		\item Busy cluster task by task or group of task scheduled by group of task scheduled ? because I could do it after scheduling a task that would start at time t and then switch strategy mid schedule.
+		\item Pour flow adaptation, il faut le flow moyen donc flow total/nb de tache qui courres ?
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
 			\item se renseigner payement enseirb semestre 1: attendre octobre
-			\item payer ré inscription: déposer le dossier de l'écolde doctorale sur siged recap
 			\item Répondre a Bora
 			\item justif de payement agos
 			\item voir siged inscription validé
@@ -177,8 +178,7 @@
 	\subsection{Uppsala}
 		\begin{enumerate}
 			\item faire 1 première exec heft qui calcule le flow moyen. Si on est en dessous à t on fais de la localité sinon heft. Le faire en pseudocode.
-			\item faire tourner opti (x50 et x1) et avec fcfs et heft sur plus de workloads
-			
+ 			
 			\item test Fcfs\_with\_a\_score\_mixed\_strategy\_x mais avec different cluster usage
 			\item code et test mixed strategy mais avec le eat pour les petits jobs (et avec un multiplicateur qui vaut ???), sinon locality only.
 			\item mail recap uppsala (quand calculer le busy ? Quel threshold ? Quel multiplier).

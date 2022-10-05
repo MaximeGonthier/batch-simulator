@@ -384,27 +384,12 @@ int main(int argc, char *argv[])
 	
 	/* Récupération du pourcentage à partir duquel on est sur un cluster occupé. */
 	int busy_cluster_threshold = 0; /* 0-100% */
-	int mixed_strategy_version = 0;
+	//~ int mixed_strategy_version = 0;
 	if (strncmp(scheduler, "Mixed_strategy", 14) == 0) /* For Mixed_startegy_V1 and Mixed_strategy_V2 */
 	{
-		if (strncmp(scheduler, "Mixed_strategy_V1", 17) == 0)
-		{
-			mixed_strategy_version = 1;
-			printf("Does not exist for now.\n");
-			exit(EXIT_FAILURE);
-		}
-		else if (strncmp(scheduler, "Mixed_strategy_V2", 17) == 0)
-		{
-			mixed_strategy_version = 2;
-		}
-		else
-		{
-			printf("Error mixed strategy\n");
-			exit(EXIT_FAILURE);
-		}
 		char to_copy5[2];
-		to_copy5[0] = scheduler[18];
-		to_copy5[1] = scheduler[19];
+		to_copy5[0] = scheduler[15];
+		to_copy5[1] = scheduler[16];
 		busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
 		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	}
@@ -554,14 +539,7 @@ int main(int argc, char *argv[])
 	if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
 	{
 		/* 0 = don't compute anything, 1 = compute mean queue time */
-		//~ if (strncmp(scheduler, "Fcfs_backfill_big_nodes_", 24) == 0)
-		//~ {
-			backfill_big_node_mode = scheduler[24] - '0';
-		//~ }
-		//~ else
-		//~ {
-			//~ backfill_big_node_mode = scheduler[37] - '0';
-		//~ }
+		backfill_big_node_mode = scheduler[24] - '0';
 		printf("Backfill big nodes mode is %d.\n", backfill_big_node_mode);
 	}
 	
@@ -738,12 +716,23 @@ int main(int argc, char *argv[])
 			{
 				if (busy_cluster == 1)
 				{
-					locality_scheduler(scheduled_job_list->head, node_list, t, mixed_strategy_version);
+					locality_scheduler(scheduled_job_list->head, node_list, t);
 				}
 				else
 				{
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
+			}
+			else if (strcmp(scheduler, "Flow_adaptation") == 0)
+			{
+				//~ if ()
+				//~ {
+					//~ locality_scheduler(scheduled_job_list->head, node_list, t);
+				//~ }
+				//~ else
+				//~ {
+					//~ heft_scheduler(scheduled_job_list->head, node_list, t);
+				//~ }
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
 			{

@@ -1251,35 +1251,67 @@ I suffer on underused parts of the workloads -> new mixed strategy for FCFS with
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-17->2022-01-17_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-17->2022-01-17_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-17->2022-01-17_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
-\caption{Locality constraint only - Workload of Jan 17 (16000/68000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
+\caption{Locality constraint only - Workload of January 17 (16000/68000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 04}\end{figure}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21->2022-01-21_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
-\caption{Locality constraint only - Workload of Jan 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
+\caption{Locality constraint only - Workload of January 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 04}\end{figure}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-02-02->2022-02-03_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02->2022-02-03_V85105_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02->2022-02-03_V85105_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02->2022-02-03_V85105_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
-\caption{Locality constraint only - Workload of Mar 2-3 (8000/47000 jobs) with resp. 85, 10 and 5\% of files of size 6.4, 12.8 and 51.2 MB per core - Oct 04}\end{figure}
+\caption{Locality constraint only - Workload of March 2-3 (8000/47000 jobs) with resp. 85, 10 and 5\% of files of size 6.4, 12.8 and 51.2 MB per core - October 04}\end{figure}
 
-	%~ \State $time\_to\_load\_penalty \gets ((5.830780553511172 - 1)/2 + 1)*(\memory(\inputs(J_i))/\bandwidth)$
-	%~ \ForEach {$\Node{k} \in \nodeset$}
-		%~ \State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
-		%~ \State $score_{\Node{k}} \gets \frac{\memory(\inputs(J_i) \notin \inputs(\Node{k}))}{\bandwidth} + \frac{\memory(\inputs(\Node{k}) \notin \inputs(J_i)~and~that~end~before~or~at~EAT)~ \times \frac{\core(J_i)}{\core(\Node{i})}}{\bandwidth}$
-		%~ \State $amount\_of\_file\_remaining\_to\_load \gets$ percentage of the data that still need to be loaded (between 0 and 1)
-		%~ \State $time\_to\_reload\_evicted\_files \gets (\memory(\inputs(\Node{k})~that~end~before~predicted~start~time) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		%~ \State $score_{\Node{k}} \gets EAT_{\Node{k}} + time\_to\_load\_penalty*amount\_of\_file\_remaining\_to\_load + time\_to\_reload\_evicted\_files$
-	%~ \EndFor
-	%~ \State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie. \Comment{It's Fcfs\_with\_a\_score\_x1\_x1\_x0\_x0 but the earliest available time is only used as a tie-breaker.}
-	%~ \State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
-	%~ \State Remove $J_i$ from $\jobset$
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-04-07->2022-04-09_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-04-07->2022-04-09_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-04-07->2022-04-09_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-04-07->2022-04-09_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of April 7-9 (13000/23000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 05}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-05-21->2022-05-22_V9532_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-05-21->2022-05-22_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-05-21->2022-05-22_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-05-21->2022-05-22_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of May 21-22 (6000/27000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 05}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-06-12->2022-06-13_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-06-12->2022-06-13_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-06-12->2022-06-13_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-06-12->2022-06-13_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of June 12-13 (27000/55000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 05}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-07-17->2022-07-18_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-07-17->2022-07-18_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-07-17->2022-07-18_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-07-17->2022-07-18_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of July 17-18 (26000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 05}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-08-16->2022-08-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-08-16->2022-08-16_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-08-16->2022-08-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-08-16->2022-08-16_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of August 16 (41000/110000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 05}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-09-08->2022-09-08_V85105_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-09-08->2022-09-08_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-09-08->2022-09-08_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Adaptative_Multiplier_2022-09-08->2022-09-08_V9271_Total_flow_450_128_32_256_4_1024.pdf}\caption{Total flow}\end{subfigure}
+\caption{Locality constraint only - Workload of September 8 (9000/32000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 05}\end{figure}
 
 
+
+New algorithm with flow adaptation related to the mean flow obtained with HEFT.\\
 \begin{algorithm}[htbp]
 \caption{FLOW ADAPTATION}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
