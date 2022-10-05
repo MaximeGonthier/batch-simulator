@@ -1201,12 +1201,12 @@ Disadvantage: it's not really a time like the other factors of the score.s
 
 \subsection{Getting back only on the data locality constraint}
 
-I suffer on underused parts of the workloads -> new mixed strategy for FCFS with a score:\\
+I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with a score that alternate between HEFT and locality:\\
 \begin{algorithm}[htbp]
 \caption{Mix SCORE/HEFT}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
-\State $occupation\_threshold \gets 99$ \Comment{How to define it ?}
+\State $occupation\_threshold \gets 99$ \Comment{How to define it ? sometimes it's better with 100}
 \State $occupation \gets$ the occupation percentage of the cluster \Comment{If a node is running at least 1 job (even if it uses only 1 core), we consider that the node is occupied. Note that we could also compute the occupation after each schedule of a job. Which would change the strategy during the scheduling.}
 \ForEach {$J_i \in \jobset$}
 	\If{$occupation < occupation\_threshold$}
@@ -1311,12 +1311,12 @@ I suffer on underused parts of the workloads -> new mixed strategy for FCFS with
 
 
 
-New algorithm with flow adaptation related to the mean flow obtained with HEFT.\\
+Idea: Compute the mean flow of a task at each time t. Then adapt the strategy depending of the current mean flow of a task\\
 \begin{algorithm}[htbp]
 \caption{FLOW ADAPTATION}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
-	\State Before the computation do: $Flow \gets$ HEFT($\jobset$, $\nodeset$) \Comment{insérer aussi l'idée de cluster occupé/vide ?}
+	\State Before the computation do: $Flow \gets$ HEFT($\jobset$, $\nodeset$) \Comment{Add idea of busy/free cluster as well ?}
 	\While{$t$}
 		\If{$Current\_Flow(t) \leq Flow(t)$}
 			\State $Current\_Flow \gets$ LOCALITY($\jobset$, $\nodeset$)
@@ -1335,11 +1335,13 @@ New algorithm with flow adaptation related to the mean flow obtained with HEFT.\
 	\ForEach{$J_i \in \jobset$}
 		\ForEach {$\Node{k} \in \nodeset$}
 			\State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
-			\State $score_{\Node{k}} \gets \frac{\memory(\inputs(J_i) \notin \inputs(\Node{k}))}{\bandwidth} + \frac{\memory(\inputs(\Node{k}) \notin \inputs(J_i)~and~that~end~before~or~at~EAT)~ \times \frac{\core(J_i)}{\core(\Node{i})}}{\bandwidth}$
+			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ \Comment{Or time waiting for the file to be loaded by another job.}
+			\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~predicted~start~time) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $score_{\Node{k}} \gets B + C$
 		\EndFor
+		\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
+		\State Remove $J_i$ from $\jobset$
 	\EndFor
-	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
-	\State Remove $J_i$ from $\jobset$
 \end{algorithmic}
 \end{algorithm}
 
