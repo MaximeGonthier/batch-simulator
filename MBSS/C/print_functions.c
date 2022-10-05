@@ -53,6 +53,13 @@ void print_data_intervals(struct Node_List** list, int t)
 void print_single_node(struct Node* n)
 {
 	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); fflush(stdout);
+	struct Data* d = n->data->head;
+	while (d != NULL)
+	{
+		printf(" %d", d->unique_id);
+		d = d->next;
+	}
+	printf("\n");
 }
 
 void print_job_list(struct Job* list)

@@ -1316,14 +1316,13 @@ Idea: Compute the mean flow of a task at each time t. Then adapt the strategy de
 \caption{FLOW ADAPTATION}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
-	\State Before the computation do: $Flow \gets$ HEFT($\jobset$, $\nodeset$) \Comment{Add idea of busy/free cluster as well ?}
-	\While{$t$}
-		\If{$Current\_Flow(t) \leq Flow(t)$}
-			\State $Current\_Flow \gets$ LOCALITY($\jobset$, $\nodeset$)
-		\Else
-			\State $Current\_Flow \gets$ HEFT($\jobset$, $\nodeset$)
-		\EndIf
-	\EndWhile
+	\State $Flow\_heft \gets$ HEFT($\jobset$, $\nodeset$) 
+	\State $Flow\_locality \gets$ LOCALITY($\jobset$, $\nodeset$)
+	\If{$Flow\_heft < Flow\_locality$}
+		\State HEFT($\jobset$, $\nodeset$) 
+	\Else
+		\State LOCALITY($\jobset$, $\nodeset$) 
+	\EndIf
 \end{algorithmic}
 \end{algorithm}
 

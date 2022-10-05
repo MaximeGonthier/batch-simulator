@@ -725,14 +725,77 @@ int main(int argc, char *argv[])
 			}
 			else if (strcmp(scheduler, "Flow_adaptation") == 0)
 			{
-				//~ if ()
-				//~ {
-					//~ locality_scheduler(scheduled_job_list->head, node_list, t);
-				//~ }
-				//~ else
-				//~ {
-					//~ heft_scheduler(scheduled_job_list->head, node_list, t);
-				//~ }
+				/* Create a fake node_list with fake cores that copy the real node_list.
+				 * Copy it's content from the real node_list. */
+				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
+				for (i = 0; i < 3; i++)
+				{
+					/* Allocate */
+					fake_node_list[i] = (struct Node_List*) malloc(sizeof(struct Node_List));
+					fake_node_list[i]->head = NULL;
+					fake_node_list[i]->tail = NULL;
+					/* Copy */
+					struct Node* n = node_list[i]->head;
+					while (n != NULL)
+					{
+						/* The node */
+						struct Node *new = (struct Node*) malloc(sizeof(struct Node));								
+						new->unique_id = n->unique_id;
+						new->memory = n->memory;
+						new->bandwidth = n->bandwidth;
+						new->n_available_cores = n->n_available_cores;
+						new->index_node_list = n->index_node_list;
+						/* The data */
+						new->data = malloc(sizeof(*new->data));
+						new->data->head = NULL;
+						new->data->tail = NULL;
+						struct Data* d = n->data->head;
+						while (d != NULL)
+						{
+							struct Data* new_data = (struct Data*) malloc(sizeof(struct Data));
+							new_data->unique_id = d->unique_id;
+							new_data->start_time = d->start_time;
+							new_data->end_time = d->end_time;
+							new_data->nb_task_using_it = d->nb_task_using_it;
+							/* Copy Intervals */
+							/* Pas besoin car je les get au début du schedule. */
+							new_data->size = d->size;
+							new_data->next = NULL;
+							insert_tail_data_list(new->data, new_data);
+							d = d->next;
+						}
+						/* The cores */
+						new->cores = (struct Core**) malloc(20*sizeof(struct Core));
+						for (j = 0; j < 20; j++)
+						{
+							new->cores[j] = (struct Core*) malloc(sizeof(struct Core));
+							new->cores[j]->unique_id = n->cores[j]->unique_id;
+							new->cores[j]->available_time = n->cores[j]->available_time;
+							new->cores[j]->running_job = n->cores[j]->running_job;
+							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
+						}
+						/* Insert node */
+						new->next = NULL;
+						insert_tail_node_list(fake_node_list[i], new);
+						n = n->next;
+					}
+				}
+				//~ print_single_node(node_list[0]->head);
+				//~ print_single_node(fake_node_list[0]->head);
+				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
+				int heft_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t);			
+				int locality_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);	
+				//~ printf("Heft flow is %d, Locality flow is %d.\n", heft_flow, locality_flow);	
+				if (heft_flow < locality_flow)
+				{
+					heft_scheduler(scheduled_job_list->head, node_list, t);
+				}
+				else
+				{
+					locality_scheduler(scheduled_job_list->head, node_list, t);
+				}
+				//~ printf("Fin de Flow adaptation.\n");
+				//~ exit(1);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
 			{
