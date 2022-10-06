@@ -272,3 +272,4 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes);

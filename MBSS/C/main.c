@@ -733,7 +733,7 @@ int main(int argc, char *argv[])
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strcmp(scheduler, "Flow_adaptation") == 0)
+			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_heft_score or Flow_adaptation_heft_locality **/
 			{
 				/* Create a fake node_list with fake cores that copy the real node_list.
 				 * Copy it's content from the real node_list. */
@@ -792,15 +792,37 @@ int main(int argc, char *argv[])
 				}
 				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
 				int heft_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t);			
-				int locality_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);	
+				int locality_flow = 0;
+				if (strcmp(scheduler, "Flow_adaptation_heft_locality") == 0)
+				{
+					locality_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
+				}
+				else if (strcmp(scheduler, "Flow_adaptation_heft_score") == 0)
+				{
+					locality_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
+				}
+				else
+				{
+					printf("Error Flow adapatation scheduler does not exist.\n");
+					exit(EXIT_FAILURE);
+				}
 				//~ printf("Heft flow is %d, Locality flow is %d.\n", heft_flow, locality_flow);	
 				if (heft_flow < locality_flow)
 				{
+					//~ printf("HEFT\n");
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 				else
 				{
-					locality_scheduler(scheduled_job_list->head, node_list, t);
+					if (strcmp(scheduler, "Flow_adaptation_heft_locality") == 0)
+					{
+						locality_scheduler(scheduled_job_list->head, node_list, t);
+					}
+					else
+					{
+						//~ printf("SCORE\n");
+						fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 50, 0, 0, 0);
+					}
 				}
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
