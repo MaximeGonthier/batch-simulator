@@ -59,6 +59,7 @@ float running_nodes;
 int running_nodes_workload_minus_2;
 int total_queue_time;
 int first_subtime_day_0;
+int nb_job_to_schedule;
 char* scheduler;
 char* output_file;
 struct Next_Time_List* end_times;
@@ -159,6 +160,17 @@ int main(int argc, char *argv[])
 	printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
 	print_job_list(scheduled_job_list->head);
 	#endif
+	
+	/* getting the number of jobs we needto schedule */
+	job_pointer = scheduled_job_list->head;
+	nb_job_to_schedule = 0;
+	while(job_pointer != NULL)
+	{
+		nb_job_to_schedule += 1;
+		job_pointer = job_pointer->next;
+	}
+	printf("After scheduling -2 jobs, the number of jobs to schedule is %d.\n", nb_job_to_schedule);
+
 	
 	/* Just for -2 jobs here */
 	if (scheduled_job_list->head != NULL)
@@ -593,6 +605,7 @@ int main(int argc, char *argv[])
 		}
 		printf("There are %d nodes of size 128 and more, %d of size 256 and more, %d of size 1024.\n", number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
 	}
+	
 		
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
@@ -612,13 +625,7 @@ int main(int argc, char *argv[])
 				start_jobs(t, scheduled_job_list->head);
 			}
 		}
-		
-		/* Marche pas car y a tjr un job 1024 en attente je pense. */
-		//~ if (scheduled_job_list->head != NULL)
-		/* TODO : gérérer le cas de plsuieurs tailles de noeuds! */
-		//~ if (running_nodes > 485) /* A faire correctement cette histoire de busy cluster */
-		//~ printf("Cluster usage: %f (%f nodes running) - threshold is %d.\n", (running_nodes*100)/486, running_nodes, busy_cluster_threshold);
-		
+				
 		//~ if ((running_nodes*100)/4 >= busy_cluster_threshold)
 		if ((running_nodes*100)/486 >= busy_cluster_threshold)
 		{
@@ -650,12 +657,9 @@ int main(int argc, char *argv[])
 					printf("New job %d.\n", job_pointer->unique_id);
 					#endif
 					
-					//~ if (job_pointer->subtime > t)
-					//~ {
-						//~ printf("Error job %d subtime %d available at time %d.\n", job_pointer->unique_id, job_pointer->subtime, t);
-						//~ exit(EXIT_FAILURE);
-					//~ }
-					
+					/* Update nb of jobs to schedule (not running but available) */
+					nb_job_to_schedule += 1;
+						
 					temp = job_pointer->next;
 					if (sort_by_file_size == true)
 					{
@@ -672,12 +676,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 			}
-			
-			//~ #ifdef PRINT
-			//~ printf("Job list after new jobs:\n");
-			//~ print_job_list(scheduled_job_list->head);
-			//~ #endif
-						
+							
 			if (job_pointer != NULL)
 			{
 				next_submit_time = job_pointer->subtime;
@@ -711,6 +710,17 @@ int main(int argc, char *argv[])
 			else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0)
 			{
 				fcfs_with_a_score_easybf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			}
+			else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0)
+			{
+				if (nb_job_to_schedule > 486 - running_nodes)
+				{
+					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 50, 0, 0, 0);
+				}
+				else
+				{
+					heft_scheduler(scheduled_job_list->head, node_list, t);
+				}
 			}
 			else if (strncmp(scheduler, "Mixed_strategy", 14) == 0)
 			{
@@ -780,8 +790,6 @@ int main(int argc, char *argv[])
 						n = n->next;
 					}
 				}
-				//~ print_single_node(node_list[0]->head);
-				//~ print_single_node(fake_node_list[0]->head);
 				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
 				int heft_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t);			
 				int locality_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);	
@@ -794,8 +802,6 @@ int main(int argc, char *argv[])
 				{
 					locality_scheduler(scheduled_job_list->head, node_list, t);
 				}
-				//~ printf("Fin de Flow adaptation.\n");
-				//~ exit(1);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0)
 			{

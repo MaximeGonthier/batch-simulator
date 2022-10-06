@@ -913,6 +913,15 @@ void start_jobs(int t, struct Job* head)
 		if (j->start_time == t)
 		//~ if (j->start_time <= t)
 		{
+			
+			/* Update nb of jobs to schedule */
+			nb_job_to_schedule -= 1;
+			if (nb_job_to_schedule < 0)
+			{
+				printf("Error nb_job_to_schedule = %d\n", nb_job_to_schedule);
+				exit(EXIT_FAILURE);
+			}
+			
 			if (j->delay <= 0)
 			{
 				printf("Error delay is %d for job %d.\n", j->delay, j->unique_id);
