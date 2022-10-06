@@ -401,22 +401,24 @@ int main(int argc, char *argv[])
 	}
 	
 	/* Récupération du pourcentage à partir duquel on est sur un cluster occupé. */
-	int busy_cluster_threshold = 0; /* 0-100% */
 	//~ int mixed_strategy_version = 0;
-	if (strncmp(scheduler, "Mixed_strategy", 14) == 0) /* For Mixed_startegy_V1 and Mixed_strategy_V2 */
-	{
-		char to_copy5[2];
-		to_copy5[0] = scheduler[15];
-		to_copy5[1] = scheduler[16];
-		busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
-		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
-	}
-	else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43 == 0))
-	{
+	//~ if (strncmp(scheduler, "Mixed_strategy", 14) == 0) /* For Mixed_startegy_V1 and Mixed_strategy_V2 */
+	//~ {
+		//~ char to_copy5[2];
+		//~ to_copy5[0] = scheduler[15];
+		//~ to_copy5[1] = scheduler[16];
+		//~ busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
+		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
+	//~ }
+	//~ else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43 == 0))
+	//~ {
 		//~ busy_cluster_threshold = 99;
-		busy_cluster_threshold = 100;
-		printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
-	}
+		//~ busy_cluster_threshold = 100;
+		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
+	//~ }
+	//~ int busy_cluster_threshold = 99;
+	int busy_cluster_threshold = 100;
+	printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 		
 	int division_by_planned_area = 0;
 	
@@ -839,7 +841,7 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					printf("HEFT\n");
+					//~ printf("HEFT\n");
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}

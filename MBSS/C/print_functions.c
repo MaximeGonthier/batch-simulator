@@ -253,22 +253,22 @@ void to_print_job_csv(struct Job* job, int time)
 /* Print in a file the final results. Only called once at the end of the simulation. */
 void print_csv(struct To_Print* head_to_print)
 {
-	if (strcmp(scheduler, "Fcfs") == 0)
-	{
-		scheduler = "FCFS";
-	}
-	else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0)
-	{
-		scheduler = "HEFT";
-	}
-	else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0") == 0)
-	{
-		scheduler = "SCORE_500_1";
-	}
-	else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x50_x0_x0") == 0)
-	{
-		scheduler = "SCORE_500_50";
-	}
+	//~ if (strcmp(scheduler, "Fcfs") == 0)
+	//~ {
+		//~ scheduler = "FCFS";
+	//~ }
+	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0)
+	//~ {
+		//~ scheduler = "HEFT";
+	//~ }
+	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0") == 0)
+	//~ {
+		//~ scheduler = "SCORE_500_1";
+	//~ }
+	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x50_x0_x0") == 0)
+	//~ {
+		//~ scheduler = "SCORE_500_50";
+	//~ }
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	/* For distribution of flow and queue times on each job. */
