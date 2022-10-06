@@ -33,7 +33,7 @@ extern struct To_Print_List* jobs_to_print_list;
 //~ /** For mixed decreasing strategy **/
 extern int running_cores;
 extern float running_nodes;
-extern int nb_job_to_schedule;
+extern int nb_job_to_schedule; /* Jobs ready but not running */
 extern int running_nodes_workload_minus_2;
 extern int total_queue_time;
 extern int first_subtime_day_0;

@@ -281,7 +281,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	bool found = false;
 	//~ float multiplier_file_to_load_increment = 0;
 	
-	if (adaptative_multiplier == 1)
+	/** 1 = gives the number of running nodes as a multiplier.
+	 *  2 = gives the number of jobs to schedule as a multiplier.
+	 **/
+	if (adaptative_multiplier == 1) 
 	{
 		if (multiplier_file_to_load != 0)
 		{
@@ -296,7 +299,23 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			//~ multiplier_nb_copy = 1;
 		//~ }
 	}
-	
+	else if (adaptative_multiplier == 2)
+	{
+		if (multiplier_file_to_load != 0)
+		{
+			multiplier_file_to_load = (int) ceil ((float) nb_job_to_schedule/486);
+			//~ printf("Float is %f, ceiled is %f, in int it's %d.\n", (float) nb_job_to_schedule/486, ceil ((float) nb_job_to_schedule/486), (int) ceil ((float) nb_job_to_schedule/486));
+		}
+		//~ if (multiplier_file_evicted != 0)
+		//~ {
+			//~ multiplier_file_evicted = 1;
+		//~ }
+		//~ if (multiplier_nb_copy != 0)
+		//~ {
+			//~ multiplier_nb_copy = 1;
+		//~ }
+	}
+
 	//~ printf("Multiplier are %d %d %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 					
 	/* Get intervals of data. */ 
