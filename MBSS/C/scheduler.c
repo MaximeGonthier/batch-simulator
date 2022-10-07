@@ -258,7 +258,7 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	}
 }
 
-void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes)
+void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t)
 {
 	#ifdef PRINT
 	printf("\nFcfs_score\n");
@@ -317,7 +317,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	}
 
 	//~ printf("Multiplier are %d %d %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-					
+	
+	/* temp multiplier pour le cas avec if EAT is t start now */
+	int temp_multiplier_file_to_load = multiplier_file_to_load;
+	int temp_multiplier_file_evicted = multiplier_file_evicted;
+	int temp_multiplier_nb_copy = multiplier_nb_copy;
+
+	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
@@ -346,6 +352,14 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
 			#endif
+			
+			/* cas if EAT is t reset multipliers */
+			if (start_immediately_if_EAT_is_t == 1)
+			{
+				multiplier_file_to_load = temp_multiplier_file_to_load;
+				multiplier_file_evicted = temp_multiplier_file_evicted;
+				multiplier_nb_copy = temp_multiplier_nb_copy;
+			}
 			
 			/* 2. Choose a node. */		
 			/* Reset some values. */					
@@ -378,12 +392,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
 				exit(EXIT_FAILURE);
 			}
-			
-			/* --- Normal complexity nb of copy --- */		
-			/* For the number of valid copy of a data on other nodes. I add in this list the times I already checked for current job. */
-			//~ struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-			//~ time_or_data_already_checked_nb_of_copy_list->head = NULL;
-			
+						
 			/* --- Reduced complexity nb of copy --- */
 			if (multiplier_nb_copy != 0)
 			{
@@ -404,6 +413,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
 						earliest_available_time = t;
+					}
+					
+					if (start_immediately_if_EAT_is_t == 1 && earliest_available_time == t) /* Ou dans une fenêtre ? */
+					{
+						multiplier_file_to_load = 1;
+						multiplier_file_evicted = 0;
+						multiplier_nb_copy = 0;
 					}
 										
 					#ifdef PRINT
