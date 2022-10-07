@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
 		}
 		multiplier_area_bigger_nodes = (int) strtol(to_copy4, NULL, 10);
 						
-		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multipliers : %d / Penalty on sizes : %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes);
+		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multipliers : %d / Penalty on sizes : %d / Start immeditaly if EAT is t: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 		
 		/* Error I have sometimes when the int is not what I putted */
 		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
