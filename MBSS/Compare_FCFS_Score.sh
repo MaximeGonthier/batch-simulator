@@ -5,8 +5,8 @@
 
 start=`date +%s`
 
-if [ "$#" -ne 3 ]; then
-    echo "Usage is bash Compare_FCFS_Score.sh converted_workload cluster size_constraint(0, 1 or 2)"
+if [ "$#" -ne 4 ]; then
+    echo "Usage is bash Compare_FCFS_Score.sh converted_workload cluster size_constraint(0, 1 or 2) starting_i"
     exit
 fi
 
@@ -20,6 +20,7 @@ echo "Workload:" ${WORKLOAD_TP}
 echo "Cluster:" ${CLUSTER_TP}
 CONTRAINTES_TAILLES=$3 # 1 if you want both constraints
 echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
+STARTING_I=$(($4))
 
 make -C C/
 
@@ -323,9 +324,12 @@ make -C C/
 
 
 # 8. Comparer adaptative multiplier
-echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+if ((STARTING_I == 1))
+then
+	echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+fi
 OUTPUT_FILE=outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-for ((i=1; i<=15; i++))
+for ((i=$((STARTING_I)); i<=15; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
