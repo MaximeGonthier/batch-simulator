@@ -1,0 +1,3 @@
+A la fin du job 6 - Reschedule:
+Pour Mix, job 12 est schedule après job 9 avec un choix localité sur la node 1, ce qui empêche job 13 de prendre le petit espace que HEFT prend.
+Job 13 se retrouve alors sur une autre node plus tard au même moment où job 12 change de node car EAT==t est disponible.
