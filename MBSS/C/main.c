@@ -179,7 +179,18 @@ int main(int argc, char *argv[])
 	}
 	fclose(f_fcfs_score);
 	#endif
-
+	
+	/* Initializings stats on choosen method. */
+	#ifdef PLOT_STATS
+	FILE* f_stats_choosen_method = fopen("outputs/choosen_methods.txt", "w");
+	if (!f_stats_choosen_method)
+	{
+		perror("Error opening file outputs/choosen_methods.txt.");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f_stats_choosen_method, "Job_id,Chosen_method\n");
+	fclose(f_stats_choosen_method);
+	#endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	char* title = malloc(100*sizeof(char));
@@ -688,11 +699,11 @@ int main(int argc, char *argv[])
 			}		
 		}
 
-		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
+		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL works or does anything. */
 		{
-			#ifdef PRINT
-			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
+			//~ #endif
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
@@ -722,6 +733,10 @@ int main(int argc, char *argv[])
 				{
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
+			}
+			else if (strcmp(scheduler, "HEFT") == 0)
+			{
+				heft_scheduler(scheduled_job_list->head, node_list, t);
 			}
 			else if (strcmp(scheduler, "Mixed_strategy") == 0)
 			{

@@ -117,6 +117,11 @@ struct Job {
     //~ /** For mixed decreasing strategy **/
     //~ struct Data* data;
     //~ /** For mixed decreasing strategy **/
+    
+    #ifdef PLOT_STATS /*pour plot les stats sur la dernière décision prise pour un job */
+    int last_choosen_method;
+    #endif
+    
 };
 
 struct Node {

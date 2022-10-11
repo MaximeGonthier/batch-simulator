@@ -15,12 +15,14 @@ CONTRAINTES_TAILLES=$4
 # Header
 echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_$3.csv"
 
-make print_gantt_chart -C C/
+#~ make print_gantt_chart -C C/
 #~ make print_print_gantt_chart -C C/
+make print_plot_stats_print_gantt_chart -C C/
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv
 
 # Plot gantt chart
-echo "Plotting gantt chart..."
+echo ${SCHEDULER} "chosen methods :"
+cat outputs/choosen_methods.txt
 python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_$3.csv $3
 
 end=`date +%s` 

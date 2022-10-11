@@ -5,16 +5,25 @@ print: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c
 	gcc -Wall -DPRINT -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
 
 print_gantt_chart: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
-	gcc -DPRINT_GANTT_CHART -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+	gcc -Wall -DPRINT_GANTT_CHART -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
 	
 print_print_gantt_chart: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
-	gcc -DPRINT -DPRINT_GANTT_CHART -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+	gcc -Wall -DPRINT -DPRINT_GANTT_CHART -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
 
 print_distribution_queue_times: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
-	gcc -DPRINT_DISTRIBUTION_QUEUE_TIMES -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+	gcc -Wall -DPRINT_DISTRIBUTION_QUEUE_TIMES -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
 
 print_cluster_usage: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
-	gcc -DPRINT_CLUSTER_USAGE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+	gcc -Wall -DPRINT_CLUSTER_USAGE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+	
+plot_stats: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
+	gcc -Wall -DPLOT_STATS -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+	
+print_plot_stats: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
+	gcc -Wall -DPRINT -DPLOT_STATS -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
+
+print_plot_stats_print_gantt_chart: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c
+	gcc -Wall -DPRINT -DPLOT_STATS -DPRINT_GANTT_CHART -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c -I. -lm
 
 clean:
 	rm *.o

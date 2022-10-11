@@ -122,6 +122,18 @@ void to_print_job_csv(struct Job* job, int time)
 	//~ char* file_to_open;
 	int time_used = job->end_time - job->start_time;
 	
+	/* Plotting stats on choosen method. */
+	#ifdef PLOT_STATS
+	FILE* f_stats_choosen_method = fopen("outputs/choosen_methods.txt", "a");
+	if (!f_stats_choosen_method)
+	{
+		perror("Error opening file outputs/choosen_methods.txt.");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f_stats_choosen_method, "%d,%d\n", job->unique_id, job->last_choosen_method);
+	fclose(f_stats_choosen_method);
+	#endif
+	
 	/* Only evaluate jobs from workload 1 */
 	if (job->workload == 1)
 	{

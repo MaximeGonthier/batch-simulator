@@ -11,7 +11,6 @@ int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from
 		struct Node* n = head_node[i]->head;
 		while (n != NULL)
 		{
-			//~ printf("On node %d.\n", n->unique_id);
 			if (n->cores[nb_cores - 1]->available_time < min_EAT)
 			{
 				if (n->cores[nb_cores - 1]->available_time <= t)	
