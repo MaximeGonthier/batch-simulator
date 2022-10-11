@@ -17,20 +17,6 @@
  *Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x
  * Fcfs_with_a_score_backfill_big_nodes_probability_x
  **/
-
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
-			//~ {
-				//~ fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0)
-			//~ {
-				//~ fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t);
-			//~ }
-			//~ else
-			//~ {
-				//~ printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
-				//~ exit(EXIT_FAILURE);
-			//~ }
 			
 //~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_99 0 outputs/test.csv"
 //~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_95 0 outputs/test.csv"
@@ -169,7 +155,7 @@ int main(int argc, char *argv[])
 		nb_job_to_schedule += 1;
 		job_pointer = job_pointer->next;
 	}
-	printf("After scheduling -2 jobs, the number of jobs to schedule is %d.\n", nb_job_to_schedule);
+	printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
 
 	
 	/* Just for -2 jobs here */
@@ -737,7 +723,7 @@ int main(int argc, char *argv[])
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strncmp(scheduler, "Mixed_strategy", 14) == 0)
+			else if (strcmp(scheduler, "Mixed_strategy") == 0)
 			{
 				if (busy_cluster == 1)
 				{
@@ -747,6 +733,10 @@ int main(int argc, char *argv[])
 				{
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
+			}
+			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0)
+			{
+				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t);
 			}
 			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_heft_score or Flow_adaptation_heft_locality **/
 			{
