@@ -1,0 +1,14 @@
+le job 11 est start en locality.
+
+Pour HEFT:
+Pourquoi le job 12 est si loin alors que son subtime est 0 ?
+Apres la fin des jobs 1 2 3 et 4 on schedule 5 6 7 8 9 et 10 come on les vois sur le gantt chart.
+Ensuite on schedule 11 sur la node 1 (pk ? Car il y a job 5 avec un tout petit délai qui retarde le EAT de node 0 qui est passé avant.) ce qui empeche de mettre 12 dans le trou de 5 cores de la node 1 car il est schedule ensuite.
+
+Pour Mix:
+Pareil jusqu'a job 10. Job 10 est schedule locality mais va aussi sur la node 0.
+Puis 11 est sur node 2 au lieu de 1 pour eviter une eviction (d'ailleurs ca aurait marché aussi avec juste le temps de chargements mais il faut noter qu on a aussi l'eviction la)! Ce qui libere la place pour job 12 plus petit qui est schedule en HEFT sur la node 1.
+
+D'ailleurs 11 est start en localité. Au moment ou je schedule 16 je rescjedule aussi 11 (pour la 3 eme fois) tjr sur la node 2. Il n'est pas remodifié ensuitecar pas de nouveau jobs et donc start sur 2.
+
+tetser mix sans le evicted de locality ?

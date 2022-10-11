@@ -1301,7 +1301,7 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 	}
 }
 
-int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
+int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int mode)
 {
 	#ifdef PRINT
 	printf("LOCALITY SINGLE JOB\n");
@@ -1430,7 +1430,19 @@ int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, i
 							#endif
 															
 								/* Compute node's score. */
-								score = time_to_load_file + time_to_reload_evicted_files;
+								if (mode == 0)
+								{
+									score = time_to_load_file + time_to_reload_evicted_files;
+								}
+								else if (mode == 1)
+								{
+									score = time_to_load_file;
+								}
+								else
+								{
+									perror("error locality scheduler single job");
+									exit(1);
+								}
 								
 								#ifdef PRINT	
 								printf("Score for job %d is %d (TL %f + TLE %f) with node %d.\n", j->unique_id, score, time_to_load_file, time_to_reload_evicted_files, n->unique_id); fflush(stdout);
@@ -4858,7 +4870,7 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 	#endif
 }
 
-void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int mode)
 {
 	#ifdef PRINT
 	printf("Mix if EAT is t\n");
@@ -4933,7 +4945,7 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 				j->last_choosen_method = 1;
 				#endif
 				
-				nb_non_available_cores = locality_scheduler_single_job(j, head_node, t, nb_non_available_cores);
+				nb_non_available_cores = locality_scheduler_single_job(j, head_node, t, nb_non_available_cores, mode);
 			}
 
 			

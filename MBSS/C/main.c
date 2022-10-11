@@ -751,7 +751,11 @@ int main(int argc, char *argv[])
 			}
 			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0)
 			{
-				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t);
+				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 0);
+			}
+			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t_no_TLE") == 0)
+			{
+				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 1);
 			}
 			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_heft_score or Flow_adaptation_heft_locality **/
 			{
