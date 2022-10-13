@@ -282,7 +282,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	//~ float multiplier_file_to_load_increment = 0;
 	
 	/** 1 = gives the number of running nodes as a multiplier.
-	 *  2 = gives the number of jobs to schedule as a multiplier.
+	 *  2 = gives the number of jobs to schedule divided by the total number of nodes as a multiplier.
+	 *  3 = gives a value depending on the mean flow gotten by heft
 	 **/
 	if (adaptative_multiplier == 1) 
 	{
@@ -676,13 +677,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	#endif
 }
 
-int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes)
+double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes)
 {
 	#ifdef PRINT
 	printf("\nFcfs_score\n");
 	#endif
 	
-	int total_flow = 0;
+	double total_flow = 0;
 	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;
 	int min_score = -1;
@@ -700,6 +701,7 @@ int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** he
 	bool found = false;
 	int min_between_delay_and_walltime = 0;
 	//~ float multiplier_file_to_load_increment = 0;
+	double nb_jobs_scheduled = 0;
 	
 	if (adaptative_multiplier == 1)
 	{
@@ -930,7 +932,7 @@ int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** he
 			
 			/* Update total flow that we return at the end. */
 			total_flow += min_time + min_between_delay_and_walltime - j->subtime;
-
+			nb_jobs_scheduled += 1;
 			
 			for (int k = 0; k < j->cores; k++)
 			{
@@ -991,9 +993,9 @@ int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** he
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(node_used);
 										
-			#ifdef PRINT
-			print_decision_in_scheduler(j);
-			#endif
+			//~ #ifdef PRINT
+			//~ print_decision_in_scheduler(j);
+			//~ #endif
 			
 			//~ if (j->node_used->unique_id == 28 || j->unique_id == 968)
 			//~ {
@@ -1047,7 +1049,7 @@ int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** he
 	fclose(f_fcfs_score);
 	#endif
 	
-	return total_flow;
+	return total_flow/nb_jobs_scheduled;
 }
 
 /** Utilise la variable globale busy_cluster pour
@@ -1561,15 +1563,15 @@ int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, i
 	return nb_non_available_cores;
 }
 
-/** For total flow **/
-int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+/** Return mean flow it would have gotten **/
+double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
 	#ifdef PRINT
 	printf("LOCALITY\n");
 	#endif
 	
 	int min_between_delay_and_walltime = 0;
-	int total_flow = 0;
+	double total_flow = 0;
 	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	int min_score_locality = -1;
 	int i = 0;
@@ -1584,6 +1586,7 @@ int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, 
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	float time_to_reload_evicted_files = 0;
+	double nb_jobs_scheduled = 0;			
 	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
@@ -1720,7 +1723,7 @@ int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, 
 			
 			/* Update total flow that we return at the end. */
 			total_flow += min_time + min_between_delay_and_walltime - j->subtime;
-
+			nb_jobs_scheduled += 1;
 			
 			//~ j->transfer_time = choosen_time_to_load_file;
 					
@@ -1779,17 +1782,17 @@ int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, 
 				insert_tail_data_list(node_used->data, new);
 			}	
 			
-			#ifdef PRINT
-			printf("After add interval are:\n"); fflush(stdout);
-			print_data_intervals(head_node, t);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("After add interval are:\n"); fflush(stdout);
+			//~ print_data_intervals(head_node, t);
+			//~ #endif
 			
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(node_used);
 										
-			#ifdef PRINT
-			print_decision_in_scheduler(j);
-			#endif
+			//~ #ifdef PRINT
+			//~ print_decision_in_scheduler(j);
+			//~ #endif
 
 			/* Insert in start times. */
 			//~ insert_next_time_in_sorted_list(start_times, j->start_time);
@@ -1812,7 +1815,7 @@ int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, 
 			//~ break;
 		//~ }
 	}
-	return total_flow;
+	return total_flow/nb_jobs_scheduled;
 }
 
 void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
@@ -2282,15 +2285,17 @@ int heft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t
 	return nb_non_available_cores;
 }
 
-/** Return the flow on all scheduled tasks. Does not actually schedule the
- *  tasks and uses a fake set of nodes. **/
-int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+/** Return the mean flow on all scheduled tasks. Does not actually schedule the
+ *  tasks and uses a fake set of nodes. 
+ *  If break_condition_if_not_started_at_t is set to 1, then return -1 when a job can't be scheduled at t. 
+ *  Not used for the calssic Flow_adaptation_scheduler and oly implemented in fake heft scheduler. **/
+double fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int break_condition_if_not_started_at_t)
 {
 	#ifdef PRINT
 	printf("\nFAKE HEFT\n");
 	#endif
 	
-	int total_flow = 0;
+	double total_flow = 0;
 	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	int min_score = -1;
 	int i = 0;
@@ -2304,13 +2309,13 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;	
-					
+	double nb_jobs_scheduled = 0;			
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
-	#ifdef PRINT
-	print_data_intervals(head_node, t);
-	#endif
+	//~ #ifdef PRINT
+	//~ print_data_intervals(head_node, t);
+	//~ #endif
 
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
@@ -2358,9 +2363,9 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				struct Node* n = head_node[i]->head;
 				while (n != NULL)
 				{
-					#ifdef PRINT
-					printf("On node %d?\n", n->unique_id); fflush(stdout);
-					#endif
+					//~ #ifdef PRINT
+					//~ printf("On node %d?\n", n->unique_id); fflush(stdout);
+					//~ #endif
 					
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job. 
 					 * It's used in case of a tie on the locality, as well as to look at the intervals of
@@ -2371,9 +2376,9 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 						earliest_available_time = t;
 					}
 					
-					#ifdef PRINT
-					printf("EAT is: %d.\n", earliest_available_time); fflush(stdout);
-					#endif
+					//~ #ifdef PRINT
+					//~ printf("EAT is: %d.\n", earliest_available_time); fflush(stdout);
+					//~ #endif
 					
 					if (min_score == -1 || earliest_available_time < min_score)
 					{						
@@ -2387,16 +2392,16 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded); /* Use the intervals in each data to get this info. */
 						}
 						
-						#ifdef PRINT
-						printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
-						#endif							
+						//~ #ifdef PRINT
+						//~ printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
+						//~ #endif							
 						
 						/* Compute node's score. */
 						score = earliest_available_time + time_to_load_file;
 								
-						#ifdef PRINT	
-						printf("Score for job %d is %d with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
-						#endif
+						//~ #ifdef PRINT	
+						//~ printf("Score for job %d is %d with node %d.\n", j->unique_id, score, n->unique_id); fflush(stdout);
+						//~ #endif
 													
 						/* 2.6. Get minimum score/ */
 						if (min_score == -1)
@@ -2418,6 +2423,12 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				}
 			}
 			
+			/* Here for the test heft else do score scheduler, not flow adaptation. */
+			if (break_condition_if_not_started_at_t == 1 && min_time != t)
+			{
+				return -1;
+			}
+			
 			if (j->delay + choosen_time_to_load_file < j->walltime)
 			{
 				min_between_delay_and_walltime = j->delay + choosen_time_to_load_file;
@@ -2429,7 +2440,7 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			
 			/* Update total flow that we return at the end. */
 			total_flow += min_time + min_between_delay_and_walltime - j->subtime;
-			
+			nb_jobs_scheduled += 1;
 			//~ j->transfer_time = choosen_time_to_load_file;
 					
 			/* Get start time and update available times of the cores. */
@@ -2461,12 +2472,12 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				}
 				d = d->next;
 			}
-			
+			//~ printf("1.\n"); fflush(stdout);
 			if (found == false)
 			{
-				#ifdef PRINT
-				printf("Need to create a data and intervals for the node %d data %d.\n", node_used->unique_id, j->data); fflush(stdout);
-				#endif
+				//~ #ifdef PRINT
+				//~ printf("Need to create a data and intervals for the node %d data %d.\n", node_used->unique_id, j->data); fflush(stdout);
+				//~ #endif
 				
 				/* Create a class Data for this node. */
 				struct Data* new = (struct Data*) malloc(sizeof(struct Data));
@@ -2483,20 +2494,16 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				create_and_insert_tail_interval_list(new->intervals, min_time + j->walltime);
 				new->size = j->data_size;
 				insert_tail_data_list(node_used->data, new);
-			}	
-			
-			#ifdef PRINT
-			printf("After add interval are:\n"); fflush(stdout);
-			print_data_intervals(head_node, t);
-			#endif
+			}
+			//~ printf("2.\n"); fflush(stdout);
+			//~ #ifdef PRINT
+			//~ printf("After add interval are:\n"); fflush(stdout);
+			//~ print_data_intervals(head_node, t);
+			//~ #endif
 			
 			/* Need to sort cores after each schedule of a job. */
 			sort_cores_by_available_time_in_specific_node(node_used);
-										
-			#ifdef PRINT
-			print_decision_in_scheduler(j);
-			#endif
-						
+
 			/* Insert in start times. */
 			//~ insert_next_time_in_sorted_list(start_times, j->start_time);
 						
@@ -2518,7 +2525,7 @@ int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			//~ break;
 		//~ }
 	}
-	return total_flow;
+	return total_flow/nb_jobs_scheduled;
 }
 
 /* TODO : pas besoin de sort a chaque fois. Do I do it ? */

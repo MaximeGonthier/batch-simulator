@@ -749,6 +749,80 @@ int main(int argc, char *argv[])
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
+			else if (strcmp(scheduler, "Try_HEFT_else_do_SCORE") == 0)
+			{
+				/* Create a fake node_list with fake cores that copy the real node_list.
+				 * Copy it's content from the real node_list. */
+				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
+				for (i = 0; i < 3; i++)
+				{
+					/* Allocate */
+					fake_node_list[i] = (struct Node_List*) malloc(sizeof(struct Node_List));
+					fake_node_list[i]->head = NULL;
+					fake_node_list[i]->tail = NULL;
+					/* Copy */
+					struct Node* n = node_list[i]->head;
+					while (n != NULL)
+					{
+						/* The node */
+						struct Node *new = (struct Node*) malloc(sizeof(struct Node));								
+						new->unique_id = n->unique_id;
+						new->memory = n->memory;
+						new->bandwidth = n->bandwidth;
+						new->n_available_cores = n->n_available_cores;
+						new->index_node_list = n->index_node_list;
+						/* The data */
+						new->data = malloc(sizeof(*new->data));
+						new->data->head = NULL;
+						new->data->tail = NULL;
+						struct Data* d = n->data->head;
+						while (d != NULL)
+						{
+							struct Data* new_data = (struct Data*) malloc(sizeof(struct Data));
+							new_data->unique_id = d->unique_id;
+							new_data->start_time = d->start_time;
+							new_data->end_time = d->end_time;
+							new_data->nb_task_using_it = d->nb_task_using_it;
+							/* Copy Intervals */
+							/* Pas besoin car je les get au début du schedule. */
+							new_data->size = d->size;
+							new_data->next = NULL;
+							insert_tail_data_list(new->data, new_data);
+							d = d->next;
+						}
+						/* The cores */
+						new->cores = (struct Core**) malloc(20*sizeof(struct Core));
+						for (j = 0; j < 20; j++)
+						{
+							new->cores[j] = (struct Core*) malloc(sizeof(struct Core));
+							new->cores[j]->unique_id = n->cores[j]->unique_id;
+							new->cores[j]->available_time = n->cores[j]->available_time;
+							new->cores[j]->running_job = n->cores[j]->running_job;
+							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
+						}
+						/* Insert node */
+						new->next = NULL;
+						insert_tail_node_list(fake_node_list[i], new);
+						n = n->next;
+					}
+				}
+
+				double success = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t, 1);
+				//~ double success = 1;
+				//~ printf("Mean flow is (-1 if failed t) %f.\n", success);
+				if (success == -1) /* It failed I must do score */
+				{
+					//~ printf("SCORE\n");
+					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
+					/* Multiplicateur qui dépend  */
+					//~ fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 3, 0, 0);
+				}
+				else /* HEFT succeded I can start it. */
+				{
+					//~ printf("HEFT\n");
+					heft_scheduler(scheduled_job_list->head, node_list, t); 
+				}
+			}
 			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0)
 			{
 				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 0);
@@ -815,15 +889,15 @@ int main(int argc, char *argv[])
 					}
 				}
 				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
-				int heft_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t);			
-				int locality_flow = 0;
+				double heft_mean_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t, 0);			
+				double locality_mean_flow = 0;
 				if (strcmp(scheduler, "Flow_adaptation_heft_locality") == 0)
 				{
-					locality_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
+					locality_mean_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
 				}
 				else if (strcmp(scheduler, "Flow_adaptation_heft_score") == 0)
 				{
-					locality_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
+					locality_mean_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
 				}
 				else
 				{
@@ -831,7 +905,7 @@ int main(int argc, char *argv[])
 					exit(EXIT_FAILURE);
 				}
 				//~ printf("Heft flow is %d, Locality flow is %d.\n", heft_flow, locality_flow);	
-				if (heft_flow < locality_flow)
+				if (heft_mean_flow < locality_mean_flow)
 				{
 					//~ printf("HEFT\n");
 					heft_scheduler(scheduled_job_list->head, node_list, t);
@@ -857,7 +931,6 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					//~ printf("HEFT\n");
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}

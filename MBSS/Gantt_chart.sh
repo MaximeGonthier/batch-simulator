@@ -18,11 +18,13 @@ echo "job_id,workload_name,profile,submission_time,requested_number_of_resources
 #~ make print_gantt_chart -C C/
 #~ make print_print_gantt_chart -C C/
 make print_plot_stats_print_gantt_chart -C C/
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv > plot/Gantt_charts/pour_comprendre_nos_algos/2/${SCHEDULER}_terminal_output.txt
+#~ make plot_stats_print_gantt_chart -C C/
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv > plot/Gantt_charts/pour_comprendre_nos_algos/3/${SCHEDULER}_terminal_output.txt
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv
 
 # Plot gantt chart
-echo ${SCHEDULER} "chosen methods :"
-cat outputs/choosen_methods.txt
+#~ echo ${SCHEDULER} "chosen methods :"
+#~ cat outputs/choosen_methods.txt
 python3 ../Batsim/batsched-Maxime/gantt-chart-plot/main.py outputs/Results_all_jobs_$3.csv $3
 
 end=`date +%s` 

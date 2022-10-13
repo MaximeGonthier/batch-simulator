@@ -13,6 +13,7 @@ CONTRAINTES_TAILLES=$3
 
 make -C C/
 ./C/main $WORKLOAD $CLUSTER HEFT $CONTRAINTES_TAILLES outputs/test.csv
+make plot_stats -C C/
 ./C/main $WORKLOAD $CLUSTER Mixed_strategy_if_EAT_is_t $CONTRAINTES_TAILLES outputs/test.csv
 
 diff outputs/Stretch_HEFT.txt outputs/Stretch_Mixed_strategy_if_EAT_is_t.txt
