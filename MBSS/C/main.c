@@ -738,6 +738,17 @@ int main(int argc, char *argv[])
 			{
 				heft_scheduler(scheduled_job_list->head, node_list, t);
 			}
+			else if (strcmp(scheduler, "HEFT_if_nb_jobs_superior_to_available_nodes") == 0)
+			{
+				if (486 - running_nodes >= nb_job_to_schedule)
+				{
+					heft_scheduler(scheduled_job_list->head, node_list, t);
+				}
+				else
+				{
+					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
+				}
+			}
 			else if (strcmp(scheduler, "Mixed_strategy") == 0)
 			{
 				if (busy_cluster == 1)
