@@ -81,6 +81,10 @@ void read_cluster(char* input_node_file)
 			new->cores[i]->running_job = false;
 			new->cores[i]->running_job_end = -1;
 		}
+		
+		/* For conservative bf */
+		new->number_cores_in_a_hole = 0;
+		new->cores_in_a_hole = NULL;
 
 		new->next = NULL;
 		if (new->memory == 128)

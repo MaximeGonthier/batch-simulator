@@ -828,6 +828,11 @@ int main(int argc, char *argv[])
 							new->cores[j]->running_job = n->cores[j]->running_job;
 							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
 						}
+						
+						/* For conservative bf */
+						new->number_cores_in_a_hole = 0;
+						new->cores_in_a_hole = NULL;
+						
 						/* Insert node */
 						new->next = NULL;
 						insert_tail_node_list(fake_node_list[i], new);
@@ -910,6 +915,11 @@ int main(int argc, char *argv[])
 							new->cores[j]->running_job = n->cores[j]->running_job;
 							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
 						}
+						
+						/* For conservative bf */
+						new->number_cores_in_a_hole = 0;
+						new->cores_in_a_hole = NULL;
+						
 						/* Insert node */
 						new->next = NULL;
 						insert_tail_node_list(fake_node_list[i], new);

@@ -137,20 +137,51 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 	}
 }
 
+/**
+ * Schedule normalement.
+ * Si je vois que un trou va se créer avec EAT == t, je le marque dans la liste des trous dans la struct node.
+ * Dans la struct node je met la liste des cores ainsi que leurs nombre qui forment le trou au temps t pour aller plus vite.
+ * Attention il faut reset cette liste de trou au moment du reset du reschedule.
+ * Je ne check que les trou au temps t car sinon ca change rien avec le reschedule normalement.
+ * Pour les jobs suivant je check node par node le EAT et les trou de la node. Si je rentre dans le trou je me schedule la pour fcfs.
+ **/
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
 	#ifdef PRINT
 	printf("Start fcfs conservative bf.\n");
 	#endif
-	
-	/**
-	 * Schedule normalement.
-	 * Si je vois que un trou va se créer avec EAT == t, je le marque dans la liste des trous.
-	 * Dans la struct node je met la liste des cores qui forment le trou au temsp t pour aller plus vite.
-	 * Attention il faut reset cette liste de trou au moment du reset du reschedule.
-	 * Je ne check que les trou au temps t car sinon ca change rien avec le reschedule normalement.
-	 * Pour les jobs suivant je check node par node le EAT et les trou. Si je rentre dans le trou je me schedule la.
-	 **/
+			
+	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
+
+	struct Job* j = head_job;
+	while (j != NULL)
+	{
+		if (nb_non_available_cores < nb_cores)
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
+			nb_non_available_cores = schedule_job_on_earliest_available_cores_with_conservative_backfill(j, head_node, t, nb_non_available_cores);
+			
+			insert_next_time_in_sorted_list(start_times, j->start_time);
+			j = j->next;
+		}
+		else
+		{
+			#ifdef PRINT
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
+			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
+			break;
+		}
+	}
 }
 
 void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)

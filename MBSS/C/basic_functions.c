@@ -104,21 +104,15 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 			{
 				min_time = earliest_available_time;
 				j->node_used = n;
+				
+				if (min_time == t)
+				{
+					//~ printf("break.\n");
+					i = last_node_size_to_choose_from + 1;
+					break;
+				}
 			}
-			
-			//~ #ifdef PRINT
-			//~ printf("EAT on node %d is %d.\n", n->unique_id, earliest_available_time);
-			//~ #endif
-			
 			n = n->next;
-			//~ if (n == NULL)
-			//~ {
-				//~ exit(1);
-			//~ }
-			//~ if (n->next == NULL)
-			//~ {
-				//~ exit(1);
-			//~ }
 		}
 	}
 	
@@ -159,6 +153,93 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(j->node_used);
 		
+	return nb_non_available_cores;
+}
+
+/* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
+int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
+{
+	int i = 0;
+	int min_time = -1;
+	int earliest_available_time = 0;
+	int first_node_size_to_choose_from = 0;
+	int last_node_size_to_choose_from = 0;
+	
+	/* In which node size I can pick. */
+	if (j->index_node_list == 0)
+	{
+		first_node_size_to_choose_from = 0;
+		last_node_size_to_choose_from = 2;
+	}
+	else if (j->index_node_list == 1)
+	{
+		first_node_size_to_choose_from = 1;
+		last_node_size_to_choose_from = 2;
+	}
+	else if (j->index_node_list == 2)
+	{
+		first_node_size_to_choose_from = 2;
+		last_node_size_to_choose_from = 2;
+	}
+	else
+	{
+		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+
+	/* Finding the node with the earliest available time. */
+	for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		while (n != NULL)
+		{			
+			earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+			if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
+			{
+				earliest_available_time = t;
+			}
+			if (min_time == -1 || min_time > earliest_available_time)
+			{
+				min_time = earliest_available_time;
+				j->node_used = n;
+				
+				if (min_time == t)
+				{
+					printf("min_time == t, break.\n");
+					i = last_node_size_to_choose_from + 1;
+					break;
+				}
+			}
+			n = n->next;
+		}
+	}
+	
+	/* Update infos on the job and on cores. */
+	j->start_time = min_time;
+	j->end_time = min_time + j->walltime;
+	for (i = 0; i < j->cores; i++)
+	{
+		j->cores_used[i] = j->node_used->cores[i]->unique_id;
+		if (j->node_used->cores[i]->available_time <= t)
+		{
+			nb_non_available_cores += 1;
+		}
+		j->node_used->cores[i]->available_time = min_time + j->walltime;
+		
+		/* Maybe I need job queue or not not sure. TODO. */
+		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
+	}
+		
+	#ifdef PRINT
+	print_decision_in_scheduler(j);
+	#endif
+	
+	/* Need to sort cores after each schedule of a job. */
+	if (pas conservative backfill)
+	{
+		sort_cores_by_available_time_in_specific_node(j->node_used);
+	}
+	
 	return nb_non_available_cores;
 }
 
@@ -228,6 +309,13 @@ int schedule_job_on_earliest_available_cores_return_running_cores(struct Job* j,
 			{
 				min_time = earliest_available_time;
 				j->node_used = n;
+				
+				if (min_time == t)
+				{
+					//~ printf("break.\n");
+					i = last_node_size_to_choose_from + 1;
+					break;
+				}
 			}
 			
 			//~ #ifdef PRINT
@@ -309,6 +397,12 @@ int schedule_job_on_earliest_available_cores_specific_sublist_node(struct Job* j
 			{
 				min_time = earliest_available_time;
 				j->node_used = n;
+				
+				if (min_time == t)
+				{
+					//~ printf("break.\n");
+					break;
+				}
 			}
 						
 			n = n->next;
@@ -480,7 +574,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
 							
 							#ifdef PRINT
@@ -1714,7 +1808,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	int min_time = 0;					
-	long long	min_score = -1;
+	long long min_score = -1;
 	int time_to_load_file = 0;
 	int time_or_data_already_checked = 0;
 			//~ earliest_available_time = 0;
@@ -1846,7 +1940,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 							}
 							else
 							{
-								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, j->cores/20);
+								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
 							
 							#ifdef PRINT
