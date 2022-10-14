@@ -158,8 +158,6 @@
 	\begin{enumerate}
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? A tester.
 		\item Etudier la charge du cluister core ar core au sein de chaque node ? Puis essayer de prédire comment ca va se remplir avec les jobs suivants ?
-		
-		\item Talk TaDAMM (Guillaume Palez et Robin Boezennec): prédire les walltime à la place de l'utilisateur. On peut faire une courbes à points avec X (requested runtimes) Y (Actual runtime). Pareil pour les délai comparé au walltime. En plus tu peux faire des tableaux avec combien de jobs sont à x*walltime du walltime demandé en Terme de durée effective. Pas d'IO. Ne font pas le schedule mais réduisent les walltimes. Ils font des courbes de gauss sur leurs stats de walltime/delay. Ils les utilisent pour faire des groupes de jobs similaires (avec les pics je suppose des courbes de gauss). Pour évaluer leurs perfs ils enleve les 20\% de jobs avanet et apres (comme nous mais nous on fais des jours entiers ?) et ils ignorent les petits jobs. Ils montrent des gantt charts mais c'est dur à lire. 200 000jobs dans leurs workload. Si leurs walltime réduit fail ils doivent recommencer. Ils ont une losse à minimiser. Ils ajoutent un threshold sur la loss pour accepter ou non de réduire le walltime. Ils ont truvé le threshold de manière expérimentale ? Oui. Marche a peu pres avec le threshold.
 	\end{enumerate}
 	
 \section{Todo}
@@ -169,16 +167,16 @@
 			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment
 			\item Répondre a Bora
 			\item justif de payement agos
-			\item envoyer certificat enseirb une fois validé et demander changement heures dossier
+			\item verifier changement heures dossier
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
-			\item Relire voir simu si on en parle dans le reste de l'article
+			\item
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
 		
-			\item strat adaptative mais avec le treshold de busy a un certain pourcent
+
 			\item Axe y des stretch: ratio et pas secondes. vérifier que c'est bien ce que je fais et changer sur les plots
 			\item Strat1: multiplicateur graduel avec le nb de noeuds occupées
 			\item Regarder si on gagne en stretch que sur des jobs très cours ou non. Ca peut etre le cas quand le flow est equivalent mais les mean stretch différents

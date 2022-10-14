@@ -98,6 +98,8 @@ plt.title(plot_title)
 plt.xlabel("Scheduler")
 if (comparaison == "Nb_Upgraded_Jobs"):
 	plt.ylabel("Number of upgraded jobs")
+elif (comparaison == "Mean_Stretch"):
+        plt.ylabel("Difference ratio with a schedule on an empty cluster")
 else:
 	plt.ylabel("Seconds")
   
