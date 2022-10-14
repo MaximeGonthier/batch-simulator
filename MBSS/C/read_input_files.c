@@ -335,8 +335,6 @@ int get_nb_job_to_evaluate(struct Job* l)
 
 int get_first_time_day_0(struct Job* l)
 {
-			printf("here\n");
-
 	struct Job *j = l;
 	while (j != NULL && j->workload != 0) /* Attention il faut mettre le j != NULL avant car sinon le j->workload sur un maillon NULL fais un segfault. */
 	{
@@ -348,6 +346,7 @@ int get_first_time_day_0(struct Job* l)
 		printf("No jobs of category 0. First subtime day 0 is set to 0.\n");
 		return 0;
 	}
+	printf("First time day 0 is %d.\n", j->subtime);
 	return j->subtime;
 }
 

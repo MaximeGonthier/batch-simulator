@@ -366,13 +366,13 @@ then
 	echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > outputs/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 fi
 OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
-for ((i=$((STARTING_I)); i<=15; i++))
+for ((i=$((STARTING_I)); i<=4; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
-	if [ $((i)) == 2 ]; then SCHEDULER="Fcfs_easybf"
-	if [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"
-	if [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x1_x0_x0"
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_easybf"
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_easybf_x500_x1_x0_x0"
 	fi
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
 done
