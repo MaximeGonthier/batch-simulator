@@ -582,6 +582,7 @@ int main(int argc, char *argv[])
 		printf("Backfill big nodes mode is %d.\n", backfill_big_node_mode);
 	}
 	
+	/** No use bigger nodes for some fcfs variants. **/
 	if (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0 || strcmp(scheduler, "Fcfs_no_use_bigger_nodes_easybf") == 0)
 	{
 		use_bigger_nodes = false;
@@ -999,6 +1000,10 @@ int main(int argc, char *argv[])
 			else if (strcmp(scheduler, "Fcfs_easybf") == 0 || strcmp(scheduler, "Fcfs_no_use_bigger_nodes_easybf") == 0)
 			{
 				fcfs_easybf_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
+			}
+			else if (strcmp(scheduler, "Fcfs_conservativebf") == 0)
+			{
+				fcfs_conservativebf_scheduler(scheduled_job_list->head, node_list, t);
 			}
 			else if ((strcmp(scheduler, "Fcfs_backfill_big_nodes_0") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_0_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1_big_job_first") == 0))
 			{

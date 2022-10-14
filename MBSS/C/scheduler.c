@@ -137,6 +137,22 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 	}
 }
 
+void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+{
+	#ifdef PRINT
+	printf("Start fcfs conservative bf.\n");
+	#endif
+	
+	/**
+	 * Schedule normalement.
+	 * Si je vois que un trou va se créer avec EAT == t, je le marque dans la liste des trous.
+	 * Dans la struct node je met la liste des cores qui forment le trou au temsp t pour aller plus vite.
+	 * Attention il faut reset cette liste de trou au moment du reset du reschedule.
+	 * Je ne check que les trou au temps t car sinon ca change rien avec le reschedule normalement.
+	 * Pour les jobs suivant je check node par node le EAT et les trou. Si je rentre dans le trou je me schedule la.
+	 **/
+}
+
 void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)
 {
 	#ifdef PRINT

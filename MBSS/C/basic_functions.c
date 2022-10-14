@@ -1066,6 +1066,7 @@ void start_jobs(int t, struct Job* head)
 			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
 			#endif
 			
+			
 			/*For easy bf */
 			running_cores += j->cores;
 			
@@ -1215,6 +1216,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
+			
 			
 			/* For easybf */
 			running_cores -= j->cores;				
