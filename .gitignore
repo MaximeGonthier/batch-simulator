@@ -6,9 +6,10 @@ Slides/ipdps.pdf
 MBSS/src/__pycache__
 todo.pdf
 MBSS/C/main
-MBSS/terminal_output*
+MBSS/terminal_output
 libtool-2.4.6/
 libtool_2.4.6-15.debian.tar.xz
 libtool_2.4.6-15.dsc
 libtool_2.4.6.orig.tar.xz
 libtool_2.4.6.orig.tar.xz.asc
+test_calculs

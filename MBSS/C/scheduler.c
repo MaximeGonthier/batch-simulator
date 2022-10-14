@@ -283,7 +283,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	
 	/** 1 = gives the number of running nodes as a multiplier.
 	 *  2 = gives the number of jobs to schedule divided by the total number of nodes as a multiplier.
-	 *  3 = gives a value depending on the mean flow gotten by heft
+	 *  3 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75%.
 	 **/
 	if (adaptative_multiplier == 1) 
 	{
@@ -316,8 +316,27 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			//~ multiplier_nb_copy = 1;
 		//~ }
 	}
-
-	//~ printf("Multiplier are %d %d %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+	else if (adaptative_multiplier == 3) 
+	{
+		if (running_nodes < 454)
+		{
+			multiplier_file_to_load = 1;
+			multiplier_file_evicted = 0;
+			multiplier_nb_copy = 0;
+		}
+		else
+		{
+			if (multiplier_file_to_load != 0)
+			{
+				multiplier_file_to_load = running_nodes;
+			}
+		}
+	}
+	
+	if (t%1000 == 0)
+	{
+		printf("At time %d, multiplier are %d %d %d.\n", t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+	}
 	
 	/* temp multiplier pour le cas avec if EAT is t start now */
 	int temp_multiplier_file_to_load = multiplier_file_to_load;
