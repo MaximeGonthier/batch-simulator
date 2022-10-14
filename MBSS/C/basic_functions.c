@@ -1,5 +1,42 @@
 #include <main.h>
 
+int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t)
+{
+	//~ printf("get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from %d, int last_node_size_to_choose_from %d, int nb_cores %d, int t %d).\n", first_node_size_to_choose_from, last_node_size_to_choose_from, nb_cores, t);
+	int min_EAT = INT_MAX;
+	int i = 0;
+	
+	for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		while (n != NULL)
+		{
+			if (n->cores[nb_cores - 1]->available_time < min_EAT)
+			{
+				if (n->cores[nb_cores - 1]->available_time <= t)	
+				{
+					#ifdef PRINT
+					printf("EAT == t.\n");
+					#endif
+					
+					return t;
+				}
+				else
+				{
+					min_EAT = n->cores[nb_cores - 1]->available_time;
+				}
+			}
+			n = n->next;
+		}
+	}
+	if (min_EAT == INT_MAX)
+	{
+		perror("EAT is INT_MAX in get_min_EAT");
+		exit(EXIT_FAILURE);
+	}
+	return min_EAT;
+}
+
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes)
 {

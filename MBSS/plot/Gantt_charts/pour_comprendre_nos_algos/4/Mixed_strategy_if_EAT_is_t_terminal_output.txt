@@ -1,0 +1,2488 @@
+Workloads: inputs/workloads/converted/test-11
+Cluster: inputs/clusters/rackham_4nodes.txt
+Scheduler: Mixed_strategy_if_EAT_is_t
+No constraint on sizes (0).
+Id: 0 Memory: 128 Bandwidth: 0.100000 Available cores: 20
+Id: 1 Memory: 128 Bandwidth: 0.100000 Available cores: 20
+Id: 2 Memory: 256 Bandwidth: 0.100000 Available cores: 20
+Id: 3 Memory: 1024 Bandwidth: 0.100000 Available cores: 20
+Read workload done.
+here
+No jobs of category 0. First subtime day 0 is set to 0.
+
+Scheduled job list after scheduling -2 jobs from history. Must be full.
+After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is 0.
+Start jobs before day 0 done.
+
+Schedule job list after starting - 2. Must be less full.
+busy_cluster_threshold is 100.
+Start simulation.
+We have new jobs at time 0.
+New job 1.
+New job 2.
+New job 3.
+New job 4.
+New job 5.
+New job 6.
+New job 7.
+New job 8.
+New job 9.
+New job 10.
+New job 11.
+New job 12.
+Reschedule.
+Mix if EAT is t
+There are 80/80 available cores.
+
+Need to schedule job 1 using file 1. T = 0
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 0 are:
+Node 0:
+Node 1:
+Node 2:
+Node 3:
+On node 0?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 1 is 1280 with node 0.
+On node 1?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 1 is 1280 with node 1.
+On node 2?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 1 is 1280 with node 2.
+On node 3?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 1 is 1280 with node 3.
+Need to create a data and intervals for the node 0 data 1.
+Job 1 using file 1 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 0 and is predicted to finish at time 3600.
+There are 60/80 available cores.
+
+Need to schedule job 2 using file 1. T = 0
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 0 are:
+Node 0: 1 ( 0 1280 3600 )
+Node 1:
+Node 2:
+Node 3:
+On node 0?
+EAT is: 3600.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 3600 ?
+Checking 0 / 1280 / 3600.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 2 is 3600 with node 0.
+On node 1?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 2 is 1280 with node 1.
+On node 2?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 2 is 1280 with node 2.
+On node 3?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 2 is 1280 with node 3.
+Need to create a data and intervals for the node 1 data 1.
+Job 2 using file 1 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 0 and is predicted to finish at time 3600.
+There are 40/80 available cores.
+
+Need to schedule job 3 using file 1. T = 0
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 0 are:
+Node 0: 1 ( 0 1280 3600 )
+Node 1: 1 ( 0 1280 3600 )
+Node 2:
+Node 3:
+On node 0?
+EAT is: 3600.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 3600 ?
+Checking 0 / 1280 / 3600.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 3 is 3600 with node 0.
+On node 1?
+EAT is: 3600.
+On node 2?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 3 is 1280 with node 2.
+On node 3?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 3 is 1280 with node 3.
+Need to create a data and intervals for the node 2 data 1.
+Job 3 using file 1 category 0 workload 1 will be computed on node 2 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 0 and is predicted to finish at time 3600.
+There are 20/80 available cores.
+
+Need to schedule job 4 using file 1. T = 0
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 0 are:
+Node 0: 1 ( 0 1280 3600 )
+Node 1: 1 ( 0 1280 3600 )
+Node 2: 1 ( 0 1280 3600 )
+Node 3:
+On node 0?
+EAT is: 3600.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 3600 ?
+Checking 0 / 1280 / 3600.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 4 is 3600 with node 0.
+On node 1?
+EAT is: 3600.
+On node 2?
+EAT is: 3600.
+On node 3?
+EAT is: 0.
+Time to load file: 1280.000000. Is being loaded? 0.
+Score for job 4 is 1280 with node 3.
+Need to create a data and intervals for the node 3 data 1.
+Job 4 using file 1 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 0 and is predicted to finish at time 3600.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 0.
+Adding data 1 on node 0 at time 0.
+For job 1 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 1 20 cores start at time 0 on node 0 and will end at time 2280 before walltime: 1 transfer time is 1280 data was 1.
+Adding data 1 on node 1 at time 0.
+For job 2 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 2 20 cores start at time 0 on node 1 and will end at time 2280 before walltime: 1 transfer time is 1280 data was 1.
+Adding data 1 on node 2 at time 0.
+For job 3 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 3 20 cores start at time 0 on node 2 and will end at time 2280 before walltime: 1 transfer time is 1280 data was 1.
+Adding data 1 on node 3 at time 0.
+For job 4 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 4 20 cores start at time 0 on node 3 and will end at time 2280 before walltime: 1 transfer time is 1280 data was 1.
+We have new jobs at time 1000.
+New job 13.
+Reschedule.
+Mix if EAT is t
+No more available cores.
+End of reschedule.
+We have new jobs at time 1020.
+New job 14.
+Reschedule.
+Mix if EAT is t
+No more available cores.
+End of reschedule.
+We have new jobs at time 1080.
+New job 15.
+Reschedule.
+Mix if EAT is t
+No more available cores.
+End of reschedule.
+We have new jobs at time 1100.
+New job 16.
+Reschedule.
+Mix if EAT is t
+No more available cores.
+End of reschedule.
+We have new jobs at time 1150.
+New job 17.
+Reschedule.
+Mix if EAT is t
+No more available cores.
+End of reschedule.
+Start of end_jobs at time 2280.
+==> Job 1 20 cores finished at time 2280 on node 0.
+==> Job 2 20 cores finished at time 2280 on node 1.
+==> Job 3 20 cores finished at time 2280 on node 2.
+==> Job 4 20 cores finished at time 2280 on node 3.
+Reschedule.
+Mix if EAT is t
+There are 80/80 available cores.
+
+Need to schedule job 5 using file 1. T = 2280
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 2280 are:
+Node 0: 1 ( 2280 2280 2280 )
+Node 1: 1 ( 2280 2280 2280 )
+Node 2: 1 ( 2280 2280 2280 )
+Node 3: 1 ( 2280 2280 2280 )
+On node 0?
+EAT is: 2280.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 2280 ?
+Checking 2280 / 2280 / 2280.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 5 is 2280 with node 0.
+On node 1?
+EAT is: 2280.
+On node 2?
+EAT is: 2280.
+On node 3?
+EAT is: 2280.
+Job 5 using file 1 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 2280 and is predicted to finish at time 5880.
+There are 60/80 available cores.
+
+Need to schedule job 6 using file 1. T = 2280
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 2280 are:
+Node 0: 1 ( 2280 2280 2280 2280 2280 5880 )
+Node 1: 1 ( 2280 2280 2280 )
+Node 2: 1 ( 2280 2280 2280 )
+Node 3: 1 ( 2280 2280 2280 )
+On node 0?
+EAT is: 5880.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 5880 ?
+Checking 2280 / 2280 / 2280.
+Checking 2280 / 2280 / 5880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 6 is 5880 with node 0.
+On node 1?
+EAT is: 2280.
+Data 1 is on node 1.
+Interval not empty, but is it on the node at time 2280 ?
+Checking 2280 / 2280 / 2280.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 6 is 2280 with node 1.
+On node 2?
+EAT is: 2280.
+On node 3?
+EAT is: 2280.
+Job 6 using file 1 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 2280 and is predicted to finish at time 5380.
+There are 40/80 available cores.
+
+Need to schedule job 7 using file 1. T = 2280
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 2280 are:
+Node 0: 1 ( 2280 2280 2280 2280 2280 5880 )
+Node 1: 1 ( 2280 2280 2280 2280 2280 5380 )
+Node 2: 1 ( 2280 2280 2280 )
+Node 3: 1 ( 2280 2280 2280 )
+On node 0?
+EAT is: 5880.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 5880 ?
+Checking 2280 / 2280 / 2280.
+Checking 2280 / 2280 / 5880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 7 is 5880 with node 0.
+On node 1?
+EAT is: 5380.
+Data 1 is on node 1.
+Interval not empty, but is it on the node at time 5380 ?
+Checking 2280 / 2280 / 2280.
+Checking 2280 / 2280 / 5380.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 7 is 5380 with node 1.
+On node 2?
+EAT is: 2280.
+Data 1 is on node 2.
+Interval not empty, but is it on the node at time 2280 ?
+Checking 2280 / 2280 / 2280.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 7 is 2280 with node 2.
+On node 3?
+EAT is: 2280.
+Job 7 using file 1 category 0 workload 1 will be computed on node 2 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 2280 and is predicted to finish at time 5880.
+There are 20/80 available cores.
+
+Need to schedule job 8 using file 1. T = 2280
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 2280 are:
+Node 0: 1 ( 2280 2280 2280 2280 2280 5880 )
+Node 1: 1 ( 2280 2280 2280 2280 2280 5380 )
+Node 2: 1 ( 2280 2280 2280 2280 2280 5880 )
+Node 3: 1 ( 2280 2280 2280 )
+On node 0?
+EAT is: 5880.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 5880 ?
+Checking 2280 / 2280 / 2280.
+Checking 2280 / 2280 / 5880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 8 is 5880 with node 0.
+On node 1?
+EAT is: 5380.
+Data 1 is on node 1.
+Interval not empty, but is it on the node at time 5380 ?
+Checking 2280 / 2280 / 2280.
+Checking 2280 / 2280 / 5380.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 8 is 5380 with node 1.
+On node 2?
+EAT is: 5880.
+On node 3?
+EAT is: 2280.
+Data 1 is on node 3.
+Interval not empty, but is it on the node at time 2280 ?
+Checking 2280 / 2280 / 2280.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 8 is 2280 with node 3.
+Job 8 using file 1 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 2280 and is predicted to finish at time 5880.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 2280.
+Adding data 1 on node 0 at time 2280.
+For job 5 (delay = 5): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 5 20 cores start at time 2280 on node 0 and will end at time 2285 before walltime: 1 transfer time is 0 data was 1.
+Adding data 1 on node 1 at time 2280.
+For job 6 (delay = 3000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 6 20 cores start at time 2280 on node 1 and will end at time 5280 before walltime: 1 transfer time is 0 data was 1.
+Adding data 1 on node 2 at time 2280.
+For job 7 (delay = 3600): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 7 20 cores start at time 2280 on node 2 and will end at time 5880 before walltime: 0 transfer time is 0 data was 1.
+Adding data 1 on node 3 at time 2280.
+For job 8 (delay = 3000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 8 20 cores start at time 2280 on node 3 and will end at time 5280 before walltime: 1 transfer time is 0 data was 1.
+Start of end_jobs at time 2285.
+==> Job 5 20 cores finished at time 2285 on node 0.
+Reschedule.
+Mix if EAT is t
+There are 20/80 available cores.
+
+Need to schedule job 9 using file 1. T = 2285
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 2285 are:
+Node 0: 1 ( 2285 2285 2285 )
+Node 1: 1 ( 2285 2285 5380 )
+Node 2: 1 ( 2285 2285 5880 )
+Node 3: 1 ( 2285 2285 5880 )
+On node 0?
+EAT is: 2285.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 2285 ?
+Checking 2285 / 2285 / 2285.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 9 is 2285 with node 0.
+On node 1?
+EAT is: 5380.
+On node 2?
+EAT is: 5880.
+On node 3?
+EAT is: 5880.
+Job 9 using file 1 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 2285 and is predicted to finish at time 5885.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 2285.
+Adding data 1 on node 0 at time 2285.
+For job 9 (delay = 3600): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 9 20 cores start at time 2285 on node 0 and will end at time 5885 before walltime: 0 transfer time is 0 data was 1.
+Start of end_jobs at time 5280.
+==> Job 6 20 cores finished at time 5280 on node 1.
+==> Job 8 20 cores finished at time 5280 on node 3.
+Reschedule.
+Mix if EAT is t
+There are 40/80 available cores.
+
+Need to schedule job 10 using file 1. T = 5280
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5280 are:
+Node 0: 1 ( 5280 5280 5885 )
+Node 1: 1 ( 5280 5280 5280 )
+Node 2: 1 ( 5280 5280 5880 )
+Node 3: 1 ( 5280 5280 5280 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 5885 ?
+Checking 5280 / 5280 / 5885.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 10 is 5885 with node 0.
+On node 1?
+EAT is: 5280.
+Data 1 is on node 1.
+Interval not empty, but is it on the node at time 5280 ?
+Checking 5280 / 5280 / 5280.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 10 is 5280 with node 1.
+On node 2?
+EAT is: 5880.
+On node 3?
+EAT is: 5280.
+Job 10 using file 1 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 5280 and is predicted to finish at time 8880.
+There are 20/80 available cores.
+
+Need to schedule job 11 using file 1. T = 5280
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5280 are:
+Node 0: 1 ( 5280 5280 5885 )
+Node 1: 1 ( 5280 5280 5280 5280 5280 8880 )
+Node 2: 1 ( 5280 5280 5880 )
+Node 3: 1 ( 5280 5280 5280 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 5885 ?
+Checking 5280 / 5280 / 5885.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 11 is 5885 with node 0.
+On node 1?
+EAT is: 8880.
+On node 2?
+EAT is: 5880.
+Data 1 is on node 2.
+Interval not empty, but is it on the node at time 5880 ?
+Checking 5280 / 5280 / 5880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 11 is 5880 with node 2.
+On node 3?
+EAT is: 5280.
+Data 1 is on node 3.
+Interval not empty, but is it on the node at time 5280 ?
+Checking 5280 / 5280 / 5280.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 11 is 5280 with node 3.
+Job 11 using file 1 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 5280 and is predicted to finish at time 8880.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 5280.
+Adding data 1 on node 1 at time 5280.
+For job 10 (delay = 3600): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 10 20 cores start at time 5280 on node 1 and will end at time 8880 before walltime: 0 transfer time is 0 data was 1.
+Adding data 1 on node 3 at time 5280.
+For job 11 (delay = 3600): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 11 20 cores start at time 5280 on node 3 and will end at time 8880 before walltime: 0 transfer time is 0 data was 1.
+Start of end_jobs at time 5880.
+==> Job 7 20 cores finished at time 5880 on node 2.
+Reschedule.
+Mix if EAT is t
+There are 20/80 available cores.
+
+Need to schedule job 12 using file 1. T = 5880
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5880 are:
+Node 0: 1 ( 5880 5880 5885 )
+Node 1: 1 ( 5880 5880 8880 )
+Node 2: 1 ( 5880 5880 5880 )
+Node 3: 1 ( 5880 5880 8880 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Interval not empty, but is it on the node at time 5885 ?
+Checking 5880 / 5880 / 5885.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 12 is 5885 with node 0.
+On node 1?
+EAT is: 8880.
+On node 2?
+EAT is: 5880.
+Data 1 is on node 2.
+Interval not empty, but is it on the node at time 5880 ?
+Checking 5880 / 5880 / 5880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 12 is 5880 with node 2.
+On node 3?
+EAT is: 8880.
+Job 12 using file 1 category 0 workload 1 will be computed on node 2 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 5880 and is predicted to finish at time 8880.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 5880.
+Adding data 1 on node 2 at time 5880.
+For job 12 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 12 20 cores start at time 5880 on node 2 and will end at time 7880 before walltime: 1 transfer time is 0 data was 1.
+Start of end_jobs at time 5885.
+==> Job 9 20 cores finished at time 5885 on node 0.
+Reschedule.
+Mix if EAT is t
+There are 20/80 available cores.
+
+Need to schedule job 13 using file 3. T = 5885
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5885 are:
+Node 0: 1 ( 5885 5885 5885 )
+Node 1: 1 ( 5885 5885 8880 )
+Node 2: 1 ( 5885 5885 8880 )
+Node 3: 1 ( 5885 5885 8880 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 13 is 6205 with node 0.
+On node 1?
+EAT is: 8880.
+On node 2?
+EAT is: 8880.
+On node 3?
+EAT is: 8880.
+Need to create a data and intervals for the node 0 data 3.
+Job 13 using file 3 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4 start at time 5885 and is predicted to finish at time 8885.
+There are 15/80 available cores.
+
+Need to schedule job 14 using file 3. T = 5885
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5885 are:
+Node 0: 1 ( 5885 5885 5885 ) 3 ( 5885 6205 8885 )
+Node 1: 1 ( 5885 5885 8880 )
+Node 2: 1 ( 5885 5885 8880 )
+Node 3: 1 ( 5885 5885 8880 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 5885 ?
+Checking 5885 / 6205 / 8885.
+Time to load file: 320.000000. Is being loaded? 1.
+Score for job 14 is 6205 with node 0.
+On node 1?
+EAT is: 8880.
+On node 2?
+EAT is: 8880.
+On node 3?
+EAT is: 8880.
+Job 14 using file 3 category 0 workload 1 will be computed on node 0 core(s) 5,6,7,8,9 start at time 5885 and is predicted to finish at time 8885.
+There are 10/80 available cores.
+
+Need to schedule job 15 using file 3. T = 5885
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5885 are:
+Node 0: 1 ( 5885 5885 5885 ) 3 ( 5885 6205 8885 5885 6205 8885 )
+Node 1: 1 ( 5885 5885 8880 )
+Node 2: 1 ( 5885 5885 8880 )
+Node 3: 1 ( 5885 5885 8880 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 5885 ?
+Checking 5885 / 6205 / 8885.
+Time to load file: 320.000000. Is being loaded? 1.
+Score for job 15 is 6205 with node 0.
+On node 1?
+EAT is: 8880.
+On node 2?
+EAT is: 8880.
+On node 3?
+EAT is: 8880.
+Job 15 using file 3 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14 start at time 5885 and is predicted to finish at time 8885.
+There are 5/80 available cores.
+
+Need to schedule job 16 using file 3. T = 5885
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 5885 are:
+Node 0: 1 ( 5885 5885 5885 ) 3 ( 5885 6205 8885 5885 6205 8885 5885 6205 8885 )
+Node 1: 1 ( 5885 5885 8880 )
+Node 2: 1 ( 5885 5885 8880 )
+Node 3: 1 ( 5885 5885 8880 )
+On node 0?
+EAT is: 5885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 5885 ?
+Checking 5885 / 6205 / 8885.
+Time to load file: 320.000000. Is being loaded? 1.
+Score for job 16 is 6205 with node 0.
+On node 1?
+EAT is: 8880.
+On node 2?
+EAT is: 8880.
+On node 3?
+EAT is: 8880.
+Job 16 using file 3 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19 start at time 5885 and is predicted to finish at time 8885.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 5885.
+Adding data 3 on node 0 at time 5885.
+For job 13 (delay = 2000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 13 5 cores start at time 5885 on node 0 and will end at time 8205 before walltime: 1 transfer time is 320 data was 3.
+Adding data 3 on node 0 at time 5885.
+For job 14 (delay = 2000): 0 transfer time and 320 waiting for a load time. Overhead is 320
+==> Job 14 5 cores start at time 5885 on node 0 and will end at time 8205 before walltime: 1 transfer time is 0 data was 3.
+Adding data 3 on node 0 at time 5885.
+For job 15 (delay = 2000): 0 transfer time and 320 waiting for a load time. Overhead is 320
+==> Job 15 5 cores start at time 5885 on node 0 and will end at time 8205 before walltime: 1 transfer time is 0 data was 3.
+Adding data 3 on node 0 at time 5885.
+For job 16 (delay = 2000): 0 transfer time and 320 waiting for a load time. Overhead is 320
+==> Job 16 5 cores start at time 5885 on node 0 and will end at time 8205 before walltime: 1 transfer time is 0 data was 3.
+Start of end_jobs at time 7880.
+==> Job 12 20 cores finished at time 7880 on node 2.
+Reschedule.
+Mix if EAT is t
+There are 20/80 available cores.
+
+Need to schedule job 17 using file 3. T = 7880
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 7880 are:
+Node 0: 1 ( ) 3 ( 7880 7880 8885 )
+Node 1: 1 ( 7880 7880 8880 )
+Node 2: 1 ( 7880 7880 7880 )
+Node 3: 1 ( 7880 7880 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 8885 ?
+Checking 7880 / 7880 / 8885.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 17 is 8885 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 17 is 9200 with node 1.
+On node 2?
+EAT is: 7880.
+Data 1 is on node 2.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 17 is 8200 with node 2.
+On node 3?
+EAT is: 8880.
+Need to create a data and intervals for the node 2 data 3.
+Job 17 using file 3 category 0 workload 1 will be computed on node 2 core(s) 0,1,2,3,4 start at time 7880 and is predicted to finish at time 10880.
+End of reschedule.
+Start of start_jobs at time 7880.
+Adding data 3 on node 2 at time 7880.
+For job 17 (delay = 2000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 17 5 cores start at time 7880 on node 2 and will end at time 10200 before walltime: 1 transfer time is 320 data was 3.
+We have new jobs at time 8000.
+New job 18.
+New job 19.
+New job 20.
+New job 21.
+New job 22.
+New job 23.
+New job 24.
+New job 25.
+Reschedule.
+Mix if EAT is t
+There are 15/80 available cores.
+
+Need to schedule job 18 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 18 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 18 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 18 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Need to create a data and intervals for the node 2 data 4.
+Job 18 using file 4 category 0 workload 1 will be computed on node 2 core(s) 5 start at time 8000 and is predicted to finish at time 11000.
+There are 14/80 available cores.
+
+Need to schedule job 19 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 19 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 19 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 19 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 19 using file 4 category 0 workload 1 will be computed on node 2 core(s) 6 start at time 8000 and is predicted to finish at time 11000.
+There are 13/80 available cores.
+
+Need to schedule job 20 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 20 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 20 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 20 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 20 using file 4 category 0 workload 1 will be computed on node 2 core(s) 7 start at time 8000 and is predicted to finish at time 11000.
+There are 12/80 available cores.
+
+Need to schedule job 21 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 8000 8064 11000 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 21 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 21 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 21 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 21 using file 4 category 0 workload 1 will be computed on node 2 core(s) 8 start at time 8000 and is predicted to finish at time 11000.
+There are 11/80 available cores.
+
+Need to schedule job 22 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 22 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 22 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 22 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 22 using file 4 category 0 workload 1 will be computed on node 2 core(s) 9 start at time 8000 and is predicted to finish at time 11000.
+There are 10/80 available cores.
+
+Need to schedule job 23 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 23 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 23 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 23 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 23 using file 4 category 0 workload 1 will be computed on node 2 core(s) 10 start at time 8000 and is predicted to finish at time 11000.
+There are 9/80 available cores.
+
+Need to schedule job 24 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 24 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 24 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 24 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 24 using file 4 category 0 workload 1 will be computed on node 2 core(s) 11 start at time 8000 and is predicted to finish at time 11000.
+There are 8/80 available cores.
+
+Need to schedule job 25 using file 4. T = 8000
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8000 are:
+Node 0: 1 ( ) 3 ( 8000 8000 8885 )
+Node 1: 1 ( 8000 8000 8880 )
+Node 2: 1 ( ) 3 ( 8000 8200 10880 ) 4 ( 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 8000 8064 11000 )
+Node 3: 1 ( 8000 8000 8880 )
+On node 0?
+EAT is: 8885.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 25 is 8949 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 64.000000. Is being loaded? 0.
+Score for job 25 is 8944 with node 1.
+On node 2?
+EAT is: 8000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Interval not empty, but is it on the node at time 8000 ?
+Checking 8000 / 8064 / 11000.
+Time to load file: 64.000000. Is being loaded? 1.
+Score for job 25 is 8064 with node 2.
+On node 3?
+EAT is: 8880.
+Job 25 using file 4 category 0 workload 1 will be computed on node 2 core(s) 12 start at time 8000 and is predicted to finish at time 11000.
+End of reschedule.
+Start of start_jobs at time 8000.
+Adding data 4 on node 2 at time 8000.
+For job 18 (delay = 3000): 60 transfer time and 0 waiting for a load time. Overhead is 60
+==> Job 18 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 60 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 19 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 19 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 20 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 20 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 21 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 21 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 22 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 22 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 23 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 23 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 24 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 24 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Adding data 4 on node 2 at time 8000.
+For job 25 (delay = 3000): 0 transfer time and 60 waiting for a load time. Overhead is 60
+==> Job 25 1 cores start at time 8000 on node 2 and will end at time 11000 before walltime: 0 transfer time is 0 data was 4.
+Start of end_jobs at time 8205.
+==> Job 13 5 cores finished at time 8205 on node 0.
+==> Job 14 5 cores finished at time 8205 on node 0.
+==> Job 15 5 cores finished at time 8205 on node 0.
+==> Job 16 5 cores finished at time 8205 on node 0.
+We have new jobs at time 8500.
+New job 26.
+New job 27.
+New job 28.
+New job 29.
+New job 30.
+New job 31.
+New job 32.
+New job 33.
+New job 34.
+New job 35.
+New job 36.
+New job 37.
+Reschedule.
+Mix if EAT is t
+There are 27/80 available cores.
+
+Need to schedule job 26 using file 5. T = 8500
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8500 are:
+Node 0: 1 ( ) 3 ( )
+Node 1: 1 ( 8500 8500 8880 )
+Node 2: 1 ( ) 3 ( 8500 8500 10880 ) 4 ( 8500 8500 11000 )
+Node 3: 1 ( 8500 8500 8880 )
+On node 0?
+EAT is: 8500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 26 is 9460 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 26 is 9840 with node 1.
+On node 2?
+EAT is: 11000.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 26 is 9840 with node 3.
+Need to create a data and intervals for the node 0 data 5.
+Job 26 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,5,6,7,8,9 start at time 8500 and is predicted to finish at time 11500.
+There are 12/80 available cores.
+
+Need to schedule job 27 using file 5. T = 8500
+LOCALITY SINGLE JOB
+There are 12/80 available cores.
+
+Need to schedule job 27 using file 5. T = 8500
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 8500 / 9460 / 11500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 27 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Job 27 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,15,16,17,18,19,10,11,12,13,14 start at time 11500 and is predicted to finish at time 14500.
+There are 7/80 available cores.
+
+Need to schedule job 28 using file 5. T = 8500
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 28 using file 5. T = 8500
+On node 0?
+EAT is: 14500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14500 ?
+Checking 8500 / 9460 / 11500.
+Checking 11500 / 11500 / 14500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 28 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Job 28 using file 5 category 0 workload 1 will be computed on node 0 core(s) 5,6,7,8,9,0,1,2,3,4,15,16,17,18,19 start at time 14500 and is predicted to finish at time 17500.
+There are 7/80 available cores.
+
+Need to schedule job 29 using file 5. T = 8500
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 29 using file 5. T = 8500
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 17500 ?
+Checking 8500 / 9460 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 29 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14,5,6,7,8,9,0,1,2,3,4 start at time 17500 and is predicted to finish at time 20500.
+There are 7/80 available cores.
+
+Need to schedule job 30 using file 5. T = 8500
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 30 using file 5. T = 8500
+On node 0?
+EAT is: 20500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 20500 ?
+Checking 8500 / 9460 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Checking 17500 / 17500 / 20500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Job 30 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,5,6,7,8,9 start at time 20500 and is predicted to finish at time 23500.
+There are 7/80 available cores.
+
+Need to schedule job 31 using file 5. T = 8500
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 31 using file 5. T = 8500
+On node 0?
+EAT is: 23500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 23500 ?
+Checking 8500 / 9460 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Checking 17500 / 17500 / 20500.
+Checking 20500 / 20500 / 23500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,15,16,17,18,19,10,11,12,13,14 start at time 23500 and is predicted to finish at time 26500.
+There are 7/80 available cores.
+
+Need to schedule job 32 using file 6. T = 8500
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8500 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 8500 9460 11500 11500 11500 14500 14500 14500 17500 17500 17500 20500 20500 20500 23500 23500 23500 26500 )
+Node 1: 1 ( 8500 8500 8880 )
+Node 2: 1 ( ) 3 ( 8500 8500 10880 ) 4 ( 8500 8500 11000 )
+Node 3: 1 ( 8500 8500 8880 )
+On node 0?
+EAT is: 23500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 32 is 23820 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 32 is 9200 with node 1.
+On node 2?
+EAT is: 8500.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 32 is 8820 with node 2.
+On node 3?
+EAT is: 8880.
+Need to create a data and intervals for the node 2 data 6.
+Job 32 using file 6 category 0 workload 1 will be computed on node 2 core(s) 13,14,15,16,17 start at time 8500 and is predicted to finish at time 11500.
+There are 2/80 available cores.
+
+Need to schedule job 33 using file 6. T = 8500
+LOCALITY SINGLE JOB
+There are 2/80 available cores.
+
+Need to schedule job 33 using file 6. T = 8500
+On node 0?
+EAT is: 23500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Checking tail of the interval of data 5: 26500->
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.250000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 33 is 320 (TL 320.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (0.250000*128.000000)/0.100000 = 320.000000.
+Time to reload evicted files 320.000000.
+Score for job 33 is 640 (TL 320.000000 + TLE 320.000000) with node 1.
+On node 2?
+EAT is: 10880.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 10880 ?
+Checking 8500 / 8820 / 11500.
+Checking tail of the interval of data 3: 10880->
+Add size 32.000000->
+Checking tail of the interval of data 4: 11000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.250000*32.000000)/0.100000 = 80.000000.
+Time to reload evicted files 80.000000.
+Score for job 33 is 80 (TL 0.000000 + TLE 80.000000) with node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Job 33 using file 6 category 0 workload 1 will be computed on node 2 core(s) 18,19,0,1,2 start at time 10880 and is predicted to finish at time 13880.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 8500.
+Adding data 5 on node 0 at time 8500.
+For job 26 (delay = 2000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 26 15 cores start at time 8500 on node 0 and will end at time 11460 before walltime: 1 transfer time is 960 data was 5.
+Adding data 6 on node 2 at time 8500.
+For job 32 (delay = 2000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 32 5 cores start at time 8500 on node 2 and will end at time 10820 before walltime: 1 transfer time is 320 data was 6.
+Start of end_jobs at time 8880.
+==> Job 10 20 cores finished at time 8880 on node 1.
+==> Job 11 20 cores finished at time 8880 on node 3.
+Reschedule.
+Mix if EAT is t
+There are 47/80 available cores.
+
+Need to schedule job 27 using file 5. T = 8880
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8880 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 8880 9460 11500 )
+Node 1: 1 ( 8880 8880 8880 )
+Node 2: 1 ( ) 3 ( 8880 8880 10880 ) 4 ( 8880 8880 11000 ) 6 ( 8880 8880 11500 )
+Node 3: 1 ( 8880 8880 8880 )
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 8880 / 9460 / 11500.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 27 is 11500 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 27 is 9840 with node 1.
+On node 2?
+EAT is: 11000.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 27 is 9840 with node 3.
+Need to create a data and intervals for the node 1 data 5.
+Job 27 using file 5 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 8880 and is predicted to finish at time 11880.
+There are 32/80 available cores.
+
+Need to schedule job 28 using file 5. T = 8880
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8880 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 8880 9460 11500 )
+Node 1: 1 ( 8880 8880 8880 ) 5 ( 8880 9840 11880 )
+Node 2: 1 ( ) 3 ( 8880 8880 10880 ) 4 ( 8880 8880 11000 ) 6 ( 8880 8880 11500 )
+Node 3: 1 ( 8880 8880 8880 )
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 8880 / 9460 / 11500.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 28 is 11500 with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 28 is 11960 with node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 28 is 9840 with node 3.
+Need to create a data and intervals for the node 3 data 5.
+Job 28 using file 5 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 8880 and is predicted to finish at time 11880.
+There are 17/80 available cores.
+
+Need to schedule job 29 using file 5. T = 8880
+LOCALITY SINGLE JOB
+There are 17/80 available cores.
+
+Need to schedule job 29 using file 5. T = 8880
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 8880 / 9460 / 11500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 29 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,15,16,17,18,19 start at time 11500 and is predicted to finish at time 14500.
+There are 12/80 available cores.
+
+Need to schedule job 30 using file 5. T = 8880
+LOCALITY SINGLE JOB
+There are 12/80 available cores.
+
+Need to schedule job 30 using file 5. T = 8880
+On node 0?
+EAT is: 14500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14500 ?
+Checking 8880 / 9460 / 11500.
+Checking 11500 / 11500 / 14500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9840 / 11880.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (0.750000*128.000000)/0.100000 = 960.000000.
+Time to reload evicted files 960.000000.
+Score for job 30 is 960 (TL 0.000000 + TLE 960.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9840 / 11880.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (0.750000*128.000000)/0.100000 = 960.000000.
+Time to reload evicted files 960.000000.
+Score for job 30 is 960 (TL 0.000000 + TLE 960.000000) with node 3.
+Job 30 using file 5 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14,0,1,2,3,4,5,6,7,8,9 start at time 14500 and is predicted to finish at time 17500.
+There are 12/80 available cores.
+
+Need to schedule job 31 using file 5. T = 8880
+LOCALITY SINGLE JOB
+There are 12/80 available cores.
+
+Need to schedule job 31 using file 5. T = 8880
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 17500 ?
+Checking 8880 / 9460 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9840 / 11880.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (0.750000*128.000000)/0.100000 = 960.000000.
+Time to reload evicted files 960.000000.
+Score for job 31 is 960 (TL 0.000000 + TLE 960.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9840 / 11880.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (0.750000*128.000000)/0.100000 = 960.000000.
+Time to reload evicted files 960.000000.
+Score for job 31 is 960 (TL 0.000000 + TLE 960.000000) with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,0,1,2,3,4 start at time 17500 and is predicted to finish at time 20500.
+There are 12/80 available cores.
+
+Need to schedule job 33 using file 6. T = 8880
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8880 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 8880 9460 11500 11500 11500 14500 14500 14500 17500 17500 17500 20500 )
+Node 1: 1 ( 8880 8880 8880 ) 5 ( 8880 9840 11880 )
+Node 2: 1 ( ) 3 ( 8880 8880 10880 ) 4 ( 8880 8880 11000 ) 6 ( 8880 8880 11500 )
+Node 3: 1 ( 8880 8880 8880 ) 5 ( 8880 9840 11880 )
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 33 is 17820 with node 0.
+On node 1?
+EAT is: 8880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 33 is 9200 with node 1.
+On node 2?
+EAT is: 10880.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 33 is 9200 with node 3.
+Need to create a data and intervals for the node 1 data 6.
+Job 33 using file 6 category 0 workload 1 will be computed on node 1 core(s) 15,16,17,18,19 start at time 8880 and is predicted to finish at time 11880.
+There are 7/80 available cores.
+
+Need to schedule job 34 using file 6. T = 8880
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 8880 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 8880 9460 11500 11500 11500 14500 14500 14500 17500 17500 17500 20500 )
+Node 1: 1 ( 8880 8880 8880 ) 5 ( 8880 9840 11880 ) 6 ( 8880 9200 11880 )
+Node 2: 1 ( ) 3 ( 8880 8880 10880 ) 4 ( 8880 8880 11000 ) 6 ( 8880 8880 11500 )
+Node 3: 1 ( 8880 8880 8880 ) 5 ( 8880 9840 11880 )
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 34 is 17820 with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Data 6 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9200 / 11880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 34 is 11880 with node 1.
+On node 2?
+EAT is: 10880.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 10880 ?
+Checking 8880 / 8880 / 11500.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 34 is 10880 with node 2.
+On node 3?
+EAT is: 8880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 34 is 9200 with node 3.
+Need to create a data and intervals for the node 3 data 6.
+Job 34 using file 6 category 0 workload 1 will be computed on node 3 core(s) 15,16,17,18,19 start at time 8880 and is predicted to finish at time 11880.
+There are 2/80 available cores.
+
+Need to schedule job 35 using file 6. T = 8880
+LOCALITY SINGLE JOB
+There are 2/80 available cores.
+
+Need to schedule job 35 using file 6. T = 8880
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Checking tail of the interval of data 5: 20500->
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.250000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 35 is 320 (TL 320.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Data 6 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9200 / 11880.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Checking tail of the interval of data 5: 11880->
+Add size 96.000000->
+Total size of data on node ending before my EAT is: 224.000000 but I return (0.250000*224.000000)/0.100000 = 560.000000.
+Time to reload evicted files 560.000000.
+Score for job 35 is 560 (TL 0.000000 + TLE 560.000000) with node 1.
+On node 2?
+EAT is: 10880.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 10880 ?
+Checking 8880 / 8880 / 11500.
+Checking tail of the interval of data 3: 10880->
+Add size 32.000000->
+Checking tail of the interval of data 4: 11000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.250000*32.000000)/0.100000 = 80.000000.
+Time to reload evicted files 80.000000.
+Score for job 35 is 80 (TL 0.000000 + TLE 80.000000) with node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Data 6 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 8880 / 9200 / 11880.
+Checking tail of the interval of data 1: 8880->
+Add size 128.000000->
+Checking tail of the interval of data 5: 11880->
+Add size 96.000000->
+Total size of data on node ending before my EAT is: 224.000000 but I return (0.250000*224.000000)/0.100000 = 560.000000.
+Time to reload evicted files 560.000000.
+Score for job 35 is 560 (TL 0.000000 + TLE 560.000000) with node 3.
+Job 35 using file 6 category 0 workload 1 will be computed on node 2 core(s) 18,19,3,4,0 start at time 10880 and is predicted to finish at time 13880.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 8880.
+Adding data 5 on node 1 at time 8880.
+For job 27 (delay = 2000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 27 15 cores start at time 8880 on node 1 and will end at time 11840 before walltime: 1 transfer time is 960 data was 5.
+Adding data 5 on node 3 at time 8880.
+For job 28 (delay = 2000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 28 15 cores start at time 8880 on node 3 and will end at time 11840 before walltime: 1 transfer time is 960 data was 5.
+Adding data 6 on node 1 at time 8880.
+For job 33 (delay = 2000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 33 5 cores start at time 8880 on node 1 and will end at time 11200 before walltime: 1 transfer time is 320 data was 6.
+Adding data 6 on node 3 at time 8880.
+For job 34 (delay = 2000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 34 5 cores start at time 8880 on node 3 and will end at time 11200 before walltime: 1 transfer time is 320 data was 6.
+Start of end_jobs at time 10200.
+==> Job 17 5 cores finished at time 10200 on node 2.
+Reschedule.
+Mix if EAT is t
+There are 12/80 available cores.
+
+Need to schedule job 29 using file 5. T = 10200
+LOCALITY SINGLE JOB
+There are 12/80 available cores.
+
+Need to schedule job 29 using file 5. T = 10200
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 10200 / 10200 / 11500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 29 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,15,16,17,18,19 start at time 11500 and is predicted to finish at time 14500.
+There are 7/80 available cores.
+
+Need to schedule job 30 using file 5. T = 10200
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 30 using file 5. T = 10200
+On node 0?
+EAT is: 14500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14500 ?
+Checking 10200 / 10200 / 11500.
+Checking 11500 / 11500 / 14500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 30 using file 5 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14,0,1,2,3,4,5,6,7,8,9 start at time 14500 and is predicted to finish at time 17500.
+There are 7/80 available cores.
+
+Need to schedule job 31 using file 5. T = 10200
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 31 using file 5. T = 10200
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 17500 ?
+Checking 10200 / 10200 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,0,1,2,3,4 start at time 17500 and is predicted to finish at time 20500.
+There are 7/80 available cores.
+
+Need to schedule job 35 using file 6. T = 10200
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 10200 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 10200 10200 11500 11500 11500 14500 14500 14500 17500 17500 17500 20500 )
+Node 1: 1 ( ) 5 ( 10200 10200 11880 ) 6 ( 10200 10200 11880 )
+Node 2: 1 ( ) 3 ( 10200 10200 10200 ) 4 ( 10200 10200 11000 ) 6 ( 10200 10200 11500 )
+Node 3: 1 ( ) 5 ( 10200 10200 11880 ) 6 ( 10200 10200 11880 )
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 35 is 17820 with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Data 6 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 35 is 11880 with node 1.
+On node 2?
+EAT is: 10200.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 10200 ?
+Checking 10200 / 10200 / 11500.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 35 is 10200 with node 2.
+On node 3?
+EAT is: 11880.
+Job 35 using file 6 category 0 workload 1 will be computed on node 2 core(s) 1,2,18,19,3 start at time 10200 and is predicted to finish at time 13200.
+There are 2/80 available cores.
+
+Need to schedule job 36 using file 6. T = 10200
+LOCALITY SINGLE JOB
+There are 2/80 available cores.
+
+Need to schedule job 36 using file 6. T = 10200
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Checking tail of the interval of data 5: 20500->
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.250000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 36 is 320 (TL 320.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Data 6 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Checking tail of the interval of data 5: 11880->
+Add size 96.000000->
+Total size of data on node ending before my EAT is: 96.000000 but I return (0.250000*96.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 36 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 11000 ?
+Checking 10200 / 10200 / 11500.
+Checking tail of the interval of data 3: 10200->
+Add size 32.000000->
+Checking tail of the interval of data 4: 11000->
+Add size 6.400000->
+Total size of data on node ending before my EAT is: 38.400002 but I return (0.250000*38.400002)/0.100000 = 96.000000.
+Time to reload evicted files 96.000000.
+Score for job 36 is 96 (TL 0.000000 + TLE 96.000000) with node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Data 6 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10200 / 10200 / 11880.
+Checking tail of the interval of data 5: 11880->
+Add size 96.000000->
+Total size of data on node ending before my EAT is: 96.000000 but I return (0.250000*96.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 36 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 36 using file 6 category 0 workload 1 will be computed on node 2 core(s) 4,0,12,11,10 start at time 11000 and is predicted to finish at time 14000.
+No more available cores.
+End of reschedule.
+Start of start_jobs at time 10200.
+Adding data 6 on node 2 at time 10200.
+For job 35 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 35 5 cores start at time 10200 on node 2 and will end at time 12200 before walltime: 1 transfer time is 0 data was 6.
+Start of end_jobs at time 10820.
+==> Job 32 5 cores finished at time 10820 on node 2.
+Reschedule.
+Mix if EAT is t
+There are 12/80 available cores.
+
+Need to schedule job 29 using file 5. T = 10820
+LOCALITY SINGLE JOB
+There are 12/80 available cores.
+
+Need to schedule job 29 using file 5. T = 10820
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 10820 / 10820 / 11500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 29 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,15,16,17,18,19 start at time 11500 and is predicted to finish at time 14500.
+There are 7/80 available cores.
+
+Need to schedule job 30 using file 5. T = 10820
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 30 using file 5. T = 10820
+On node 0?
+EAT is: 14500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14500 ?
+Checking 10820 / 10820 / 11500.
+Checking 11500 / 11500 / 14500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 30 using file 5 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14,0,1,2,3,4,5,6,7,8,9 start at time 14500 and is predicted to finish at time 17500.
+There are 7/80 available cores.
+
+Need to schedule job 31 using file 5. T = 10820
+LOCALITY SINGLE JOB
+There are 7/80 available cores.
+
+Need to schedule job 31 using file 5. T = 10820
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 17500 ?
+Checking 10820 / 10820 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,0,1,2,3,4 start at time 17500 and is predicted to finish at time 20500.
+There are 7/80 available cores.
+
+Need to schedule job 36 using file 6. T = 10820
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 10820 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 10820 10820 11500 11500 11500 14500 14500 14500 17500 17500 17500 20500 )
+Node 1: 1 ( ) 5 ( 10820 10820 11880 ) 6 ( 10820 10820 11880 )
+Node 2: 1 ( ) 3 ( ) 4 ( 10820 10820 11000 ) 6 ( 10820 10820 13200 )
+Node 3: 1 ( ) 5 ( 10820 10820 11880 ) 6 ( 10820 10820 11880 )
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Time to load file: 320.000000. Is being loaded? 0.
+Score for job 36 is 17820 with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Data 6 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 36 is 11880 with node 1.
+On node 2?
+EAT is: 10820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 10820 ?
+Checking 10820 / 10820 / 13200.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 36 is 10820 with node 2.
+On node 3?
+EAT is: 11880.
+Job 36 using file 6 category 0 workload 1 will be computed on node 2 core(s) 13,14,15,16,17 start at time 10820 and is predicted to finish at time 13820.
+There are 2/80 available cores.
+
+Need to schedule job 37 using file 6. T = 10820
+LOCALITY SINGLE JOB
+There are 2/80 available cores.
+
+Need to schedule job 37 using file 6. T = 10820
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Checking tail of the interval of data 5: 20500->
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.250000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 37 is 320 (TL 320.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Data 6 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Checking tail of the interval of data 5: 11880->
+Add size 96.000000->
+Total size of data on node ending before my EAT is: 96.000000 but I return (0.250000*96.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 37 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 11000.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Interval not empty, but is it on the node at time 11000 ?
+Checking 10820 / 10820 / 13200.
+Checking tail of the interval of data 4: 11000->
+Add size 6.400000->
+Total size of data on node ending before my EAT is: 6.400000 but I return (0.250000*6.400000)/0.100000 = 16.000000.
+Time to reload evicted files 16.000000.
+Score for job 37 is 16 (TL 0.000000 + TLE 16.000000) with node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Data 6 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 10820 / 10820 / 11880.
+Checking tail of the interval of data 5: 11880->
+Add size 96.000000->
+Total size of data on node ending before my EAT is: 96.000000 but I return (0.250000*96.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 37 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 37 using file 6 category 0 workload 1 will be computed on node 2 core(s) 4,0,9,8,7 start at time 11000 and is predicted to finish at time 14000.
+End of reschedule.
+Start of start_jobs at time 10820.
+Adding data 6 on node 2 at time 10820.
+For job 36 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 36 5 cores start at time 10820 on node 2 and will end at time 12820 before walltime: 1 transfer time is 0 data was 6.
+Start of end_jobs at time 11000.
+==> Job 18 1 cores finished at time 11000 on node 2.
+==> Job 19 1 cores finished at time 11000 on node 2.
+==> Job 20 1 cores finished at time 11000 on node 2.
+==> Job 21 1 cores finished at time 11000 on node 2.
+==> Job 22 1 cores finished at time 11000 on node 2.
+==> Job 23 1 cores finished at time 11000 on node 2.
+==> Job 24 1 cores finished at time 11000 on node 2.
+==> Job 25 1 cores finished at time 11000 on node 2.
+Start of start_jobs at time 11000.
+Adding data 6 on node 2 at time 11000.
+For job 37 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 37 5 cores start at time 11000 on node 2 and will end at time 13000 before walltime: 1 transfer time is 0 data was 6.
+Reschedule.
+Mix if EAT is t
+There are 10/80 available cores.
+
+Need to schedule job 29 using file 5. T = 11000
+LOCALITY SINGLE JOB
+There are 10/80 available cores.
+
+Need to schedule job 29 using file 5. T = 11000
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 11000 / 11000 / 11500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 29 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 13820.
+On node 3?
+EAT is: 11880.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,15,16,17,18,19 start at time 11500 and is predicted to finish at time 14500.
+There are 5/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11000
+LOCALITY SINGLE JOB
+There are 5/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11000
+On node 0?
+EAT is: 14500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14500 ?
+Checking 11000 / 11000 / 11500.
+Checking 11500 / 11500 / 14500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11000 / 11000 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 13820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11000 / 11000 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 30 using file 5 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14,0,1,2,3,4,5,6,7,8,9 start at time 14500 and is predicted to finish at time 17500.
+There are 5/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11000
+LOCALITY SINGLE JOB
+There are 5/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11000
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 17500 ?
+Checking 11000 / 11000 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11000 / 11000 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 13820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11000 / 11000 / 11880.
+Checking tail of the interval of data 6: 11880->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,0,1,2,3,4 start at time 17500 and is predicted to finish at time 20500.
+End of reschedule.
+Start of end_jobs at time 11200.
+==> Job 33 5 cores finished at time 11200 on node 1.
+==> Job 34 5 cores finished at time 11200 on node 3.
+Reschedule.
+Mix if EAT is t
+There are 20/80 available cores.
+
+Need to schedule job 29 using file 5. T = 11200
+LOCALITY SINGLE JOB
+There are 20/80 available cores.
+
+Need to schedule job 29 using file 5. T = 11200
+On node 0?
+EAT is: 11500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11500 ?
+Checking 11200 / 11200 / 11500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 29 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 13820.
+On node 3?
+EAT is: 11880.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,15,16,17,18,19 start at time 11500 and is predicted to finish at time 14500.
+There are 15/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11200
+LOCALITY SINGLE JOB
+There are 15/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11200
+On node 0?
+EAT is: 14500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14500 ?
+Checking 11200 / 11200 / 11500.
+Checking 11500 / 11500 / 14500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11200 / 11200 / 11880.
+Checking tail of the interval of data 6: 11200->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 13820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11200 / 11200 / 11880.
+Checking tail of the interval of data 6: 11200->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 30 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 30 using file 5 category 0 workload 1 will be computed on node 0 core(s) 10,11,12,13,14,0,1,2,3,4,5,6,7,8,9 start at time 14500 and is predicted to finish at time 17500.
+There are 15/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11200
+LOCALITY SINGLE JOB
+There are 15/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11200
+On node 0?
+EAT is: 17500.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 17500 ?
+Checking 11200 / 11200 / 11500.
+Checking 11500 / 11500 / 14500.
+Checking 14500 / 14500 / 17500.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11200 / 11200 / 11880.
+Checking tail of the interval of data 6: 11200->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 1.
+On node 2?
+EAT is: 13820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11200 / 11200 / 11880.
+Checking tail of the interval of data 6: 11200->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 32.000000 but I return (0.750000*32.000000)/0.100000 = 240.000000.
+Time to reload evicted files 240.000000.
+Score for job 31 is 240 (TL 0.000000 + TLE 240.000000) with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,10,11,12,13,14,0,1,2,3,4 start at time 17500 and is predicted to finish at time 20500.
+End of reschedule.
+Start of end_jobs at time 11460.
+==> Job 26 15 cores finished at time 11460 on node 0.
+Reschedule.
+Mix if EAT is t
+There are 35/80 available cores.
+
+Need to schedule job 29 using file 5. T = 11460
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 11460 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 11460 11460 11460 )
+Node 1: 1 ( ) 5 ( 11460 11460 11880 ) 6 ( )
+Node 2: 1 ( ) 3 ( ) 4 ( ) 6 ( 11460 11460 14000 )
+Node 3: 1 ( ) 5 ( 11460 11460 11880 ) 6 ( )
+On node 0?
+EAT is: 11460.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 11460 ?
+Checking 11460 / 11460 / 11460.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 29 is 11460 with node 0.
+On node 1?
+EAT is: 11880.
+On node 2?
+EAT is: 13820.
+On node 3?
+EAT is: 11880.
+Job 29 using file 5 category 0 workload 1 will be computed on node 0 core(s) 5,6,7,8,9,15,16,17,18,19,10,11,12,13,14 start at time 11460 and is predicted to finish at time 14460.
+There are 20/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11460
+LOCALITY SINGLE JOB
+There are 20/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11460
+On node 0?
+EAT is: 14460.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14460 ?
+Checking 11460 / 11460 / 11460.
+Checking 11460 / 11460 / 14460.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 11880.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11460 / 11460 / 11880.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 30 is 0 (TL 0.000000 + TLE 0.000000) with node 1.
+On node 2?
+EAT is: 13820.
+On node 3?
+EAT is: 11880.
+Job 30 using file 5 category 0 workload 1 will be computed on node 1 core(s) 15,16,17,18,19,0,1,2,3,4,5,6,7,8,9 start at time 11880 and is predicted to finish at time 14880.
+There are 15/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11460
+LOCALITY SINGLE JOB
+There are 15/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11460
+On node 0?
+EAT is: 14460.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14460 ?
+Checking 11460 / 11460 / 11460.
+Checking 11460 / 11460 / 14460.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 0.
+On node 1?
+EAT is: 14880.
+On node 2?
+EAT is: 13820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+On node 3?
+EAT is: 11880.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11880 ?
+Checking 11460 / 11460 / 11880.
+Total size of data on node ending before my EAT is: 0.000000 but I return (0.750000*0.000000)/0.100000 = 0.000000.
+Time to reload evicted files 0.000000.
+Score for job 31 is 0 (TL 0.000000 + TLE 0.000000) with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 3 core(s) 15,16,17,18,19,0,1,2,3,4,5,6,7,8,9 start at time 11880 and is predicted to finish at time 14880.
+End of reschedule.
+Start of start_jobs at time 11460.
+Adding data 5 on node 0 at time 11460.
+For job 29 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 29 15 cores start at time 11460 on node 0 and will end at time 13460 before walltime: 1 transfer time is 0 data was 5.
+Start of end_jobs at time 11840.
+==> Job 27 15 cores finished at time 11840 on node 1.
+==> Job 28 15 cores finished at time 11840 on node 3.
+Reschedule.
+Mix if EAT is t
+There are 50/80 available cores.
+
+Need to schedule job 30 using file 5. T = 11840
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 11840 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 11840 11840 14460 )
+Node 1: 1 ( ) 5 ( 11840 11840 11840 ) 6 ( )
+Node 2: 1 ( ) 3 ( ) 4 ( ) 6 ( 11840 11840 14000 )
+Node 3: 1 ( ) 5 ( 11840 11840 11840 ) 6 ( )
+On node 0?
+EAT is: 14460.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14460 ?
+Checking 11840 / 11840 / 14460.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 30 is 14460 with node 0.
+On node 1?
+EAT is: 11840.
+Data 1 is on node 1.
+Data 5 is on node 1.
+Interval not empty, but is it on the node at time 11840 ?
+Checking 11840 / 11840 / 11840.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 30 is 11840 with node 1.
+On node 2?
+EAT is: 13820.
+On node 3?
+EAT is: 11840.
+Job 30 using file 5 category 0 workload 1 will be computed on node 1 core(s) 10,11,12,13,14,15,16,17,18,19,0,1,2,3,4 start at time 11840 and is predicted to finish at time 14840.
+There are 35/80 available cores.
+
+Need to schedule job 31 using file 5. T = 11840
+EAT == t.
+HEFT SINGLE JOB
+Intervals at time 11840 are:
+Node 0: 1 ( ) 3 ( ) 5 ( 11840 11840 14460 )
+Node 1: 1 ( ) 5 ( 11840 11840 11840 11840 11840 14840 ) 6 ( )
+Node 2: 1 ( ) 3 ( ) 4 ( ) 6 ( 11840 11840 14000 )
+Node 3: 1 ( ) 5 ( 11840 11840 11840 ) 6 ( )
+On node 0?
+EAT is: 14460.
+Data 1 is on node 0.
+Data 3 is on node 0.
+Data 5 is on node 0.
+Interval not empty, but is it on the node at time 14460 ?
+Checking 11840 / 11840 / 14460.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 31 is 14460 with node 0.
+On node 1?
+EAT is: 14840.
+On node 2?
+EAT is: 13820.
+Data 1 is on node 2.
+Data 3 is on node 2.
+Data 4 is on node 2.
+Data 6 is on node 2.
+Time to load file: 960.000000. Is being loaded? 0.
+Score for job 31 is 14780 with node 2.
+On node 3?
+EAT is: 11840.
+Data 1 is on node 3.
+Data 5 is on node 3.
+Interval not empty, but is it on the node at time 11840 ?
+Checking 11840 / 11840 / 11840.
+Time to load file: 0.000000. Is being loaded? 0.
+Score for job 31 is 11840 with node 3.
+Job 31 using file 5 category 0 workload 1 will be computed on node 3 core(s) 10,11,12,13,14,15,16,17,18,19,0,1,2,3,4 start at time 11840 and is predicted to finish at time 14840.
+End of reschedule.
+Start of start_jobs at time 11840.
+Adding data 5 on node 1 at time 11840.
+For job 30 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 30 15 cores start at time 11840 on node 1 and will end at time 13840 before walltime: 1 transfer time is 0 data was 5.
+Adding data 5 on node 3 at time 11840.
+For job 31 (delay = 2000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 31 15 cores start at time 11840 on node 3 and will end at time 13840 before walltime: 1 transfer time is 0 data was 5.
+Computing and writing results...
+Scheduler: Mixed_strategy_if_EAT_is_t, Number of jobs evaluated: 37, Max queue time: 6730.000000, Mean queue time: 1935.000000, Total queue time: 71595.000000, Max flow: 9050.000000, Mean flow: 4501.621582, Total flow: 166560.000000, Transfer time: 9660.000000, Makespan: 13840.000000, Core time: 1000500.000000, Waiting for a load time: 1380.000000, Transfer + waiting time: 11040.000000, Mean flow stretch: 1.561681, Mean bounded flow stretch: 1.561681, Max flow stretch: 3.900862, Max bounded flow stretch: 3.900862, Nb of upgraded jobs: 0, Nb large queue times (>25000): 0, Mean flow stretch 128 256 1024: 1.535860 0.025820 0.000000, Mean flow stretch with a minimum 128 256 1024: 1.535860 0.025820 0.000000
+

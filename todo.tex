@@ -145,18 +145,18 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item Fig 6 titre plus grand et plus d'espace vertical
-		\item Enlever le bleu de l'intro et de l'abstract quand c'était 1 seul mot
-		\item VIsu 3D refaite
-
+		\item voir apostrophe s en anglais à l'écrit
+		
 		% Uppsala
+		\item HEFt est bien pareil que FCFS\_score\_x1 dans les résultats.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange du score
-		\item Faire if EAT is t avec une fenêtre à la place de t ?
-		\item Strat ou plus le EAT le plus tôt sur toutes les nodes est loin, plus on fais un multiplicateur du score élevé ?
+		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? A tester.
+		\item Faire if EAT is t avec une fenêtre à la place de t ? A tester.
+		
+		\item Talk TaDAMM (Guillaume Palez et Robin Boezennec): prédire les walltime à la place de l'utilisateur. On peut faire une courbes à points avec X (requested runtimes) Y (Actual runtime). Pareil pour les délai comparé au walltime. En plus tu peux faire des tableaux avec combien de jobs sont à x*walltime du walltime demandé en Terme de durée effective. Pas d'IO. Ne font pas le schedule mais réduisent les walltimes. Ils font des courbes de gauss sur leurs stats de walltime/delay. Ils les utilisent pour faire des groupes de jobs similaires (avec les pics je suppose des courbes de gauss). Pour évaluer leurs perfs ils enleve les 20\% de jobs avanet et apres (comme nous mais nous on fais des jours entiers ?) et ils ignorent les petits jobs. Ils montrent des gantt charts mais c'est dur à lire. 200 000jobs dans leurs workload. Si leurs walltime réduit fail ils doivent recommencer. Ils ont une losse à minimiser. Ils ajoutent un threshold sur la loss pour accepter ou non de réduire le walltime. Ils ont truvé le threshold de manière expérimentale ? Oui. Marche a peu pres avec le threshold.
 	\end{enumerate}
 	
 \section{Todo}
@@ -170,10 +170,14 @@
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
-			\item
+			\item Relire voir simu si on en parle dans le reste de l'article
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item Je peux faire du heft sinon des que j'ai moins de jobs que de machines. A tester.
+			\item faire la stat de savoir quelle stratégie a ordannceer mon job (heft ou localité ?) pour mes 2 dernières strats. Voir pk c'est si bon alors que les transfers sont haut ? Et quelle décision je prends ? Est-ce que je ré ordonne tout a chaque fois ? Est-ce que des chargements ont été tronqué ?  Est-ce que HEFT bug retester heft a la main ? Vérifier locality\_scheduler\_single\_job
+			\item flow adaptation sur figure 15
+		
 			\item strat adaptative mais avec le treshold de busy a un certain pourcent
 			\item Axe y des stretch: ratio et pas secondes. vérifier que c'est bien ce que je fais et changer sur les plots
 			\item Strat1: multiplicateur graduel avec le nb de noeuds occupées

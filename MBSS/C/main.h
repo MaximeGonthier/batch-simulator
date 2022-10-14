@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <time.h>
+#include <limits.h>
 
 /* Global variables */
 extern int planned_or_ratio; /* O = planned, 1 = ratio */
@@ -116,6 +117,11 @@ struct Job {
     //~ /** For mixed decreasing strategy **/
     //~ struct Data* data;
     //~ /** For mixed decreasing strategy **/
+    
+    #ifdef PLOT_STATS /*pour plot les stats sur la dernière décision prise pour un job */
+    int last_choosen_method;
+    #endif
+    
 };
 
 struct Node {
@@ -204,6 +210,7 @@ void print_data_intervals(struct Node_List** list, int t);
 void print_tab_of_int (int arr[], int n);
 
 /* From basic_functions.c */
+int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t);
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
 void start_jobs(int t, struct Job* scheduled);
 void end_jobs(struct Job* job_list_head, int t);
@@ -270,6 +277,10 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
-int fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
-int fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
-int fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes);
+double fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int break_condition_if_not_started_at_t);
+double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes);
+int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int mode);
+int heft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
+void mixed_if_EAT_is_t_scheduler(struct Job* j, struct Node_List** head_node, int t, int mode);
+

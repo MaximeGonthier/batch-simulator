@@ -17,20 +17,6 @@
  *Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x
  * Fcfs_with_a_score_backfill_big_nodes_probability_x
  **/
-
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0)
-			//~ {
-				//~ fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
-			//~ }
-			//~ else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0)
-			//~ {
-				//~ fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t);
-			//~ }
-			//~ else
-			//~ {
-				//~ printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
-				//~ exit(EXIT_FAILURE);
-			//~ }
 			
 //~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_99 0 outputs/test.csv"
 //~ oarsub -p nova -l core=16,walltime=15:00:00 -r '2022-10-01 20:06:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Mixed_strategy_V2_95 0 outputs/test.csv"
@@ -169,7 +155,7 @@ int main(int argc, char *argv[])
 		nb_job_to_schedule += 1;
 		job_pointer = job_pointer->next;
 	}
-	printf("After scheduling -2 jobs, the number of jobs to schedule is %d.\n", nb_job_to_schedule);
+	printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
 
 	
 	/* Just for -2 jobs here */
@@ -193,7 +179,18 @@ int main(int argc, char *argv[])
 	}
 	fclose(f_fcfs_score);
 	#endif
-
+	
+	/* Initializings stats on choosen method. */
+	#ifdef PLOT_STATS
+	FILE* f_stats_choosen_method = fopen("outputs/choosen_methods.txt", "w");
+	if (!f_stats_choosen_method)
+	{
+		perror("Error opening file outputs/choosen_methods.txt.");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f_stats_choosen_method, "Job_id,Chosen_method\n");
+	fclose(f_stats_choosen_method);
+	#endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	char* title = malloc(100*sizeof(char));
@@ -702,11 +699,11 @@ int main(int argc, char *argv[])
 			}		
 		}
 
-		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL work. */
+		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL works or does anything. */
 		{
-			#ifdef PRINT
-			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
-			#endif
+			//~ #ifdef PRINT
+			//~ printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
+			//~ #endif
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
@@ -737,7 +734,22 @@ int main(int argc, char *argv[])
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strncmp(scheduler, "Mixed_strategy", 14) == 0)
+			else if (strcmp(scheduler, "HEFT") == 0)
+			{
+				heft_scheduler(scheduled_job_list->head, node_list, t);
+			}
+			else if (strcmp(scheduler, "HEFT_if_nb_jobs_superior_to_available_nodes") == 0)
+			{
+				if (486 - running_nodes >= nb_job_to_schedule)
+				{
+					heft_scheduler(scheduled_job_list->head, node_list, t);
+				}
+				else
+				{
+					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
+				}
+			}
+			else if (strcmp(scheduler, "Mixed_strategy") == 0)
 			{
 				if (busy_cluster == 1)
 				{
@@ -747,6 +759,88 @@ int main(int argc, char *argv[])
 				{
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
+			}
+			else if (strcmp(scheduler, "Try_HEFT_else_do_SCORE") == 0)
+			{
+				/* Create a fake node_list with fake cores that copy the real node_list.
+				 * Copy it's content from the real node_list. */
+				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
+				for (i = 0; i < 3; i++)
+				{
+					/* Allocate */
+					fake_node_list[i] = (struct Node_List*) malloc(sizeof(struct Node_List));
+					fake_node_list[i]->head = NULL;
+					fake_node_list[i]->tail = NULL;
+					/* Copy */
+					struct Node* n = node_list[i]->head;
+					while (n != NULL)
+					{
+						/* The node */
+						struct Node *new = (struct Node*) malloc(sizeof(struct Node));								
+						new->unique_id = n->unique_id;
+						new->memory = n->memory;
+						new->bandwidth = n->bandwidth;
+						new->n_available_cores = n->n_available_cores;
+						new->index_node_list = n->index_node_list;
+						/* The data */
+						new->data = malloc(sizeof(*new->data));
+						new->data->head = NULL;
+						new->data->tail = NULL;
+						struct Data* d = n->data->head;
+						while (d != NULL)
+						{
+							struct Data* new_data = (struct Data*) malloc(sizeof(struct Data));
+							new_data->unique_id = d->unique_id;
+							new_data->start_time = d->start_time;
+							new_data->end_time = d->end_time;
+							new_data->nb_task_using_it = d->nb_task_using_it;
+							/* Copy Intervals */
+							/* Pas besoin car je les get au début du schedule. */
+							new_data->size = d->size;
+							new_data->next = NULL;
+							insert_tail_data_list(new->data, new_data);
+							d = d->next;
+						}
+						/* The cores */
+						new->cores = (struct Core**) malloc(20*sizeof(struct Core));
+						for (j = 0; j < 20; j++)
+						{
+							new->cores[j] = (struct Core*) malloc(sizeof(struct Core));
+							new->cores[j]->unique_id = n->cores[j]->unique_id;
+							new->cores[j]->available_time = n->cores[j]->available_time;
+							new->cores[j]->running_job = n->cores[j]->running_job;
+							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
+						}
+						/* Insert node */
+						new->next = NULL;
+						insert_tail_node_list(fake_node_list[i], new);
+						n = n->next;
+					}
+				}
+
+				double success = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t, 1);
+				//~ double success = 1;
+				//~ printf("Mean flow is (-1 if failed t) %f.\n", success);
+				if (success == -1) /* It failed I must do score */
+				{
+					//~ printf("SCORE\n");
+					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
+					/* Multiplicateur qui dépend  */
+					//~ fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 3, 0, 0);
+				}
+				else /* HEFT succeded I can start it. */
+				{
+					//~ printf("HEFT\n");
+					heft_scheduler(scheduled_job_list->head, node_list, t); 
+				}
+			}
+			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0)
+			{
+				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 0);
+			}
+			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t_no_TLE") == 0)
+			{
+				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 1);
 			}
 			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_heft_score or Flow_adaptation_heft_locality **/
 			{
@@ -806,15 +900,15 @@ int main(int argc, char *argv[])
 					}
 				}
 				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
-				int heft_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t);			
-				int locality_flow = 0;
+				double heft_mean_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t, 0);			
+				double locality_mean_flow = 0;
 				if (strcmp(scheduler, "Flow_adaptation_heft_locality") == 0)
 				{
-					locality_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
+					locality_mean_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
 				}
 				else if (strcmp(scheduler, "Flow_adaptation_heft_score") == 0)
 				{
-					locality_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
+					locality_mean_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
 				}
 				else
 				{
@@ -822,7 +916,7 @@ int main(int argc, char *argv[])
 					exit(EXIT_FAILURE);
 				}
 				//~ printf("Heft flow is %d, Locality flow is %d.\n", heft_flow, locality_flow);	
-				if (heft_flow < locality_flow)
+				if (heft_mean_flow < locality_mean_flow)
 				{
 					//~ printf("HEFT\n");
 					heft_scheduler(scheduled_job_list->head, node_list, t);
@@ -848,7 +942,6 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					//~ printf("HEFT\n");
 					heft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}

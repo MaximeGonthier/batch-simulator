@@ -1,0 +1,40 @@
+le job 11 est start en locality.
+
+Pour HEFT:
+Pourquoi le job 12 est si loin alors que son subtime est 0 ?
+Apres la fin des jobs 1 2 3 et 4 on schedule 5 6 7 8 9 et 10 come on les vois sur le gantt chart.
+Ensuite on schedule 11 sur la node 1 (pk ? Car il y a job 5 avec un tout petit délai qui retarde le EAT de node 0 qui est passé avant.) ce qui empeche de mettre 12 dans le trou de 5 cores de la node 1 car il est schedule ensuite.
+
+Pour Mix:
+Pareil jusqu'a job 10. Job 10 est schedule locality mais va aussi sur la node 0.
+Puis 11 est sur node 2 au lieu de 1 pour eviter une eviction (d'ailleurs ca aurait marché aussi avec juste le temps de chargements mais il faut noter qu on a aussi l'eviction dans le cas locality only). Ce qui libere la place pour job 12 plus petit qui est schedule en HEFT sur la node 1.
+
+
+D'ailleurs 11 est start en localité. Au moment ou je schedule 16 je rescjedule aussi 11 (pour la 3 eme fois) tjr sur la node 2. Il n'est pas remodifié ensuitecar pas de nouveau jobs et donc start sur 2.
+
+J'ai testé sur de plus gros workloads, le nb de jobs scheule avec locality est faible (1%)
+
+
+Pour conclure c'est pas vraiment du backfill mais ça permet par chance un peu de libérer de la place
+
+
+Salut,
+
+J'ai mené mon enquête pour comprendre les performances de ma stratégie mixte entre localité et heft quand le temps disponible le plus tôt
+est t.
+Je me suis rendu compte comme on le craignait que le gain ne viens pas de la localité, mais d'un meilleur remplissage du cluster.
+
+HEFT classique (sans backfilling car pour le moment je n'ai de backfilling pour aucune heuristique) a tendance a bloqué des nodes
+entières avec des jobs prévu car le EAT était meilleur à ce moment la. Sauf qu'il peut bloquer des nodes qui utilisent 10 coeurs sur 20 seulelents.
+
+La ou la stratégie mixte, quand elle fais de la localité (donc apres avoir rempli le cluster de jobs qui peuvetn comecer à EAT == t) 
+a tendance a mettre les jobs du meme fichier sur les memes nodes. Or les jobs du meme fichiers ont le meme nb de coeurs, donc c'est bcp plus facile de remplir et ca evite les situations de blocage comme avec HEFT ou FCFS.
+
+Je vou ai mis en piece ointe un mini exemple ou la strat mixte arrive a commencer les jobs 33 et 34 plus tot.
+Dans le cas heft, les jobs sont répartis ce qui bloque les petits trou qu'on voit sur les nodes utilisant que 15 cores a la faois.
+Au contraire lixte va mettre tout les jobs a 15 cores sur la node 0 car ils ont le meme ficier en mode localité, ce qui laisse la place aux 
+jobs 33 et 34 de remplir les trou et fais gagner du flow total.
+
+Que pourrions nous donc faire ? Car l'objectfi était de parler de localité.
+
+J'ai pensé que je pourrais faire:
