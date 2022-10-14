@@ -135,7 +135,7 @@ struct Node {
     int n_available_cores;
     int index_node_list;
     
-    /* pour conservative bf */
+    /* Pour conservative bf */
     int number_cores_in_a_hole;
     int* cores_in_a_hole;
 };

@@ -164,6 +164,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	int earliest_available_time = 0;
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
+	bool backfilled_job = false;
 	
 	/* In which node size I can pick. */
 	if (j->index_node_list == 0)
@@ -212,7 +213,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			}
 			n = n->next;
 		}
-	}
+	}	
 	
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
@@ -224,6 +225,13 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		{
 			nb_non_available_cores += 1;
 		}
+		
+		/* Est-ce que je créé un trou ? si oui je le rajoute dans les infos de la node. */
+		if (j->node_used->cores[i]->available_time <= t && min_time > t)
+		{
+			printf("Trou sur core %d node %d.\n", j->node_used->cores[i]->unique_id, j->node_used->unique_id);
+		}
+
 		j->node_used->cores[i]->available_time = min_time + j->walltime;
 		
 		/* Maybe I need job queue or not not sure. TODO. */
@@ -235,7 +243,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	#endif
 	
 	/* Need to sort cores after each schedule of a job. */
-	if (pas conservative backfill)
+	if (backfilled_job == false)
 	{
 		sort_cores_by_available_time_in_specific_node(j->node_used);
 	}
