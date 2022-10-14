@@ -148,7 +148,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
 	#ifdef PRINT
-	printf("Start fcfs conservative bf.\n");
+	printf("Start fcfs conservative bf at time %d.\n", t);
 	#endif
 			
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);

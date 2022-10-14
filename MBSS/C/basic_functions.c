@@ -218,6 +218,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
+	int k = 0;
 	for (i = 0; i < j->cores; i++)
 	{
 		j->cores_used[i] = j->node_used->cores[i]->unique_id;
@@ -230,8 +231,13 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		if (j->node_used->cores[i]->available_time <= t && min_time > t)
 		{
 			printf("Trou sur core %d node %d.\n", j->node_used->cores[i]->unique_id, j->node_used->unique_id);
-			//~ j->node_used->number_cores_in_a_hole += 1;
-			//~ if (j->node_used->cores_in_a_hole != NULL;
+			j->node_used->number_cores_in_a_hole += 1;
+			if (j->node_used->cores_in_a_hole == NULL)
+			{
+				j->node_used->cores_in_a_hole = malloc(j->cores*sizeof(int));
+			}
+			j->node_used->cores_in_a_hole[k] = j->node_used->cores[i]->unique_id;
+			k++;
 		}
 
 		j->node_used->cores[i]->available_time = min_time + j->walltime;
