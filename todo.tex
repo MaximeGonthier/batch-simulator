@@ -146,6 +146,8 @@
 		
 		% Reu FGCS
 		\item voir apostrophe s en anglais à l'écrit
+		\item pseudocode est pas indénombrable ?
+		\item relecture et ajout d'un todo sur settings + sur les deux mentions du scheduling time à vérifier.
 		
 		% Uppsala
 		\item HEFt est bien pareil que FCFS\_score\_x1 dans les résultats.
@@ -155,7 +157,7 @@
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? A tester.
-		\item Faire if EAT is t avec une fenêtre à la place de t ? A tester.
+		\item Etudier la charge du cluister core ar core au sein de chaque node ? Puis essayer de prédire comment ca va se remplir avec les jobs suivants ?
 		
 		\item Talk TaDAMM (Guillaume Palez et Robin Boezennec): prédire les walltime à la place de l'utilisateur. On peut faire une courbes à points avec X (requested runtimes) Y (Actual runtime). Pareil pour les délai comparé au walltime. En plus tu peux faire des tableaux avec combien de jobs sont à x*walltime du walltime demandé en Terme de durée effective. Pas d'IO. Ne font pas le schedule mais réduisent les walltimes. Ils font des courbes de gauss sur leurs stats de walltime/delay. Ils les utilisent pour faire des groupes de jobs similaires (avec les pics je suppose des courbes de gauss). Pour évaluer leurs perfs ils enleve les 20\% de jobs avanet et apres (comme nous mais nous on fais des jours entiers ?) et ils ignorent les petits jobs. Ils montrent des gantt charts mais c'est dur à lire. 200 000jobs dans leurs workload. Si leurs walltime réduit fail ils doivent recommencer. Ils ont une losse à minimiser. Ils ajoutent un threshold sur la loss pour accepter ou non de réduire le walltime. Ils ont truvé le threshold de manière expérimentale ? Oui. Marche a peu pres avec le threshold.
 	\end{enumerate}
@@ -175,9 +177,6 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item Je peux faire du heft sinon des que j'ai moins de jobs que de machines. A tester.
-			\item faire la stat de savoir quelle stratégie a ordannceer mon job (heft ou localité ?) pour mes 2 dernières strats. Voir pk c'est si bon alors que les transfers sont haut ? Et quelle décision je prends ? Est-ce que je ré ordonne tout a chaque fois ? Est-ce que des chargements ont été tronqué ?  Est-ce que HEFT bug retester heft a la main ? Vérifier locality\_scheduler\_single\_job
-			\item flow adaptation sur figure 15
 		
 			\item strat adaptative mais avec le treshold de busy a un certain pourcent
 			\item Axe y des stretch: ratio et pas secondes. vérifier que c'est bien ce que je fais et changer sur les plots

@@ -284,6 +284,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	/** 1 = gives the number of running nodes as a multiplier.
 	 *  2 = gives the number of jobs to schedule divided by the total number of nodes as a multiplier.
 	 *  3 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75%.
+	 *  4 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75% and the queue of jobs to schedule is too important.
 	 **/
 	if (adaptative_multiplier == 1) 
 	{
@@ -291,32 +292,15 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 		{
 			multiplier_file_to_load = running_nodes;
 		}
-		//~ if (multiplier_file_evicted != 0)
-		//~ {
-			//~ multiplier_file_evicted = 1;
-		//~ }
-		//~ if (multiplier_nb_copy != 0)
-		//~ {
-			//~ multiplier_nb_copy = 1;
-		//~ }
 	}
 	else if (adaptative_multiplier == 2)
 	{
 		if (multiplier_file_to_load != 0)
 		{
 			multiplier_file_to_load = (int) ceil ((float) nb_job_to_schedule/486);
-			//~ printf("Float is %f, ceiled is %f, in int it's %d.\n", (float) nb_job_to_schedule/486, ceil ((float) nb_job_to_schedule/486), (int) ceil ((float) nb_job_to_schedule/486));
 		}
-		//~ if (multiplier_file_evicted != 0)
-		//~ {
-			//~ multiplier_file_evicted = 1;
-		//~ }
-		//~ if (multiplier_nb_copy != 0)
-		//~ {
-			//~ multiplier_nb_copy = 1;
-		//~ }
 	}
-	else if (adaptative_multiplier == 3) 
+	else if (adaptative_multiplier == 3)
 	{
 		if (running_nodes < 454)
 		{
@@ -332,12 +316,28 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			}
 		}
 	}
-	
-	if (t%1000 == 0)
+	else if (adaptative_multiplier == 4)
 	{
-		printf("At time %d, multiplier are %d %d %d.\n", t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+		if (486*20 - running_cores >= nb_cores_to_schedule)
+		{
+			multiplier_file_to_load = 1;
+			multiplier_file_evicted = 0;
+			multiplier_nb_copy = 0;
+		}
+		else
+		{
+			if (multiplier_file_to_load != 0)
+			{
+				multiplier_file_to_load = running_nodes;
+			}
+		}
 	}
 	
+	//~ if (t%1000 == 0)
+	//~ {
+		//~ printf("At time %d, multiplier are %d %d %d. running nodes: %d, running cores %d, jobs to schedule: %d, cores to schedule %d.\n", t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, running_nodes, running_cores, nb_job_to_schedule, nb_cores_to_schedule);
+	//~ }
+		
 	/* temp multiplier pour le cas avec if EAT is t start now */
 	int temp_multiplier_file_to_load = multiplier_file_to_load;
 	int temp_multiplier_file_evicted = multiplier_file_evicted;

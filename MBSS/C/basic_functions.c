@@ -953,6 +953,8 @@ void start_jobs(int t, struct Job* head)
 			
 			/* Update nb of jobs to schedule */
 			nb_job_to_schedule -= 1;
+			nb_cores_to_schedule -= j->cores;
+			
 			if (nb_job_to_schedule < 0)
 			{
 				printf("Error nb_job_to_schedule = %d\n", nb_job_to_schedule);
