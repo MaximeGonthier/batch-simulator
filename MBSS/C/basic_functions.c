@@ -226,10 +226,12 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			nb_non_available_cores += 1;
 		}
 		
-		/* Est-ce que je créé un trou ? si oui je le rajoute dans les infos de la node. */
+		/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
 		if (j->node_used->cores[i]->available_time <= t && min_time > t)
 		{
 			printf("Trou sur core %d node %d.\n", j->node_used->cores[i]->unique_id, j->node_used->unique_id);
+			//~ j->node_used->number_cores_in_a_hole += 1;
+			//~ if (j->node_used->cores_in_a_hole != NULL;
 		}
 
 		j->node_used->cores[i]->available_time = min_time + j->walltime;
@@ -1425,6 +1427,10 @@ void reset_cores(struct Node_List** l, int t)
 		struct Node* n = l[i]->head;
 		while (n != NULL)
 		{
+			/* Reset aussi les trou pour conservative bf. */
+			n->number_cores_in_a_hole = 0;
+			n->cores_in_a_hole = NULL;
+			
 			for (j = 0; j < 20; j++)
 			{
 				if (n->cores[j]->running_job == false)

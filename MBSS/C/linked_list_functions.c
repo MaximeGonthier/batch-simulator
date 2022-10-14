@@ -603,6 +603,12 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 				n->cores[i] = n->cores[i+1];
 				n->cores[i + 1] = temp;
 			}
+			else if (n->cores[i]->unique_id > n->cores[i + 1]->unique_id && n->cores[i]->available_time == n->cores[i + 1]->available_time)
+			{
+				struct Core* temp = n->cores[i];
+				n->cores[i] = n->cores[i+1];
+				n->cores[i + 1] = temp;
+			}
 		}
 	}
 }
