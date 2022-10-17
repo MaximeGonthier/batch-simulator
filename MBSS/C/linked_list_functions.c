@@ -90,22 +90,28 @@ void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cor
 		printf("Error list empty.\n"); fflush(stdout);
         exit(EXIT_FAILURE);
     }
-
-	struct Core_in_a_hole* temp = liste->head;
+	//~ printf("%d holes to delete.\n",nb_cores_to_delete); fflush(stdout);
+	//~ struct Core_in_a_hole* temp = liste->head;
+	struct Core_in_a_hole* temp = NULL;
 	//~ struct Job* prev = liste->head;
 	int i = 0;
 	// If head node itself holds the key to be deleted
     //~ if (temp != NULL && temp->unique_id == unique_id_to_delete) {
     for (i = 0; i < nb_cores_to_delete; i++)
     {
+		temp = liste->head;
+		//~ printf("changing head.\n"); fflush(stdout);
         liste->head = temp->next; // Changed head
+        //~ printf("will free %d.\n", temp->unique_id); fflush(stdout);
         //~ if (unique_id_to_delete == 11) {
 			//~ printf("Free the head.\n"); fflush(stdout); }
         free(temp); // free old head
         //~ if (unique_id_to_delete == 11) {
         //~ printf("Free the head Ok!\n"); fflush(stdout); }
         //~ return;
+        //~ print_holes(
     }
+    //~ printf("delete ok\n"); fflush(stdout);
 }
 
 void create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_insert, int nb_of_copy_to_insert)

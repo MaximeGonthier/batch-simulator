@@ -290,12 +290,13 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		
 		/* Mettre à jour le nombre de cores (s'il en reste) dans un trou de la node. */
 		#ifdef PRINT
-		printf("Backfilled job, using %d cores, nb of cores in the hole was %d.\n", j->cores, j->node_used->number_cores_in_a_hole);
+		printf("Backfilled job, using %d cores, nb of cores in the hole was %d.\n", j->cores, j->node_used->number_cores_in_a_hole); fflush(stdout);
 		#endif
 		
 		j->node_used->number_cores_in_a_hole -= j->cores;
 		if (j->node_used->number_cores_in_a_hole == 0)
 		{
+			//~ printf("Free in schedule node %d.\n", j->node_used->unique_id); fflush(stdout);
 			//~ j->node_used->cores_in_a_hole = NULL; /* reset propremment */
 			free_cores_in_a_hole(&j->node_used->cores_in_a_hole->head);
 			//~ j->node_used->start_time_of_the_hole = NULL;
@@ -320,7 +321,10 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			//~ }
 			
 			/* Remove used cores in the hole starting from the head. */
+			//~ printf("Delete in schedule node %d. %d cores in hole\n", j->node_used->unique_id, j->node_used->number_cores_in_a_hole); fflush(stdout);
+			//~ print_holes(head_node);
 			delete_core_in_hole_from_head(j->node_used->cores_in_a_hole, j->cores);
+			//~ exit(1);
 		}
 		
 		#ifdef PRINT
@@ -1580,8 +1584,8 @@ void reset_cores(struct Node_List** l, int t)
 		while (n != NULL)
 		{
 			/* Reset aussi les trou pour conservative bf. */
-			if(n->cores_in_a_hole != NULL)
-			{
+			//~ if(n->cores_in_a_hole != NULL)
+			//~ {
 				//~ printf("Free all holes node %d.\n", n->unique_id);
 				//~ n->number_cores_in_a_hole = 0;
 				//~ n->cores_in_a_hole = NULL;
@@ -1589,10 +1593,11 @@ void reset_cores(struct Node_List** l, int t)
 				//~ n->cores_in_a_hole = NULL; /* free plutot ? */
 				if (n->number_cores_in_a_hole != 0)
 				{
+					//~ printf("Free in reset_cores.\n"); fflush(stdout);
 					free_cores_in_a_hole(&n->cores_in_a_hole->head);
 					n->number_cores_in_a_hole = 0;
 				}
-			}
+			//~ }
 			
 			for (j = 0; j < 20; j++)
 			{
