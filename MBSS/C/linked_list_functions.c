@@ -55,8 +55,8 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 void initialize_cores_in_a_hole(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c)
 {
 	liste = (struct Core_in_a_hole_List*) malloc(sizeof(struct Core_in_a_hole_List));
-	liste->head = NULL;
-	liste->tail = NULL;
+	//~ liste->head = NULL;
+	//~ liste->tail = NULL;
 	//~ struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 	insert_cores_in_a_hole_list_sorted_decreasing_order(liste, c);
 }
@@ -73,7 +73,7 @@ void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_L
         /* Locate the node before
 the point of insertion */
         current = liste->head;
-        while (current->next != NULL && current->next->start_time_of_the_hole > c->start_time_of_the_hole) {
+        while (current->next != NULL && current->next->start_time_of_the_hole >= c->start_time_of_the_hole) {
             current = current->next;
         }
         
