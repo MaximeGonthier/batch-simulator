@@ -609,3 +609,27 @@ void print_csv(struct To_Print* head_to_print)
 	
 	free(file_to_open_2);
 }
+
+void print_holes(struct Node_List** list)
+{
+	int i = 0;
+	int j = 0;
+	bool at_least_one_hole = false;
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* n = list[i]->head;
+		while (n != NULL)
+		{
+			for (j = 0; j < n->number_cores_in_a_hole; j++)
+			{
+				printf("Hole on node %d core %d. Next job start at time %d.\n", n->unique_id, n->cores_in_a_hole[j], n->start_time_of_the_hole[j]);
+				at_least_one_hole = true;
+			}
+			n = n->next;
+		}
+	}
+	if (at_least_one_hole == false)
+	{
+		printf("No holes.\n");
+	}
+}

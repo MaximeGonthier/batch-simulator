@@ -138,6 +138,7 @@ struct Node {
     /* Pour conservative bf */
     int number_cores_in_a_hole;
     int* cores_in_a_hole;
+    int* start_time_of_the_hole; /* Temps auquel le trou n'existera plus. Il y a en a 1 par core car 2 jobs aux starts times différents peuvent créer des trou sur une node. */
 };
 
 struct Data {
@@ -213,6 +214,7 @@ void to_print_job_csv(struct Job* job, int time);
 void print_csv(struct To_Print* head_to_print);
 void print_data_intervals(struct Node_List** list, int t);
 void print_tab_of_int (int arr[], int n);
+void print_holes(struct Node_List** head_node);
 
 /* From basic_functions.c */
 int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t);
@@ -241,6 +243,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 void sort_tab_of_int_decreasing_order(long long arr[], int n);
 void swap(long long* xp, long long* yp);
 int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
+int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);

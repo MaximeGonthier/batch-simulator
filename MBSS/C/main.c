@@ -832,6 +832,7 @@ int main(int argc, char *argv[])
 						/* For conservative bf */
 						new->number_cores_in_a_hole = 0;
 						new->cores_in_a_hole = NULL;
+						new->start_time_of_the_hole = NULL;
 						
 						/* Insert node */
 						new->next = NULL;
@@ -919,6 +920,7 @@ int main(int argc, char *argv[])
 						/* For conservative bf */
 						new->number_cores_in_a_hole = 0;
 						new->cores_in_a_hole = NULL;
+						new->start_time_of_the_hole = NULL;
 						
 						/* Insert node */
 						new->next = NULL;
