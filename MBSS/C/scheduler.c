@@ -144,6 +144,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
  * Attention il faut reset cette liste de trou au moment du reset du reschedule.
  * Je ne check que les trou au temps t car sinon ca change rien avec le reschedule normalement.
  * Pour les jobs suivant je check node par node le EAT et les trou de la node. Si je rentre dans le trou je me schedule la pour fcfs.
+ * nb_non_available_cores ne vaut que quand c'est t qui est recouvert, pas plus loin.
  **/
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {

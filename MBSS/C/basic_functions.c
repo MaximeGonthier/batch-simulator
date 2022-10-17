@@ -162,7 +162,8 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	return nb_non_available_cores;
 }
 
-/* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
+/* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. 
+ * nb_non_available_cores est que sur t pas plus loin à cause du backfill. */
 int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
 {
 	print_holes(head_node);
@@ -173,6 +174,8 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
 	bool backfilled_job = false;
+	//~ bool fit_in_hole = false;
+	bool added_cores_to_a_hole = false;
 	
 	/* In which node size I can pick. */
 	if (j->index_node_list == 0)
@@ -224,104 +227,118 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 				}
 			}
 			
-			//~ /* Avant de passer à la node suivante, je check les trou de la node. */
-			//~ if (n->cores_in_a_hole != NULL &&  n->start_time_of_the_hole >= t + j->walltime) /* Il y a un trou et je peux rentrer dedans! */
-			//~ {
-				//~ /* Est-ce que je tiens dans le trou ? Il y a un cas possible où le trou est trop petti mais il ya des cores disponibles hors trou donc il faut vérifier. */
-				//~ if (j->cores <= n->number_cores_in_a_hole)
-				//~ {
-					//~ ok
-				//~ }
-				//~ else
-				//~ {
-					
-				//~ }
-				//~ /* On break et on met à vrai le boolenen pour dire que le remplissage des cores sera différent et qu'il faut pas sort les cores de la node et qu'il faut mettre à jour le nombre de cores dans un trou de la node. */
-				//~ printf("Can fit in the hole (end at %d but hole closes at %d).\n", t + j->walltime, n->start_time_of_the_hole);
-				//~ backfilled_job = true;	
-				//~ min_time = t;
-				//~ j->node_used = n;
-				//~ i = last_node_size_to_choose_from + 1;
-				//~ break;
-			//~ }
+			/* Avant de passer à la node suivante, je check les trou de la node voir si je peux backfill. */
+			if (n->cores_in_a_hole != NULL && j->cores <= n->number_cores_in_a_hole && n->start_time_of_the_hole[j->cores - 1] >= t + j->walltime) /* Il y a un trou et je peux rentrer dedans! */
+			{
+				/* On break et on met à vrai le booleen pour dire que le remplissage des cores sera différent et qu'il faut pas sort les cores de la node et qu'il faut mettre à jour le nombre de cores dans un trou de la node et mettre à jour le nb de non available cores. */
+				printf("Can fit in the hole (end at %d but hole closes at %d).\n", t + j->walltime, n->start_time_of_the_hole[j->cores - 1]);
+				backfilled_job = true;	
+				min_time = t;
+				j->node_used = n;
+				i = last_node_size_to_choose_from + 1;
+				break;
+			}
 			n = n->next;
 		}
 	}
 	
-	//~ if (backfilled_job == true)
-	//~ {
-		//~ /* Mettre les cores dans le job depuis ceux du trou. */
-		//~ for (i = 0; i < j->cores; i++)
-		//~ {
-			//~ j->cores_used[i] = j->node_used->cores_in_a_hole[i];
-		//~ }
+	if (backfilled_job == true)
+	{
+		/* Ca ajoute des unavailable cores puisque c'est à t. */
+		nb_non_available_cores += j->cores;
 		
-		//~ /* Mettre à jour le nombre de cores (s'il en reste) dans un trou de la node. */
-		//~ j->node_used->number_cores_in_a_hole -= j->cores;
-		//~ if (j->node_used->cores_in_a_hole == 0)
-		//~ {
-			//~ j->node_used->cores_in_a_hole = NULL;
-		//~ }
-		//~ else
-		//~ {
-			//~ j->node_used->cores_in_a_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
-			//~ for (i = 0; i < j->node_used->number_cores_in_a_hole; i++)
-			//~ {
-				//~ j->node_used->cores_in_a_hole[i] = 
-			//~ }
-		//~ }
+		/* Mettre les cores dans le job depuis ceux du trou. */
+		for (i = 0; i < j->cores; i++)
+		{
+			j->cores_used[i] = j->node_used->cores_in_a_hole[i];
+		}
 		
-		//~ /* Ne pas sort les cores de la node ? */
-	//~ }
+		/* Mettre à jour le nombre de cores (s'il en reste) dans un trou de la node. */
+		printf("Backfilled job, using %d cores, nb of cores in the hole was %d.\n", j->cores, j->node_used->number_cores_in_a_hole);
+		j->node_used->number_cores_in_a_hole -= j->cores;
+		if (j->node_used->cores_in_a_hole == 0)
+		{
+			j->node_used->cores_in_a_hole = NULL;
+			j->node_used->start_time_of_the_hole = NULL;
+		}
+		else
+		{
+			k = 0;
+			int* temp_cores_in_a_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
+			int* temp_start_time_of_the_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
+			for (i = j->node_used->number_cores_in_a_hole + j->cores; i > j->node_used->number_cores_in_a_hole; i--)
+			{
+				temp_cores_in_a_hole[k] = j->node_used->cores_in_a_hole[i];
+				temp_start_time_of_the_hole[k] = j->node_used->start_time_of_the_hole[i];
+				k++;
+			}
+			j->node_used->cores_in_a_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
+			j->node_used->start_time_of_the_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
+			for (i = 0; i < k; i++)
+			{
+				j->node_used->cores_in_a_hole[i] = temp_cores_in_a_hole[i];
+				j->node_used->start_time_of_the_hole[i] = temp_start_time_of_the_hole[i];
+			}
+		}
+		printf("Holes after this backfill are:\n");
+		print_holes(head_node);
+	}
 	
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
 	k = 0;
-		
-	for (i = 0; i < j->cores; i++)
+	
+	if (backfilled_job == false)
 	{
-		j->cores_used[i] = j->node_used->cores[i]->unique_id;
-		if (j->node_used->cores[i]->available_time <= t)
+		for (i = 0; i < j->cores; i++)
 		{
-			nb_non_available_cores += 1;
+			j->cores_used[i] = j->node_used->cores[i]->unique_id;
+			if (j->start_time == t)
+			{
+				nb_non_available_cores += 1;
+			}
+			
+			/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
+			if (j->node_used->cores[i]->available_time <= t && min_time > t)
+			{
+				printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id);
+				j->node_used->number_cores_in_a_hole += 1;
+				if (i == 0 && j->node_used->cores_in_a_hole == NULL)
+				{
+					j->node_used->cores_in_a_hole = malloc(j->cores*sizeof(int));
+					j->node_used->start_time_of_the_hole = malloc(j->cores*sizeof(int));
+				}
+				else if (i == 0)
+				{
+					added_cores_to_a_hole = true;
+				}
+				j->node_used->cores_in_a_hole[k] = j->node_used->cores[i]->unique_id;
+				j->node_used->start_time_of_the_hole[k] = min_time;
+				k++;
+			}
+
+			j->node_used->cores[i]->available_time = min_time + j->walltime;
+			
+			/* Maybe I need job queue or not not sure. TODO. */
 		}
-		
-		//~ /* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
-		//~ for (i = 0; i < j->cores; i++)
-		//~ if (j->node_used->cores[i]->available_time <= t && min_time > t)
-		//~ {
-			//~ printf("Trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id);
-			//~ j->node_used->number_cores_in_a_hole += 1;
-			//~ if (j->node_used->cores_in_a_hole == NULL)
-			//~ {
-				//~ j->node_used->cores_in_a_hole = malloc(j->cores*sizeof(int));
-				//~ j->node_used->start_time_of_the_hole = malloc(j->cores*sizeof(int));
-			//~ }
-			//~ j->node_used->cores_in_a_hole[k] = j->node_used->cores[i]->unique_id;
-			//~ j->node_used->start_time_of_the_hole[k] = min_time;
-			//~ k++;
-		//~ }
-
-		/* Sort par temps ? */
-		//~ Sort par temps de début le plus loin si j ai ajoute des trou a un node qui en avais deja si le cas complexe dont je parle dans le todo marche quand on regarde que es EAT == t pour les trous. dans ce cas le n->start_time_of_the_hole doit devenir un tab de int.
-
-		j->node_used->cores[i]->available_time = min_time + j->walltime;
-		
-		/* Maybe I need job queue or not not sure. TODO. */
-		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
-		
+	
+	/* Normalement je rentre pas dans ce if */
+	if (added_cores_to_a_hole == true)
+	{
+		sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(j->node_used);
+	}
+			
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
 	
-	/* Sort par temps ? Sort le tab de temps des cores dans un trou ? */
-	/* Need to sort cores after each schedule of a job. */
-	//~ if (backfilled_job == false)
-	//~ {
+	/* Need to sort cores after each schedule of a job only if it was not backfilled. */
+	if (backfilled_job == false)
+	{
 		sort_cores_by_available_time_in_specific_node(j->node_used);
-	//~ }
+	}
 	
 	return nb_non_available_cores;
 }

@@ -267,6 +267,7 @@ void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data
 void sort_cores_by_available_time_in_specific_node(struct Node* n);
 void insert_job_sorted_by_decreasing_file_size(struct Job** head, struct Job* newNode);
 void sort_job_list_by_file_size(struct Job** head);
+void sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(struct Node* n);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

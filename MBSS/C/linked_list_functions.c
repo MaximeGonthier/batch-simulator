@@ -603,11 +603,48 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 				n->cores[i] = n->cores[i+1];
 				n->cores[i + 1] = temp;
 			}
-			else if (n->cores[i]->unique_id > n->cores[i + 1]->unique_id && n->cores[i]->available_time == n->cores[i + 1]->available_time)
+			else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
 			{
 				struct Core* temp = n->cores[i];
 				n->cores[i] = n->cores[i+1];
 				n->cores[i + 1] = temp;
+			}
+		}
+	}
+}
+
+void sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(struct Node* n)
+{
+	printf("Début de sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node. exit(1).\n");
+	exit(1);
+	int temp = 0;
+	for (int step = 0; step < n->number_cores_in_a_hole - 1; step++)
+	{
+		for (int i = 0; i < n->number_cores_in_a_hole - step - 1; ++i)
+		{
+			if (n->start_time_of_the_hole[i] < n->start_time_of_the_hole[i + 1])
+			{
+				/* invert time */
+				temp = n->start_time_of_the_hole[i];
+				n->start_time_of_the_hole[i] = n->start_time_of_the_hole[i+1];
+				n->start_time_of_the_hole[i + 1] = temp;
+				
+				/* invert id */
+				temp = n->cores_in_a_hole[i];
+				n->cores_in_a_hole[i] = n->cores_in_a_hole[i+1];
+				n->cores_in_a_hole[i + 1] = temp;
+			}
+			else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
+			{
+				/* invert time */
+				temp = n->start_time_of_the_hole[i];
+				n->start_time_of_the_hole[i] = n->start_time_of_the_hole[i+1];
+				n->start_time_of_the_hole[i + 1] = temp;
+				
+				/* invert id */
+				temp = n->cores_in_a_hole[i];
+				n->cores_in_a_hole[i] = n->cores_in_a_hole[i+1];
+				n->cores_in_a_hole[i + 1] = temp;
 			}
 		}
 	}
