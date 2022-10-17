@@ -171,8 +171,13 @@
 	\subsection{Uppsala}
 		\begin{enumerate}
 			\item tester easy bf que j'ai. Le vérifier
-			\item coder conservative bf pour heft fcs et un algo localité et le comparer a nos methodes sans rien pour voir. Je peux regarder uniquement les trou avec le temps de début == t. A vérifier.
-		
+			\item coder conservative bf pour heft fcs et un algo localité et le comparer a nos methodes sans rien pour voir. Je peux regarder uniquement les trou avec le temps de début == t. A vérifier. Tetser le cas complexe où une node est couverte par deux jobs différents ce qui peux donner deux trou avec des nb et temps de début différents. Ce cas n'existe pas en fait non ? A regarder si ca existe comme cas. En tout cas tester le cas ou je backfill 2 jobs dans le meme trou.
+			=			
+			\item pour ajouter conservative bf aux autres: attention il faut enlever la boucle sur nb_non_available et l'utiliser que si c'est t qui est pris. Sinon on compte pas. Il faut donc faire:
+			%~ if (j->start_time == t)
+			%~ {
+				%~ nb_non_available_cores += 1;
+			%~ }
 
 			\item Axe y des stretch: ratio et pas secondes. vérifier que c'est bien ce que je fais et changer sur les plots
 			\item Strat1: multiplicateur graduel avec le nb de noeuds occupées
