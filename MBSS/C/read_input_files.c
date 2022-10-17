@@ -84,8 +84,9 @@ void read_cluster(char* input_node_file)
 		
 		/* For conservative bf */
 		new->number_cores_in_a_hole = 0;
-		new->cores_in_a_hole = NULL;
-		new->start_time_of_the_hole = NULL;
+		new->cores_in_a_hole = malloc(sizeof(*new->cores_in_a_hole));
+		new->cores_in_a_hole->head = NULL;
+		new->cores_in_a_hole->tail = NULL;
 		
 		new->next = NULL;
 		if (new->memory == 128)

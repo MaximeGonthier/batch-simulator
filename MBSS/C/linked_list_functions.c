@@ -52,6 +52,62 @@ void insert_tail_node_list(struct Node_List* liste, struct Node* n)
 	}
 }
 
+void initialize_cores_in_a_hole(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c)
+{
+	liste = (struct Core_in_a_hole_List*) malloc(sizeof(struct Core_in_a_hole_List));
+	liste->head = NULL;
+	liste->tail = NULL;
+	//~ struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
+	insert_cores_in_a_hole_list_sorted_decreasing_order(liste, c);
+}
+
+void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c)
+{
+	if (liste->head == NULL || liste->head->start_time_of_the_hole < c->start_time_of_the_hole)
+	{
+		c->next = liste->head;
+        liste->head = c;
+    }
+    else {
+		 struct Core_in_a_hole* current;
+        /* Locate the node before
+the point of insertion */
+        current = liste->head;
+        while (current->next != NULL && current->next->start_time_of_the_hole > c->start_time_of_the_hole) {
+            current = current->next;
+        }
+        
+        c->next = current->next;
+        current->next = c;
+    }
+}
+
+void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cores_to_delete)
+	//~ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
+{
+    if (liste == NULL)
+    {
+		printf("Error list empty.\n"); fflush(stdout);
+        exit(EXIT_FAILURE);
+    }
+
+	struct Core_in_a_hole* temp = liste->head;
+	//~ struct Job* prev = liste->head;
+	int i = 0;
+	// If head node itself holds the key to be deleted
+    //~ if (temp != NULL && temp->unique_id == unique_id_to_delete) {
+    for (i = 0; i < nb_cores_to_delete; i++)
+    {
+        liste->head = temp->next; // Changed head
+        //~ if (unique_id_to_delete == 11) {
+			//~ printf("Free the head.\n"); fflush(stdout); }
+        free(temp); // free old head
+        //~ if (unique_id_to_delete == 11) {
+        //~ printf("Free the head Ok!\n"); fflush(stdout); }
+        //~ return;
+    }
+}
+
 void create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_insert, int nb_of_copy_to_insert)
 {
 	struct Time_or_Data_Already_Checked_Nb_of_Copy* a = (struct Time_or_Data_Already_Checked_Nb_of_Copy*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy));
@@ -524,6 +580,24 @@ void free_next_time_linked_list(struct Next_Time** head_ref)
    *head_ref = NULL;
 }
 
+void free_cores_in_a_hole(struct Core_in_a_hole** head_ref)
+{
+	/* deref head_ref to get the real head */
+	struct Core_in_a_hole* current = *head_ref;
+	struct Core_in_a_hole* next;
+ 
+   while (current != NULL)
+   {
+       next = current->next;
+       free(current);
+       current = next;
+   }
+   
+   /* deref head_ref to affect the real head back
+      in the caller. */
+   *head_ref = NULL;
+}
+
 void free_interval_linked_list(struct Interval** head_ref)
 {
  /* deref head_ref to get the real head */
@@ -613,42 +687,30 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 	}
 }
 
-void sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(struct Node* n)
-{
-	printf("Début de sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node. exit(1).\n");
-	exit(1);
-	int temp = 0;
-	for (int step = 0; step < n->number_cores_in_a_hole - 1; step++)
-	{
-		for (int i = 0; i < n->number_cores_in_a_hole - step - 1; ++i)
-		{
-			if (n->start_time_of_the_hole[i] < n->start_time_of_the_hole[i + 1])
-			{
-				/* invert time */
-				temp = n->start_time_of_the_hole[i];
-				n->start_time_of_the_hole[i] = n->start_time_of_the_hole[i+1];
-				n->start_time_of_the_hole[i + 1] = temp;
-				
-				/* invert id */
-				temp = n->cores_in_a_hole[i];
-				n->cores_in_a_hole[i] = n->cores_in_a_hole[i+1];
-				n->cores_in_a_hole[i + 1] = temp;
-			}
-			else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
-			{
-				/* invert time */
-				temp = n->start_time_of_the_hole[i];
-				n->start_time_of_the_hole[i] = n->start_time_of_the_hole[i+1];
-				n->start_time_of_the_hole[i + 1] = temp;
-				
-				/* invert id */
-				temp = n->cores_in_a_hole[i];
-				n->cores_in_a_hole[i] = n->cores_in_a_hole[i+1];
-				n->cores_in_a_hole[i + 1] = temp;
-			}
-		}
-	}
-}
+//~ void sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(struct Node* n)
+//~ {
+	//~ printf("Début de sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node. exit(1).\n"); fflush(stdout);
+	//~ exit(1);
+	//~ int temp = 0;
+	//~ for (int step = 0; step < n->number_cores_in_a_hole - 1; step++)
+	//~ {
+		//~ for (int i = 0; i < n->number_cores_in_a_hole - step - 1; ++i)
+		//~ {
+			//~ if (n->cores[i]->available_time > n->cores[i + 1]->available_time)
+			//~ {
+				//~ struct Core* temp = n->cores[i];
+				//~ n->cores[i] = n->cores[i+1];
+				//~ n->cores[i + 1] = temp;
+			//~ }
+			//~ else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
+			//~ {
+				//~ struct Core* temp = n->cores[i];
+				//~ n->cores[i] = n->cores[i+1];
+				//~ n->cores[i + 1] = temp;
+			//~ }
+		//~ }
+	//~ }
+//~ }
 
 // Function to insert a given node at its correct sorted position into a given
 // list sorted in decreasing order

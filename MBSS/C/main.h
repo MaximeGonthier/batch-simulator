@@ -137,8 +137,20 @@ struct Node {
     
     /* Pour conservative bf */
     int number_cores_in_a_hole;
-    int* cores_in_a_hole;
-    int* start_time_of_the_hole; /* Temps auquel le trou n'existera plus. Il y a en a 1 par core car 2 jobs aux starts times différents peuvent créer des trou sur une node. */
+    struct Core_in_a_hole_List* cores_in_a_hole;
+    //~ int* cores_in_a_hole;
+    //~ int* start_time_of_the_hole; /* Temps auquel le trou n'existera plus. Il y a en a 1 par core car 2 jobs aux starts times différents peuvent créer des trou sur une node. */
+};
+
+struct Core_in_a_hole_List {
+	struct Core_in_a_hole* head;
+	struct Core_in_a_hole* tail;
+};
+
+struct Core_in_a_hole {
+	struct Core_in_a_hole* next;
+	int unique_id;
+	int start_time_of_the_hole;
 };
 
 struct Data {
@@ -267,7 +279,11 @@ void increment_time_or_data_nb_of_copy_specific_time_or_data(struct Time_or_Data
 void sort_cores_by_available_time_in_specific_node(struct Node* n);
 void insert_job_sorted_by_decreasing_file_size(struct Job** head, struct Job* newNode);
 void sort_job_list_by_file_size(struct Job** head);
-void sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(struct Node* n);
+//~ void sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(struct Node* n);
+void initialize_cores_in_a_hole(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c);
+void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c);
+void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cores_to_delete);
+void free_cores_in_a_hole(struct Core_in_a_hole** head_ref);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
