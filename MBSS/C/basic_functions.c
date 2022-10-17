@@ -124,6 +124,11 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
+	
+	/** unused methods because useless **/
+	//~ /** Remplacement avec méthode plus couteuse qui prend les nodes par leurs index. **/
+	//~ nb_non_available_cores = fill_cores_in_job_and_update_available_times(j, j->node_used, nb_non_available_cores, min_time, t);
+	
 	for (i = 0; i < j->cores; i++)
 	{
 		j->cores_used[i] = j->node_used->cores[i]->unique_id;
@@ -134,8 +139,9 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		j->node_used->cores[i]->available_time = min_time + j->walltime;
 		
 		/* Maybe I need job queue or not not sure. TODO. */
-		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
+		//~ // copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
+	
 		
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
@@ -272,20 +278,17 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
 	k = 0;
-	
-	/* Update cores available times and fill the cores used in the job. Uses the lowest index cores possible. */
-	nb_non_available_cores = fill_cores_in_job_and_update_available_times(j, j->node_used, nb_non_available_cores, min_time, t);
-	
-	//~ for (i = 0; i < j->cores; i++)
-	//~ {
-		//~ if (j->node_used->cores[i]->unique_id
-		//~ j->cores_used[i] = j->node_used->cores[i]->unique_id;
-		//~ if (j->node_used->cores[i]->available_time <= t)
-		//~ {
-			//~ nb_non_available_cores += 1;
-		//~ }
+		
+	for (i = 0; i < j->cores; i++)
+	{
+		j->cores_used[i] = j->node_used->cores[i]->unique_id;
+		if (j->node_used->cores[i]->available_time <= t)
+		{
+			nb_non_available_cores += 1;
+		}
 		
 		//~ /* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
+		//~ for (i = 0; i < j->cores; i++)
 		//~ if (j->node_used->cores[i]->available_time <= t && min_time > t)
 		//~ {
 			//~ printf("Trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id);
@@ -303,11 +306,11 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		/* Sort par temps ? */
 		//~ Sort par temps de début le plus loin si j ai ajoute des trou a un node qui en avais deja si le cas complexe dont je parle dans le todo marche quand on regarde que es EAT == t pour les trous. dans ce cas le n->start_time_of_the_hole doit devenir un tab de int.
 
-		//~ j->node_used->cores[i]->available_time = min_time + j->walltime;
+		j->node_used->cores[i]->available_time = min_time + j->walltime;
 		
 		/* Maybe I need job queue or not not sure. TODO. */
 		//~ copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
-	//~ }
+	}
 		
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
@@ -2276,38 +2279,25 @@ void swap(long long* xp, long long* yp)
     *yp = temp;
 }
 
-/* Update cores available times and fill the cores used in the job. Uses the lowest index cores possible. */
-int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t)
-{
-	int i = 0;
-	int j = 19;
-	while (i < job->cores)
-	{
-		if (n->cores[j]->available_time <= EAT)
-		{
-			if (n->cores[j]->available_time <= t)
-			{
-				nb_non_available_cores += 1;
-			}
-			job->cores_used[i] = n->cores[i]->unique_id;
-			n->cores[j]->available_time = EAT + job->walltime;
-			i++;
-		}
-		//~ /* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
-		//~ if (job->node_used->cores[i]->available_time <= t && min_time > t)
+/** Pas utile car je peux pas savoir en fait, si les cores qui sont utilisées c'est les 20 19 18, bah en prenant 1 2 3 je bloque autre chose, donc autant ne rien faire. **/
+//~ /* Update cores available times and fill the cores used in the job. Uses the lowest index cores possible. */
+//~ int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t)
+//~ {
+	//~ int i = 0;
+	//~ int j = 19;
+	//~ while (i < job->cores)
+	//~ {
+		//~ if (n->cores[j]->available_time <= EAT)
 		//~ {
-			//~ printf("Trou sur node %d core %d.\n", job->node_used->unique_id, job->node_used->cores[i]->unique_id);
-			//~ job->node_used->number_cores_in_a_hole += 1;
-			//~ if (job->node_used->cores_in_a_hole == NULL)
+			//~ if (n->cores[j]->available_time <= t)
 			//~ {
-				//~ job->node_used->cores_in_a_hole = malloc(job->cores*sizeof(int));
-				//~ job->node_used->start_time_of_the_hole = malloc(job->cores*sizeof(int));
+				//~ nb_non_available_cores += 1;
 			//~ }
-			//~ job->node_used->cores_in_a_hole[k] = job->node_used->cores[i]->unique_id;
-			//~ job->node_used->start_time_of_the_hole[k] = min_time;
-			//~ k++;
+			//~ job->cores_used[i] = n->cores[i]->unique_id;
+			//~ n->cores[j]->available_time = EAT + job->walltime;
+			//~ i++;
 		//~ }
-		j--;
-	}
-	return nb_non_available_cores;
-}
+		//~ j--;
+	//~ }
+	//~ return nb_non_available_cores;
+//~ }
