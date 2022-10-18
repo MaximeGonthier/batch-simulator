@@ -1344,6 +1344,19 @@ Idea: Compute the mean flow of a task at each time t. Then adapt the strategy de
 \end{algorithmic}
 \end{algorithm}
 
+\subsection{Backfill}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-17->2022-01-17_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-17->2022-01-17_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Locality constraint only - Workload of January 17 (16000/68000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 18}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Locality constraint only - Workload of January 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 18}\end{figure}
+
+
 \subsection{New way to plot statistics}
 
 \begin{figure}[H]\centering
