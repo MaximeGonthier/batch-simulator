@@ -410,7 +410,6 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	#ifdef PRINT
 	printf("Scheduling job %d.\n", j->unique_id);
 	#endif
-	exit(1);
 	int i = 0;
 	int k = 0;
 	int min_time = -1;
@@ -419,7 +418,13 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	int last_node_size_to_choose_from = 0;
 	bool backfilled_job = false;
 	bool can_fit = false;
-	//~ bool added_cores_to_a_hole = false;
+	int min_score = -1;
+	float time_to_load_file = 0;
+	bool is_being_loaded = false;
+	float time_to_reload_evicted_files = 0;
+	int score = 0;
+	int choosen_time_to_load_file = 0;
+	bool found = false;
 	struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 	
 	/* In which node size I can pick. */
@@ -443,7 +448,9 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
-
+	#ifdef PRINT
+	print_data_intervals(head_node, t);
+	#endif
 	/* Finding the node with the earliest available time. */
 	for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 	{
@@ -455,31 +462,65 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			{
 				earliest_available_time = t;
 			}
-						
-			if (min_time == -1 || min_time > earliest_available_time)
+			#ifdef PRINT
+			printf("A: EAT is %d.\n", earliest_available_time);
+			#endif
+			if (min_score == -1 || earliest_available_time < min_score)
 			{
-				min_time = earliest_available_time;
-				j->node_used = n;
-				
-				if (min_time == t)
+				if (j->data == 0)
 				{
+					time_to_load_file = 0;
+				}
+				else
+				{
+					time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
+				}
+				#ifdef PRINT
+				printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
+				#endif
+				if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
+				{
+					if (multiplier_file_evicted == 0)
+					{
+						time_to_reload_evicted_files = 0;
+					}
+					else
+					{
+						time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
+					}
 					#ifdef PRINT
-					printf("min_time == t, break.\n");
-					#endif
-					
-					i = last_node_size_to_choose_from + 1;
-					break;
+					printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
+					#endif							
+					score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
+					#ifdef PRINT	
+					printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
+					#endif																
+					if (min_score == -1 || min_score > score)
+					{
+						min_time = earliest_available_time;
+						min_score = score;
+						j->node_used = n;
+						choosen_time_to_load_file = time_to_load_file;
+						backfilled_job = false; /* On met à false car ça a pu mettre à true par un trou dans une node précédente. */
+						if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
+						{
+							#ifdef PRINT
+							printf("min_time == t and no file to load/evict, break.\n");
+							#endif
+							i = last_node_size_to_choose_from + 1;
+							printf("exit(1)\n");
+							exit(1);
+							break;
+						}
+					}
 				}
 			}
-			
-			/* Avant de passer à la node suivante, je check les trou de la node voir si je peux backfill. */
-			//~ if (j->cores <= n->number_cores_in_a_hole && n->start_time_of_the_hole[j->cores - 1] >= t + j->walltime) /* Il y a un trou et je peux rentrer dedans! */
+			/* Vérifions si on rentre et si oui le socre dans le trou de la node en cours d'évaluation. */
 			if (j->cores <= n->number_cores_in_a_hole) /* Il y a un trou et je peux rentrer dedans! */
 			{
 				#ifdef PRINT
-				printf("It could fit in the hole of node %d.\n", n->unique_id);
+				printf("Could fit in the hole of node %d.\n", n->unique_id);
 				#endif
-				
 				can_fit = true;
 				c = n->cores_in_a_hole->head;
 				for (k = 0; k < j->cores; k++)
@@ -489,7 +530,6 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 						#ifdef PRINT
 						printf("Can't fit in the hole because of time.\n");
 						#endif
-						
 						can_fit = false;
 						break;
 					}
@@ -500,27 +540,107 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 				}
 				if (can_fit == true)
 				{
-					/* On break et on met à vrai le booleen pour dire que le remplissage des cores sera différent et qu'il faut pas sort les cores de la node et qu'il faut mettre à jour le nombre de cores dans un trou de la node et mettre à jour le nb de non available cores. */
+					/* Avec fcfs with a score on veut aussi regarder le score obtenu si on se met dans le trou. Si il est meilleur que min_score, alors je me souviens de ce choix pour la suite. */
 					#ifdef PRINT
-					printf("Can fit in the hole (end at %d but hole closes at %d).\n", t + j->walltime, c->start_time_of_the_hole);
+					printf("Can fit in the hole (end at %d but hole closes at %d). Computing it's score.\n", t + j->walltime, c->start_time_of_the_hole);
 					#endif
-					
-					backfilled_job = true;	
-					min_time = t;
-					j->node_used = n;
-					i = last_node_size_to_choose_from + 1;
-					break;
+					if (j->data == 0)
+					{
+						time_to_load_file = 0;
+					}
+					else
+					{
+						time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
+					}
+					#ifdef PRINT
+					printf("B in hole: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
+					#endif
+					if (min_score == -1 || t + multiplier_file_to_load*time_to_load_file < min_score)
+					{
+						if (multiplier_file_evicted == 0)
+						{
+							time_to_reload_evicted_files = 0;
+						}
+						else
+						{
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
+						}
+						#ifdef PRINT
+						printf("C in hole: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
+						#endif							
+						score = t + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
+						#ifdef PRINT	
+						printf("Score in hole for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, t, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
+						#endif													
+						if (min_score == -1 || min_score > score)
+						{
+							min_time = t;
+							min_score = score;
+							j->node_used = n;
+							choosen_time_to_load_file = time_to_load_file;
+							backfilled_job = true;
+							if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
+							{
+								#ifdef PRINT
+								printf("min_time == t in hole and no file to load/evict, break.\n");
+								#endif
+								i = last_node_size_to_choose_from + 1;
+								printf("exit(1)\n");
+								exit(1);
+								break;
+							}
+						}
+					}
 				}
 			}
 			n = n->next;
 		}
 	}
-	
+	/* Update infos on the job and on cores. */
+	j->start_time = min_time;
+	j->end_time = min_time + j->walltime;
+	j->transfer_time = choosen_time_to_load_file;
+	/* Need to add here intervals for current scheduling. */
+	found = false;
+	struct Data* d = j->node_used->data->head;
+	while (d != NULL)
+	{
+		if (d->unique_id == j->data)
+		{
+			found = true;
+			create_and_insert_tail_interval_list(d->intervals, j->start_time);
+			create_and_insert_tail_interval_list(d->intervals, j->start_time + j->transfer_time);
+			create_and_insert_tail_interval_list(d->intervals, j->end_time);
+			break;
+		}
+		d = d->next;
+	}
+	if (found == false)
+	{
+		#ifdef PRINT
+		printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
+		#endif
+		/* Create a class Data for this node. */
+		struct Data* new = (struct Data*) malloc(sizeof(struct Data));
+		new->next = NULL;
+		new->unique_id = j->data;
+		new->start_time = -1;
+		new->end_time = -1;
+		new->nb_task_using_it = 0;
+		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+		new->intervals->head = NULL;
+		new->intervals->tail = NULL;
+		create_and_insert_tail_interval_list(new->intervals, j->start_time);
+		create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
+		create_and_insert_tail_interval_list(new->intervals, j->end_time);
+		new->size = j->data_size;
+		insert_tail_data_list(j->node_used->data, new);
+	}
+	/* 2 cas en fonction du choix */
 	if (backfilled_job == true)
 	{
 		/* Ca ajoute des unavailable cores puisque c'est à t. */
 		nb_non_available_cores += j->cores;
-		
 		/* Mettre les cores dans le job depuis ceux du trou. */
 		c = j->node_used->cores_in_a_hole->head;
 		for (i = 0; i < j->cores; i++)
@@ -528,58 +648,25 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			j->cores_used[i] = c->unique_id;
 			c = c->next;
 		}
-		
 		/* Mettre à jour le nombre de cores (s'il en reste) dans un trou de la node. */
 		#ifdef PRINT
 		printf("Backfilled job, using %d cores, nb of cores in the hole was %d.\n", j->cores, j->node_used->number_cores_in_a_hole); fflush(stdout);
 		#endif
-		
 		j->node_used->number_cores_in_a_hole -= j->cores;
 		if (j->node_used->number_cores_in_a_hole == 0)
 		{
-			//~ printf("Free in schedule node %d.\n", j->node_used->unique_id); fflush(stdout);
-			//~ j->node_used->cores_in_a_hole = NULL; /* reset propremment */
 			free_cores_in_a_hole(&j->node_used->cores_in_a_hole->head);
-			//~ j->node_used->start_time_of_the_hole = NULL;
 		}
 		else
 		{
-			//~ k = 0;
-			//~ int* temp_cores_in_a_hole = malloc(j->cores*sizeof(int));
-			//~ int* temp_start_time_of_the_hole = malloc(j->cores*sizeof(int));
-			//~ for (i = 1; i < j->cores + 1; i++)
-			//~ {
-				//~ temp_cores_in_a_hole[k] = j->node_used->cores_in_a_hole[j->node_used->number_cores_in_a_hole + j->cores - i];
-				//~ temp_start_time_of_the_hole[k] = j->node_used->start_time_of_the_hole[j->node_used->number_cores_in_a_hole + j->cores - i];
-				//~ k++;
-			//~ }
-			//~ j->node_used->cores_in_a_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
-			//~ j->node_used->start_time_of_the_hole = malloc(j->node_used->number_cores_in_a_hole*sizeof(int));
-			//~ for (i = 0; i < k; i++)
-			//~ {
-				//~ j->node_used->cores_in_a_hole[i] = temp_cores_in_a_hole[i];
-				//~ j->node_used->start_time_of_the_hole[i] = temp_start_time_of_the_hole[i];
-			//~ }
-			
-			/* Remove used cores in the hole starting from the head. */
-			//~ printf("Delete in schedule node %d. %d cores in hole\n", j->node_used->unique_id, j->node_used->number_cores_in_a_hole); fflush(stdout);
-			//~ print_holes(head_node);
 			delete_core_in_hole_from_head(j->node_used->cores_in_a_hole, j->cores);
-			//~ exit(1);
 		}
-		
 		#ifdef PRINT
 		printf("Holes after this backfill are:\n");
 		print_holes(head_node);
 		#endif
 	}
-	
-	/* Update infos on the job and on cores. */
-	j->start_time = min_time;
-	j->end_time = min_time + j->walltime;
-	k = 0;
-	
-	if (backfilled_job == false)
+	else
 	{
 		for (i = 0; i < j->cores; i++)
 		{
@@ -588,7 +675,6 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			{
 				nb_non_available_cores += 1;
 			}
-			//~ printf("la\n");
 			/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
 			if (j->node_used->cores[i]->available_time <= t && min_time > t)
 			{
@@ -600,49 +686,28 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 				struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 				new->unique_id = j->node_used->cores[i]->unique_id;
 				new->start_time_of_the_hole = min_time;
-				//~ if (i == 0 && j->node_used->cores_in_a_hole == NULL)
 				if (j->node_used->cores_in_a_hole == NULL)
 				{
-					//~ j->node_used->cores_in_a_hole = malloc(j->cores*sizeof(int));
-					//~ j->node_used->start_time_of_the_hole = malloc(j->cores*sizeof(int));
 					initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
 				}
 				else
 				{
 					insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
-					//~ if (i == 0)
-					//~ {
-						//~ added_cores_to_a_hole = true;
-					//~ }
 				}
-				
-				//~ j->node_used->cores_in_a_hole[k] = j->node_used->cores[i]->unique_id;
-				//~ j->node_used->start_time_of_the_hole[k] = min_time;
-				//~ k++;
 			}
 
 			j->node_used->cores[i]->available_time = min_time + j->walltime;
-			
 			/* Maybe I need job queue or not not sure. TODO. */
 		}
-	}
-	
-	//~ /* Normalement je rentre pas dans ce if */
-	//~ if (added_cores_to_a_hole == true)
-	//~ {
-		//~ sort_cores_of_a_hole_by_start_time_decreasing_order_in_specific_node(j->node_used->cores_in_a_hole);
-	//~ }
-			
+	}			
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
-	
 	/* Need to sort cores after each schedule of a job only if it was not backfilled. */
 	if (backfilled_job == false)
 	{
 		sort_cores_by_available_time_in_specific_node(j->node_used);
 	}
-	
 	return nb_non_available_cores;
 }
 

@@ -192,7 +192,8 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	#endif
 			
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
-
+	/* Get intervals of data. */ 
+	get_current_intervals(head_node, t);
 	struct Job* j = head_job;
 	while (j != NULL)
 	{

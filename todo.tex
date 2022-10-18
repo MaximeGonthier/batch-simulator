@@ -148,12 +148,16 @@
 		\item etre plus modéré dans settings sur le todo "In some cases we show scheduling time". Par contre on peut répéter 2 fois que ca peut etre offline.
 
 		% Uppsala
+		\item tests bf
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? A tester.
 		\item Je go pour FGCS (reste 1 todo)?
+		\item Il y a deux manière de faire du bf avec le score:
+			1. Je regarde le score des nodes et des trou et je prends le meilleur.
+			2. Je regarde le score des nodes et des trou. Si j'ai au moins 1 trou de disponible, alors je me met dedans. Si j'en ai plusieurs je prends le trou avec le meilleur score. Sinon je prends la node avec le meilleur score.
 	\end{enumerate}
 	
 \section{Todo}
