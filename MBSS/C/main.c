@@ -56,9 +56,20 @@ long long Allocated_Area[3][3];
 long long Planned_Area[3][3];
 int number_node_size[3];
 int busy_cluster;
+#ifdef PLOT_STATS
+int number_of_backfilled_jobs;
+int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;
+int total_number_of_scores_computed;
+#endif
 
 int main(int argc, char *argv[])
 {
+	#ifdef PLOT_STATS
+	number_of_backfilled_jobs = 0;
+	number_of_tie_breaks_before_computing_evicted_files_fcfs_score = 0;
+	total_number_of_scores_computed = 0;
+	#endif
+	
 	/* random seed init. */
 	busy_cluster = 0; /* Not busy initially */
 	srand(time(NULL));

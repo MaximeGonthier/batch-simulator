@@ -282,6 +282,26 @@ void print_csv(struct To_Print* head_to_print)
 		//~ scheduler = "SCORE_500_50";
 	//~ }
 	
+	#ifdef PLOT_STATS
+	FILE* f_nb_backfilled_jobs = fopen("outputs/nb_backfilled_jobs.txt", "w");
+	if (!f_nb_backfilled_jobs)
+	{
+		perror("Error opening file outputs/nb_backfilled_jobs.txt.");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f_nb_backfilled_jobs, "%s: %d\n", scheduler, number_of_backfilled_jobs);
+	fclose(f_nb_backfilled_jobs);
+	
+	FILE* tie_breaks_fcfs_score = fopen("outputs/tie_breaks_fcfs_score.txt", "w");
+	if (!f_nb_backfilled_jobs)
+	{
+		perror("Error opening file outputs/tie_breaks_fcfs_score.txt.");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(tie_breaks_fcfs_score, "%s: %d/%d\n", scheduler, number_of_tie_breaks_before_computing_evicted_files_fcfs_score, total_number_of_scores_computed);
+	fclose(tie_breaks_fcfs_score);
+	#endif
+	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	/* For distribution of flow and queue times on each job. */
 	char* file_to_open = malloc(100*sizeof(char));

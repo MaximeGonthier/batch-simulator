@@ -277,6 +277,10 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	
 	if (backfilled_job == true)
 	{
+		#ifdef PLOT_STATS
+		number_of_backfilled_jobs += 1;
+		#endif
+		
 		/* Ca ajoute des unavailable cores puisque c'est à t. */
 		nb_non_available_cores += j->cores;
 		
@@ -407,6 +411,11 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 
 int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier)
 {
+	#ifdef PLOT_STATS
+	total_number_of_scores_computed += 1;
+	bool tie = false;
+	#endif
+	
 	#ifdef PRINT
 	printf("\nScheduling job %d.\n", j->unique_id);
 	#endif
@@ -478,6 +487,28 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 				#ifdef PRINT
 				printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
 				#endif
+				
+				//~ printf("Score for job %d is %f (EAT: %d + TL %d*%f) with node %d.\n", j->unique_id, earliest_available_time + multiplier_file_to_load*time_to_load_file, earliest_available_time, multiplier_file_to_load, time_to_load_file, n->unique_id);
+				
+				#ifdef PLOT_STATS
+				if (min_score != -1 && min_score == earliest_available_time + multiplier_file_to_load*time_to_load_file)
+				{
+						//~ if (earliest_available_time + multiplier_file_to_load*time_to_load_file == min_time + multiplier_file_to_load*choosen_time_to_load_file)
+						//~ {
+					tie = true;
+						//~ }
+						//~ else
+						//~ {
+							//~ tie = false;
+						//~ }
+				}
+				else
+				{
+					tie = false;
+				}
+				#endif
+
+					
 				if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
 				{
 					if (multiplier_file_evicted == 0)
@@ -494,7 +525,9 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
 					#ifdef PRINT	
 					printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
-					#endif																
+					#endif	
+										
+																				
 					if (min_score == -1 || min_score > score)
 					{
 						min_time = earliest_available_time;
@@ -594,6 +627,15 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			n = n->next;
 		}
 	}
+	
+	#ifdef PLOT_STATS
+	if (tie == true)
+	{
+		number_of_tie_breaks_before_computing_evicted_files_fcfs_score += 1;
+		//~ printf("++\n");
+	}
+	#endif
+	
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
@@ -641,6 +683,10 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	/* 2 cas en fonction du choix */
 	if (backfilled_job == true)
 	{
+		#ifdef PLOT_STATS
+		number_of_backfilled_jobs+= 1;
+		#endif
+		
 		/* Ca ajoute des unavailable cores puisque c'est à t. */
 		nb_non_available_cores += j->cores;
 		/* Mettre les cores dans le job depuis ceux du trou. */

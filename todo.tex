@@ -145,7 +145,6 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item etre plus modéré dans settings sur le todo "In some cases we show scheduling time". Par contre on peut répéter 2 fois que ca peut etre offline.
 
 		% Uppsala
 		\item tests bf
@@ -153,7 +152,7 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? A tester.
+		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? Voir le nb de tiebreaks.
 		\item Je go pour FGCS (reste 1 todo)?
 		\item Il y a deux manière de faire du bf avec le score:
 			1. Je regarde le score des nodes et des trou et je prends le meilleur.
@@ -171,13 +170,24 @@
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
-			\item
+			\item upload, faire zip pour tex files
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
 			\item tester easy bf que j'ai. Le vérifier
 			\item coder conservative bf pour heft fcs et un algo localité et le comparer a nos methodes sans rien pour voir. Je peux regarder uniquement les trou avec le temps de début == t. A vérifier. Tetser le cas complexe où une node est couverte par deux jobs différents ce qui peux donner deux trou avec des nb et temps de début différents. Ce cas n'existe pas en fait non ? A regarder si ca existe comme cas. En tout cas tester le cas ou je backfill 2 jobs dans le meme trou.
 			
+			\item tester heft + conservative bf
+			\item ecrire pseudocode if EAT == t
+			\item trouver des meilleurs noms
+			\item je backfill si y a 0 eviction sur la node ou si je re utilise le fichier ou si pour ceux que j'ai placé, ils n'utilisent pas ce que je vais évincer.
+			\item ajouter conservative bf et conservative bf tres conservateur sur la localité et voir les résultats.
+				\item Pas perturber les jobs suivants: si je reutilise le fichier, ou si le noeud n'a pas de fichiers, ou les jobs suivant n'ont pas des fichiers qui sont sur la node.
+			\item Compter le nombre de jobs backfilled.
+			\item compter les tie break pour fcfs score (hors evicted file du coup)
+			\item tester sur d'autres workloads
+			\item tester avec des clusters plus petits pour voir si le multiplicateur change quelquechose
+			\item attention dans fcfs score with conservative bf les intervals sont peut etre faux dans le cas backfill == true et found == true
 			\item pour ajouter conservative bf aux autres: attention il faut enlever la boucle sur nb non available et l'utiliser que si c'est t qui est pris. Sinon on compte pas. Il faut donc faire:
 			%~ if (j->start_time == t)
 			%~ {
