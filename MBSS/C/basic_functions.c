@@ -408,7 +408,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier)
 {
 	#ifdef PRINT
-	printf("Scheduling job %d.\n", j->unique_id);
+	printf("\nScheduling job %d.\n", j->unique_id);
 	#endif
 	int i = 0;
 	int k = 0;
@@ -506,10 +506,9 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 						{
 							#ifdef PRINT
 							printf("min_time == t and no file to load/evict, break.\n");
+							printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 							#endif
 							i = last_node_size_to_choose_from + 1;
-							printf("exit(1)\n");
-							exit(1);
 							break;
 						}
 					}
@@ -550,7 +549,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					}
 					else
 					{
-						time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
+						time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(t, n, t, j->data, j->data_size, &is_being_loaded);
 					}
 					#ifdef PRINT
 					printf("B in hole: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
@@ -563,7 +562,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 						}
 						else
 						{
-							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(t, n, j->data, (float) j->cores/20);
 						}
 						#ifdef PRINT
 						printf("C in hole: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
@@ -583,10 +582,9 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 							{
 								#ifdef PRINT
 								printf("min_time == t in hole and no file to load/evict, break.\n");
+								printf("Score in hole for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, t, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 								#endif
 								i = last_node_size_to_choose_from + 1;
-								printf("exit(1)\n");
-								exit(1);
 								break;
 							}
 						}
@@ -636,6 +634,10 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		new->size = j->data_size;
 		insert_tail_data_list(j->node_used->data, new);
 	}
+	#ifdef PRINT
+	printf("Intervals after scheduling job %d.\n", j->unique_id);
+	print_data_intervals(head_node, t);
+	#endif
 	/* 2 cas en fonction du choix */
 	if (backfilled_job == true)
 	{

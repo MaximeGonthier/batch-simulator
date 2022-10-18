@@ -97,7 +97,7 @@ void print_time_list(struct Next_Time* list, int end_or_start)
 
 void print_decision_in_scheduler(struct Job* j)
 {
-	printf("Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id); fflush(stdout);
+	printf("==> Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id); fflush(stdout);
 	for (int i = 0; i < j->cores - 1; i++)
 	{
 		printf("%d,", j->cores_used[i]); fflush(stdout);
