@@ -63,7 +63,8 @@ void initialize_cores_in_a_hole(struct Core_in_a_hole_List* liste, struct Core_i
 
 void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c)
 {
-	if (liste->head == NULL || liste->head->start_time_of_the_hole < c->start_time_of_the_hole)
+	//~ if (liste->head == NULL || liste->head->start_time_of_the_hole < c->start_time_of_the_hole)
+	if (liste->head == NULL || liste->head->start_time_of_the_hole >= c->start_time_of_the_hole)
 	{
 		c->next = liste->head;
         liste->head = c;
@@ -73,7 +74,8 @@ void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_L
         /* Locate the node before
 the point of insertion */
         current = liste->head;
-        while (current->next != NULL && current->next->start_time_of_the_hole >= c->start_time_of_the_hole) {
+        //~ while (current->next != NULL && current->next->start_time_of_the_hole >= c->start_time_of_the_hole) {
+        while (current->next != NULL && current->next->start_time_of_the_hole < c->start_time_of_the_hole) {
             current = current->next;
         }
         
@@ -683,12 +685,22 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 				n->cores[i] = n->cores[i+1];
 				n->cores[i + 1] = temp;
 			}
+			
+			/* NEW core selection conservative bf only */
 			else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
 			{
 				struct Core* temp = n->cores[i];
 				n->cores[i] = n->cores[i+1];
 				n->cores[i + 1] = temp;
 			}
+			/* End of NEW core selection conservative bf only */
+			
+			//~ else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
+			//~ {
+				//~ struct Core* temp = n->cores[i];
+				//~ n->cores[i] = n->cores[i+1];
+				//~ n->cores[i + 1] = temp;
+			//~ }
 		}
 	}
 }

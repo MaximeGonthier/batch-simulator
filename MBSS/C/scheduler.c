@@ -165,6 +165,11 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 			
 			nb_non_available_cores = schedule_job_on_earliest_available_cores_with_conservative_backfill(j, head_node, t, nb_non_available_cores);
 			
+			if (j->start_time < t)
+			{
+				printf("error\n");
+			}
+			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			j = j->next;
 		}
