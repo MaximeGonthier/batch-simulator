@@ -167,6 +167,7 @@
 		\item we have a binary case (a data is on the node or not, can't be half loaded because of an eviction), a future work is a non binary case ?
 		\item J'ai un pb pur le moment dans ma core selection que je dois corriger ? (le truc avec les cores choisis qui sont pas les bons et font des trou plus gros)
 		\item Quand j'ai le choix entre utiliser un trou ou non et que dans les 2 cas ca passe, je dois le faire ? Pour le moment si j'ai le choix, je ne vais pas dans le trou.
+		\item quand je me met dans un trou, si le walltime du job qui forcait au backfil se révèle plus petit mais que mon job backfill a déjà commencé, alors ca delay mon job plus gros (mais pas plus qu ce qu'il aurait attendu si le walltime était correct)
 	\end{enumerate}
 	
 \section{Todo}

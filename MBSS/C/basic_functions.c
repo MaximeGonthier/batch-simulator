@@ -166,7 +166,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
  * nb_non_available_cores est que sur t pas plus loin à cause du backfill. */
 int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
 {
-	printf("1.\n"); fflush(stdout);
+	//~ printf("1.\n"); fflush(stdout);
 	/* NEW core selection conservative bf only */
 	int nb_cores_from_hole = 0;
 	int nb_cores_from_outside = 0;
@@ -249,7 +249,10 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 						break;
 					}
 				}
+				#ifdef PRINT
 				printf("nb_cores_from_hole = %d on node %d. %d are available\n", nb_cores_from_hole, n->unique_id, n->number_cores_in_a_hole); fflush(stdout);
+				#endif
+				
 				if (nb_cores_from_hole > 0)
 				{
 					
@@ -369,7 +372,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	/* NEW core selection conservative bf only */
 	if (backfilled_job == true)
 	{
-		printf("3.1.\n"); fflush(stdout);
+		//~ printf("3.1.\n"); fflush(stdout);
 		#ifdef PLOT_STATS
 		number_of_backfilled_jobs += 1;
 		#endif
@@ -379,10 +382,10 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		/* Mettre les cores dans le job depuis ceux du trou. */
 		c = j->node_used->cores_in_a_hole->head;
 		i = 0;
-		printf("3.1.1.\n"); fflush(stdout);
-		//~ #ifdef PRINT
+		//~ printf("3.1.1.\n"); fflush(stdout);
+		#ifdef PRINT
 		printf("%d %d on node %d.\n", nb_cores_from_hole, j->node_used->number_cores_in_a_hole, j->node_used->unique_id); fflush(stdout);
-		//~ #endif
+		#endif
 		
 		//~ k = 0;
 		if (nb_cores_from_hole > j->cores || nb_cores_from_hole > j->node_used->number_cores_in_a_hole) { printf("eerorr coress: %d cores taken from hole, %d cores on the job, %d cores in a hole of the node.\n", nb_cores_from_hole, j->cores, j->node_used->number_cores_in_a_hole); fflush(stdout); exit(1); }
@@ -405,9 +408,12 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 						//~ break;
 					//~ }
 					
+					/* Je rentre la dedans ? je crois pas. */
 					if (c->next == NULL && k != nb_cores_from_hole)
 					{
+						#ifdef PRINT
 						printf("next is null\n"); fflush(stdout);
+						#endif
 					}
 					c = c->next;
 						//~ printf("next\n");
@@ -421,7 +427,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 					//~ }
 
 				}
-		printf("3.2.\n"); fflush(stdout);
+		//~ printf("3.2.\n"); fflush(stdout);
 		for (k = 0; k < nb_cores_from_outside_remembered; k++)
 		{
 			#ifdef PRINT
@@ -434,7 +440,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			//~ k++;
 			i++;
 		}
-		printf("3.3.\n"); fflush(stdout);
+		//~ printf("3.3.\n"); fflush(stdout);
 		//~ if (j->unique_id == 10) { exit(1); }
 		
 		j->node_used->number_cores_in_a_hole -= nb_cores_from_hole;
@@ -447,7 +453,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		}
 		if (j->node_used->number_cores_in_a_hole == 0)
 		{
-			printf("3.4.\n"); fflush(stdout);
+			//~ printf("3.4.\n"); fflush(stdout);
 			#ifdef PRINT
 			printf("Deleting all the cores in the hole cause we use them all.\n");
 			#endif
@@ -456,7 +462,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		}
 		else
 		{
-			printf("3.5.\n"); fflush(stdout);
+			//~ printf("3.5.\n"); fflush(stdout);
 			for (i = 0; i < nb_cores_from_hole; i++)
 			{
 				#ifdef PRINT
@@ -473,7 +479,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		printf("Holes after this backfill are:\n");
 		print_holes(head_node);
 		#endif
-				printf("3.6\n"); fflush(stdout);
+				//~ printf("3.6\n"); fflush(stdout);
 			//~ if (j->unique_id == 10) { exit(1); }
 	}
 	//~ print_holes(j->node_used);
@@ -617,7 +623,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	//~ }
 	
 	
-	printf("5.\n"); fflush(stdout);
+	//~ printf("5.\n"); fflush(stdout);
 	return nb_non_available_cores;
 }
 

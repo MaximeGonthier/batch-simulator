@@ -11,4 +11,5 @@
 { id: 16 subtime: 0 delay: 1000 walltime: 3500 cores: 5 user: max data: 6 data_size: 32 workload: 1 start_time_from_history: 0 start_node_from_history: 1 }
 { id: 170 subtime: 0 delay: 1000 walltime: 1000 cores: 1 user: max data: 7 data_size: 6.4 workload: 1 start_time_from_history: 0 start_node_from_history: 1 }
 { id: 171 subtime: 0 delay: 4000 walltime: 4000 cores: 1 user: max data: 7 data_size: 6.4 workload: 1 start_time_from_history: 0 start_node_from_history: 1 }
-{ id: 172 subtime: 0 delay: 1000 walltime: 1000 cores: 4 user: max data: 7 data_size: 19.2 workload: 1 start_time_from_history: 0 start_node_from_history: 1 }
+{ id: 171 subtime: 0 delay: 4000 walltime: 4000 cores: 1 user: max data: 7 data_size: 6.4 workload: 1 start_time_from_history: 0 start_node_from_history: 1 }
+{ id: 16 subtime: 0 delay: 1000 walltime: 3500 cores: 5 user: max data: 6 data_size: 32 workload: 1 start_time_from_history: 0 start_node_from_history: 1 }
