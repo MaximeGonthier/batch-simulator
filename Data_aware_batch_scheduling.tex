@@ -347,7 +347,7 @@ For each node, A = compute the earliest available time to host job $J_i$.
 For each node, B = compute the time it will take to load all the files from $J_i$ not yet in memory.
 
 For each node, C = compute the amount of data that will not be used because of current job. So it correspond to the percentage of number of cores on the node the current job will occupy multiplied by the size of files that end just before the computation of current job. These files will need to be re loaded for other jobs.
-To do this we do: $C = \inputs(\Node{i})~that~end~before~predicted~start~time~ \times \frac{\core(J_i)}{\core(\Node{i})}$
+To do this we do: $C = \inputs(\Node{i})~that~end~before~A~ \times \frac{\core(J_i)}{\core(\Node{i})}$
 
 D = First compute the number of copy $NC$ of file $\inputs(J_i)$ on other nodes than the current node at the predicted time you want to compute the job. Then D get the time it took to load this file on the other nodes with: $D = \frac{NC \times \memory(\inputs(J_i))}{BW}$.
 
@@ -1203,11 +1203,11 @@ Disadvantage: it's not really a time like the other factors of the score.s
 
 I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with a score that alternate between HEFT and locality:\\
 \begin{algorithm}[htbp]
-\caption{Mix SCORE/HEFT}
+\caption{HEFT-SCORE MIX}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
-\State $occupation\_threshold \gets 99$ \Comment{How to define it ? sometimes it's better with 100}
-\State $occupation \gets$ the occupation percentage of the cluster \Comment{If a node is running at least 1 job (even if it uses only 1 core), we consider that the node is occupied. Note that we could also compute the occupation after each schedule of a job. Which would change the strategy during the scheduling.}
+\State $occupation\_threshold \gets 100$ 
+\State $occupation \gets$ the percentage of nodes running at least one job
 \ForEach {$J_i \in \jobset$}
 	\If{$occupation < occupation\_threshold$}
 		\State $HEFT(\jobset,\nodeset)$
@@ -1233,18 +1233,93 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \caption{SCORE}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
+\State $B\_multiplier \gets 500$
+\State $C\_multiplier \gets 1$
 \ForEach {$J_i \in \jobset$}
 	\ForEach {$\Node{k} \in \nodeset$}
 		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
-		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ \Comment{Or time waiting for the file to be loaded by another job.}
-		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~predicted~start~time) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets A + 500 \times B + 50 \times C$
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$ \Comment{Or time waiting for the file to be loaded by another job.}
+		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + 500 \times B + 1 \times C$
 	\EndFor
 	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
 	\State Remove $J_i$ from $\jobset$
 \EndFor
 \end{algorithmic}
 \end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{OPPORTUNISTIC-SCORE MIX}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\ForEach {$J_i \in \jobset$}
+	\State $B\_multiplier \gets 500$
+	\State $C\_multiplier \gets 1$
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\If{$A = t$}
+			\State $B\_multiplier \gets 1$
+			\State $C\_multiplier \gets 0$
+		\EndIf
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+	\EndFor
+	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
+	\State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{CONSERVATIVE BF SCORE}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+\begin{algorithmic}[0]
+\State $B\_multiplier \gets 500$
+\State $C\_multiplier \gets 1$
+\ForEach {$J_i \in \jobset$}
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$}
+			\State $A \gets t$
+			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+			\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\EndIf
+	\EndFor
+	\State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
+	\State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+%~ \begin{algorithm}[htbp]
+%~ \caption{LOCALITY CONSERVATIVE BF SCORE}
+%~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+%~ \begin{algorithmic}[0]
+%~ \State $B\_multiplier \gets 500$
+%~ \State $C\_multiplier \gets 1$
+%~ \ForEach {$J_i \in \jobset$}
+	%~ \ForEach {$\Node{k} \in \nodeset$}
+		%~ \State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		%~ \State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		%~ \State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		%~ \If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$}
+			%~ \State $A \gets t$
+			%~ \State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+			%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			%~ \State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		%~ \EndIf
+	%~ \EndFor
+	%~ \State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
+	%~ \State Remove $J_i$ from $\jobset$
+%~ \EndFor
+%~ \end{algorithmic}
+%~ \end{algorithm}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-17->2022-01-17_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
@@ -1311,38 +1386,38 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 
 
 
-Idea: Compute the mean flow of a task at each time t. Then adapt the strategy depending of the current mean flow of a task\\
-\begin{algorithm}[htbp]
-\caption{FLOW ADAPTATION}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
-	\State $Flow\_heft \gets$ HEFT($\jobset$, $\nodeset$) 
-	\State $Flow\_locality \gets$ LOCALITY($\jobset$, $\nodeset$)
-	\If{$Flow\_heft < Flow\_locality$}
-		\State HEFT($\jobset$, $\nodeset$) 
-	\Else
-		\State LOCALITY($\jobset$, $\nodeset$) 
-	\EndIf
-\end{algorithmic}
-\end{algorithm}
+%~ Idea: Compute the mean flow of a task at each time t. Then adapt the strategy depending of the current mean flow of a task\\
+%~ \begin{algorithm}[htbp]
+%~ \caption{FLOW ADAPTATION}
+%~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+%~ \begin{algorithmic}[0]
+	%~ \State $Flow\_heft \gets$ HEFT($\jobset$, $\nodeset$) 
+	%~ \State $Flow\_locality \gets$ LOCALITY($\jobset$, $\nodeset$)
+	%~ \If{$Flow\_heft < Flow\_locality$}
+		%~ \State HEFT($\jobset$, $\nodeset$) 
+	%~ \Else
+		%~ \State LOCALITY($\jobset$, $\nodeset$) 
+	%~ \EndIf
+%~ \end{algorithmic}
+%~ \end{algorithm}
 
 
-\begin{algorithm}[htbp]
-\caption{LOCALITY}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
-	\ForEach{$J_i \in \jobset$}
-		\ForEach {$\Node{k} \in \nodeset$}
-			\State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
-			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ \Comment{Or time waiting for the file to be loaded by another job.}
-			\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~predicted~start~time) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-			\State $score_{\Node{k}} \gets B + C$
-		\EndFor
-		\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
-		\State Remove $J_i$ from $\jobset$
-	\EndFor
-\end{algorithmic}
-\end{algorithm}
+%~ \begin{algorithm}[htbp]
+%~ \caption{LOCALITY}
+%~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
+%~ \begin{algorithmic}[0]
+	%~ \ForEach{$J_i \in \jobset$}
+		%~ \ForEach {$\Node{k} \in \nodeset$}
+			%~ \State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
+			%~ \State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ \Comment{Or time waiting for the file to be loaded by another job.}
+			%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			%~ \State $score_{\Node{k}} \gets B + C$
+		%~ \EndFor
+		%~ \State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
+		%~ \State Remove $J_i$ from $\jobset$
+	%~ \EndFor
+%~ \end{algorithmic}
+%~ \end{algorithm}
 
 \subsection{Backfill}
 

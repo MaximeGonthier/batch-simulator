@@ -409,7 +409,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	return nb_non_available_cores;
 }
 
-int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier)
+int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t)
 {
 	#ifdef PLOT_STATS
 	total_number_of_scores_computed += 1;
@@ -471,6 +471,13 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			{
 				earliest_available_time = t;
 			}
+			
+			if (start_immediately_if_EAT_is_t == 1 && earliest_available_time == t) /* Ou dans une fenêtre ? */
+			{
+				multiplier_file_to_load = 1;
+				multiplier_file_evicted = 0;
+			}
+			
 			#ifdef PRINT
 			printf("A: EAT is %d.\n", earliest_available_time);
 			#endif
