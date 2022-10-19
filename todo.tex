@@ -146,40 +146,44 @@
 		
 		% Reu FGCS
 		\item Quelques typos
+		\item il me manque credit to authors signé donc c'est un doublon de contributions mais j'ai upload
+		\item locality-conservative bf n'existe pas
 
 		% Uppsala
 		\item tests bf
 		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup)
-		\item pseudocodes
+		\item quelques pseudocodes
+		\item code conservative bf avec mixed et if EAT is t
+		\item renommer les algos dans backfill
+		\item correction du bakcill conservateur pour ne couvrir que sur les cores qui seront release le plus tôt. Que sur FCFS donc la correc n'est pas encore sur les histogrammes.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ? Voir le nb de tiebreaks.
-		\item Je go pour FGCS (reste 1 todo)?
+		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ?
 		\item Il y a deux manière de faire du bf avec le score:
 			1. Je regarde le score des nodes et des trou et je prends le meilleur.
 			2. Je regarde le score des nodes et des trou. Si j'ai au moins 1 trou de disponible, alors je me met dedans. Si j'en ai plusieurs je prends le trou avec le meilleur score. Sinon je prends la node avec le meilleur score.
+		\item we have a binary case (a data is on the node or not, can't be half loaded because of an eviction), a future work is a non binary case ?
+		\item J'ai un pb pur le moment dans ma core selection que je dois corriger ? (le truc avec les cores choisis qui sont pas les bons et font des trou plus gros)
+		\item Quand j'ai le choix entre utiliser un trou ou non et que dans les 2 cas ca passe, je dois le faire ? Pour le moment si j'ai le choix, je ne vais pas dans le trou.
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item se renseigner payement enseirb semestre 1: attendre octobre envoyer mail dans quelques jours si je suis pas payé : 3 Oct
-			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment
-			\item Répondre a Bora
+			\item se renseigner payement enseirb semestre 1: attendre fin octobre
+			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment + verifier changement heures dossier
+			\item Répondre a Bora hMETIS
 			\item justif de payement agos
-			\item verifier changement heures dossier
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
-			\item upload, faire zip pour tex files marked et unmarked et enlever commentaires
+			\item
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
 			\item tester heft + conservative bf
-			\item ecrire pseudocode if EAT == t et revoir pseudocodes des autres algos que je montre
-			\item trouver des meilleurs noms
 			\item je backfill si y a 0 eviction sur la node ou si je re utilise le fichier ou si pour ceux que j'ai placé, ils n'utilisent pas ce que je vais évincer.
 			\item ajouter conservative bf et conservative bf tres conservateur sur la localité et voir les résultats.
 				\item Pas perturber les jobs suivants: si je reutilise le fichier, ou si le noeud n'a pas de fichiers, ou les jobs suivant n'ont pas des fichiers qui sont sur la node.
@@ -193,7 +197,6 @@
 				%~ nb_non_available_cores += 1;
 			%~ }
 
-			\item Axe y des stretch: ratio et pas secondes. vérifier que c'est bien ce que je fais et changer sur les plots
 			\item Strat1: multiplicateur graduel avec le nb de noeuds occupées
 			\item Regarder si on gagne en stretch que sur des jobs très cours ou non. Ca peut etre le cas quand le flow est equivalent mais les mean stretch différents
 			\item busy cluster threshold à 100 ? Mis à 100

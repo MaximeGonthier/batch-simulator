@@ -1272,7 +1272,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \end{algorithm}
 
 \begin{algorithm}[htbp]
-\caption{CONSERVATIVE BF SCORE}
+\caption{SCORE CONSERVATIVE BF}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
 \State $B\_multiplier \gets 500$
@@ -1283,7 +1283,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
 		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		\If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$}
+		\If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$} \Comment{C'est pas tout à fais vrai car un job peut utiliser des cores d'un trou et des cores qui ne sont pas dans un trou en même temps.}
 			\State $A \gets t$
 			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
 			\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
@@ -1297,7 +1297,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \end{algorithm}
 
 %~ \begin{algorithm}[htbp]
-%~ \caption{LOCALITY CONSERVATIVE BF SCORE}
+%~ \caption{SCORE LOCALITY-CONSERVATIVE BF}
 %~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 %~ \begin{algorithmic}[0]
 %~ \State $B\_multiplier \gets 500$
@@ -1308,7 +1308,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 		%~ \State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
 		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 		%~ \State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		%~ \If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$}
+		%~ \If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time \wedge (\inputs(\mathit{Cores\_Hole}(\Node{k})~next~job) = \inputs(J_i) \vee \inputs(\mathit{Cores\_Hole}(\Node{k})~next~job) \notin \inputs(\Node{k}))$}
 			%~ \State $A \gets t$
 			%~ \State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
 			%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$

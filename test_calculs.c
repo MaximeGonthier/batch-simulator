@@ -19,5 +19,13 @@ int main()
 	float a3 = 1234;
 	float b3 = 43;
 	printf("%f\n", a3/b3);
+	
+	int i = 0;
+	for (i = 0; i < 20; i++)
+	{
+		
+	}
+	printf("i: %d\n", i);
+	
 	return 1;
 }
