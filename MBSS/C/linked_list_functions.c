@@ -116,6 +116,61 @@ void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cor
     //~ printf("delete ok\n"); fflush(stdout);
 }
 
+void delete_core_in_hole_specific_core(struct Core_in_a_hole_List* liste, int unique_id_to_delete)
+{
+	struct Core_in_a_hole* temp = liste->head;
+	struct Core_in_a_hole* prev = liste->head;
+	
+	// If head node itself holds the key to be deleted
+    if (temp != NULL && temp->unique_id == unique_id_to_delete) {
+        liste->head = temp->next; // Changed head
+        //~ if (unique_id_to_delete == 11) {
+			//~ printf("Free the head.\n"); fflush(stdout); }
+        free(temp); // free old head
+        //~ if (unique_id_to_delete == 11) {
+        //~ printf("Free the head Ok!\n"); fflush(stdout); }
+        return;
+    }
+	
+	while (temp->unique_id != unique_id_to_delete && temp != NULL)
+	{
+		//~ if (unique_id_to_delete == 11) {
+		//~ printf("prev (%d) get temp.\n", prev->unique_id); fflush(stdout); }
+		prev = temp;
+		//~ if (unique_id_to_delete == 11) {
+		//~ printf("temp is %d and next is %d.\n", temp->unique_id, temp->next->unique_id); fflush(stdout); }
+		temp = temp->next;
+	}
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("temp is %d. Next is %d\n", temp->unique_id, temp->next->unique_id); fflush(stdout); }
+	if (temp == NULL)
+	{
+		printf("Error, deletion of core %d failed.\n", unique_id_to_delete); fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	//~ if (unique_id_to_delete == 11) {
+		//~ printf("Next.\n"); fflush(stdout); }
+	prev->next = temp->next;
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("Will free temp = %d.\n", temp->unique_id); fflush(stdout); }
+	
+	if (unique_id_to_delete != temp->unique_id)
+	{
+		printf("ERROR: unique_id_to_delete != temp->unique_id!\n"); fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	
+	/* OLD */
+	//~ free(temp);
+	/* NEW */
+	// free(temp->node_used);
+	//~ free(temp->cores_used);
+	free(temp);
+	
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("free temp ok!.\n"); fflush(stdout); }
+}
+
 void create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(struct Time_or_Data_Already_Checked_Nb_of_Copy_List* liste, int time_or_data_to_insert, int nb_of_copy_to_insert)
 {
 	struct Time_or_Data_Already_Checked_Nb_of_Copy* a = (struct Time_or_Data_Already_Checked_Nb_of_Copy*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy));

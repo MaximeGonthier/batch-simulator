@@ -654,3 +654,27 @@ void print_holes(struct Node_List** list)
 		printf("No holes.\n");
 	}
 }
+void print_holes_specific_node(struct Node* n)
+{
+	//~ int i = 0;
+	bool at_least_one_hole = false;
+	//~ for (i = 0; i < 3; i++)
+	//~ {
+		//~ struct Node* n = list[i]->head;
+		//~ while (n != NULL)
+		//~ {
+			struct Core_in_a_hole* c = n->cores_in_a_hole->head;
+			while (c != NULL)
+			{
+				printf("Hole on node %d core %d. Next job start at time %d.\n", n->unique_id, c->unique_id, c->start_time_of_the_hole);
+				at_least_one_hole = true;
+				c = c->next;
+			}
+			//~ n = n->next;
+		//~ }
+	//~ }
+	if (at_least_one_hole == false)
+	{
+		printf("No holes.\n");
+	}
+}
