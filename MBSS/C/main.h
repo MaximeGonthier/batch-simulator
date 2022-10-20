@@ -232,6 +232,7 @@ void print_csv(struct To_Print* head_to_print);
 void print_data_intervals(struct Node_List** list, int t);
 void print_tab_of_int (int arr[], int n);
 void print_holes(struct Node_List** head_node);
+void print_holes_specific_node(struct Node* n);
 
 /* From basic_functions.c */
 int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t);
@@ -290,6 +291,7 @@ void initialize_cores_in_a_hole(struct Core_in_a_hole_List* liste, struct Core_i
 void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c);
 void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cores_to_delete);
 void free_cores_in_a_hole(struct Core_in_a_hole** head_ref);
+void delete_core_in_hole_specific_core(struct Core_in_a_hole_List* liste, int unique_id_to_delete);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
