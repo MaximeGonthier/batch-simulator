@@ -40,7 +40,6 @@ int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes)
 {
-	//~ printf("here\n");
 	int i = 0;
 	int min_time = -1;
 	int earliest_available_time = 0;
@@ -115,12 +114,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 			n = n->next;
 		}
 	}
-	
-	//~ #ifdef PRINT
-	//~ if (j->node_used->unique_id == 183){
-	//~ print_cores_in_specific_node(j->node_used);}
-	//~ #endif
-	
+		
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
@@ -146,16 +140,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
-					//~ if (j->unique_id == 27673)
-			//~ {
-				//~ printf("e %d s %d sub %d t %d.\n", j->end_time, j->start_time, j->subtime, t);
-				//~ print_decision_in_scheduler(j);
-			//~ }
-	//~ if (j->unique_id == 1382)
-	//~ {
-		//~ print_decision_in_scheduler(j);
-	//~ }
-	
+
 	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(j->node_used);
 		
@@ -1941,7 +1926,6 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 	
 	bool data_is_on_node = false;
 	/* Let's try to find it in the node */
-	//~ struct Data* d = node_used->data->head;
 	struct Data* d = (struct Data*) malloc(sizeof(struct Data));
 	d = node_used->data->head;
 	while (d != NULL)
@@ -1952,7 +1936,6 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 			{
 				if (d->start_time > t) /* The job will have to wait for the data to be loaded by another job before starting */
 				{
-					//~ *transfer_time = d->start_time - t; /* I commented this from python code will it changes things ? */
 					*waiting_for_a_load_time = d->start_time - t;
 				}
 				else
@@ -1977,18 +1960,11 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		}
 		d = d->next;
 	}
-	//~ free(d);
 	if (data_is_on_node == false) /* Need to load it */
 	{
 		*transfer_time = data_size/node_used->bandwidth;
-		//~ #ifdef PRINT
-		//~ printf("1.2.\n"); fflush(stdout);
-		//~ #endif
 		/* Create a class Data for this node */
 		struct Data* new = (struct Data*) malloc(sizeof(struct Data));
-		//~ #ifdef PRINT
-		//~ printf("2.\n"); fflush(stdout);
-		//~ #endif
 		new->unique_id = data_unique_id;
 		new->start_time = t + *transfer_time;
 		new->end_time = end_time;
@@ -1998,9 +1974,6 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 		insert_tail_data_list(node_used->data, new);
 	}
-	//~ #ifdef PRINT
-	//~ printf("%d added.\n", data_unique_id); fflush(stdout);
-	//~ #endif
 }
 
 void remove_data_from_node(struct Job* j, int t)
@@ -2012,12 +1985,12 @@ void remove_data_from_node(struct Job* j, int t)
 		{
 			d->nb_task_using_it -= 1;
 				
-			if (d->nb_task_using_it == 0)
+			if (d->nb_task_using_it == 0) /* modif ? */
 			{
 				d->end_time = t;
 			}
 			break;
-		}	
+		}
 		d = d->next;
 	}
 }
@@ -2039,7 +2012,6 @@ void start_jobs(int t, struct Job* head)
 	
 	while (j != NULL)
 	{
-		//~ printf("Looking at job %d.\n", j->unique_id); fflush(stdout);
 		if (j->start_time == t)
 		//~ if (j->start_time <= t)
 		{
@@ -2075,7 +2047,6 @@ void start_jobs(int t, struct Job* head)
 			//~ if (j->data != 0)
 			if (j->data != 0 && constraint_on_sizes != 2)
 			{
-				//~ printf("here\n"	);
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
 			}
@@ -2259,26 +2230,10 @@ void end_jobs(struct Job* job_list_head, int t)
 		{
 			/* Remove from list of ending times. */
 			if (end_times->head != NULL && end_times->head->time == t)
-			{
-				//~ #ifdef PRINT
-				//~ printf("Before deleting ending time %d:\n", t);
-				//~ print_time_list(end_times->head, 1);
-				//~ #endif
-				
+			{				
 				delete_next_time_linked_list(end_times, t);
-				
-				//~ #ifdef PRINT
-				//~ printf("After deleting ending time %d:\n", t);
-				//~ print_time_list(end_times->head, 1);
-				//~ #endif
 			}
-			
-			//~ if (j->workload == 1)
-			//~ {
-				//~ nb_job_to_evaluate_finished += 1;
-				//~ nb_job_to_evaluate_started += 1;
-			//~ }
-			
+						
 			/* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
 			/* Attention c'est pas pour fcfs with a score area factor!! */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
@@ -2299,7 +2254,6 @@ void end_jobs(struct Job* job_list_head, int t)
 				}
 			}
 
-				
 			finished_jobs += 1;
 			
 			#ifdef PRINT
@@ -2307,7 +2261,6 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			//~ if (finished_jobs%5000 == 0)
 			if (finished_jobs%2500 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
@@ -2326,31 +2279,16 @@ void end_jobs(struct Job* job_list_head, int t)
 			if (j->node_used->n_available_cores == 20)
 			{
 				running_nodes -= 1;
-				
-				// if (j->workload == -2)
-				// {
-					// running_nodes_workload_minus_2 -= 1;
-				// }
 			}
 			//~ #ifdef PRINT_CLUSTER_USAGE
-			//~ }
+
 			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
 			{
 				printf("ERROR ERROR end jobs\n");
 				exit(1); 
-				//~ printf("==> Job %d %d cores finished at time %d on node %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id);
-				//~ printf("Error n avail in end_jobs: %d on node %d for job %d. T = %d.\n", j->node_used->n_available_cores, j->node_used->unique_id, j->unique_id, t);
-				//~ print_single_node(j->node_used);
-				//~ print_cores_in_specific_node(j->node_used);
 			}
-			//~ #endif
 			/** End of defining cluster usage **/
-						
-			//~ #ifdef PRINT
-			//~ if (j->node_used->unique_id == 183) {
-			//~ printf("n avail cores end_jobs %d.\n", j->node_used->n_available_cores); }
-			//~ #endif
-			
+									
 			for (i = 0; i < j->cores; i++)
 			{
 				for (k = 0; k < 20; k++)

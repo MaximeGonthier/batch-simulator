@@ -145,17 +145,10 @@
 		\item plot size and data constraint. certains algo pas montré car trop long a faire tourner. Le pb de fcfs avec un score est que dans certains cas les multiplicateurs anulle totalement la possiblité d'upgrade des jobs! Ils ne sont pas constant avec les different workloads. Le score l'emporte sur l'upgrade.
 		
 		% Reu FGCS
-		\item Quelques typos
 		\item il me manque credit to authors signé donc c'est un doublon de contributions mais j'ai upload
-		\item locality-conservative bf n'existe pas
 
 		% Uppsala
-		\item tests bf
 		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup). Donc faut-il l'utilise comme tiebreak ?
-		\item quelques pseudocodes
-		\item code conservative bf avec mixed et if EAT is t
-		\item renommer les algos dans backfill
-		\item correction du bakcfill conservateur: utiliser en prio les trou qui match le plus notre taille (risque de delay des jobs plus loin si le job qui force le trou se termne avant le alltime) avant de regarder les autres noeuds, possibilité d'utiliser des cores dans un trou et pas dans un trou + creation au minimu de trous.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -169,7 +162,7 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item mail sandrine enlever cours pendant sc et le donner à Denis
+			\item mail sandrine enlever cours pendant sc et le donner à Denis: att réponse
 			\item se renseigner payement enseirb semestre 1: attendre fin octobre
 			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment + verifier changement heures dossier
 			\item Répondre a Bora hMETIS
@@ -181,6 +174,10 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item use a simple backfilling strategy to be fair with fcfs et utiliser la même pour tous. Le premier est bien plus conservateur que le second qui peut delay un job a cause d'un walltime trop grand
+			\item smooth transtion: probability of needing all nodes ? Try math functions ?
+			\item Garder une donnée si elle rentre en memoire malgré un autre job qui tourne ou commence. Sinon l'enlever. ca appote un problème d'eviction. Du coup j'evince la donnée qui a l'indice le plus faible.
+		
 			\item checker les intrvals avec et sans bf voir comment ca marche et si ca marceh bien
 			\item tester heft + conservative bf
 			\item je backfill si y a 0 eviction sur la node ou si je re utilise le fichier ou si pour ceux que j'ai placé, ils n'utilisent pas ce que je vais évincer.
