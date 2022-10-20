@@ -151,25 +151,19 @@
 
 		% Uppsala
 		\item tests bf
-		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup)
+		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup). Donc faut-il l'utilise comme tiebreak ?
 		\item quelques pseudocodes
 		\item code conservative bf avec mixed et if EAT is t
 		\item renommer les algos dans backfill
-		\item correction du bakcill conservateur pour ne couvrir que sur les cores qui seront release le plus tôt. Que sur FCFS donc la correc n'est pas encore sur les histogrammes.
+		\item correction du bakcfill conservateur: utiliser en prio les trou qui match le plus notre taille (risque de delay des jobs plus loin si le job qui force le trou se termne avant le alltime) avant de regarder les autres noeuds, possibilité d'utiliser des cores dans un trou et pas dans un trou + creation au minimu de trous.
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Faut-il d'abord checker les trou ? Si je rentre alors je me met dedans. Je peux utiliser des cores qui sont a la fois dans un trou et des pas dans un trou ? Si le walltime du job qui force un trou est bcp plus petit et que j'ai start des jobs alors le jobqui couvrait le trou se retrouve delay ?
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ?
-		\item Il y a deux manière de faire du bf avec le score:
-			1. Je regarde le score des nodes et des trou et je prends le meilleur.
-			2. Je regarde le score des nodes et des trou. Si j'ai au moins 1 trou de disponible, alors je me met dedans. Si j'en ai plusieurs je prends le trou avec le meilleur score. Sinon je prends la node avec le meilleur score.
 		\item we have a binary case (a data is on the node or not, can't be half loaded because of an eviction), a future work is a non binary case ?
-		\item J'ai un pb pur le moment dans ma core selection que je dois corriger ? (le truc avec les cores choisis qui sont pas les bons et font des trou plus gros)
-		\item Quand j'ai le choix entre utiliser un trou ou non et que dans les 2 cas ca passe, je dois le faire ? Pour le moment si j'ai le choix, je ne vais pas dans le trou. Dnas mon code corrigé si j'ai le choix je vais dnas le trou
+		\item Quand j'ai le choix entre utiliser un trou ou non et que dans les 2 cas ca passe, je dois le faire ? Pour le moment si j'ai le choix, je ne vais pas dans le trou. Dnas mon code corrigé si j'ai le choix je vais dans le trou
 		\item quand je me met dans un trou, si le walltime du job qui forcait au backfil se révèle plus petit mais que mon job backfill a déjà commencé, alors ca delay mon job plus gros (mais pas plus qu ce qu'il aurait attendu si le walltime était correct)
-		\item garder un fichier en mémoire même si il est pas ré-utilisé ?
 	\end{enumerate}
 	
 \section{Todo}
@@ -187,6 +181,7 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item checker les intrvals avec et sans bf voir comment ca marche et si ca marceh bien
 			\item tester heft + conservative bf
 			\item je backfill si y a 0 eviction sur la node ou si je re utilise le fichier ou si pour ceux que j'ai placé, ils n'utilisent pas ce que je vais évincer.
 			\item ajouter conservative bf et conservative bf tres conservateur sur la localité et voir les résultats.

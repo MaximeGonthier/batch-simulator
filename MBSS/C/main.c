@@ -769,17 +769,21 @@ int main(int argc, char *argv[])
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0)
 			{
-				fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t);
+				//~ int backfill_mode = 0;
+				int backfill_mode = 1;
+				fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0)
 			{
+				//~ int backfill_mode = 0;
+				int backfill_mode = 1;
 				if (busy_cluster == 1)
 				{
-					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t);
+					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
 				}
 				else
 				{
-					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, 1, 0, 0, 0);
+					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, 1, 0, 0, 0, backfill_mode);
 				}
 			}
 			else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0)

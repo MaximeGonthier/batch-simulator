@@ -193,7 +193,7 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 	}
 }
 
-void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t)
+void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode)
 {
 	#ifdef PRINT
 	printf("Start fcfs with a score conservative bf at time %d.\n", t);
@@ -211,7 +211,7 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
-			nb_non_available_cores = schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, nb_non_available_cores, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t);
+			nb_non_available_cores = schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, nb_non_available_cores, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
 			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			j = j->next;
