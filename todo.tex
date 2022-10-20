@@ -149,12 +149,12 @@
 
 		% Uppsala
 		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup). Donc faut-il l'utilise comme tiebreak ?
+		\item L'ajout de données persistente pose le pb de l'eviction. Je vais faire un LRU qui evince la donnée qui a été fini d'utilisé il y a le + longmemsp (j'aurais aussi pu faire celle qui a commencé le + longemps)
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ?
-		\item we have a binary case (a data is on the node or not, can't be half loaded because of an eviction), a future work is a non binary case ?
 		\item Quand j'ai le choix entre utiliser un trou ou non et que dans les 2 cas ca passe, je dois le faire ? Pour le moment si j'ai le choix, je ne vais pas dans le trou. Dnas mon code corrigé si j'ai le choix je vais dans le trou
 		\item quand je me met dans un trou, si le walltime du job qui forcait au backfil se révèle plus petit mais que mon job backfill a déjà commencé, alors ca delay mon job plus gros (mais pas plus qu ce qu'il aurait attendu si le walltime était correct)
 	\end{enumerate}

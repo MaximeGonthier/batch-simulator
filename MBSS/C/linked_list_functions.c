@@ -511,6 +511,67 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	//~ printf("free temp ok!.\n"); fflush(stdout); }
 }
 
+void delete_specific_data_from_node(struct Data_List* liste, int unique_id_to_delete)
+{
+    if (liste == NULL)
+    {
+		printf("Error list empty.\n"); fflush(stdout);
+        exit(EXIT_FAILURE);
+    }
+
+	struct Data* temp = liste->head;
+	struct Data* prev = liste->head;
+	
+	// If head node itself holds the key to be deleted
+    if (temp != NULL && temp->unique_id == unique_id_to_delete) {
+        liste->head = temp->next; // Changed head
+        //~ if (unique_id_to_delete == 11) {
+			//~ printf("Free the head.\n"); fflush(stdout); }
+        free(temp); // free old head
+        //~ if (unique_id_to_delete == 11) {
+        //~ printf("Free the head Ok!\n"); fflush(stdout); }
+        return;
+    }
+	
+	while (temp->unique_id != unique_id_to_delete && temp != NULL)
+	{
+		//~ if (unique_id_to_delete == 11) {
+		//~ printf("prev (%d) get temp.\n", prev->unique_id); fflush(stdout); }
+		prev = temp;
+		//~ if (unique_id_to_delete == 11) {
+		//~ printf("temp is %d and next is %d.\n", temp->unique_id, temp->next->unique_id); fflush(stdout); }
+		temp = temp->next;
+	}
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("temp is %d. Next is %d\n", temp->unique_id, temp->next->unique_id); fflush(stdout); }
+	if (temp == NULL)
+	{
+		printf("Error, deletion of data %d failed.\n", unique_id_to_delete); fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	//~ if (unique_id_to_delete == 11) {
+		//~ printf("Next.\n"); fflush(stdout); }
+	prev->next = temp->next;
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("Will free temp = %d.\n", temp->unique_id); fflush(stdout); }
+	
+	if (unique_id_to_delete != temp->unique_id)
+	{
+		printf("ERROR!\n"); fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	
+	/* OLD */
+	//~ free(temp);
+	/* NEW */
+	// free(temp->node_used);
+	//~ free(temp->cores_used);
+	free(temp);
+	
+	//~ if (unique_id_to_delete == 11) {
+	//~ printf("free temp ok!.\n"); fflush(stdout); }
+}
+
 /* Copy a job, delete it from list 1 and add it in tail of list 2. */
 void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j)
 {

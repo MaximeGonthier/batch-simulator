@@ -1920,9 +1920,9 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 
 void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
 {
-	#ifdef PRINT
-	printf("Adding data %d on node %d at time %d.\n", data_unique_id, node_used->unique_id, t); fflush(stdout);
-	#endif
+	//~ #ifdef PRINT
+	printf("\nChecking data %d on node %d at time %d.\n", data_unique_id, node_used->unique_id, t); fflush(stdout);
+	//~ #endif
 	
 	bool data_is_on_node = false;
 	/* Let's try to find it in the node */
@@ -1932,6 +1932,37 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 	{
 		if (data_unique_id == d->unique_id) /* It is already on node */
 		{
+			#ifdef DATA_PERSISTENCE
+			//~ if (d->nb_task_using_it > 0 || d->end_time == t) /* And is still valid! */
+			//~ {
+				if (d->start_time > t) /* The job will have to wait for the data to be loaded by another job before starting */
+				{
+					*waiting_for_a_load_time = d->start_time - t;
+				}
+				else
+				{
+					*transfer_time = 0; /* No need to wait to start the job, data is already fully loaded */
+				}
+			//~ }
+			//~ else /* Need to reload it */
+			//~ {
+				//~ *transfer_time = data_size/node_used->bandwidth;
+				//~ d->start_time = t + *transfer_time;
+				
+				//~ #ifdef DATA_PERSISTENCE
+				//~ node_used->data_occupation += d->size;
+				//~ #endif
+			//~ }
+			
+			data_is_on_node = true;
+			d->nb_task_using_it += 1;
+			
+			if (d->end_time < end_time)
+			{
+				d->end_time = end_time;
+			}
+			break;			
+			#else
 			if (d->nb_task_using_it > 0 || d->end_time == t) /* And is still valid! */
 			{
 				if (d->start_time > t) /* The job will have to wait for the data to be loaded by another job before starting */
@@ -1957,6 +1988,7 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 				d->end_time = end_time;
 			}
 			break;
+			#endif
 		}
 		d = d->next;
 	}
@@ -1973,7 +2005,51 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		new->next = NULL;
 		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 		insert_tail_data_list(node_used->data, new);
+		
+		#ifdef DATA_PERSISTENCE
+		node_used->data_occupation += new->size;
+		#endif
 	}
+	
+	#ifdef DATA_PERSISTENCE
+	while (node_used->data_occupation > 128) /* Need an eviction */
+	{
+		printf("node_used->data_occupation > 128\n");
+		struct Data* d_temp = node_used->data->head;
+		struct Data* data_to_evict = (struct Data*) malloc(sizeof(struct Data));
+		int min_end_time = INT_MAX;
+		while (d_temp != NULL)
+		{
+			printf("Testing data %d (end_time %d) to evict.\n", d_temp->unique_id, d_temp->end_time);
+			if (d_temp->unique_id != data_unique_id)
+			{
+				if (min_end_time > d_temp->end_time)
+				{
+					min_end_time = d_temp->end_time;
+					data_to_evict = d_temp;
+				}
+			}
+			d_temp = d_temp->next;
+		}
+		if (data_to_evict == NULL || data_to_evict->nb_task_using_it > 0)
+		{
+			if (data_to_evict == NULL)
+			{
+				printf("Error data_to_evict NULL.\n"); fflush(stdout);
+			}
+			else
+			{
+				printf("data_to_evict (%d) ->nb_task_using_it > 0.\n", data_to_evict->unique_id); fflush(stdout);
+			}
+			exit(1);
+		}
+		data_to_evict->end_time = t - 1;
+		printf("Evicting data %d size %f.\n", data_to_evict->unique_id, data_to_evict->size);
+		node_used->data_occupation -= data_to_evict->size;
+		delete_specific_data_from_node(node_used->data, data_to_evict->unique_id);
+	}
+	printf("After checking data, occupation is %f.\n", node_used->data_occupation);
+	#endif
 }
 
 void remove_data_from_node(struct Job* j, int t)
@@ -2099,9 +2175,9 @@ void start_jobs(int t, struct Job* head)
 				}
 			//~ }
 			
-			#ifdef PRINT
+			//~ #ifdef PRINT
 			printf("For job %d (delay = %d): %d transfer time and %d waiting for a load time. Overhead is %d\n", j->unique_id, j->delay, transfer_time, waiting_for_a_load_time, overhead_of_load); fflush(stdout);
-			#endif
+			//~ #endif
 			
 			if (j->delay + overhead_of_load < j->walltime)
 			{
@@ -2125,9 +2201,9 @@ void start_jobs(int t, struct Job* head)
 			
 			insert_next_time_in_sorted_list(end_times, j->end_time);
 			
-			#ifdef PRINT
+			//~ #ifdef PRINT
 			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
-			#endif
+			//~ #endif
 			
 			
 			/*For easy bf */

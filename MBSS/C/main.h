@@ -145,6 +145,11 @@ struct Node {
     struct Core_in_a_hole_List* cores_in_a_hole;
     //~ int* cores_in_a_hole;
     //~ int* start_time_of_the_hole; /* Temps auquel le trou n'existera plus. Il y a en a 1 par core car 2 jobs aux starts times différents peuvent créer des trou sur une node. */
+    
+    /* Pour les data qui restent si rien ne les remplacent */
+    #ifdef DATA_PERSISTENCE
+    float data_occupation; /* From 0 to 128 */
+    #endif
 };
 
 struct Core_in_a_hole_List {
@@ -292,6 +297,7 @@ void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_L
 void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cores_to_delete);
 void free_cores_in_a_hole(struct Core_in_a_hole** head_ref);
 void delete_core_in_hole_specific_core(struct Core_in_a_hole_List* liste, int unique_id_to_delete);
+void delete_specific_data_from_node(struct Data_List* liste, int unique_id_to_delete);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);

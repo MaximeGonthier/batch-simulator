@@ -88,6 +88,10 @@ void read_cluster(char* input_node_file)
 		new->cores_in_a_hole->head = NULL;
 		new->cores_in_a_hole->tail = NULL;
 		
+		#ifdef DATA_PERSISTENCE
+		new->data_occupation = 0; /* From 0 to 20 */
+		#endif
+
 		new->next = NULL;
 		if (new->memory == 128)
 		{

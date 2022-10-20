@@ -107,6 +107,14 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	
+	#ifdef DATA_PERSISTENCE
+	if (constraint_on_sizes != 0)
+	{
+		printf("Constraint on sizes not dealt with if it's not 0 with data persistence (because of the way I look at the memory usage of a node.\n");
+		exit(1);
+	}
+	#endif
+	
 	printf("Workloads: %s\n", input_job_file);
 	printf("Cluster: %s\n", input_node_file);
 	printf("Scheduler: %s\n", scheduler);
@@ -884,6 +892,10 @@ int main(int argc, char *argv[])
 						new->cores_in_a_hole->head = NULL;
 						new->cores_in_a_hole->tail = NULL;
 						
+						#ifdef DATA_PERSISTENCE
+						new->data_occupation = n->data_occupation;
+						#endif
+						
 						/* Insert node */
 						new->next = NULL;
 						insert_tail_node_list(fake_node_list[i], new);
@@ -975,6 +987,10 @@ int main(int argc, char *argv[])
 						new->cores_in_a_hole = malloc(sizeof(*new->cores_in_a_hole));
 						new->cores_in_a_hole->head = NULL;
 						new->cores_in_a_hole->tail = NULL;
+						
+						#ifdef DATA_PERSISTENCE
+						new->data_occupation = n->data_occupation;
+						#endif
 						
 						/* Insert node */
 						new->next = NULL;
