@@ -260,7 +260,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void sort_tab_of_int_decreasing_order(long long arr[], int n);
 void swap(long long* xp, long long* yp);
-int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
+int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int backfill_mode);
 //~ int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t);
 int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t);
 

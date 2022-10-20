@@ -15,8 +15,8 @@ CONTRAINTES_TAILLES=$4
 # Header
 echo "job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata" > "outputs/Results_all_jobs_$3.csv"
 
-make print_gantt_chart -C C/
-#~ make print_print_gantt_chart -C C/
+#~ make print_gantt_chart -C C/
+make print_print_gantt_chart -C C/
 # make print_plot_stats_print_gantt_chart -C C/
 #~ make plot_stats_print_gantt_chart -C C/
 # ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv > plot/Gantt_charts/pour_comprendre_nos_algos/3/${SCHEDULER}_terminal_output.txt
