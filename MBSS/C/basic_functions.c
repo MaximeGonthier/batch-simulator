@@ -985,7 +985,11 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		new->unique_id = j->data;
 		new->start_time = -1;
 		new->end_time = -1;
+		
+		#ifndef DATA_PERSISTENCE
 		new->nb_task_using_it = 0;
+		#endif
+		
 		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 		new->intervals->head = NULL;
 		new->intervals->tail = NULL;
@@ -1704,7 +1708,11 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -1779,32 +1787,13 @@ void get_current_intervals(struct Node_List** head_node, int t)
 		{
 			struct Data* d = n->data->head;
 			while (d != NULL)
-			{
-				//~ if (d->intervals->head != NULL)
-				//~ {
-					//~ free_interval_linked_list(&d->intervals->head);
-					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
-					//~ d->intervals->head = NULL;
-					//~ d->intervals->tail = NULL;
-				//~ }
-				//~ else if (d->intervals->head == NULL)
-				//~ {
-					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
-					//~ d->intervals->head = NULL;
-					//~ d->intervals->tail = NULL;
-				//~ }
-				//~ else
-				//~ {
-					//~ printf("Error\n");
-					//~ exit(EXIT_FAILURE);
-				//~ }
-				//~ print_data_intervals(head_node, t);
-					
+			{					
 					/* TODO : maybe I need to free here each time ? But when I do i get different results from Fcfs with x0_x0_x0. */
 					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 					d->intervals->head = NULL;
 					d->intervals->tail = NULL;
 					
+					#ifndef DATA_PERSISTENCE
 					if (d->nb_task_using_it > 0)
 					{
 						create_and_insert_tail_interval_list(d->intervals, t);
@@ -1818,12 +1807,34 @@ void get_current_intervals(struct Node_List** head_node, int t)
 						}
 						create_and_insert_tail_interval_list(d->intervals, d->end_time);
 					}
-					else if (d->end_time >= t)
+					else if (d->end_time >= t) /* Cas finis et re enchaine */
 					{
 						create_and_insert_tail_interval_list(d->intervals, t);
 						create_and_insert_tail_interval_list(d->intervals, t);
 						create_and_insert_tail_interval_list(d->intervals, t);
 					}
+					#else
+					//~ if (d->nb_task_using_it > 0)
+					//~ {
+						create_and_insert_tail_interval_list(d->intervals, t);
+						if (d->start_time < t)
+						{
+							create_and_insert_tail_interval_list(d->intervals, t);
+						}
+						else
+						{
+							create_and_insert_tail_interval_list(d->intervals, d->start_time);
+						}
+						create_and_insert_tail_interval_list(d->intervals, d->end_time);
+					//~ }
+					//~ else if (d->end_time >= t) /* Cas finis et re enchaine. utile en data persistence ? */
+					//~ {
+						//~ create_and_insert_tail_interval_list(d->intervals, t);
+						//~ create_and_insert_tail_interval_list(d->intervals, t);
+						//~ create_and_insert_tail_interval_list(d->intervals, t);
+					//~ }
+					#endif
+					
 				d = d->next;
 			}
 			n = n->next;
@@ -1955,7 +1966,7 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 			//~ }
 			
 			data_is_on_node = true;
-			d->nb_task_using_it += 1;
+			//~ d->nb_task_using_it += 1;
 			
 			if (d->end_time < end_time)
 			{
@@ -2000,7 +2011,11 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		new->unique_id = data_unique_id;
 		new->start_time = t + *transfer_time;
 		new->end_time = end_time;
+		
+		#ifndef DATA_PERSISTENCE
 		new->nb_task_using_it = 1;
+		#endif
+		
 		new->size = data_size;
 		new->next = NULL;
 		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
@@ -2031,16 +2046,9 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 			}
 			d_temp = d_temp->next;
 		}
-		if (data_to_evict == NULL || data_to_evict->nb_task_using_it > 0)
+		if (data_to_evict == NULL)
 		{
-			if (data_to_evict == NULL)
-			{
-				printf("Error data_to_evict NULL.\n"); fflush(stdout);
-			}
-			else
-			{
-				printf("data_to_evict (%d) ->nb_task_using_it > 0.\n", data_to_evict->unique_id); fflush(stdout);
-			}
+			printf("Error data_to_evict NULL.\n"); fflush(stdout);
 			exit(1);
 		}
 		data_to_evict->end_time = t - 1;
@@ -2052,8 +2060,10 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 	#endif
 }
 
+/* Pas utile en cas data persistence */
 void remove_data_from_node(struct Job* j, int t)
 {
+	#ifndef DATA_PERSISTENCE
 	struct Data* d = j->node_used->data->head;
 	while (d != NULL)
 	{
@@ -2069,6 +2079,7 @@ void remove_data_from_node(struct Job* j, int t)
 		}
 		d = d->next;
 	}
+	#endif
 }
 
 /* Go through schedule jobs to find finished jobs. */
@@ -2380,12 +2391,13 @@ void end_jobs(struct Job* job_list_head, int t)
 				}
 			}
 			
+			/* Dans le cas data persistence plus besoin de nb_task_using_it */
+			#ifndef DATA_PERSISTENCE
 			if (j->data != 0)
 			{
-				//~ printf("Remove data...\n"); fflush(stdout);
 				remove_data_from_node(j, t);
-				//~ printf("Remove data Ok!\n"); fflush(stdout);
 			}
+			#endif
 			
 			//~ for (i = 0; i < j->cores; i++)
 			//~ {
@@ -3123,7 +3135,11 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;

@@ -864,7 +864,11 @@ int main(int argc, char *argv[])
 							new_data->unique_id = d->unique_id;
 							new_data->start_time = d->start_time;
 							new_data->end_time = d->end_time;
+							
+							#ifndef DATA_PERSISTENCE
 							new_data->nb_task_using_it = d->nb_task_using_it;
+							#endif
+							
 							/* Copy Intervals */
 							/* Pas besoin car je les get au début du schedule. */
 							new_data->size = d->size;
@@ -960,7 +964,11 @@ int main(int argc, char *argv[])
 							new_data->unique_id = d->unique_id;
 							new_data->start_time = d->start_time;
 							new_data->end_time = d->end_time;
+							
+							#ifndef DATA_PERSISTENCE
 							new_data->nb_task_using_it = d->nb_task_using_it;
+							#endif
+							
 							/* Copy Intervals */
 							/* Pas besoin car je les get au début du schedule. */
 							new_data->size = d->size;

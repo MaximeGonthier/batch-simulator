@@ -169,7 +169,11 @@ struct Data {
     int start_time;
     int end_time;
     //~ /** For mixed decreasing strategy **/
+    
+    #ifndef DATA_PERSISTENCE
     int nb_task_using_it;
+    #endif
+    
     //~ /** For mixed decreasing strategy **/
     struct Interval_List* intervals;
     float size;

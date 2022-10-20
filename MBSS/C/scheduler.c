@@ -716,7 +716,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -1089,7 +1093,11 @@ double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List**
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -1372,7 +1380,11 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -1886,7 +1898,11 @@ double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_nod
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -2120,7 +2136,11 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -2600,7 +2620,11 @@ double fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, i
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -3307,7 +3331,11 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -3775,7 +3803,11 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -4204,7 +4236,11 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -4580,7 +4616,11 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -4928,7 +4968,11 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
@@ -5166,7 +5210,11 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 				new->unique_id = j->data;
 				new->start_time = -1;
 				new->end_time = -1;
+				
+				#ifndef DATA_PERSISTENCE
 				new->nb_task_using_it = 0;
+				#endif
+				
 				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 				new->intervals->head = NULL;
 				new->intervals->tail = NULL;
