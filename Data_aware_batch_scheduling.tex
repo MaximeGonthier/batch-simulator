@@ -1086,7 +1086,7 @@ From previous workloads get the possible allocated area.
 If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
 	\item Compute the score on nodes of size $x$. If $Planned\_Area(x+1) - area(J_i) > 0$ then, compute the score on nodes of size $x+1$. And so on for $x+2$...
-	\item Compute $J_i$ on the node with the best score.
+	\item Compute $J_i$ on the node with the smallest score.
 	\item Update $Planned\_Area(x+1)$ if necessary.
 \end{enumerate}
 
@@ -1094,12 +1094,12 @@ If I want to schedule of job $J_i$ using a file of size $x$
 If I want to schedule of job $J_i$ using a file of size $x$
 \begin{enumerate}
 	\item Compute score on all nodes. Add a malus equal to: $multiplier \times \frac{area(J_i)}{Planned\_Area[x+1]}$ if I want to schedule on a node of size bigger than $x$.
-	\item Compute $J_i$ on the node with the best score.
+	\item Compute $J_i$ on the node with the smallest score.
 \end{enumerate}
 OR:
 \begin{enumerate}
 	\item Compute score on all nodes. Add a malus equal to: $multiplier \times area(J_i)$ if I want to schedule on a node of size bigger than $x$.
-	\item Compute $J_i$ on the node with the best score.
+	\item Compute $J_i$ on the node with the smallest score.
 \end{enumerate}
 Disadvantage: it's not really a time like the other factors of the score.s
 
@@ -1201,30 +1201,30 @@ Disadvantage: it's not really a time like the other factors of the score.s
 
 \subsection{Getting back only on the data locality constraint}
 
-I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with a score that alternate between HEFT and locality:\\
+I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with a score that alternate between EFT and locality:\\
 \begin{algorithm}[htbp]
-\caption{HEFT-SCORE MIX}
+\caption{EFT-SCORE MIX}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
 \State $occupation\_threshold \gets 100$ 
 \State $occupation \gets$ the percentage of nodes running at least one job
-\ForEach {$J_i \in \jobset$}
+%~ \ForEach {$J_i \in \jobset$}
 	\If{$occupation < occupation\_threshold$}
-		\State $HEFT(\jobset,\nodeset)$
+		\State $EFT(\jobset,\nodeset)$
 	\Else
 		\State $SCORE(\jobset,\nodeset)$
 	\EndIf
-\EndFor
+%~ \EndFor
 \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[htbp]
-\caption{HEFT}
+\caption{EFT}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 \begin{algorithmic}[0]
 \ForEach {$J_i \in \jobset$}
 	\State Schedule $J_i$ on the node with the earliest completion time. \Comment{Thus taking into consideration the transfer time.}
-	\State Remove $J_i$ from $\jobset$
+	%~ \State Remove $J_i$ from $\jobset$
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -1239,11 +1239,13 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 	\ForEach {$\Node{k} \in \nodeset$}
 		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
 		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$ \Comment{Or time waiting for the file to be loaded by another job.}
-		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets A + 500 \times B + 1 \times C$
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
 	\EndFor
-	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
-	\State Remove $J_i$ from $\jobset$
+	\State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest index in case of a tie.
+	%~ \State Remove $J_i$ from $\jobset$
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -1257,16 +1259,18 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 	\State $C\_multiplier \gets 1$
 	\ForEach {$\Node{k} \in \nodeset$}
 		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
-		\If{$A = t$}
+		\If{$A = current~time$}
 			\State $B\_multiplier \gets 1$
 			\State $C\_multiplier \gets 0$
 		\EndIf
 		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
-		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
 	\EndFor
-	\State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest index in case of a tie.
-	\State Remove $J_i$ from $\jobset$
+	\State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest index in case of a tie.
+	%~ \State Remove $J_i$ from $\jobset$
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -1281,17 +1285,21 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 	\ForEach {$\Node{k} \in \nodeset$}
 		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
 		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
-		\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		\If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge t + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$} \Comment{C'est pas tout à fais vrai car un job peut utiliser des cores d'un trou et des cores qui ne sont pas dans un trou en même temps.}
-			\State $A \gets t$
+		\If {$\exists \mathit{Cores\_Hole}(\Node{k}) \subset \core(\Node{k})~such~as~|\core(J_i)| \leq |\mathit{Cores\_Hole}(\Node{k})| \wedge current~time + \walltime(J_i) \leq \mathit{Cores\_Hole}(\Node{k})~next~start~time$} \Comment{Not exactly correct ? A job can use cores from inside and outside of a hole ?}
+			\State $A \gets current~time$
 			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
-			\State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+			\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 			\State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
 		\EndIf
 	\EndFor
 	\State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
-	\State Remove $J_i$ from $\jobset$
+	%~ \State Remove $J_i$ from $\jobset$
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -1391,10 +1399,10 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 %~ \caption{FLOW ADAPTATION}
 %~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
 %~ \begin{algorithmic}[0]
-	%~ \State $Flow\_heft \gets$ HEFT($\jobset$, $\nodeset$) 
+	%~ \State $Flow\_EFT \gets$ EFT($\jobset$, $\nodeset$) 
 	%~ \State $Flow\_locality \gets$ LOCALITY($\jobset$, $\nodeset$)
-	%~ \If{$Flow\_heft < Flow\_locality$}
-		%~ \State HEFT($\jobset$, $\nodeset$) 
+	%~ \If{$Flow\_EFT < Flow\_locality$}
+		%~ \State EFT($\jobset$, $\nodeset$) 
 	%~ \Else
 		%~ \State LOCALITY($\jobset$, $\nodeset$) 
 	%~ \EndIf
@@ -1413,7 +1421,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 			%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 			%~ \State $score_{\Node{k}} \gets B + C$
 		%~ \EndFor
-		%~ \State Schedule $J_i$ on the node with the best score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
+		%~ \State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest $EAT$ in case of a tie. Schedule on the node with the lowest index in case of a second tie.
 		%~ \State Remove $J_i$ from $\jobset$
 	%~ \EndFor
 %~ \end{algorithmic}
@@ -1431,6 +1439,10 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \caption{Locality constraint only - Workload of January 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 18}\end{figure}
 
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-04-07->2022-04-09_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-04-07->2022-04-09_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Locality constraint only - Workload of April 7-9 (13000/23000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 20}\end{figure}
 
 \subsection{New way to plot statistics}
 
