@@ -148,7 +148,8 @@ struct Node {
     
     /* Pour les data qui restent si rien ne les remplacent */
     #ifdef DATA_PERSISTENCE
-    float data_occupation; /* From 0 to 128 */
+    int data_occupation; /* From 0 to 20 */
+    struct Data_List* temp_data; /* To get local temporary intervals not interferring with start_jobs */
     #endif
 };
 
@@ -248,7 +249,7 @@ int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from
 void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct Node* n, int t);
 void start_jobs(int t, struct Job* scheduled);
 void end_jobs(struct Job* job_list_head, int t);
-void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time);
+void add_data_in_node (int data_unique_id, float data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time, int delay, int walltime, int start_time, int cores);
 int get_nb_non_available_cores(struct Node_List** n, int t);
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes);
 void reset_cores(struct Node_List** l, int t);
@@ -302,6 +303,8 @@ void delete_core_in_hole_from_head(struct Core_in_a_hole_List* liste, int nb_cor
 void free_cores_in_a_hole(struct Core_in_a_hole** head_ref);
 void delete_core_in_hole_specific_core(struct Core_in_a_hole_List* liste, int unique_id_to_delete);
 void delete_specific_data_from_node(struct Data_List* liste, int unique_id_to_delete);
+//~ void free_data_list(struct Data** head_ref);
+void free_and_copy_data_and_intervals_in_temp_data(struct Node_List** head_node, int t);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
@@ -320,12 +323,12 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int multiplier_area_bigger_nodes, int division_by_planned_area);
 void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy);
 void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
-void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
-double fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int break_condition_if_not_started_at_t);
+void eft_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+double fake_eft_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int break_condition_if_not_started_at_t);
 double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes);
 int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int mode);
-int heft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
+int eft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
 void mixed_if_EAT_is_t_scheduler(struct Job* j, struct Node_List** head_node, int t, int mode);
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode);

@@ -361,28 +361,67 @@ make -C C/
 #~ mv ${OUTPUT_FILE} data/Results_FCFS_Score_Adaptative_Multiplier_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 # 9. Comparer easy bf 2.0
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+#~ if (($((STARTING_I)) == 1))
+#~ then
+	#~ echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > ${OUTPUT_FILE}
+#~ fi
+#~ for ((i=$((STARTING_I)); i<=8; i++))
+#~ do
+	#~ # Schedulers
+	#~ if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
+	#~ elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_conservativebf"
+	#~ elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"
+	#~ elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"
+	#~ elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"
+	#~ elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"
+	#~ elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x"
+	#~ elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x"
+	#~ fi
+	#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+#~ done
+#~ echo "Final results are:"
+#~ cat ${OUTPUT_FILE}
+#~ mv ${OUTPUT_FILE} data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+
+# 10. Tester data persistence
+OUTPUT_FILE=outputs/Results_Data_Persistence_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 if (($((STARTING_I)) == 1))
 then
 	echo "Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum, Max Stretch, Max Stretch With a Minimum, Nb Upgraded Jobs, Nb jobs large queue time, Mean flow stretch 128 jobs, Mean flow stretch 256 jobs, Mean flow stretch 1024 jobs, Mean flow stretch with a minimum 128 jobs, Mean flow stretch with a minimum 256 jobs, Mean flow stretch with a minimum 1024 jobs" > ${OUTPUT_FILE}
 fi
-for ((i=$((STARTING_I)); i<=8; i++))
+for ((i=$((STARTING_I)); i<=4; i++))
 do
 	# Schedulers
-	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs"
-	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_conservativebf"
-	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"
-	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"
-	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"
-	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"
-	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x"
-	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x"
+	if [ $((i)) == 1 ]; then 
+		SCHEDULER="Fcfs"
+		make -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+		make data_persistence -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+	elif [ $((i)) == 2 ]; then 
+		SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"
+		make -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+		make data_persistence -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+	elif [ $((i)) == 3 ]; then 
+		SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"
+		make -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+		make data_persistence -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+	elif [ $((i)) == 4 ]; then 
+		SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0"
+		make -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
+		make data_persistence -C C/
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
 	fi
-	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE
 done
 echo "Final results are:"
 cat ${OUTPUT_FILE}
-mv ${OUTPUT_FILE} data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+mv ${OUTPUT_FILE} data/Results_Data_Persistence_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 
 end=`date +%s` 

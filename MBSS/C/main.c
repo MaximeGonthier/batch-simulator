@@ -245,7 +245,7 @@ int main(int argc, char *argv[])
 	int start_immediately_if_EAT_is_t = 0;
 	
 	/* Getting informations for certain schedulers. */
-	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0 || strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0)
+	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0 || strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0)
 	{
 		if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0)
 		{
@@ -341,7 +341,7 @@ int main(int argc, char *argv[])
 			i = 34;
 			j = 34;
 		}
-		else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43) == 0)
+		else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0)
 		{
 			i = 43;
 			j = 43;
@@ -464,7 +464,7 @@ int main(int argc, char *argv[])
 		//~ busy_cluster_threshold =  (int) strtol(to_copy5, NULL, 10);
 		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	//~ }
-	//~ else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43 == 0))
+	//~ else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43 == 0))
 	//~ {
 		//~ busy_cluster_threshold = 99;
 		//~ busy_cluster_threshold = 100;
@@ -767,24 +767,28 @@ int main(int argc, char *argv[])
 			printf("Reschedule.\n");
 			#endif
 			
-			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0)
+			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
+				
 				fcfs_with_a_score_easybf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
-				//~ int backfill_mode = 0;
-				int backfill_mode = 1;
+				int backfill_mode = 0;
+				//~ int backfill_mode = 1;
 				fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
-				//~ int backfill_mode = 0;
-				int backfill_mode = 1;
+				int backfill_mode = 0;
+				//~ int backfill_mode = 1;
 				if (busy_cluster == 1)
 				{
 					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
@@ -794,7 +798,7 @@ int main(int argc, char *argv[])
 					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, 1, 0, 0, 0, backfill_mode);
 				}
 			}
-			else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0)
+			else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (nb_job_to_schedule >= 486 - running_nodes)
 				{
@@ -802,25 +806,25 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					heft_scheduler(scheduled_job_list->head, node_list, t);
+					eft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strcmp(scheduler, "HEFT") == 0)
+			else if (strcmp(scheduler, "EFT") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
-				heft_scheduler(scheduled_job_list->head, node_list, t);
+				eft_scheduler(scheduled_job_list->head, node_list, t);
 			}
-			else if (strcmp(scheduler, "HEFT_if_nb_jobs_superior_to_available_nodes") == 0)
+			else if (strcmp(scheduler, "EFT_if_nb_jobs_superior_to_available_nodes") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (486 - running_nodes >= nb_job_to_schedule)
 				{
-					heft_scheduler(scheduled_job_list->head, node_list, t);
+					eft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 				else
 				{
 					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
 				}
 			}
-			else if (strcmp(scheduler, "Mixed_strategy") == 0)
+			else if (strcmp(scheduler, "Mixed_strategy") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (busy_cluster == 1)
 				{
@@ -828,11 +832,15 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					heft_scheduler(scheduled_job_list->head, node_list, t);
+					eft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strcmp(scheduler, "Try_HEFT_else_do_SCORE") == 0)
+			else if (strcmp(scheduler, "Try_EFT_else_do_SCORE") == 0) 
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
+				
 				/* Create a fake node_list with fake cores that copy the real node_list.
 				 * Copy it's content from the real node_list. */
 				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
@@ -898,6 +906,9 @@ int main(int argc, char *argv[])
 						
 						#ifdef DATA_PERSISTENCE
 						new->data_occupation = n->data_occupation;
+						new->temp_data = malloc(sizeof(*new->temp_data));
+						new->temp_data->head = NULL;
+						new->temp_data->tail = NULL;
 						#endif
 						
 						/* Insert node */
@@ -907,7 +918,7 @@ int main(int argc, char *argv[])
 					}
 				}
 
-				double success = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t, 1);
+				double success = fake_eft_scheduler(scheduled_job_list->head, fake_node_list, t, 1);
 				//~ double success = 1;
 				//~ printf("Mean flow is (-1 if failed t) %f.\n", success);
 				if (success == -1) /* It failed I must do score */
@@ -917,22 +928,26 @@ int main(int argc, char *argv[])
 					/* Multiplicateur qui dépend  */
 					//~ fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 3, 0, 0);
 				}
-				else /* HEFT succeded I can start it. */
+				else /* EFT succeded I can start it. */
 				{
-					//~ printf("HEFT\n");
-					heft_scheduler(scheduled_job_list->head, node_list, t); 
+					//~ printf("EFT\n");
+					eft_scheduler(scheduled_job_list->head, node_list, t); 
 				}
 			}
-			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0)
+			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 0);
 			}
-			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t_no_TLE") == 0)
+			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t_no_TLE") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 1);
 			}
-			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_heft_score or Flow_adaptation_heft_locality **/
+			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_EFT_score or Flow_adaptation_EFT_locality **/
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
+				
 				/* Create a fake node_list with fake cores that copy the real node_list.
 				 * Copy it's content from the real node_list. */
 				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
@@ -998,6 +1013,9 @@ int main(int argc, char *argv[])
 						
 						#ifdef DATA_PERSISTENCE
 						new->data_occupation = n->data_occupation;
+						new->temp_data = malloc(sizeof(*new->temp_data));
+						new->temp_data->head = NULL;
+						new->temp_data->tail = NULL;
 						#endif
 						
 						/* Insert node */
@@ -1007,13 +1025,13 @@ int main(int argc, char *argv[])
 					}
 				}
 				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
-				double heft_mean_flow = fake_heft_scheduler(scheduled_job_list->head, fake_node_list, t, 0);			
+				double EFT_mean_flow = fake_eft_scheduler(scheduled_job_list->head, fake_node_list, t, 0);			
 				double locality_mean_flow = 0;
-				if (strcmp(scheduler, "Flow_adaptation_heft_locality") == 0)
+				if (strcmp(scheduler, "Flow_adaptation_EFT_locality") == 0)
 				{
 					locality_mean_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
 				}
-				else if (strcmp(scheduler, "Flow_adaptation_heft_score") == 0)
+				else if (strcmp(scheduler, "Flow_adaptation_EFT_score") == 0)
 				{
 					locality_mean_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
 				}
@@ -1022,15 +1040,15 @@ int main(int argc, char *argv[])
 					printf("Error Flow adapatation scheduler does not exist.\n");
 					exit(EXIT_FAILURE);
 				}
-				//~ printf("Heft flow is %d, Locality flow is %d.\n", heft_flow, locality_flow);	
-				if (heft_mean_flow < locality_mean_flow)
+				//~ printf("EFT flow is %d, Locality flow is %d.\n", EFT_flow, locality_flow);	
+				if (EFT_mean_flow < locality_mean_flow)
 				{
-					//~ printf("HEFT\n");
-					heft_scheduler(scheduled_job_list->head, node_list, t);
+					//~ printf("EFT\n");
+					eft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 				else
 				{
-					if (strcmp(scheduler, "Flow_adaptation_heft_locality") == 0)
+					if (strcmp(scheduler, "Flow_adaptation_EFT_locality") == 0)
 					{
 						locality_scheduler(scheduled_job_list->head, node_list, t);
 					}
@@ -1041,7 +1059,7 @@ int main(int argc, char *argv[])
 					}
 				}
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (busy_cluster == 1)
 				{
@@ -1049,10 +1067,10 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					heft_scheduler(scheduled_job_list->head, node_list, t);
+					eft_scheduler(scheduled_job_list->head, node_list, t);
 				}
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_heft_x", 43) == 0)
+			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (busy_cluster == 1)
 				{
@@ -1065,25 +1083,40 @@ int main(int argc, char *argv[])
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 			}
 			else if (strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_with_a_score_area_filling_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, planned_or_ratio, Ratio_Area);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_with_a_score_area_factor_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, division_by_planned_area);
 			}
-			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0))
+			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0)) /* Ok avec DATA_PERSISTENCE */
 			{
 				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
 			}
@@ -1097,14 +1130,23 @@ int main(int argc, char *argv[])
 			}
 			else if ((strcmp(scheduler, "Fcfs_backfill_big_nodes_0") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_0_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1_big_job_first") == 0))
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
 			}
 			else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
 			}
 			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0)
 			{
+				#ifdef DATA_PERSISTENCE
+				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
+				#endif
 				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t);
 			}
 			else
@@ -1119,7 +1161,6 @@ int main(int argc, char *argv[])
 			
 
 			/* Get started jobs. */
-			//~ print_time_list(start_times->head, 0);
 			if (start_times->head != NULL)
 			{
 				if (start_times->head->time == t)
@@ -1128,16 +1169,7 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		
-		//~ /* Get started jobs. */
-		//~ if (start_times->head != NULL)
-		//~ {
-			//~ if (start_times->head->time == t)
-			//~ {
-				//~ start_jobs(t, scheduled_job_list->head);
-			//~ }
-		//~ }
-		
+				
 		#ifdef PRINT_CLUSTER_USAGE
 		fprintf(f_stats, "%d,%f,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head), running_nodes_workload_minus_2);
 		#endif

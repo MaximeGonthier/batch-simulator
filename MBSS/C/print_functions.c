@@ -24,28 +24,47 @@ void print_node_list(struct Node_List** list)
 
 void print_data_intervals(struct Node_List** list, int t)
 {
-	printf("Intervals at time %d are:\n", t); fflush(stdout);
+	printf("Intervals at time %d are:\n", t);
 	for (int i = 0; i < 3; i++)
 	{
 		struct Node* n = list[i]->head;
 		while (n != NULL)
 		{
-			printf("Node %d:", n->unique_id); fflush(stdout);
+			printf("Node %d\n", n->unique_id);
+			
+			#ifndef DATA_PERSISTENCE
 			struct Data* d = n->data->head;
+			printf("Data:");
 			while (d != NULL)
 			{
-				printf(" %d (", d->unique_id); fflush(stdout);
+				printf(" %d (", d->unique_id);
 				struct Interval* i = d->intervals->head;
 				while (i != NULL)
 				{
-					printf(" %d", i->time); fflush(stdout);
+					printf(" %d", i->time);
 					i = i->next;
 				}
-				printf(" )"); fflush(stdout);
+				printf(" )");
 				d = d->next;
 			}
+			#else
+			struct Data* d = n->data->head;
+			printf("Temp Data:");
+			while (d != NULL)
+			{
+				printf(" %d (", d->unique_id);
+				struct Interval* i = d->intervals->head;
+				while (i != NULL)
+				{
+					printf(" %d", i->time);
+					i = i->next;
+				}
+				printf(" )");
+				d = d->next;
+			}
+			#endif
 			n = n->next;
-			printf("\n"); fflush(stdout);
+			printf("\n");
 		}
 	}
 }
@@ -191,7 +210,7 @@ void to_print_job_csv(struct Job* job, int time)
 	}
 	/* OLD */
 	//~ fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, time_used, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
-	
+	//~ printf("la\n"); fflush(stdout);
 	/* Print transfer time if any */
 	if (job->transfer_time > 0)
 	{

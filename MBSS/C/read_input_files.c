@@ -89,7 +89,10 @@ void read_cluster(char* input_node_file)
 		new->cores_in_a_hole->tail = NULL;
 		
 		#ifdef DATA_PERSISTENCE
-		new->data_occupation = 0; /* From 0 to 20 */
+		new->data_occupation = 0; /* From 0 to 128 */
+		new->temp_data = malloc(sizeof(*new->temp_data));
+		new->temp_data->head = NULL;
+		new->temp_data->tail = NULL;
 		#endif
 
 		new->next = NULL;

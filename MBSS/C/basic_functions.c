@@ -961,7 +961,12 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	found = false;
 	
 	/* TODO: crash malloc corrupted top size içi ? */
+	#ifdef DATA_PERSISTENCE
+	struct Data* d = j->node_used->temp_data->head;
+	#else
 	struct Data* d = j->node_used->data->head;
+	#endif
+	
 	while (d != NULL)
 	{
 		if (d->unique_id == j->data)
@@ -997,7 +1002,12 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
 		create_and_insert_tail_interval_list(new->intervals, j->end_time);
 		new->size = j->data_size;
+		
+		#ifdef DATA_PERSISTENCE
+		insert_tail_data_list(j->node_used->temp_data, new);
+		#else
 		insert_tail_data_list(j->node_used->data, new);
+		#endif
 	}
 	
 	#ifdef PRINT
@@ -1776,9 +1786,16 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 	return nb_running_cores;
 }
 
-/* Called at the beggining of each callof fcfs with a score. */
+/* Called at the beggining of each callof fcfs with a score. 
+ * Fill the node's data list with intervals of current data.
+ * For data persistency, I put it in the temp_data part of nodes. */
 void get_current_intervals(struct Node_List** head_node, int t)
 {
+		//~ print_data_intervals(head_node, t);
+
+	#ifdef DATA_PERSISTENCE
+	free_and_copy_data_and_intervals_in_temp_data(head_node, t);
+	#else
 	int i = 0;
 	for (i = 0; i < 3; i++)
 	{
@@ -1792,8 +1809,6 @@ void get_current_intervals(struct Node_List** head_node, int t)
 					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
 					d->intervals->head = NULL;
 					d->intervals->tail = NULL;
-					
-					#ifndef DATA_PERSISTENCE
 					if (d->nb_task_using_it > 0)
 					{
 						create_and_insert_tail_interval_list(d->intervals, t);
@@ -1812,34 +1827,13 @@ void get_current_intervals(struct Node_List** head_node, int t)
 						create_and_insert_tail_interval_list(d->intervals, t);
 						create_and_insert_tail_interval_list(d->intervals, t);
 						create_and_insert_tail_interval_list(d->intervals, t);
-					}
-					#else
-					//~ if (d->nb_task_using_it > 0)
-					//~ {
-						create_and_insert_tail_interval_list(d->intervals, t);
-						if (d->start_time < t)
-						{
-							create_and_insert_tail_interval_list(d->intervals, t);
-						}
-						else
-						{
-							create_and_insert_tail_interval_list(d->intervals, d->start_time);
-						}
-						create_and_insert_tail_interval_list(d->intervals, d->end_time);
-					//~ }
-					//~ else if (d->end_time >= t) /* Cas finis et re enchaine. utile en data persistence ? */
-					//~ {
-						//~ create_and_insert_tail_interval_list(d->intervals, t);
-						//~ create_and_insert_tail_interval_list(d->intervals, t);
-						//~ create_and_insert_tail_interval_list(d->intervals, t);
-					//~ }
-					#endif
-					
+					}					
 				d = d->next;
 			}
 			n = n->next;
 		}
 	}
+	#endif
 }
 
 int get_nb_non_available_cores(struct Node_List** n, int t)
@@ -1929,11 +1923,11 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 	sort_cores_by_available_time_in_specific_node(n);
 }
 
-void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time)
+void add_data_in_node (int data_unique_id, float data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time, int delay, int walltime, int start_time, int cores)
 {
-	//~ #ifdef PRINT
+	#ifdef PRINT
 	printf("\nChecking data %d on node %d at time %d.\n", data_unique_id, node_used->unique_id, t); fflush(stdout);
-	//~ #endif
+	#endif
 	
 	bool data_is_on_node = false;
 	/* Let's try to find it in the node */
@@ -1967,6 +1961,17 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 			
 			data_is_on_node = true;
 			//~ d->nb_task_using_it += 1;
+			
+			int min_between_delay_and_walltime = 0;
+			if (delay + *waiting_for_a_load_time + *transfer_time < walltime)
+			{
+				min_between_delay_and_walltime = delay + *waiting_for_a_load_time + *transfer_time;
+			}
+			else
+			{
+				min_between_delay_and_walltime = walltime;
+			}
+			end_time = start_time + min_between_delay_and_walltime;
 			
 			if (d->end_time < end_time)
 			{
@@ -2005,12 +2010,31 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 	}
 	if (data_is_on_node == false) /* Need to load it */
 	{
+		#ifdef PRINT
+		printf("*transfer_time %f = data_size %f /node_used->bandwidth %f\n", data_size/node_used->bandwidth, data_size, node_used->bandwidth);
+		#endif
+		
 		*transfer_time = data_size/node_used->bandwidth;
 		/* Create a class Data for this node */
 		struct Data* new = (struct Data*) malloc(sizeof(struct Data));
 		new->unique_id = data_unique_id;
 		new->start_time = t + *transfer_time;
+		
+		#ifndef DATA_PERSISTENCE
 		new->end_time = end_time;
+		#else
+		int min_between_delay_and_walltime = 0;
+		if (delay + *waiting_for_a_load_time + *transfer_time < walltime)
+		{
+			min_between_delay_and_walltime = delay + *waiting_for_a_load_time + *transfer_time;
+		}
+		else
+		{
+			min_between_delay_and_walltime = walltime;
+		}
+		end_time = start_time + min_between_delay_and_walltime;
+		new->end_time = end_time;
+		#endif
 		
 		#ifndef DATA_PERSISTENCE
 		new->nb_task_using_it = 1;
@@ -2022,20 +2046,30 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 		insert_tail_data_list(node_used->data, new);
 		
 		#ifdef DATA_PERSISTENCE
-		node_used->data_occupation += new->size;
+		node_used->data_occupation += cores;
+		#endif
+		
+		#ifdef PRINT
+		printf("Created data %d starttime %d on node %d.\n", new->unique_id, new->start_time, node_used->unique_id);
 		#endif
 	}
 	
 	#ifdef DATA_PERSISTENCE
-	while (node_used->data_occupation > 128) /* Need an eviction */
+	while (node_used->data_occupation > 20) /* Need an eviction */
 	{
-		printf("node_used->data_occupation > 128\n");
+		#ifdef PRINT
+		printf("node_used->data_occupation %d > 20. Current data to load is %d\n", node_used->data_occupation, data_unique_id);
+		#endif
+		
 		struct Data* d_temp = node_used->data->head;
 		struct Data* data_to_evict = (struct Data*) malloc(sizeof(struct Data));
 		int min_end_time = INT_MAX;
 		while (d_temp != NULL)
 		{
+			#ifdef PRINT
 			printf("Testing data %d (end_time %d) to evict.\n", d_temp->unique_id, d_temp->end_time);
+			#endif
+			
 			if (d_temp->unique_id != data_unique_id)
 			{
 				if (min_end_time > d_temp->end_time)
@@ -2051,12 +2085,21 @@ void add_data_in_node (int data_unique_id, int data_size, struct Node* node_used
 			printf("Error data_to_evict NULL.\n"); fflush(stdout);
 			exit(1);
 		}
-		data_to_evict->end_time = t - 1;
-		printf("Evicting data %d size %f.\n", data_to_evict->unique_id, data_to_evict->size);
+		
+		//~ data_to_evict->end_time = t - 1; /* A quoi ca servait ? */
+		
+		#ifdef PRINT
+		printf("Evicting data %d size %f on node %d.\n", data_to_evict->unique_id, data_to_evict->size, node_used->unique_id);
+		#endif
+		
 		node_used->data_occupation -= data_to_evict->size;
 		delete_specific_data_from_node(node_used->data, data_to_evict->unique_id);
 	}
-	printf("After checking data, occupation is %f.\n", node_used->data_occupation);
+	
+	#ifdef PRINT
+	printf("After checking data, occupation is %d.\n", node_used->data_occupation);
+	#endif
+	
 	#endif
 }
 
@@ -2135,7 +2178,7 @@ void start_jobs(int t, struct Job* head)
 			if (j->data != 0 && constraint_on_sizes != 2)
 			{
 				/* Let's look if a data transfer is needed */
-				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time);
+				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time, j->delay, j->walltime, j->start_time, j->cores);
 			}
 			//~ if (constraint_on_sizes == 2)
 			//~ {
@@ -2186,9 +2229,9 @@ void start_jobs(int t, struct Job* head)
 				}
 			//~ }
 			
-			//~ #ifdef PRINT
+			#ifdef PRINT
 			printf("For job %d (delay = %d): %d transfer time and %d waiting for a load time. Overhead is %d\n", j->unique_id, j->delay, transfer_time, waiting_for_a_load_time, overhead_of_load); fflush(stdout);
-			//~ #endif
+			#endif
 			
 			if (j->delay + overhead_of_load < j->walltime)
 			{
@@ -2212,9 +2255,9 @@ void start_jobs(int t, struct Job* head)
 			
 			insert_next_time_in_sorted_list(end_times, j->end_time);
 			
-			//~ #ifdef PRINT
+			#ifdef PRINT
 			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
-			//~ #endif
+			#endif
 			
 			
 			/*For easy bf */
@@ -2397,6 +2440,11 @@ void end_jobs(struct Job* job_list_head, int t)
 			{
 				remove_data_from_node(j, t);
 			}
+			//~ #else
+			//~ if (j->data != 0 && j->end_before_walltime == true)
+			//~ {
+				//~ remove_data_from_node(j, t);
+			//~ }
 			#endif
 			
 			//~ for (i = 0; i < j->cores; i++)
@@ -2496,7 +2544,12 @@ void reset_cores(struct Node_List** l, int t)
 //~ int is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, int current_data_size, bool* is_being_loaded)
 float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, struct Node* n, int t, int current_data, float current_data_size, bool* is_being_loaded)
 {
+	#ifdef DATA_PERSISTENCE
+	struct Data* d = n->temp_data->head;
+	#else
 	struct Data* d = n->data->head;
+	#endif
+	
 	int* temp_interval_usage_time = malloc(3*sizeof(int));
 	while (d != NULL)
 	{
@@ -2523,6 +2576,21 @@ float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, s
 				printf("Checking %d / %d / %d.\n", temp_interval_usage_time[0], temp_interval_usage_time[1], temp_interval_usage_time[2]);
 				#endif
 				
+				#ifdef DATA_PERSISTENCE
+				if (temp_interval_usage_time[0] <= predicted_time && temp_interval_usage_time[1] <= predicted_time)
+				{
+					*is_being_loaded = false;
+					free(temp_interval_usage_time);
+					return 0;
+				}
+				else if (temp_interval_usage_time[0] <= predicted_time)
+				{
+					*is_being_loaded = true;
+					int temp = temp_interval_usage_time[1];
+					free(temp_interval_usage_time);
+					return temp - t;
+				}
+				#else
 				if (temp_interval_usage_time[0] <= predicted_time && temp_interval_usage_time[1] <= predicted_time && predicted_time <= temp_interval_usage_time[2])
 				{
 					*is_being_loaded = false;
@@ -2536,6 +2604,8 @@ float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, s
 					free(temp_interval_usage_time);
 					return temp - t;
 				}
+				#endif
+				
 				i = i->next;
 			}
 			break;
@@ -2553,7 +2623,13 @@ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_tim
 {
 	//~ int size_file_ended = 0;
 	float size_file_ended = 0;
+
+	#ifdef DATA_PERSISTENCE
+	struct Data* d = n->temp_data->head;
+	#else
 	struct Data* d = n->data->head;
+	#endif
+	
 	while (d != NULL)
 	{
 		struct Interval* i = d->intervals->head;
@@ -2593,7 +2669,12 @@ int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node
 		struct Node* n = head_node[j]->head;
 		while(n != NULL)
 		{
+			#ifdef DATA_PERSISTENCE
+			struct Data* d = n->temp_data->head;
+			#else
 			struct Data* d = n->data->head;
+			#endif
+			
 			while (d != NULL)
 			{
 				struct Interval* i = d->intervals->head;
@@ -2614,11 +2695,20 @@ int get_nb_valid_copy_of_a_file(int predicted_time, struct Node_List** head_node
 						printf("Checking %d / %d.\n", temp_interval_usage_time[0], temp_interval_usage_time[1]);
 						#endif
 						
+						#ifdef DATA_PERSISTENCE
+						if (temp_interval_usage_time[0] <= predicted_time)
+						{
+							nb_of_copy += 1;
+							break;
+						}
+						#else
 						if (temp_interval_usage_time[0] <= predicted_time && predicted_time <= temp_interval_usage_time[1])
 						{
 							nb_of_copy += 1;
 							break;
 						}
+						#endif
+						
 						i = i->next;
 					}
 					break;

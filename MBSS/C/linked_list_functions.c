@@ -869,3 +869,115 @@ void sort_job_list_by_file_size(struct Job** head)
     }
 	*head = result;
 }
+
+//~ void free_data_list(struct Data** head_ref)
+//~ {
+	//~ /* deref head_ref to get the real head */
+	//~ struct Data* current = *head_ref;
+	//~ struct Data* next;
+   //~ while (current != NULL)
+   //~ {
+       //~ next = current->next;
+       //~ free(current);
+       //~ current = next;
+   //~ }
+   //~ /* deref head_ref to affect the real head back
+      //~ in the caller. */
+   //~ *head_ref = NULL;
+//~ }
+
+void free_and_copy_data_and_intervals_in_temp_data(struct Node_List** head_node, int t)
+{
+	#ifdef DATA_PERSISTENCE
+	
+	#ifdef PRINT
+	printf("Copy in temp data\n");
+	#endif
+	
+	int i = 0;
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		//~ if (n->data->head != NULL) { printf("Copy data %d start time %d into temp.\n", n->data->head->unique_id, n->data->head->start_time);	}
+		while (n != NULL)
+		{
+			struct Data* current = n->temp_data->head;
+			struct Data* next;
+		   while (current != NULL)
+		   {
+			   next = current->next;
+			   free(current);
+			   current = next;
+		   }
+		   /* deref head_ref to affect the real head back
+			  in the caller. */
+		   //~ *head_ref = NULL;
+		   //~ n->temp_data->head = NULL;
+			n->temp_data = (struct Data_List*) malloc(sizeof(struct Data_List));
+			n->temp_data->head = NULL;
+			n->temp_data->tail = NULL;
+
+			struct Data* d = n->data->head;
+			while (d != NULL)
+			{				
+				#ifdef PRINT
+				printf("Copy data %d start time %d into temp.\n", d->unique_id, d->start_time);	
+				#endif
+				
+				struct Data* new = (struct Data*) malloc(sizeof(struct Data));
+				
+				new->next = NULL;
+				new->unique_id = d->unique_id;
+				new->start_time = d->start_time;
+				new->end_time = d->end_time;				
+				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+				new->intervals->head = NULL;
+				new->intervals->tail = NULL;
+				new->size = d->size;
+
+					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+					//~ d->intervals->head = NULL;
+					//~ d->intervals->tail = NULL;
+					//~ if (d->nb_task_using_it > 0)
+					//~ {
+						create_and_insert_tail_interval_list(new->intervals, t);
+						
+						#ifdef PRINT
+						printf("Start time is %d.\n", new->start_time);
+						#endif
+						
+						if (new->start_time < t)
+						{
+							#ifdef PRINT
+							printf("Adding t\n");
+							#endif
+							
+							create_and_insert_tail_interval_list(new->intervals, t);
+						}
+						else
+						{
+							#ifdef PRINT
+							printf("Adding start\n");
+							#endif
+							
+							create_and_insert_tail_interval_list(new->intervals, new->start_time);
+						}
+						create_and_insert_tail_interval_list(new->intervals, new->end_time);
+					//~ }
+					//~ else if (d->end_time >= t) /* Cas finis et re enchaine */
+					//~ {
+						//~ create_and_insert_tail_interval_list(d->intervals, t);
+						//~ create_and_insert_tail_interval_list(d->intervals, t);
+						//~ create_and_insert_tail_interval_list(d->intervals, t);
+					//~ }	
+				insert_tail_data_list(n->temp_data, new);			
+				d = d->next;
+			}
+			n = n->next;
+		}
+	}
+	#else
+	printf("This function ins not supported without data persistence def.\n");
+	exit(1);
+	#endif
+}

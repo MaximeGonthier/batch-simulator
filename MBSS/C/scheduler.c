@@ -148,8 +148,8 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
  **/
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
-	//~ int backfill_mode = 0;
-	int backfill_mode = 1;
+	int backfill_mode = 0; /* Pas opti */
+	//~ int backfill_mode = 1; /* opti */
 	
 	#ifdef PRINT
 	printf("Start fcfs conservative bf at time %d. backfill mode %d.\n", t, backfill_mode);
@@ -428,12 +428,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			}
 		}
 	}
-	
-	//~ if (t%1000 == 0)
-	//~ {
-		//~ printf("At time %d, multiplier are %d %d %d. running nodes: %d, running cores %d, jobs to schedule: %d, cores to schedule %d.\n", t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, running_nodes, running_cores, nb_job_to_schedule, nb_cores_to_schedule);
-	//~ }
-		
+			
 	/* temp multiplier pour le cas avec if EAT is t start now */
 	int temp_multiplier_file_to_load = multiplier_file_to_load;
 	int temp_multiplier_file_evicted = multiplier_file_evicted;
@@ -443,9 +438,9 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
-	//~ #ifdef PRINT
-	//~ print_data_intervals(head_node, t);
-	//~ #endif
+	#ifdef PRINT
+	print_data_intervals(head_node, t);
+	#endif
 	
 	#ifdef PRINT_SCORES_DATA
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "a");
@@ -465,8 +460,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
-			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
+			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);			
 			#endif
 			
 			/* cas if EAT is t reset multipliers */
@@ -644,6 +639,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 								#endif
 																					
 								/* 2.6. Get minimum score/ */
+								/* TODO : simpliefier la complexité: si EAT est t et TL et TLE == 0 alors break */
 								if (min_score == -1)
 								{
 									min_time = earliest_available_time;
@@ -690,7 +686,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 
 			/* Need to add here intervals for current scheduling. */
 			found = false;
+			
+			#ifdef DATA_PERSISTENCE
+			struct Data* d = j->node_used->temp_data->head;
+			#else
 			struct Data* d = j->node_used->data->head;
+			#endif
+			
 			while (d != NULL)
 			{
 				if (d->unique_id == j->data)
@@ -728,7 +730,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
 				create_and_insert_tail_interval_list(new->intervals, j->end_time);
 				new->size = j->data_size;
+				
+				#ifdef DATA_PERSISTENCE
+				insert_tail_data_list(j->node_used->temp_data, new);
+				#else
 				insert_tail_data_list(j->node_used->data, new);
+				#endif
 			}			
 			
 			//~ #ifdef PRINT
@@ -1354,7 +1361,13 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 
 			/* Need to add here intervals for current scheduling. */
 			found = false;
+			
+			#ifdef DATA_PERSISTENCE
+			struct Data* d = j->node_used->temp_data->head;
+			#else
 			struct Data* d = j->node_used->data->head;
+			#endif
+
 			while (d != NULL)
 			{
 				if (d->unique_id == j->data)
@@ -1392,7 +1405,12 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 				create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
 				create_and_insert_tail_interval_list(new->intervals, j->end_time);
 				new->size = j->data_size;
+				
+				#ifdef DATA_PERSISTENCE
+				insert_tail_data_list(j->node_used->temp_data, new);
+				#else
 				insert_tail_data_list(j->node_used->data, new);
+				#endif
 			}	
 			
 			#ifdef PRINT
@@ -1949,10 +1967,10 @@ double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_nod
 	return total_flow/nb_jobs_scheduled;
 }
 
-void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
+void eft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
 	#ifdef PRINT
-	printf("\nHEFT\n");
+	printf("\nEFT\n");
 	#endif
 	
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
@@ -2052,17 +2070,17 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 						printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 						
-						/* To test with 1 1 instead of heft. To remove. J'ai testé, c'est pas ça qui explique lesm oins bonnes perf que fcfs score adaptative multiplier 500 500*/
+						/* To test with 1 1 instead of EFT. To remove. J'ai testé, c'est pas ça qui explique lesm oins bonnes perf que fcfs score adaptative multiplier 500 500*/
 						//~ if (min_score == -1 || earliest_available_time + time_to_load_file < min_score)
 						//~ {
-							/* To test with 1 1 instead of heft. To remove. */
+							/* To test with 1 1 instead of EFT. To remove. */
 							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							
 						
 								/* Compute node's score. */
 								score = earliest_available_time + time_to_load_file;
 								
-								/* To test with 1 1 instead of heft. To remove. */
+								/* To test with 1 1 instead of EFT. To remove. */
 								//~ score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files;
 																
 								#ifdef PRINT	
@@ -2110,7 +2128,13 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 
 			/* Need to add here intervals for current scheduling. */
 			found = false;
+			
+			#ifdef DATA_PERSISTENCE
+			struct Data* d = j->node_used->temp_data->head;
+			#else
 			struct Data* d = j->node_used->data->head;
+			#endif
+
 			while (d != NULL)
 			{
 				if (d->unique_id == j->data)
@@ -2148,7 +2172,12 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 				create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
 				create_and_insert_tail_interval_list(new->intervals, j->end_time);
 				new->size = j->data_size;
+				
+				#ifdef DATA_PERSISTENCE
+				insert_tail_data_list(j->node_used->temp_data, new);
+				#else
 				insert_tail_data_list(j->node_used->data, new);
+				#endif
 			}	
 			
 			#ifdef PRINT
@@ -2186,10 +2215,10 @@ void heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	}
 }
 
-int heft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
+int eft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores)
 {
 	#ifdef PRINT
-	printf("HEFT SINGLE JOB\n");
+	printf("EFT SINGLE JOB\n");
 	#endif
 	
 	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
@@ -2289,17 +2318,17 @@ int heft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t
 						printf("Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded); fflush(stdout);
 						#endif
 						
-						/* To test with 1 1 instead of heft. To remove. J'ai testé, c'est pas ça qui explique lesm oins bonnes perf que fcfs score adaptative multiplier 500 500*/
+						/* To test with 1 1 instead of EFT. To remove. J'ai testé, c'est pas ça qui explique lesm oins bonnes perf que fcfs score adaptative multiplier 500 500*/
 						//~ if (min_score == -1 || earliest_available_time + time_to_load_file < min_score)
 						//~ {
-							/* To test with 1 1 instead of heft. To remove. */
+							/* To test with 1 1 instead of EFT. To remove. */
 							//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							
 						
 								/* Compute node's score. */
 								score = earliest_available_time + time_to_load_file;
 								
-								/* To test with 1 1 instead of heft. To remove. */
+								/* To test with 1 1 instead of EFT. To remove. */
 								//~ score = earliest_available_time + time_to_load_file + time_to_reload_evicted_files;
 																
 								#ifdef PRINT	
@@ -2423,11 +2452,11 @@ int heft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t
 /** Return the mean flow on all scheduled tasks. Does not actually schedule the
  *  tasks and uses a fake set of nodes. 
  *  If break_condition_if_not_started_at_t is set to 1, then return -1 when a job can't be scheduled at t. 
- *  Not used for the calssic Flow_adaptation_scheduler and oly implemented in fake heft scheduler. **/
-double fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int break_condition_if_not_started_at_t)
+ *  Not used for the calssic Flow_adaptation_scheduler and oly implemented in fake EFT scheduler. **/
+double fake_eft_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int break_condition_if_not_started_at_t)
 {
 	#ifdef PRINT
-	printf("\nFAKE HEFT\n");
+	printf("\nFAKE EFT\n");
 	#endif
 	
 	double total_flow = 0;
@@ -2558,7 +2587,7 @@ double fake_heft_scheduler(struct Job* head_job, struct Node_List** head_node, i
 				}
 			}
 			
-			/* Here for the test heft else do score scheduler, not flow adaptation. */
+			/* Here for the test EFT else do score scheduler, not flow adaptation. */
 			if (break_condition_if_not_started_at_t == 1 && min_time != t)
 			{
 				return -1;
@@ -5097,13 +5126,13 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 				
 			//~ fct a ajouter au .h, les 3 scheduler et le get min eat
 					
-			if (earliest_available_time == t) /* HEFT */
+			if (earliest_available_time == t) /* EFT */
 			{
 				#ifdef PLOT_STATS
 				j->last_choosen_method = 0;
 				#endif
 				
-				nb_non_available_cores = heft_scheduler_single_job(j, head_node, t, nb_non_available_cores);
+				nb_non_available_cores = eft_scheduler_single_job(j, head_node, t, nb_non_available_cores);
 			}
 			else /* LOCALITY */
 			{
@@ -5184,7 +5213,11 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 
 			/* Need to add here intervals for current scheduling. */
 			found = false;
+			#ifdef DATA_PERSISTENCE
+			struct Data* d = j->node_used->temp_data->head;
+			#else
 			struct Data* d = j->node_used->data->head;
+			#endif
 			while (d != NULL)
 			{
 				if (d->unique_id == j->data)
@@ -5222,7 +5255,11 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 				create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
 				create_and_insert_tail_interval_list(new->intervals, j->end_time);
 				new->size = j->data_size;
+				#ifdef DATA_PERSISTENCE
+				insert_tail_data_list(j->node_used->temp_data, new);
+				#else
 				insert_tail_data_list(j->node_used->data, new);
+				#endif
 			}
 			
 			

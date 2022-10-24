@@ -146,10 +146,12 @@
 		
 		% Reu FGCS
 		\item il me manque credit to authors signé donc c'est un doublon de contributions mais j'ai upload
+		\item Editables files ne fonctionne pas et ils me proposent de soumettre du word.
 
 		% Uppsala
 		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup). Donc faut-il l'utilise comme tiebreak ?
 		\item L'ajout de données persistente pose le pb de l'eviction. Je vais faire un LRU qui evince la donnée qui a été fini d'utilisé il y a le + longmemsp (j'aurais aussi pu faire celle qui a commencé le + longemps)
+		\item code data peristence avec LRU pour l'eviction
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -162,6 +164,7 @@
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item mettre les notes de 2A sur Thor
 			\item mail sandrine enlever cours pendant sc et le donner à Denis: att réponse
 			\item se renseigner payement enseirb semestre 1: attendre fin octobre
 			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment + verifier changement heures dossier
@@ -175,8 +178,8 @@
 	\subsection{Uppsala}
 		\begin{enumerate}
 			\item use a simple backfilling strategy to be fair with fcfs et utiliser la même pour tous. Le premier est bien plus conservateur que le second qui peut delay un job a cause d'un walltime trop grand
-			\item smooth transtion: probability of needing all nodes ? Try math functions ?
-			\item Garder une donnée si elle rentre en memoire malgré un autre job qui tourne ou commence. Sinon l'enlever. ca appote un problème d'eviction. Du coup j'evince la donnée qui a l'indice le plus faible. La pb que je fias une data dans score or mtn j'ai plus le nb task using it
+			\item smooth transtion: probability of needing all nodes ? Try math functions ? tester si ca matvch le nb of nodes en testant d'autres tailles de clusters ?
+			\item Garder une donnée si elle rentre en memoire malgré un autre job qui tourne ou commence. Sinon l'enlever. ca appote un problème d'eviction. Du coup j'evince en LRU. La pb que je fias une data dans score or mtn j'ai plus le nb task using it
 		
 			\item checker les intrvals avec et sans bf voir comment ca marche et si ca marceh bien
 			\item tester heft + conservative bf
