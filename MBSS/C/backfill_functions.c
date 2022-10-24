@@ -97,7 +97,8 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 	printf("Could not fit or times not available. Return false.\n");
 	#endif
 	return false;
-}
+}							
+
 int update_cores_for_backfilled_job(int nb_non_available_cores, struct Job* j, int t, int nb_cores_from_hole, int nb_cores_from_outside)
 {
 	struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
