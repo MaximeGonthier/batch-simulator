@@ -58,24 +58,63 @@ void initialize_cores_in_a_hole(struct Core_in_a_hole_List* liste, struct Core_i
 	//~ liste->head = NULL;
 	//~ liste->tail = NULL;
 	//~ struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
-	insert_cores_in_a_hole_list_sorted_decreasing_order(liste, c);
+	//~ insert_cores_in_a_hole_list_sorted_decreasing_order(liste, c);
+	liste->head = c;
 }
 
 void insert_cores_in_a_hole_list_sorted_decreasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c)
 {
-	//~ if (liste->head == NULL || liste->head->start_time_of_the_hole < c->start_time_of_the_hole)
-	if (liste->head == NULL || liste->head->start_time_of_the_hole >= c->start_time_of_the_hole)
+	//~ printf("Inserting core %d time %d.\n", c->unique_id, c->start_time_of_the_hole);
+	if (liste->head == NULL || liste->head->start_time_of_the_hole < c->start_time_of_the_hole)
+	//~ if (liste->head == NULL || liste->head->start_time_of_the_hole >= c->start_time_of_the_hole)
 	{
+		//~ printf("1.\n");
 		c->next = liste->head;
         liste->head = c;
     }
-    else {
+    else if (liste->head->start_time_of_the_hole == c->start_time_of_the_hole && liste->head->unique_id > c->unique_id)
+    {
+		//~ printf("2.\n");
+		c->next = liste->head;
+        liste->head = c;
+	}
+    else
+    {
+		//~ printf("3.\n");
 		 struct Core_in_a_hole* current;
         /* Locate the node before
 the point of insertion */
         current = liste->head;
         //~ while (current->next != NULL && current->next->start_time_of_the_hole >= c->start_time_of_the_hole) {
-        while (current->next != NULL && current->next->start_time_of_the_hole < c->start_time_of_the_hole) {
+        while (current->next != NULL && current->next->start_time_of_the_hole >= c->start_time_of_the_hole) {
+			//~ printf("next.\n");
+            current = current->next;
+        }
+        
+        c->next = current->next;
+        current->next = c;
+    }
+}
+
+void insert_cores_in_a_hole_list_sorted_increasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c)
+{
+	if (liste->head == NULL || liste->head->start_time_of_the_hole > c->start_time_of_the_hole)
+	{
+		c->next = liste->head;
+        liste->head = c;
+    }
+    else if (liste->head->start_time_of_the_hole == c->start_time_of_the_hole && liste->head->unique_id > c->unique_id)
+    {
+		//~ printf("2.\n");
+		c->next = liste->head;
+        liste->head = c;
+	}
+    else {
+		 struct Core_in_a_hole* current;
+        /* Locate the node before
+the point of insertion */
+        current = liste->head;
+        while (current->next != NULL && current->next->start_time_of_the_hole <= c->start_time_of_the_hole) {
             current = current->next;
         }
         
@@ -807,6 +846,28 @@ void sort_cores_by_available_time_in_specific_node(struct Node* n)
 				n->cores[i] = n->cores[i+1];
 				n->cores[i + 1] = temp;
 			}
+		}
+	}
+}
+
+void sort_cores_by_unique_id_in_specific_node(struct Node* n)
+{
+	for (int step = 0; step < 20 - 1; step++)
+	{
+		for (int i = 0; i < 20 - step - 1; ++i)
+		{
+			if (n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
+			{
+				struct Core* temp = n->cores[i];
+				n->cores[i] = n->cores[i+1];
+				n->cores[i + 1] = temp;
+			}
+			//~ else if (n->cores[i]->available_time == n->cores[i + 1]->available_time && n->cores[i]->unique_id > n->cores[i + 1]->unique_id)
+			//~ {
+				//~ struct Core* temp = n->cores[i];
+				//~ n->cores[i] = n->cores[i+1];
+				//~ n->cores[i + 1] = temp;
+			//~ }
 		}
 	}
 }

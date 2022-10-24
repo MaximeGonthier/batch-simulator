@@ -305,6 +305,8 @@ void delete_core_in_hole_specific_core(struct Core_in_a_hole_List* liste, int un
 void delete_specific_data_from_node(struct Data_List* liste, int unique_id_to_delete);
 //~ void free_data_list(struct Data** head_ref);
 void free_and_copy_data_and_intervals_in_temp_data(struct Node_List** head_node, int t);
+void sort_cores_by_unique_id_in_specific_node(struct Node* n);
+void insert_cores_in_a_hole_list_sorted_increasing_order(struct Core_in_a_hole_List* liste, struct Core_in_a_hole* c);
 
 /* From scheduler.c */
 void get_state_before_day_0_scheduler(struct Job* j, struct Node_List** n, int t);
@@ -332,3 +334,7 @@ int eft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t,
 void mixed_if_EAT_is_t_scheduler(struct Job* j, struct Node_List** head_node, int t, int mode);
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
 void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode);
+
+/* From backfill_functions.c */
+bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_from_hole, int* nb_cores_from_outside);
+int update_cores_for_backfilled_job(int nb_non_available_cores, struct Job* j, int t, int nb_cores_from_hole, int nb_cores_from_outside);

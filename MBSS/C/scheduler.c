@@ -148,8 +148,10 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
  **/
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 {
-	int backfill_mode = 0; /* Pas opti */
-	//~ int backfill_mode = 1; /* opti */
+	int backfill_mode = 0;
+	//~ int backfill_mode = 1;
+	//~ int backfill_mode = 2;
+	//~ int backfill_mode = 3;
 	
 	#ifdef PRINT
 	printf("Start fcfs conservative bf at time %d. backfill mode %d.\n", t, backfill_mode);
