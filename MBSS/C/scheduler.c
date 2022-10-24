@@ -146,13 +146,8 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
  * Pour les jobs suivant je check node par node le EAT et les trou de la node. Si je rentre dans le trou je me schedule la pour fcfs.
  * nb_non_available_cores ne vaut que quand c'est t qui est recouvert, pas plus loin.
  **/
-void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
-{
-	int backfill_mode = 0;
-	//~ int backfill_mode = 1;
-	//~ int backfill_mode = 2;
-	//~ int backfill_mode = 3;
-	
+void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int backfill_mode)
+{	
 	#ifdef PRINT
 	printf("Start fcfs conservative bf at time %d. backfill mode %d.\n", t, backfill_mode);
 	#endif

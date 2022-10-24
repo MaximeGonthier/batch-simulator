@@ -332,7 +332,7 @@ double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List**
 int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int mode);
 int eft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores);
 void mixed_if_EAT_is_t_scheduler(struct Job* j, struct Node_List** head_node, int t, int mode);
-void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t);
+void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int backfill_mode);
 void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode);
 
 /* From backfill_functions.c */

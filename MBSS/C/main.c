@@ -669,6 +669,12 @@ int main(int argc, char *argv[])
 		printf("There are %d nodes of size 128 and more, %d of size 256 and more, %d of size 1024.\n", number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
 	}
 	
+	/** Backfill mode choosen **/
+	int backfill_mode = 0;
+	//~ int backfill_mode = 1;
+	//~ int backfill_mode = 2;
+	//~ int backfill_mode = 3;
+	printf("Backfill mode is %d.\n", backfill_mode);
 		
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
@@ -781,18 +787,10 @@ int main(int argc, char *argv[])
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
-				int backfill_mode = 0;
-				//~ int backfill_mode = 1;
-				//~ int backfill_mode = 2;
-				//~ int backfill_mode = 3;
 				fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
-				int backfill_mode = 0;
-				//~ int backfill_mode = 1;
-				//~ int backfill_mode = 2;
-				//~ int backfill_mode = 3;
 				if (busy_cluster == 1)
 				{
 					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
@@ -1130,7 +1128,7 @@ int main(int argc, char *argv[])
 			}
 			else if (strcmp(scheduler, "Fcfs_conservativebf") == 0)
 			{
-				fcfs_conservativebf_scheduler(scheduled_job_list->head, node_list, t);
+				fcfs_conservativebf_scheduler(scheduled_job_list->head, node_list, t, backfill_mode);
 			}
 			else if ((strcmp(scheduler, "Fcfs_backfill_big_nodes_0") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_0_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1_big_job_first") == 0))
 			{

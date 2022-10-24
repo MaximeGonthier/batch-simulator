@@ -431,6 +431,8 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			/* OLD BF */
 		//~ }
 		
+		
+		/* En commentaire: version plus longue qui prend les cores les plus utilisées pour remplir le job courant; A tester. */
 		if (j->start_time == t)
 		{
 			nb_non_available_cores += j->cores;
@@ -541,7 +543,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	/* OLD */
 	
 	#ifdef PRINT
-	printf("\nScheduling job %d.\n", j->unique_id);
+	printf("\nScheduling job %d at time %d.\n", j->unique_id, t);
 	#endif
 	
 	//~ int start_index = 0;
@@ -583,9 +585,9 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
-	#ifdef PRINT
-	print_data_intervals(head_node, t);
-	#endif
+	//~ #ifdef PRINT
+	//~ print_data_intervals(head_node, t);
+	//~ #endif
 	
 	/* Finding the node with the earliest available time. */
 	for (parcours_des_nodes = 0; parcours_des_nodes < 2; parcours_des_nodes++) /* Pour faire nodes puis trou ou l'inverse. */
@@ -736,7 +738,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 						//~ }
 						/* End of NEW core selection conservative bf only */
 					//~ }
-				
+					printf("On node %d?\n", n->unique_id);
 					/* Computing score on the node outside of holes. */
 					#ifdef PRINT
 					printf("A: EAT is %d.\n", earliest_available_time);
@@ -809,8 +811,13 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 				}
 				else
 				{
+					#ifdef PRINT
+					printf("Can I backfill on node %d?\n", n->unique_id);
+					#endif
+					
 					if (can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside) == true)
 					{
+						earliest_available_time = t;
 						/* Calcul du score dans le trou de la node en question. */
 						#ifdef PRINT
 						printf("A: EAT is %d.\n", earliest_available_time);
@@ -1050,14 +1057,15 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		#endif
 	}
 	
-	#ifdef PRINT
-	printf("Intervals after scheduling job %d.\n", j->unique_id);
-	print_data_intervals(head_node, t);
-	#endif
+	//~ #ifdef PRINT
+	//~ printf("Intervals after scheduling job %d.\n", j->unique_id);
+	//~ print_data_intervals(head_node, t);
+	//~ #endif
 	
 	/* 2 cas en fonction du choix */
 	if (backfilled_job == true)
 	{
+		printf("Backfilled job++\n");
 		#ifdef PLOT_STATS
 		number_of_backfilled_jobs+= 1;
 		#endif
@@ -1276,7 +1284,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
-
+	//~ if(j->unique_id == 5) { exit(1); }
 	/* Need to sort cores after each schedule of a job only if it was not backfilled. */
 	//~ if (backfill_mode == 0)
 	//~ {
