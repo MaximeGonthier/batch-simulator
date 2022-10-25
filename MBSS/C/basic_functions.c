@@ -442,6 +442,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		
 		if (backfill_mode == 2 || backfill_mode == 3)
 		{
+			printf("fill_cores_minimize_holes\n");
 			fill_cores_minimize_holes (j, true, backfill_mode, t);
 		}
 		else
@@ -553,7 +554,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	/* OLD */
 	
 	#ifdef PRINT
-	printf("\nScheduling job %d at time %d.\n", j->unique_id, t);
+	printf("\nScheduling job %d at time %d backfill mode %d.\n", j->unique_id, t, backfill_mode);
 	#endif
 	
 	//~ int start_index = 0;
@@ -2473,7 +2474,8 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%2500 == 0)
+			//~ if (finished_jobs%2500 == 0)
+			if (finished_jobs%100 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}

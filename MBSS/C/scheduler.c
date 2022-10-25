@@ -157,6 +157,7 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 	struct Job* j = head_job;
 	while (j != NULL)
 	{
+		//~ if (nb_non_available_cores < nb_cores)
 		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
@@ -168,6 +169,7 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 			if (j->start_time < t)
 			{
 				printf("error\n");
+				exit(1);
 			}
 			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
