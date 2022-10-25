@@ -284,14 +284,18 @@ void to_print_job_csv(struct Job* job, int time)
 /* Print in a file the final results. Only called once at the end of the simulation. */
 void print_csv(struct To_Print* head_to_print)
 {
-	//~ if (strcmp(scheduler, "Fcfs") == 0)
-	//~ {
-		//~ scheduler = "FCFS";
-	//~ }
-	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0)
-	//~ {
-		//~ scheduler = "HEFT";
-	//~ }
+	if (strcmp(scheduler, "Fcfs") == 0)
+	{
+		scheduler = "FCFS";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0 || strcmp(scheduler, "Eft") == 0)
+	{
+		scheduler = "EFT";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_x500_x1_x0_x0") == 0)
+	{
+		scheduler = "SCORE";
+	}
 	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0") == 0)
 	//~ {
 		//~ scheduler = "SCORE_500_1";
@@ -561,7 +565,7 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d, Nb large queue times (>%d): %d, Mean flow stretch 128 256 1024: %f %f %f, Mean flow stretch with a minimum 128 256 1024: %f %f %f\n\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, what_is_a_large_queue_time, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	fclose(f);
-
+	//~ printf("la\n");
 	/* For flow stretch heat map */
 	file_to_open_2 = malloc(100*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Stretch_");
@@ -589,20 +593,23 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	fprintf(f, "%f", max_flow_stretch);
 	fclose(f);
+	//~ printf("la2\n");
 	
 	/* For flow stretch with a minimum heat map */
 	file_to_open_2 = malloc(100*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Stretch_with_a_minimum_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
-	f = fopen(file_to_open_2, "w");
-	if (!f)
+	FILE* f_bounded_stretch = fopen(file_to_open_2, "w");
+	if (!f_bounded_stretch)
 	{
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
 	}
-	fprintf(f, "%f", mean_flow_stretch_with_a_minimum);
-	fclose(f);
+	//~ printf("la2.1.1\n"); fflush(stdout);
+	fprintf(f_bounded_stretch, "%f", mean_flow_stretch_with_a_minimum);
+	fclose(f_bounded_stretch);
+	//~ printf("la2.1\n"); fflush(stdout);
 	
 	/* For max flow stretch with a minimum heat map */
 	file_to_open_2 = malloc(100*sizeof(char));
@@ -617,7 +624,7 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	fprintf(f, "%f", max_flow_stretch_with_a_minimum);
 	fclose(f);
-	
+	//~ printf("la3\n"); fflush(stdout);
 	/* For total flow heat map */
 	file_to_open_2 = malloc(100*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Total_flow_");

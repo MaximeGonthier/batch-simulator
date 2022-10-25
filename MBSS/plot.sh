@@ -18,6 +18,7 @@ echo "Workload:" ${WORKLOAD_TP}
 echo "Cluster:" ${CLUSTER_TP}
 DATA_FILE=$3
 MODEL=$4
+echo "Model:" ${MODEL}
 
 python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 ${DATA_FILE}

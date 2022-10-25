@@ -167,12 +167,11 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 }
 
 /** Explications des différents modes de backfilling
- * 0: Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence dans le plus longtemps pour favoriser les jobs schedule plus tôt en cas de terminaison avant un walltime.
- * 1: Essaye de remplir les trou en premier. Essaye ensuite de remplir les noeuds. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence dans le plus longtemps pour favoriser les jobs schedule plus tôt en cas de terminaison avant un walltime.
- * 2: Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
- * 3: Essaye de remplir les trou en premier. Essaye ensuite de remplir les noeuds. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
+ * 0: Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. 
+ * 1: Essaye de remplir les trou en premier. Essaye ensuite de remplir les noeuds. 
+ * 2: Minimise la création de trous. Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence dans le plus longtemps pour favoriser les jobs schedule en cas de terminaison de walltime plus tôt.
+ * 3: Minimise la création de trous. Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
  **/
-
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. 
  * nb_non_available_cores est que sur t pas plus loin à cause du backfill. */
 int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int backfill_mode)
@@ -232,9 +231,12 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			struct Node* n = head_node[i]->head;
 			while (n != NULL)
 			{
-				if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2)) || (parcours_des_nodes == 1 && (backfill_mode == 1 || backfill_mode == 3)))
+				if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
 				{
-					//~ printf("Checking node %d.\n", n->unique_id);	
+					#ifdef PRINT
+					printf("Checking node %d.\n", n->unique_id);
+					#endif
+					
 					earliest_available_time = n->cores[j->cores - 1]->available_time;
 					if (earliest_available_time < t)	
 					{
@@ -437,56 +439,64 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		{
 			nb_non_available_cores += j->cores;
 		}
-		//~ int k = 0;
-		//~ sort_cores_by_unique_id_in_specific_node(j->node_used);
-		for (i = 0; i < j->cores; i++)
+		
+		if (backfill_mode == 2 || backfill_mode == 3)
 		{
-			//~ while(1)
-			//~ {
-				//~ if (j->node_used->cores[k]->available_time <= j->start_time)
+			fill_cores_minimize_holes (j, true, backfill_mode, t);
+		}
+		else
+		{
+			//~ int k = 0;
+			//~ sort_cores_by_unique_id_in_specific_node(j->node_used);
+			for (i = 0; i < j->cores; i++)
+			{
+				//~ while(1)
 				//~ {
-					//~ j->cores_used[i] = j->node_used->cores[k]->unique_id;
-					j->cores_used[i] = j->node_used->cores[i]->unique_id;
-					
-					/* Spécifique au cas avec backfilling */
-					//~ if (j->node_used->cores[k]->available_time <= t && j->start_time > t)
-					if (j->node_used->cores[i]->available_time <= t && j->start_time > t)
-					{
-						#ifdef PRINT
-						//~ printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[k]->unique_id); fflush(stdout);
-						printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id); fflush(stdout);
-						#endif
-						j->node_used->number_cores_in_a_hole += 1;
-						struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
-						//~ new->unique_id = j->node_used->cores[k]->unique_id;
-						new->unique_id = j->node_used->cores[i]->unique_id;
-						new->start_time_of_the_hole = min_time;
-						new->next = NULL;
-						if (j->node_used->cores_in_a_hole == NULL)
+					//~ if (j->node_used->cores[k]->available_time <= j->start_time)
+					//~ {
+						//~ j->cores_used[i] = j->node_used->cores[k]->unique_id;
+						j->cores_used[i] = j->node_used->cores[i]->unique_id;
+						
+						/* Spécifique au cas avec backfilling */
+						//~ if (j->node_used->cores[k]->available_time <= t && j->start_time > t)
+						if (j->node_used->cores[i]->available_time <= t && j->start_time > t)
 						{
-							initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
-						}
-						else
-						{
-							if(backfill_mode == 2 || backfill_mode == 3)
+							#ifdef PRINT
+							//~ printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[k]->unique_id); fflush(stdout);
+							printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id); fflush(stdout);
+							#endif
+							j->node_used->number_cores_in_a_hole += 1;
+							struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
+							//~ new->unique_id = j->node_used->cores[k]->unique_id;
+							new->unique_id = j->node_used->cores[i]->unique_id;
+							new->start_time_of_the_hole = min_time;
+							new->next = NULL;
+							if (j->node_used->cores_in_a_hole == NULL)
 							{
-								insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+								initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
 							}
 							else
 							{
-								insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
+								if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+								{
+									insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+								}
+								else
+								{
+									insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
+								}
 							}
 						}
-					}
-					/* Fin de spécifique au cas avec backfilling */
-					
-					//~ j->node_used->cores[k]->available_time = j->start_time + j->walltime;
-					j->node_used->cores[i]->available_time = j->start_time + j->walltime;
+						/* Fin de spécifique au cas avec backfilling */
+						
+						//~ j->node_used->cores[k]->available_time = j->start_time + j->walltime;
+						j->node_used->cores[i]->available_time = j->start_time + j->walltime;
+						//~ k++;
+						//~ break;
+					//~ }
 					//~ k++;
-					//~ break;
 				//~ }
-				//~ k++;
-			//~ }
+			}
 		}
 	}
 
@@ -609,7 +619,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					multiplier_file_evicted = 0;
 				}
 
-				if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2)) || (parcours_des_nodes == 1 && (backfill_mode == 1 || backfill_mode == 3)))
+				if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
 				{
 					//~ if (backfill_mode == 1)
 					//~ {
@@ -738,7 +748,10 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 						//~ }
 						/* End of NEW core selection conservative bf only */
 					//~ }
+					#ifdef PRINT
 					printf("On node %d?\n", n->unique_id);
+					#endif
+					
 					/* Computing score on the node outside of holes. */
 					#ifdef PRINT
 					printf("A: EAT is %d.\n", earliest_available_time);
@@ -1065,7 +1078,6 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	/* 2 cas en fonction du choix */
 	if (backfilled_job == true)
 	{
-		printf("Backfilled job++\n");
 		#ifdef PLOT_STATS
 		number_of_backfilled_jobs+= 1;
 		#endif
@@ -1229,56 +1241,63 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			nb_non_available_cores += j->cores;
 		}
 		
-		for (i = 0; i < j->cores; i++)
+		if (backfill_mode == 2 || backfill_mode == 3)
 		{
-			j->cores_used[i] = j->node_used->cores[i]->unique_id;
-			
-			//~ if (j->start_time == t)
-			//~ {
-				//~ nb_non_available_cores += 1;
-			//~ }
-			
-			/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
-			if (j->node_used->cores[i]->available_time <= t && min_time > t)
+			fill_cores_minimize_holes (j, true, backfill_mode, t);
+		}
+		else
+		{
+			for (i = 0; i < j->cores; i++)
 			{
-				#ifdef PRINT
-				printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id); fflush(stdout);
-				#endif
+				j->cores_used[i] = j->node_used->cores[i]->unique_id;
 				
-				j->node_used->number_cores_in_a_hole += 1;
-				struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
-				new->unique_id = j->node_used->cores[i]->unique_id;
-				new->start_time_of_the_hole = min_time;
-				new->next = NULL;
-				if (j->node_used->cores_in_a_hole == NULL)
+				//~ if (j->start_time == t)
+				//~ {
+					//~ nb_non_available_cores += 1;
+				//~ }
+				
+				/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
+				if (j->node_used->cores[i]->available_time <= t && min_time > t)
 				{
-					initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
-				}
-				else
-				{
-					if(backfill_mode == 2 || backfill_mode == 3)
+					#ifdef PRINT
+					printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id); fflush(stdout);
+					#endif
+					
+					j->node_used->number_cores_in_a_hole += 1;
+					struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
+					new->unique_id = j->node_used->cores[i]->unique_id;
+					new->start_time_of_the_hole = min_time;
+					new->next = NULL;
+					if (j->node_used->cores_in_a_hole == NULL)
 					{
-						insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+						initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
 					}
 					else
 					{
-						insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
+						if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+						{
+							insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+						}
+						else
+						{
+							insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
+						}
 					}
 				}
+				
+				/* NEW core selection */
+				j->node_used->cores[i]->available_time = min_time + j->walltime;
+				/* End of NEW core selection */
+				
+				//~ if (backfill_mode == 0)
+				//~ {
+					//~ start_index++;
+				//~ }
+				//~ if (backfill_mode == 1)
+				//~ {
+					//~ start_index--;
+				//~ }
 			}
-			
-			/* NEW core selection */
-			j->node_used->cores[i]->available_time = min_time + j->walltime;
-			/* End of NEW core selection */
-			
-			//~ if (backfill_mode == 0)
-			//~ {
-				//~ start_index++;
-			//~ }
-			//~ if (backfill_mode == 1)
-			//~ {
-				//~ start_index--;
-			//~ }
 		}
 	}
 	#ifdef PRINT

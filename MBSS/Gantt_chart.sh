@@ -23,7 +23,7 @@ make print_print_gantt_chart -C C/
 #~ make print_print_gantt_chart_data_persistence -C C/
 # ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv > plot/Gantt_charts/pour_comprendre_nos_algos/3/${SCHEDULER}_terminal_output.txt
 #~ libtool --mode=execute gdb --args ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv
+./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv 0
 
 # Plot gantt chart
 #~ echo ${SCHEDULER} "chosen methods :"

@@ -191,3 +191,57 @@ int update_cores_for_backfilled_job(int nb_non_available_cores, struct Job* j, i
 	
 	return nb_non_available_cores;
 }
+
+void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int backfill_mode, int t)
+{
+	int i = 0;
+	int k = 0;
+	sort_cores_by_unique_id_in_specific_node(j->node_used);
+	for (i = 0; i < j->cores; i++)
+	{
+		while(1)
+		{
+			if (j->node_used->cores[k]->available_time <= j->start_time)
+			{
+				j->cores_used[i] = j->node_used->cores[k]->unique_id;
+				
+				if (backfill_activated == true)
+				{
+					/* Spécifique au cas avec backfilling */
+					if (j->node_used->cores[k]->available_time <= t && j->start_time > t)
+					{
+						#ifdef PRINT
+						printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[k]->unique_id); fflush(stdout);
+						#endif
+						j->node_used->number_cores_in_a_hole += 1;
+						struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
+						new->unique_id = j->node_used->cores[k]->unique_id;
+						new->start_time_of_the_hole = j->start_time;
+						new->next = NULL;
+						if (j->node_used->cores_in_a_hole == NULL)
+						{
+							initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
+						}
+						else
+						{
+							if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+							{
+								insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+							}
+							else
+							{
+								insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
+							}
+						}
+					}
+					/* Fin de spécifique au cas avec backfilling */
+				}
+
+				j->node_used->cores[k]->available_time = j->start_time + j->walltime;
+				k++;
+				break;
+			}
+			k++;
+		}
+	}
+}

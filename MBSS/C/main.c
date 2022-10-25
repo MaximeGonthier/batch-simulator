@@ -96,6 +96,8 @@ int main(int argc, char *argv[])
 	jobs_to_print_list->tail = NULL;
 	
 	int old_finished_jobs = 0;
+	
+	/** Args **/
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
 	scheduler = argv[3]; /* malloc ? */
@@ -104,6 +106,12 @@ int main(int argc, char *argv[])
 	if (output_file == NULL)
 	{
 		printf("Need file output\n");
+		exit(1);
+	}
+	int backfill_mode = atoi(argv[6]);
+	if (backfill_mode < 0 || backfill_mode > 3)
+	{
+		printf("Error, backfill_mode = %d not dealt with.\n", backfill_mode);
 		exit(1);
 	}
 	
@@ -449,8 +457,13 @@ int main(int argc, char *argv[])
 		/* Error I have sometimes when the int is not what I putted */
 		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
 		{
-			printf("Error multiplier.\n");
-			exit(EXIT_FAILURE);
+			printf("############################## Error multiplier. 500, 1, 0, 0 affected. ##############################\n");
+			//~ goto get_fcfs_score_multipliers;
+			//~ exit(EXIT_FAILURE);
+			multiplier_file_to_load = 500;
+			multiplier_file_evicted = 1;
+			multiplier_nb_copy = 0;
+			multiplier_area_bigger_nodes = 0;
 		}
 	}
 	
@@ -669,11 +682,6 @@ int main(int argc, char *argv[])
 		printf("There are %d nodes of size 128 and more, %d of size 256 and more, %d of size 1024.\n", number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
 	}
 	
-	/** Backfill mode choosen **/
-	int backfill_mode = 0;
-	//~ int backfill_mode = 1;
-	//~ int backfill_mode = 2;
-	//~ int backfill_mode = 3;
 	printf("Backfill mode is %d.\n", backfill_mode);
 		
 	/** START OF SIMULATION **/
