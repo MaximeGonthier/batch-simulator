@@ -1405,7 +1405,6 @@ int schedule_job_on_earliest_available_cores_return_running_cores(struct Job* j,
 				
 				if (min_time == t)
 				{
-					//~ printf("break.\n");
 					i = last_node_size_to_choose_from + 1;
 					break;
 				}
@@ -3081,7 +3080,7 @@ int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j
 			if (earliest_available_time <= t) /* Ok I can start immediatly, schedule job and return true. */
 			{
 				ok_on_this_node = true;
-				
+				earliest_available_time = t;
 				/* But is it the same node as j1 ? If yes I need to be careful. */
 				if (n->unique_id == j1->node_used->unique_id)
 				{

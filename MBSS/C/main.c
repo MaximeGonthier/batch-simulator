@@ -805,9 +805,10 @@ int main(int argc, char *argv[])
 			}		
 		}
 
-		//~ if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL works or does anything. */
-		//~ if (old_finished_jobs < finished_jobs || new_jobs == true) /* TODO not sure the head != NULL works or does anything. */
-		if (old_finished_jobs < finished_jobs) /* Avec new job list */
+		/* ) && scheduled_job_list->head != NULL est extrèùeent utile, car certain scheduler comme ceux de easy bf ne boucle pas tant que head_job != NULL et peuevnt donc commencer avec un job qui vaut nul (pour j1 de easy bf par xempe. Donc à arder au mons pour easy bf et peut etre d'autres. */
+		//~ if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL)
+		//~ if (old_finished_jobs < finished_jobs || new_jobs == true)
+		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* Avec new job list */
 		{
 			#ifdef PRINT
 			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
@@ -884,7 +885,7 @@ int main(int argc, char *argv[])
 		
 		if (start_times->head != NULL && t > start_times->head->time)
 		{
-			printf("ERROR, next start is %d t is %d.\n", start_times->head->time, t); fflush(stdout);
+			printf("ERROR, next start time is %d  and t is %d.\n", start_times->head->time, t); fflush(stdout);
 			exit(EXIT_FAILURE);
 		}
 		

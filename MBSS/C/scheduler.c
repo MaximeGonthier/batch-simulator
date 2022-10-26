@@ -152,14 +152,14 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 	printf("Start fcfs conservative bf at time %d. backfill mode %d.\n", t, backfill_mode);
 	#endif
 	
-	int nb_cores_rescheduled = 0;
+	int nb_cores_rescheduled = 0; /* 486*20 = 9720 */
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 
 	struct Job* j = head_job;
 	while (j != NULL)
 	{
 		//~ if (nb_non_available_cores < nb_cores)
-		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*20)
+		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*3)
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores. nb_cores_rescheduled = %d\n", nb_cores - nb_non_available_cores, nb_cores, nb_cores_rescheduled);
@@ -251,7 +251,7 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 	struct Job* j1 = head_job;
 	nb_running_cores = schedule_job_on_earliest_available_cores_return_running_cores(j1, head_node, t, nb_running_cores, use_bigger_nodes);
 	insert_next_time_in_sorted_list(start_times, j1->start_time);
-	
+	//~ printf("Inserted time %d at t = %d for j1.\n", j1->start_time, t);
 	#ifdef PRINT
 	printf("Nb of running cores after j1: %d.\n", nb_running_cores);
 	#endif
@@ -274,6 +274,11 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 			if (result == true)
 			{
 				insert_next_time_in_sorted_list(start_times, j->start_time);
+				//~ printf("Inserted time %d at t = %d.\n", j->start_time, t);
+			}
+			else
+			{
+				j->start_time = -1;
 			}
 			
 			#ifdef PRINT
@@ -314,7 +319,7 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	
 	/* First schedule J_1. */
 	struct Job* j1 = head_job;
-	if (head_job == NULL) { return; }
+	//~ if (head_job == NULL) { return; } /* Pas utile normalement avec la verif dans le main de si head->job != NULL avant de lancer call_scheduler(). */
 	nb_running_cores = schedule_job_fcfs_score_return_running_cores(j1, head_node, t, nb_running_cores, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 	insert_next_time_in_sorted_list(start_times, j1->start_time);
 	
