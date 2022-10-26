@@ -167,10 +167,9 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 }
 
 /** Explications des différents modes de backfilling
- * 0: Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. 
- * 1: Essaye de remplir les trou en premier. Essaye ensuite de remplir les noeuds. 
- * 2: Minimise la création de trous. Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence dans le plus longtemps pour favoriser les jobs schedule en cas de terminaison de walltime plus tôt.
- * 3: Minimise la création de trous. Essaye de remplir les noeuds en premier. Essaye ensuite de remplir les trou. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
+ * 0: Ne minimise pas la création de trous
+ * 1: Minimise la création de trous. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence dans le plus longtemps pour favoriser les jobs schedule en cas de terminaison de walltime plus tôt.
+ * 2: Minimise la création de trous. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
  **/
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. 
  * nb_non_available_cores est que sur t pas plus loin à cause du backfill. */
@@ -190,7 +189,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	printf("\nScheduling job %d at time %d.\n", j->unique_id, t);
 	#endif
 
-	int parcours_des_nodes = 0;
+	//~ int parcours_des_nodes = 0;
 	//~ int start_index = 0;
 	int i = 0;
 	//~ int k = 0;
@@ -224,15 +223,15 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	}
 
 	/* Finding the node with the earliest available time. */
-	for (parcours_des_nodes = 0; parcours_des_nodes < 2; parcours_des_nodes++) /* Pour faire nodes puis trou ou l'inverse. */
-	{
+	//~ for (parcours_des_nodes = 0; parcours_des_nodes < 2; parcours_des_nodes++) /* Pour faire nodes puis trou ou l'inverse. */
+	//~ {
 		for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 		{
 			struct Node* n = head_node[i]->head;
 			while (n != NULL)
 			{
-				if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
-				{
+				//~ if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
+				//~ {
 					#ifdef PRINT
 					printf("Checking node %d.\n", n->unique_id);
 					#endif
@@ -254,27 +253,27 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 							printf("min_time == t, break.\n");
 							#endif
 							i = last_node_size_to_choose_from + 1;
-							parcours_des_nodes = 2;
+							//~ parcours_des_nodes = 2;
 							break;
 						}
 					}
-				}
-				else
-				{
-					backfilled_job = can_it_get_backfilled (j, n, t, &nb_cores_from_hole, &nb_cores_from_outside);
+				//~ }
+				//~ else
+				//~ {
+					backfilled_job = can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside);
 					if (backfilled_job == true)
 					{
 						min_time = t;
 						j->node_used = n;
 						i = last_node_size_to_choose_from + 1;
-						parcours_des_nodes = 2;
+						//~ parcours_des_nodes = 2;
 						break;
 					}
-				}
+				//~ }
 				n = n->next;
 			}
 		}
-	}
+	//~ }
 		
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
@@ -408,7 +407,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	//~ }
 	
 	//~ if (backfilled_job == false)
-	else
+	else /* backfilled_job == false */
 	{
 		//~ if (backfill_mode == 1)
 		//~ {
@@ -440,7 +439,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			nb_non_available_cores += j->cores;
 		}
 		
-		if (backfill_mode == 2 || backfill_mode == 3)
+		if (backfill_mode == 1 || backfill_mode == 2)
 		{
 			printf("fill_cores_minimize_holes\n");
 			fill_cores_minimize_holes (j, true, backfill_mode, t);
@@ -478,14 +477,14 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 							}
 							else
 							{
-								if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
-								{
-									insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
-								}
-								else
-								{
+								//~ if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+								//~ {
+									//~ insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+								//~ }
+								//~ else
+								//~ {
 									insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
-								}
+								//~ }
 							}
 						}
 						/* Fin de spécifique au cas avec backfilling */
@@ -573,7 +572,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	//~ struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
-	int parcours_des_nodes = 0;
+	//~ int parcours_des_nodes = 0;
 	
 	/* In which node size I can pick. */
 	if (j->index_node_list == 0)
@@ -601,8 +600,8 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	//~ #endif
 	
 	/* Finding the node with the earliest available time. */
-	for (parcours_des_nodes = 0; parcours_des_nodes < 2; parcours_des_nodes++) /* Pour faire nodes puis trou ou l'inverse. */
-	{
+	//~ for (parcours_des_nodes = 0; parcours_des_nodes < 2; parcours_des_nodes++) /* Pour faire nodes puis trou ou l'inverse. */
+	//~ {
 		for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 		{
 			struct Node* n = head_node[i]->head;
@@ -620,8 +619,8 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					multiplier_file_evicted = 0;
 				}
 
-				if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
-				{
+				//~ if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
+				//~ {
 					//~ if (backfill_mode == 1)
 					//~ {
 						//~ /* NEW core selection conservative bf only */
@@ -816,15 +815,15 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 									printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 									#endif
 									i = last_node_size_to_choose_from + 1;
-									parcours_des_nodes = 2;
+									//~ parcours_des_nodes = 2;
 									break;
 								}
 							}
 						}
 					}
-				}
-				else
-				{
+				//~ }
+				//~ else
+				//~ {
 					#ifdef PRINT
 					printf("Can I backfill on node %d?\n", n->unique_id);
 					#endif
@@ -898,14 +897,14 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 										printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 										#endif
 										i = last_node_size_to_choose_from + 1;
-										parcours_des_nodes = 2;
+										//~ parcours_des_nodes = 2;
 										break;
 									}
 								}
 							}
 						}
 					}
-				}
+				//~ }
 				//~ else
 				//~ {
 					//~ backfilled_job = can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside, &choosen_time_to_load_file);
@@ -1005,7 +1004,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 				n = n->next;
 			}
 		}
-	}
+	//~ }
 	
 	#ifdef PLOT_STATS
 	if (tie == true)
@@ -1242,7 +1241,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			nb_non_available_cores += j->cores;
 		}
 		
-		if (backfill_mode == 2 || backfill_mode == 3)
+		if (backfill_mode == 1 || backfill_mode == 2)
 		{
 			fill_cores_minimize_holes (j, true, backfill_mode, t);
 		}
@@ -1275,14 +1274,14 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					}
 					else
 					{
-						if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
-						{
-							insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
-						}
-						else
-						{
+						//~ if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+						//~ {
+							//~ insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+						//~ }
+						//~ else
+						//~ {
 							insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
-						}
+						//~ }
 					}
 				}
 				

@@ -196,7 +196,7 @@ void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int back
 {
 	int i = 0;
 	int k = 0;
-	sort_cores_by_unique_id_in_specific_node(j->node_used);
+	sort_cores_by_unique_id_in_specific_node(j->node_used); /* Attention, il faut faire gaffe que dans le scheduler c'est ensuite re sort dans le sens des temps disponible le plus tôt. */
 	for (i = 0; i < j->cores; i++)
 	{
 		while(1)
@@ -224,7 +224,7 @@ void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int back
 						}
 						else
 						{
-							if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+							if (backfill_mode == 2) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
 							{
 								insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
 							}
