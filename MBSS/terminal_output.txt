@@ -1,14 +1,2277 @@
 Workloads: inputs/workloads/converted/test-easybf
 Cluster: inputs/clusters/rackham_4nodes.txt
-Scheduler: Fcfs_with_a_score_conservativebf_x1_x1_x0_x0
+Scheduler: Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_easybf_x1_x1_x0_x0
 No constraint on sizes (0).
+Id: 0 Memory: 128 Bandwidth: 0.100000 Available cores: 20
+Id: 1 Memory: 128 Bandwidth: 0.100000 Available cores: 20
+Id: 2 Memory: 256 Bandwidth: 0.100000 Available cores: 20
+Id: 3 Memory: 1024 Bandwidth: 0.100000 Available cores: 20
 Read workload done.
 No jobs of category 0. First subtime day 0 is set to 0.
+
+Scheduled job list after scheduling -2 jobs from history. Must be full.
 After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is 0.
 Start jobs before day 0 done.
-Multiplier file to load: 1 / Multiplier file evicted: 1 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 0.
-busy_cluster_threshold is 100.
-Start simulation.
-Computing and writing results...
-Scheduler: Fcfs_with_a_score_conservativebf_x1_x1_x0_x0, Number of jobs evaluated: 18, Max queue time: 4110.000000, Mean queue time: 772.777771, Total queue time: 13910.000000, Max flow: 5430.000000, Mean flow: 2404.444336, Total flow: 43280.000000, Transfer time: 10230.000000, Makespan: 5430.000000, Core time: 326760.000000, Waiting for a load time: 1140.000000, Transfer + waiting time: 11370.000000, Mean flow stretch: 1.514979, Mean bounded flow stretch: 1.514979, Max flow stretch: 4.113636, Max bounded flow stretch: 4.113636, Nb of upgraded jobs: 0, Nb large queue times (>25000): 0, Mean flow stretch 128 256 1024: 1.514979 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 1.514979 0.000000 0.000000
 
+Schedule job list after starting - 2. Must be less full.
+Multiplier file to load: 1 / Multiplier file evicted: 1 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 1.
+busy_cluster_threshold is 100.
+Backfill mode is 0.
+Start simulation.
+We have new jobs at time 0.
+New job 1.
+Copy in new job list
+New job 2.
+Copy in new job list
+New job 3.
+Copy in new job list
+New job 4.
+Copy in new job list
+New job 5.
+Copy in new job list
+New job 6.
+Copy in new job list
+New job 7.
+Copy in new job list
+New job 8.
+Copy in new job list
+New job 9.
+Copy in new job list
+New job 10.
+Copy in new job list
+New job 11.
+Copy in new job list
+New job 12.
+Copy in new job list
+New job 13.
+Copy in new job list
+New job 14.
+Copy in new job list
+New job 15.
+Copy in new job list
+New job 16.
+Copy in new job list
+New job 17.
+Copy in new job list
+New job 18.
+Copy in new job list
+New job 19.
+Copy in new job list
+New job 20.
+Copy in new job list
+New job 21.
+Copy in new job list
+New job 22.
+Copy in new job list
+New job 23.
+Copy in new job list
+Schedule only new jobs.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 0.
+
+schedule_job_fcfs_score_return_running_cores job 1
+Intervals at time 0 are:
+Node 0
+Data:
+Node 1
+Data:
+Node 2
+Data:
+Node 3
+Data:
+
+Need to schedule job 1 using file 1. T = 0
+On node 0?
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 1 at time 0 on node 0 is 0.
+Score for job 1 is 960 (EAT: 0 + TL 1*960.000000 + TRL 0*0.000000 + NCP 0*0*960.000000) with node 0.
+On node 1?
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+On node 2?
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+On node 3?
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 0 data 1.
+==> Job 1 using file 1 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 0 and is predicted to finish at time 3600.
+Nb of running cores after j1: 15.
+There are 15/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data:
+Node 2
+Data:
+Node 3
+Data:
+
+Need to schedule job 2 using file 1. T = 0
+On node 0?
+On node 1?
+Node 1 is ok.
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 1 at time 0 on node 1 is 0.
+Score for job 2 is 960 (EAT: 0 + TL 1*960.000000 + TRL 0*0.000000 + NCP 0*0*960.000000) with node 1.
+On node 2?
+Node 2 is ok.
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 1 data 1.
+==> Job 2 using file 1 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 0 and is predicted to finish at time 3600.
+Nb of running cores after starting (or not: 1) Job 2: 30.
+There are 30/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data:
+Node 3
+Data:
+
+Need to schedule job 3 using file 1. T = 0
+On node 0?
+On node 1?
+On node 2?
+Node 2 is ok.
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 1 at time 0 on node 2 is 0.
+Score for job 3 is 960 (EAT: 0 + TL 1*960.000000 + TRL 0*0.000000 + NCP 0*0*960.000000) with node 2.
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 2 data 1.
+==> Job 3 using file 1 category 0 workload 1 will be computed on node 2 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 0 and is predicted to finish at time 3600.
+Nb of running cores after starting (or not: 1) Job 3: 45.
+There are 45/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data:
+
+Need to schedule job 4 using file 1. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+B: Time to load file: 960.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 1 at time 0 on node 3 is 0.
+Score for job 4 is 960 (EAT: 0 + TL 1*960.000000 + TRL 0*0.000000 + NCP 0*0*960.000000) with node 3.
+Need to create a data and intervals for the node 3 data 1.
+==> Job 4 using file 1 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 0 and is predicted to finish at time 3600.
+Nb of running cores after starting (or not: 1) Job 4: 60.
+There are 60/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 5 using file 3. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 5: 60.
+There are 60/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 6 using file 3. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 6: 60.
+There are 60/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 7 using file 3. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 7: 60.
+There are 60/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 8 using file 4. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 8: 60.
+There are 60/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 9 using file 5. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 60.
+There are 60/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 10 using file 6. T = 0
+On node 0?
+Node 0 is ok.
+A: EAT is: 0.
+Data 1 is on node 0.
+B: Time to load file: 320.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 6 at time 0 on node 0 is 0.
+Score for job 10 is 320 (EAT: 0 + TL 1*320.000000 + TRL 0*0.000000 + NCP 0*0*320.000000) with node 0.
+On node 1?
+Node 1 is ok.
+A: EAT is: 0.
+Data 1 is on node 1.
+B: Time to load file: 320.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 0 data 6.
+==> Job 10 using file 6 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19 start at time 0 and is predicted to finish at time 2000.
+Nb of running cores after starting (or not: 1) Job 10: 65.
+There are 65/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 11 using file 6. T = 0
+On node 0?
+On node 1?
+Node 1 is ok.
+A: EAT is: 0.
+Data 1 is on node 1.
+B: Time to load file: 320.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 6 at time 0 on node 1 is 0.
+Score for job 11 is 320 (EAT: 0 + TL 1*320.000000 + TRL 0*0.000000 + NCP 0*0*320.000000) with node 1.
+On node 2?
+Node 2 is ok.
+A: EAT is: 0.
+Data 1 is on node 2.
+B: Time to load file: 320.000000. Is being loaded? 0.
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+B: Time to load file: 320.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 1 data 6.
+==> Job 11 using file 6 category 0 workload 1 will be computed on node 1 core(s) 15,16,17,18,19 start at time 0 and is predicted to finish at time 2000.
+Nb of running cores after starting (or not: 1) Job 11: 70.
+There are 70/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 12 using file 6. T = 0
+On node 0?
+On node 1?
+On node 2?
+Node 2 is ok.
+A: EAT is: 0.
+Data 1 is on node 2.
+B: Time to load file: 320.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 6 at time 0 on node 2 is 0.
+Score for job 12 is 320 (EAT: 0 + TL 1*320.000000 + TRL 0*0.000000 + NCP 0*0*320.000000) with node 2.
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+B: Time to load file: 320.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 2 data 6.
+==> Job 12 using file 6 category 0 workload 1 will be computed on node 2 core(s) 15,16,17,18,19 start at time 0 and is predicted to finish at time 2000.
+Nb of running cores after starting (or not: 1) Job 12: 75.
+There are 75/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( )
+
+Need to schedule job 13 using file 7. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+B: Time to load file: 64.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 7 at time 0 on node 3 is 0.
+Score for job 13 is 64 (EAT: 0 + TL 1*64.000000 + TRL 0*0.000000 + NCP 0*0*64.000000) with node 3.
+Need to create a data and intervals for the node 3 data 7.
+==> Job 13 using file 7 category 0 workload 1 will be computed on node 3 core(s) 15 start at time 0 and is predicted to finish at time 1000.
+Nb of running cores after starting (or not: 1) Job 13: 76.
+There are 76/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 14 using file 7. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+Data 7 is on node 3.
+B: Time to load file: 64.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 7 at time 0 on node 3 is 0.
+Score for job 14 is 64 (EAT: 0 + TL 1*64.000000 + TRL 0*0.000000 + NCP 0*0*64.000000) with node 3.
+==> Job 14 using file 7 category 0 workload 1 will be computed on node 3 core(s) 16 start at time 0 and is predicted to finish at time 1000.
+Nb of running cores after starting (or not: 1) Job 14: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 15 using file 7. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+Data 7 is on node 3.
+B: Time to load file: 64.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 7 at time 0 on node 3 is 0.
+Score for job 15 is 64 (EAT: 0 + TL 1*64.000000 + TRL 0*0.000000 + NCP 0*0*64.000000) with node 3.
+==> Job 15 using file 7 category 0 workload 1 will be computed on node 3 core(s) 17 start at time 0 and is predicted to finish at time 5000.
+Nb of running cores after starting (or not: 1) Job 15: 78.
+There are 78/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 16 using file 8. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 78.
+There are 78/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 17 using file 9. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 17: 78.
+There are 78/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 18 using file 9. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 18: 78.
+There are 78/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 19 using file 9. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 19: 78.
+There are 78/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( )
+
+Need to schedule job 20 using file 10. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+Data 7 is on node 3.
+B: Time to load file: 64.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 10 at time 0 on node 3 is 0.
+Score for job 20 is 64 (EAT: 0 + TL 1*64.000000 + TRL 0*0.000000 + NCP 0*0*64.000000) with node 3.
+Need to create a data and intervals for the node 3 data 10.
+==> Job 20 using file 10 category 0 workload 1 will be computed on node 3 core(s) 18 start at time 0 and is predicted to finish at time 1000.
+Nb of running cores after starting (or not: 1) Job 20: 79.
+There are 79/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 0 are:
+Node 0
+Data: 1 ( ) 6 ( )
+Node 1
+Data: 1 ( ) 6 ( )
+Node 2
+Data: 1 ( ) 6 ( )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( )
+
+Need to schedule job 21 using file 10. T = 0
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 0.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+B: Time to load file: 64.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 10 at time 0 on node 3 is 0.
+Score for job 21 is 64 (EAT: 0 + TL 1*64.000000 + TRL 0*0.000000 + NCP 0*0*64.000000) with node 3.
+==> Job 21 using file 10 category 0 workload 1 will be computed on node 3 core(s) 19 start at time 0 and is predicted to finish at time 4000.
+Nb of running cores after starting (or not: 1) Job 21: 80.
+There are 80/80 running cores.
+Start of start_jobs at time 0.
+
+Checking data 1 on node 0 at time 0.
+For job 1 (delay = 1000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 1 15 cores start at time 0 on node 0 and will end at time 1960 before walltime: 1 transfer time is 960 data was 1.
+Updating running cores on job 1: 20/20 -> 5/20.
+
+Checking data 1 on node 1 at time 0.
+For job 2 (delay = 1000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 2 15 cores start at time 0 on node 1 and will end at time 1960 before walltime: 1 transfer time is 960 data was 1.
+Updating running cores on job 2: 20/20 -> 5/20.
+
+Checking data 1 on node 2 at time 0.
+For job 3 (delay = 1000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 3 15 cores start at time 0 on node 2 and will end at time 1960 before walltime: 1 transfer time is 960 data was 1.
+Updating running cores on job 3: 20/20 -> 5/20.
+
+Checking data 1 on node 3 at time 0.
+For job 4 (delay = 1000): 960 transfer time and 0 waiting for a load time. Overhead is 960
+==> Job 4 15 cores start at time 0 on node 3 and will end at time 1960 before walltime: 1 transfer time is 960 data was 1.
+Updating running cores on job 4: 20/20 -> 5/20.
+
+Checking data 6 on node 0 at time 0.
+For job 10 (delay = 1000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 10 5 cores start at time 0 on node 0 and will end at time 1320 before walltime: 1 transfer time is 320 data was 6.
+Updating running cores on job 10: 5/20 -> 0/20.
+
+Checking data 6 on node 1 at time 0.
+For job 11 (delay = 1000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 11 5 cores start at time 0 on node 1 and will end at time 1320 before walltime: 1 transfer time is 320 data was 6.
+Updating running cores on job 11: 5/20 -> 0/20.
+
+Checking data 6 on node 2 at time 0.
+For job 12 (delay = 1000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 12 5 cores start at time 0 on node 2 and will end at time 1320 before walltime: 1 transfer time is 320 data was 6.
+Updating running cores on job 12: 5/20 -> 0/20.
+
+Checking data 7 on node 3 at time 0.
+For job 13 (delay = 1000): 64 transfer time and 0 waiting for a load time. Overhead is 64
+==> Job 13 1 cores start at time 0 on node 3 and will end at time 1000 before walltime: 0 transfer time is 64 data was 7.
+Updating running cores on job 13: 5/20 -> 4/20.
+
+Checking data 7 on node 3 at time 0.
+For job 14 (delay = 1000): 0 transfer time and 64 waiting for a load time. Overhead is 64
+==> Job 14 1 cores start at time 0 on node 3 and will end at time 1000 before walltime: 0 transfer time is 0 data was 7.
+Updating running cores on job 14: 4/20 -> 3/20.
+
+Checking data 7 on node 3 at time 0.
+For job 15 (delay = 1000): 0 transfer time and 64 waiting for a load time. Overhead is 64
+==> Job 15 1 cores start at time 0 on node 3 and will end at time 1064 before walltime: 1 transfer time is 0 data was 7.
+Updating running cores on job 15: 3/20 -> 2/20.
+
+Checking data 10 on node 3 at time 0.
+For job 20 (delay = 1000): 64 transfer time and 0 waiting for a load time. Overhead is 64
+==> Job 20 1 cores start at time 0 on node 3 and will end at time 1000 before walltime: 0 transfer time is 64 data was 10.
+Updating running cores on job 20: 2/20 -> 1/20.
+
+Checking data 10 on node 3 at time 0.
+For job 21 (delay = 4000): 0 transfer time and 64 waiting for a load time. Overhead is 64
+==> Job 21 1 cores start at time 0 on node 3 and will end at time 4000 before walltime: 0 transfer time is 0 data was 10.
+Updating running cores on job 21: 1/20 -> 0/20.
+Start of end_jobs at time 1000.
+==> Job 13 1 cores finished at time 1000 on node 3.
+Updating running cores on job 13: 0/20 -> 1/20.
+==> Job 14 1 cores finished at time 1000 on node 3.
+Updating running cores on job 14: 1/20 -> 2/20.
+==> Job 20 1 cores finished at time 1000 on node 3.
+Updating running cores on job 20: 2/20 -> 3/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 77.
+
+schedule_job_fcfs_score_return_running_cores job 5
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 5 using file 3. T = 1000
+On node 0?
+A: EAT is: 3600.
+Data 1 is on node 0.
+Data 6 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 2000->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+Nb of copy for data 3 at time 3600 on node 0 is 0.
+Score for job 5 is 6160 (EAT: 3600 + TL 1*1280.000000 + TRL 1*1280.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 3600.
+Data 1 is on node 1.
+Data 6 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 2000->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 2?
+A: EAT is: 3600.
+Data 1 is on node 2.
+Data 6 is on node 2.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 2000->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 3?
+A: EAT is: 5000.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 0 data 3.
+==> Job 5 using file 3 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 3600 and is predicted to finish at time 7200.
+Nb of running cores after j1: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 6 using file 3. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 6: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 7 using file 3. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 7: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 8 using file 4. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 8: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 9 using file 5. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 16 using file 8. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 17 using file 9. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 17: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 18 using file 9. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 18: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 19 using file 9. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 19: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 22 using file 10. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 1000.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+Interval not empty, but is it on the node at time 1000 ?
+Checking 1000 / 1000 / 4000.
+B: Time to load file: 0.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 10 at time 1000 on node 3 is 0.
+Score for job 22 is 1000 (EAT: 1000 + TL 1*0.000000 + TRL 0*0.000000 + NCP 0*0*0.000000) with node 3.
+==> Job 22 using file 10 category 0 workload 1 will be computed on node 3 core(s) 15 start at time 1000 and is predicted to finish at time 5000.
+Nb of running cores after starting (or not: 1) Job 22: 78.
+There are 78/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1000 are:
+Node 0
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 2
+Data: 1 ( 1000 1000 3600 ) 6 ( 1000 1000 2000 )
+Node 3
+Data: 1 ( 1000 1000 3600 ) 7 ( 1000 1000 5000 ) 10 ( 1000 1000 4000 )
+
+Need to schedule job 23 using file 11. T = 1000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 23: 78.
+End of reschedule.
+Start of start_jobs at time 1000.
+
+Checking data 10 on node 3 at time 1000.
+For job 22 (delay = 4000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 22 1 cores start at time 1000 on node 3 and will end at time 5000 before walltime: 0 transfer time is 0 data was 10.
+Updating running cores on job 22: 3/20 -> 2/20.
+Start of end_jobs at time 1064.
+==> Job 15 1 cores finished at time 1064 on node 3.
+Updating running cores on job 15: 2/20 -> 3/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 77.
+
+schedule_job_fcfs_score_return_running_cores job 5
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 5 using file 3. T = 1064
+On node 0?
+A: EAT is: 3600.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 2000->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+Nb of copy for data 3 at time 3600 on node 0 is 0.
+Score for job 5 is 6160 (EAT: 3600 + TL 1*1280.000000 + TRL 1*1280.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 3600.
+Data 1 is on node 1.
+Data 6 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 2000->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 2?
+A: EAT is: 3600.
+Data 1 is on node 2.
+Data 6 is on node 2.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 2000->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 3?
+A: EAT is: 5000.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+==> Job 5 using file 3 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 3600 and is predicted to finish at time 7200.
+Nb of running cores after j1: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 6 using file 3. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 6: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 7 using file 3. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 7: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 8 using file 4. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 8: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 9 using file 5. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 16 using file 8. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 17 using file 9. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 17: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 18 using file 9. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 18: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 19 using file 9. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 19: 77.
+There are 77/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1064 are:
+Node 0
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 ) 3 ( )
+Node 1
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 2
+Data: 1 ( 1064 1064 3600 ) 6 ( 1064 1064 2000 )
+Node 3
+Data: 1 ( 1064 1064 3600 ) 7 ( 1064 1064 1064 ) 10 ( 1064 1064 5000 )
+
+Need to schedule job 23 using file 11. T = 1064
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 23: 77.
+End of reschedule.
+Start of end_jobs at time 1320.
+==> Job 10 5 cores finished at time 1320 on node 0.
+Updating running cores on job 10: 0/20 -> 5/20.
+==> Job 11 5 cores finished at time 1320 on node 1.
+Updating running cores on job 11: 0/20 -> 5/20.
+==> Job 12 5 cores finished at time 1320 on node 2.
+Updating running cores on job 12: 0/20 -> 5/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 62.
+
+schedule_job_fcfs_score_return_running_cores job 5
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 5 using file 3. T = 1320
+On node 0?
+A: EAT is: 3600.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 1320->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+Nb of copy for data 3 at time 3600 on node 0 is 0.
+Score for job 5 is 6160 (EAT: 3600 + TL 1*1280.000000 + TRL 1*1280.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 3600.
+Data 1 is on node 1.
+Data 6 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 1320->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 2?
+A: EAT is: 3600.
+Data 1 is on node 2.
+Data 6 is on node 2.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 1: 3600->
+Add size 96.000000->
+Checking tail of the interval of data 6: 1320->
+Add size 32.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 3?
+A: EAT is: 5000.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+==> Job 5 using file 3 category 0 workload 1 will be computed on node 0 core(s) 15,16,17,18,19,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14 start at time 3600 and is predicted to finish at time 7200.
+Nb of running cores after j1: 62.
+There are 62/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 6 using file 3. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 6: 62.
+There are 62/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 7 using file 3. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 7: 62.
+There are 62/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 8 using file 4. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 8: 62.
+There are 62/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 9 using file 5. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 62.
+There are 62/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 16 using file 8. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 62.
+There are 62/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 17 using file 9. T = 1320
+On node 0?
+On node 1?
+Node 1 is ok.
+A: EAT is: 1320.
+Data 1 is on node 1.
+Data 6 is on node 1.
+B: Time to load file: 320.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 9 at time 1320 on node 1 is 0.
+Score for job 17 is 1640 (EAT: 1320 + TL 1*320.000000 + TRL 0*0.000000 + NCP 0*0*320.000000) with node 1.
+On node 2?
+Node 2 is ok.
+A: EAT is: 1320.
+Data 1 is on node 2.
+Data 6 is on node 2.
+B: Time to load file: 320.000000. Is being loaded? 0.
+On node 3?
+Need to create a data and intervals for the node 1 data 9.
+==> Job 17 using file 9 category 0 workload 1 will be computed on node 1 core(s) 15,16,17,18,19 start at time 1320 and is predicted to finish at time 4820.
+Nb of running cores after starting (or not: 1) Job 17: 67.
+There are 67/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 9 ( )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 18 using file 9. T = 1320
+On node 0?
+On node 1?
+On node 2?
+Node 2 is ok.
+A: EAT is: 1320.
+Data 1 is on node 2.
+Data 6 is on node 2.
+B: Time to load file: 320.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 9 at time 1320 on node 2 is 0.
+Score for job 18 is 1640 (EAT: 1320 + TL 1*320.000000 + TRL 0*0.000000 + NCP 0*0*320.000000) with node 2.
+On node 3?
+Need to create a data and intervals for the node 2 data 9.
+==> Job 18 using file 9 category 0 workload 1 will be computed on node 2 core(s) 15,16,17,18,19 start at time 1320 and is predicted to finish at time 4820.
+Nb of running cores after starting (or not: 1) Job 18: 72.
+There are 72/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 9 ( )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 9 ( )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 19 using file 9. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 19: 72.
+There are 72/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1320 are:
+Node 0
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 3 ( )
+Node 1
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 9 ( )
+Node 2
+Data: 1 ( 1320 1320 3600 ) 6 ( 1320 1320 1320 ) 9 ( )
+Node 3
+Data: 1 ( 1320 1320 3600 ) 7 ( ) 10 ( 1320 1320 5000 )
+
+Need to schedule job 23 using file 11. T = 1320
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 23: 72.
+End of reschedule.
+Start of start_jobs at time 1320.
+
+Checking data 9 on node 1 at time 1320.
+For job 17 (delay = 1000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 17 5 cores start at time 1320 on node 1 and will end at time 2640 before walltime: 1 transfer time is 320 data was 9.
+Updating running cores on job 17: 5/20 -> 0/20.
+
+Checking data 9 on node 2 at time 1320.
+For job 18 (delay = 1000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 18 5 cores start at time 1320 on node 2 and will end at time 2640 before walltime: 1 transfer time is 320 data was 9.
+Updating running cores on job 18: 5/20 -> 0/20.
+Start of end_jobs at time 1960.
+==> Job 1 15 cores finished at time 1960 on node 0.
+Updating running cores on job 1: 5/20 -> 20/20.
+==> Job 2 15 cores finished at time 1960 on node 1.
+Updating running cores on job 2: 0/20 -> 15/20.
+==> Job 3 15 cores finished at time 1960 on node 2.
+Updating running cores on job 3: 0/20 -> 15/20.
+==> Job 4 15 cores finished at time 1960 on node 3.
+Updating running cores on job 4: 3/20 -> 18/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 12.
+
+schedule_job_fcfs_score_return_running_cores job 5
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 )
+
+Need to schedule job 5 using file 3. T = 1960
+On node 0?
+A: EAT is: 1960.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 3 at time 1960 on node 0 is 0.
+Score for job 5 is 3240 (EAT: 1960 + TL 1*1280.000000 + TRL 0*0.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 4820.
+On node 2?
+A: EAT is: 4820.
+On node 3?
+A: EAT is: 5000.
+==> Job 5 using file 3 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 1960 and is predicted to finish at time 5560.
+Nb of running cores after j1: 32.
+There are 32/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 )
+
+Need to schedule job 6 using file 3. T = 1960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 6: 32.
+There are 32/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 )
+
+Need to schedule job 7 using file 3. T = 1960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 7: 32.
+There are 32/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 )
+
+Need to schedule job 8 using file 4. T = 1960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 1960.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+B: Time to load file: 1150.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 4 at time 1960 on node 3 is 0.
+Score for job 8 is 3110 (EAT: 1960 + TL 1*1150.000000 + TRL 0*0.000000 + NCP 0*0*1150.000000) with node 3.
+Need to create a data and intervals for the node 3 data 4.
+==> Job 8 using file 4 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18 start at time 1960 and is predicted to finish at time 5460.
+Nb of running cores after starting (or not: 1) Job 8: 50.
+There are 50/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 ) 4 ( )
+
+Need to schedule job 9 using file 5. T = 1960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 50.
+There are 50/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 ) 4 ( )
+
+Need to schedule job 16 using file 8. T = 1960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 50.
+There are 50/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 ) 4 ( )
+
+Need to schedule job 19 using file 9. T = 1960
+On node 0?
+On node 1?
+Node 1 is ok.
+A: EAT is: 1960.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+Interval not empty, but is it on the node at time 1960 ?
+Checking 1960 / 1960 / 4820.
+B: Time to load file: 0.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 9 at time 1960 on node 1 is 0.
+Score for job 19 is 1960 (EAT: 1960 + TL 1*0.000000 + TRL 0*0.000000 + NCP 0*0*0.000000) with node 1.
+On node 2?
+Node 2 is ok.
+A: EAT is: 1960.
+On node 3?
+==> Job 19 using file 9 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4 start at time 1960 and is predicted to finish at time 5460.
+Nb of running cores after starting (or not: 1) Job 19: 55.
+There are 55/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 1960 are:
+Node 0
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 3 ( )
+Node 1
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 2
+Data: 1 ( 1960 1960 1960 ) 6 ( ) 9 ( 1960 1960 4820 )
+Node 3
+Data: 1 ( 1960 1960 1960 ) 7 ( ) 10 ( 1960 1960 5000 ) 4 ( )
+
+Need to schedule job 23 using file 11. T = 1960
+On node 0?
+On node 1?
+Node 1 is ok.
+A: EAT is: 1960.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+B: Time to load file: 320.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 11 at time 1960 on node 1 is 0.
+Score for job 23 is 2280 (EAT: 1960 + TL 1*320.000000 + TRL 0*0.000000 + NCP 0*0*320.000000) with node 1.
+On node 2?
+Node 2 is ok.
+A: EAT is: 1960.
+Data 1 is on node 2.
+Data 6 is on node 2.
+Data 9 is on node 2.
+B: Time to load file: 320.000000. Is being loaded? 0.
+On node 3?
+Need to create a data and intervals for the node 1 data 11.
+==> Job 23 using file 11 category 0 workload 1 will be computed on node 1 core(s) 5,6,7,8,9 start at time 1960 and is predicted to finish at time 5460.
+Nb of running cores after starting (or not: 1) Job 23: 60.
+End of reschedule.
+Start of start_jobs at time 1960.
+
+Checking data 3 on node 0 at time 1960.
+For job 5 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 5 20 cores start at time 1960 on node 0 and will end at time 4240 before walltime: 1 transfer time is 1280 data was 3.
+Updating running cores on job 5: 20/20 -> 0/20.
+
+Checking data 4 on node 3 at time 1960.
+For job 8 (delay = 1000): 1150 transfer time and 0 waiting for a load time. Overhead is 1150
+==> Job 8 18 cores start at time 1960 on node 3 and will end at time 4110 before walltime: 1 transfer time is 1150 data was 4.
+Updating running cores on job 8: 18/20 -> 0/20.
+
+Checking data 9 on node 1 at time 1960.
+For job 19 (delay = 1000): 0 transfer time and 0 waiting for a load time. Overhead is 0
+==> Job 19 5 cores start at time 1960 on node 1 and will end at time 2960 before walltime: 1 transfer time is 0 data was 9.
+Updating running cores on job 19: 15/20 -> 10/20.
+
+Checking data 11 on node 1 at time 1960.
+For job 23 (delay = 1000): 320 transfer time and 0 waiting for a load time. Overhead is 320
+==> Job 23 5 cores start at time 1960 on node 1 and will end at time 3280 before walltime: 1 transfer time is 320 data was 11.
+Updating running cores on job 23: 10/20 -> 5/20.
+Start of end_jobs at time 2640.
+==> Job 17 5 cores finished at time 2640 on node 1.
+Updating running cores on job 17: 5/20 -> 10/20.
+==> Job 18 5 cores finished at time 2640 on node 2.
+Updating running cores on job 18: 15/20 -> 20/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 50.
+
+schedule_job_fcfs_score_return_running_cores job 6
+Intervals at time 2640 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2640 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 5460 ) 11 ( 2640 2640 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 2640 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2640 2640 5000 ) 4 ( 2640 3110 5460 )
+
+Need to schedule job 6 using file 3. T = 2640
+On node 0?
+A: EAT is: 5560.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 5560 ?
+Checking 2640 / 3240 / 5560.
+B: Time to load file: 0.000000. Is being loaded? 0.
+Total size of data on node ending before my EAT is: 0.000000 but I return (1.000000*0.000000)/0.100000 = 0.000000.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 3 at time 5560 on node 0 is 0.
+Score for job 6 is 5560 (EAT: 5560 + TL 1*0.000000 + TRL 1*0.000000 + NCP 0*0*0.000000) with node 0.
+On node 1?
+A: EAT is: 5460.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+Data 11 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+On node 2?
+A: EAT is: 2640.
+Data 1 is on node 2.
+Data 6 is on node 2.
+Data 9 is on node 2.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 3 at time 2640 on node 2 is 0.
+Score for job 6 is 3920 (EAT: 2640 + TL 1*1280.000000 + TRL 0*0.000000 + NCP 0*0*1280.000000) with node 2.
+On node 3?
+A: EAT is: 5460.
+Need to create a data and intervals for the node 2 data 3.
+==> Job 6 using file 3 category 0 workload 1 will be computed on node 2 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 2640 and is predicted to finish at time 6240.
+Nb of running cores after j1: 70.
+There are 70/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 2640 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2640 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 5460 ) 11 ( 2640 2640 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 2640 ) 3 ( )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2640 2640 5000 ) 4 ( 2640 3110 5460 )
+
+Need to schedule job 7 using file 3. T = 2640
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 7: 70.
+There are 70/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 2640 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2640 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 5460 ) 11 ( 2640 2640 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 2640 ) 3 ( )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2640 2640 5000 ) 4 ( 2640 3110 5460 )
+
+Need to schedule job 9 using file 5. T = 2640
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 70.
+There are 70/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 2640 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2640 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 5460 ) 11 ( 2640 2640 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( 2640 2640 2640 ) 3 ( )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2640 2640 5000 ) 4 ( 2640 3110 5460 )
+
+Need to schedule job 16 using file 8. T = 2640
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 70.
+End of reschedule.
+Start of start_jobs at time 2640.
+
+Checking data 3 on node 2 at time 2640.
+For job 6 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 6 20 cores start at time 2640 on node 2 and will end at time 4920 before walltime: 1 transfer time is 1280 data was 3.
+Updating running cores on job 6: 20/20 -> 0/20.
+Start of end_jobs at time 2960.
+==> Job 19 5 cores finished at time 2960 on node 1.
+Updating running cores on job 19: 10/20 -> 15/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 65.
+
+schedule_job_fcfs_score_return_running_cores job 7
+Intervals at time 2960 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2960 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2960 2960 2960 ) 11 ( 2960 2960 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 2960 3920 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2960 2960 5000 ) 4 ( 2960 3110 5460 )
+
+Need to schedule job 7 using file 3. T = 2960
+On node 0?
+A: EAT is: 5560.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 5560 ?
+Checking 2960 / 3240 / 5560.
+B: Time to load file: 0.000000. Is being loaded? 0.
+Total size of data on node ending before my EAT is: 0.000000 but I return (1.000000*0.000000)/0.100000 = 0.000000.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 3 at time 5560 on node 0 is 0.
+Score for job 7 is 5560 (EAT: 5560 + TL 1*0.000000 + TRL 1*0.000000 + NCP 0*0*0.000000) with node 0.
+On node 1?
+A: EAT is: 5460.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+Data 11 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+On node 2?
+A: EAT is: 6240.
+On node 3?
+A: EAT is: 5460.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+Data 4 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+==> Job 7 using file 3 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 5560 and is predicted to finish at time 9160.
+Nb of running cores after j1: 65.
+There are 65/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 2960 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2960 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2960 2960 2960 ) 11 ( 2960 2960 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 2960 3920 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2960 2960 5000 ) 4 ( 2960 3110 5460 )
+
+Need to schedule job 9 using file 5. T = 2960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 9: 65.
+There are 65/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 2960 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 2960 3240 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( 2960 2960 2960 ) 11 ( 2960 2960 5460 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 2960 3920 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 2960 2960 5000 ) 4 ( 2960 3110 5460 )
+
+Need to schedule job 16 using file 8. T = 2960
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 65.
+End of reschedule.
+Start of end_jobs at time 3280.
+==> Job 23 5 cores finished at time 3280 on node 1.
+Updating running cores on job 23: 15/20 -> 20/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 60.
+
+schedule_job_fcfs_score_return_running_cores job 7
+Intervals at time 3280 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 3280 3280 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( 3280 3280 3280 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 3280 3920 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 3280 3280 5000 ) 4 ( 3280 3280 5460 )
+
+Need to schedule job 7 using file 3. T = 3280
+On node 0?
+A: EAT is: 5560.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+Interval not empty, but is it on the node at time 5560 ?
+Checking 3280 / 3280 / 5560.
+B: Time to load file: 0.000000. Is being loaded? 0.
+Total size of data on node ending before my EAT is: 0.000000 but I return (1.000000*0.000000)/0.100000 = 0.000000.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 3 at time 5560 on node 0 is 0.
+Score for job 7 is 5560 (EAT: 5560 + TL 1*0.000000 + TRL 1*0.000000 + NCP 0*0*0.000000) with node 0.
+On node 1?
+A: EAT is: 3280.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+Data 11 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 3 at time 3280 on node 1 is 0.
+Score for job 7 is 4560 (EAT: 3280 + TL 1*1280.000000 + TRL 0*0.000000 + NCP 0*0*1280.000000) with node 1.
+On node 2?
+A: EAT is: 6240.
+On node 3?
+A: EAT is: 5460.
+Need to create a data and intervals for the node 1 data 3.
+==> Job 7 using file 3 category 0 workload 1 will be computed on node 1 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 3280 and is predicted to finish at time 6880.
+Nb of running cores after j1: 80.
+There are 80/80 running cores.
+End of reschedule.
+Start of start_jobs at time 3280.
+
+Checking data 3 on node 1 at time 3280.
+For job 7 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 7 20 cores start at time 3280 on node 1 and will end at time 5560 before walltime: 1 transfer time is 1280 data was 3.
+Updating running cores on job 7: 20/20 -> 0/20.
+Start of end_jobs at time 4000.
+==> Job 21 1 cores finished at time 4000 on node 3.
+Updating running cores on job 21: 0/20 -> 1/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 79.
+
+schedule_job_fcfs_score_return_running_cores job 9
+Intervals at time 4000 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 4000 4000 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( ) 3 ( 4000 4560 6880 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 4000 4000 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 4000 4000 5000 ) 4 ( 4000 4000 5460 )
+
+Need to schedule job 9 using file 5. T = 4000
+On node 0?
+A: EAT is: 5560.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 3: 5560->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+Nb of copy for data 5 at time 5560 on node 0 is 0.
+Score for job 9 is 8120 (EAT: 5560 + TL 1*1280.000000 + TRL 1*1280.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 6880.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+Data 11 is on node 1.
+Data 3 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+On node 2?
+A: EAT is: 6240.
+Data 1 is on node 2.
+Data 6 is on node 2.
+Data 9 is on node 2.
+Data 3 is on node 2.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 3: 6240->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 3?
+A: EAT is: 5460.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+Data 4 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 10: 5000->
+Add size 6.400000->
+Checking tail of the interval of data 4: 5460->
+Add size 115.000000->
+Total size of data on node ending before my EAT is: 121.400002 but I return (1.000000*121.400002)/0.100000 = 1214.000000.
+C: Time to reload evicted files 1214.000000.
+Nb of copy for data 5 at time 5460 on node 3 is 0.
+Score for job 9 is 7954 (EAT: 5460 + TL 1*1280.000000 + TRL 1*1214.000000 + NCP 0*0*1280.000000) with node 3.
+Need to create a data and intervals for the node 3 data 5.
+==> Job 9 using file 5 category 0 workload 1 will be computed on node 3 core(s) 19,15,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18 start at time 5460 and is predicted to finish at time 9060.
+Nb of running cores after j1: 79.
+There are 79/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 4000 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 4000 4000 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( ) 3 ( 4000 4560 6880 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 4000 4000 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 4000 4000 5000 ) 4 ( 4000 4000 5460 ) 5 ( )
+
+Need to schedule job 16 using file 8. T = 4000
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 79.
+End of reschedule.
+Start of end_jobs at time 4110.
+==> Job 8 18 cores finished at time 4110 on node 3.
+Updating running cores on job 8: 1/20 -> 19/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 61.
+
+schedule_job_fcfs_score_return_running_cores job 9
+Intervals at time 4110 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 4110 4110 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( ) 3 ( 4110 4560 6880 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 4110 4110 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 4110 4110 5000 ) 4 ( 4110 4110 4110 ) 5 ( )
+
+Need to schedule job 9 using file 5. T = 4110
+On node 0?
+A: EAT is: 5560.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 3: 5560->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+Nb of copy for data 5 at time 5560 on node 0 is 0.
+Score for job 9 is 8120 (EAT: 5560 + TL 1*1280.000000 + TRL 1*1280.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 6880.
+Data 1 is on node 1.
+Data 6 is on node 1.
+Data 9 is on node 1.
+Data 11 is on node 1.
+Data 3 is on node 1.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+On node 2?
+A: EAT is: 6240.
+Data 1 is on node 2.
+Data 6 is on node 2.
+Data 9 is on node 2.
+Data 3 is on node 2.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 3: 6240->
+Add size 128.000000->
+Total size of data on node ending before my EAT is: 128.000000 but I return (1.000000*128.000000)/0.100000 = 1280.000000.
+C: Time to reload evicted files 1280.000000.
+On node 3?
+A: EAT is: 5000.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+Data 4 is on node 3.
+Data 5 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Checking tail of the interval of data 10: 5000->
+Add size 6.400000->
+Checking tail of the interval of data 4: 4110->
+Add size 115.000000->
+Total size of data on node ending before my EAT is: 121.400002 but I return (1.000000*121.400002)/0.100000 = 1214.000000.
+C: Time to reload evicted files 1214.000000.
+Nb of copy for data 5 at time 5000 on node 3 is 0.
+Score for job 9 is 7494 (EAT: 5000 + TL 1*1280.000000 + TRL 1*1214.000000 + NCP 0*0*1280.000000) with node 3.
+==> Job 9 using file 5 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,15 start at time 5000 and is predicted to finish at time 8600.
+Nb of running cores after j1: 61.
+There are 61/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 4110 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 4110 4110 5560 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( ) 3 ( 4110 4560 6880 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 4110 4110 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 4110 4110 5000 ) 4 ( 4110 4110 4110 ) 5 ( )
+
+Need to schedule job 16 using file 8. T = 4110
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Could not start the job.
+Nb of running cores after starting (or not: 0) Job 16: 61.
+End of reschedule.
+Start of end_jobs at time 4240.
+==> Job 5 20 cores finished at time 4240 on node 0.
+Updating running cores on job 5: 0/20 -> 20/20.
+Core(s) liberated. Need to free them.
+reset_cores.
+Reschedule.
+Start fcfs with a score easybf scheduler.
+Nb of running cores before j1: 41.
+
+schedule_job_fcfs_score_return_running_cores job 9
+Intervals at time 4240 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 4240 4240 4240 )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( ) 3 ( 4240 4560 6880 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 4240 4240 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 4240 4240 5000 ) 4 ( ) 5 ( )
+
+Need to schedule job 9 using file 5. T = 4240
+On node 0?
+A: EAT is: 4240.
+Data 1 is on node 0.
+Data 6 is on node 0.
+Data 3 is on node 0.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 5 at time 4240 on node 0 is 0.
+Score for job 9 is 5520 (EAT: 4240 + TL 1*1280.000000 + TRL 0*0.000000 + NCP 0*0*1280.000000) with node 0.
+On node 1?
+A: EAT is: 6880.
+On node 2?
+A: EAT is: 6240.
+On node 3?
+A: EAT is: 5000.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+Data 4 is on node 3.
+Data 5 is on node 3.
+B: Time to load file: 1280.000000. Is being loaded? 0.
+Need to create a data and intervals for the node 0 data 5.
+==> Job 9 using file 5 category 0 workload 1 will be computed on node 0 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19 start at time 4240 and is predicted to finish at time 7840.
+Nb of running cores after j1: 61.
+There are 61/80 running cores.
+
+try_to_start_job_immediatly_fcfs_score_without_delaying_j1
+Intervals at time 4240 are:
+Node 0
+Data: 1 ( ) 6 ( ) 3 ( 4240 4240 4240 ) 5 ( )
+Node 1
+Data: 1 ( ) 6 ( ) 9 ( ) 11 ( ) 3 ( 4240 4560 6880 )
+Node 2
+Data: 1 ( ) 6 ( ) 9 ( ) 3 ( 4240 4240 6240 )
+Node 3
+Data: 1 ( ) 7 ( ) 10 ( 4240 4240 5000 ) 4 ( ) 5 ( )
+
+Need to schedule job 16 using file 8. T = 4240
+On node 0?
+On node 1?
+On node 2?
+On node 3?
+Node 3 is ok.
+A: EAT is: 4240.
+Data 1 is on node 3.
+Data 7 is on node 3.
+Data 10 is on node 3.
+Data 4 is on node 3.
+Data 5 is on node 3.
+B: Time to load file: 1150.000000. Is being loaded? 0.
+C: Time to reload evicted files 0.000000.
+Nb of copy for data 8 at time 4240 on node 3 is 0.
+Score for job 16 is 5390 (EAT: 4240 + TL 1*1150.000000 + TRL 0*0.000000 + NCP 0*0*1150.000000) with node 3.
+Need to create a data and intervals for the node 3 data 8.
+==> Job 16 using file 8 category 0 workload 1 will be computed on node 3 core(s) 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18 start at time 4240 and is predicted to finish at time 7240.
+Nb of running cores after starting (or not: 1) Job 16: 79.
+End of reschedule.
+Start of start_jobs at time 4240.
+
+Checking data 5 on node 0 at time 4240.
+For job 9 (delay = 1000): 1280 transfer time and 0 waiting for a load time. Overhead is 1280
+==> Job 9 20 cores start at time 4240 on node 0 and will end at time 6520 before walltime: 1 transfer time is 1280 data was 5.
+Updating running cores on job 9: 20/20 -> 0/20.
+
+Checking data 8 on node 3 at time 4240.
+For job 16 (delay = 1000): 1150 transfer time and 0 waiting for a load time. Overhead is 1150

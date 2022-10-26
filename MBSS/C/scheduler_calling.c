@@ -9,29 +9,40 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 	{
 		fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 	}
-	else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0)
+	else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_easybf_x", 60) == 0)
 	{
 		#ifdef DATA_PERSISTENCE
 		printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
 		#endif
 				
-		fcfs_with_a_score_easybf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+		fcfs_with_a_score_easybf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 	}
 	else if (strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0) /* Ok avec DATA_PERSISTENCE */
 	{
-				fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
+		fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
+	}
+	else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_easybf_x", 41) == 0) /* Ok avec DATA_PERSISTENCE */
+	{
+		if (busy_cluster == 1)
+		{
+			fcfs_with_a_score_easybf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
+		}
+		else
+		{
+			fcfs_with_a_score_easybf_scheduler(liste->head, node_list, t, 1, 0, 0, 0, 0, 0);
+		}
 	}
 	else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0) /* Ok avec DATA_PERSISTENCE */
 	{
 		if (busy_cluster == 1)
-				{
-					fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
-				}
-				else
-				{
-					fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, 1, 0, 0, 0, backfill_mode);
-				}
-			}
+		{
+			fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
+		}
+		else
+		{
+			fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, 1, 0, 0, 0, backfill_mode);
+		}
+	}
 	else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (nb_job_to_schedule >= 486 - running_nodes)

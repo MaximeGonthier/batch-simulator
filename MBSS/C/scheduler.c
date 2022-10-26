@@ -297,7 +297,7 @@ void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, i
 	}
 }
 
-void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
+void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t)
 {
 	#ifdef PRINT
 	printf("Start fcfs with a score easybf scheduler.\n");
@@ -311,7 +311,8 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	
 	/* First schedule J_1. */
 	struct Job* j1 = head_job;
-	nb_running_cores = schedule_job_fcfs_score_return_running_cores(j1, head_node, t, nb_running_cores, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+	if (head_job == NULL) { return; }
+	nb_running_cores = schedule_job_fcfs_score_return_running_cores(j1, head_node, t, nb_running_cores, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 	insert_next_time_in_sorted_list(start_times, j1->start_time);
 	
 	#ifdef PRINT
@@ -331,7 +332,9 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 			
 			result = false;
 			
-			nb_running_cores = try_to_start_job_immediatly_fcfs_score_without_delaying_j1(j, j1, head_node, nb_running_cores, &result, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			//~ TODO
+			//~ nb_running_cores = try_to_start_job_immediatly_fcfs_score_without_delaying_j1(j, j1, head_node, nb_running_cores, &result, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+			nb_running_cores = try_to_start_job_immediatly_fcfs_score_without_delaying_j1(j, j1, head_node, nb_running_cores, &result, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 			
 			if (result == true)
 			{
@@ -340,6 +343,7 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 			#ifdef PRINT
 			printf("Nb of running cores after starting (or not: %d) Job %d: %d.\n", result, j->unique_id, nb_running_cores);
 			#endif
+			
 			j = j->next;
 		}
 		else
@@ -347,6 +351,13 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 			#ifdef PRINT
 			printf("There are %d/%d running cores.\n", nb_running_cores, nb_cores);
 			#endif
+			
+			/* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
+			while (j != NULL)
+			{
+				j->start_time = -1;
+				j = j->next;
+			}
 			
 			break;
 		}

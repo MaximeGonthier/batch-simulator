@@ -152,7 +152,8 @@
 		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup). Donc faut-il l'utilise comme tiebreak ?
 		\item L'ajout de données persistente pose le pb de l'eviction. Je vais faire un LRU qui evince la donnée qui a été fini d'utilisé il y a le + longmemsp (j'aurais aussi pu faire celle qui a commencé le + longemps)
 		\item code data peristence avec LRU pour l'eviction
-		\item code bf commun en différentes versions.
+		\item code bf commun en différentes versions. Trop complexe et pas encore retesté
+		\item Réduire complexité en ne reschedulant pas tout quand on a juste un nouveau job. 
 	\end{enumerate}
 	
 \section{Questions for next meeting}
@@ -170,7 +171,6 @@
 			\item se renseigner payement enseirb semestre 1: attendre fin octobre
 			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment + verifier changement heures dossier
 			\item Répondre a Bora hMETIS
-			\item justif de payement agos
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
@@ -178,6 +178,13 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item Compter le nb de fois que la persistence est exploité: pour Janvier 17: 14 fois avec FCFS et 20 fois avec SCORE. pour Janvier 21: 8 fois avec FCFS et 29 fois avec SCORE. Avec conservativ bf et 17 et fcfs: avec easy bf et 17 et fcfs: 
+			\item finir et tester conservative bf version optimisé
+			\item tester easy bf, moins couteux à implémenter
+			\item tester conservative avec une et des limite(s) sur le nb de jobs ou de cores reschedule
+			\item Se comparer à EFT
+			
+		
 			\item use a simple backfilling strategy to be fair with fcfs et utiliser la même pour tous. Le premier est bien plus conservateur que le second qui peut delay un job a cause d'un walltime trop grand
 			\item smooth transtion: probability of needing all nodes ? Try math functions ? tester si ca matvch le nb of nodes en testant d'autres tailles de clusters ?
 			\item Garder une donnée si elle rentre en memoire malgré un autre job qui tourne ou commence. Sinon l'enlever. ca appote un problème d'eviction. Du coup j'evince en LRU. La pb que je fias une data dans score or mtn j'ai plus le nb task using it

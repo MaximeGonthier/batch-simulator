@@ -284,6 +284,8 @@ void to_print_job_csv(struct Job* job, int time)
 /* Print in a file the final results. Only called once at the end of the simulation. */
 void print_csv(struct To_Print* head_to_print)
 {
+	int size_file_to_open = 300; /* provoque des main: malloc.c:2401: sysmalloc: Assertion `(old_top == initial_top (av) && old_size == 0) || ((unsigned long) (old_size) >= MINSIZE && prev_inuse (old_top) && ((unsigned long) old_end & (pagesize - 1)) == 0)' failed. parce que je ne fais pas attention à la taille du fichier + taille du scheduler à ouvrir dans le malloc. 300 est complètement arbitraire il faudrait le changer pour une valeur exacte. */
+
 	if (strcmp(scheduler, "Fcfs") == 0)
 	{
 		scheduler = "FCFS";
@@ -300,18 +302,14 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		scheduler = "SCORE";
 	}
-	else if (strcmp(scheduler, "Fcfs_with_a_score_conservative_bf_x500_x1_x0_x0") == 0)
+	else if (strcmp(scheduler, "Fcfs_with_a_score_conservativebf_x500_x1_x0_x0") == 0)
 	{
 		scheduler = "SCORE CONSERVATIVE BF";
 	}
-	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0") == 0)
-	//~ {
-		//~ scheduler = "SCORE_500_1";
-	//~ }
-	//~ else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x50_x0_x0") == 0)
-	//~ {
-		//~ scheduler = "SCORE_500_50";
-	//~ }
+	else if (strcmp(scheduler, "Fcfs_with_a_score_easybf_x500_x1_x0_x0") == 0)
+	{
+		scheduler = "SCORE EASY BF";
+	}
 	
 	#ifdef PLOT_STATS
 	FILE* f_nb_backfilled_jobs = fopen("outputs/nb_backfilled_jobs.txt", "w");
@@ -344,7 +342,7 @@ void print_csv(struct To_Print* head_to_print)
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	/* For distribution of flow and queue times on each job. */
-	char* file_to_open = malloc(100*sizeof(char));
+	char* file_to_open = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open, "outputs/Queue_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
@@ -355,7 +353,7 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 	
-	file_to_open = malloc(100*sizeof(char));
+	file_to_open = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open, "outputs/Flow_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
@@ -366,7 +364,7 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 		
-	file_to_open = malloc(100*sizeof(char));
+	file_to_open = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open, "outputs/Stretch_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
@@ -377,7 +375,7 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 	
-	file_to_open = malloc(100*sizeof(char));
+	file_to_open = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open, "outputs/Bounded_Stretch_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
@@ -551,7 +549,6 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_stretch);
 	fclose(f_bounded_stretch);
 	#endif
-	//~ printf("here5\n");
 	/* Compute mean values */
 	mean_queue_time = total_queue_time/nb_job_to_evaluate;
 	mean_flow = total_flow/nb_job_to_evaluate;
@@ -563,16 +560,10 @@ void print_csv(struct To_Print* head_to_print)
 	mean_flow_stretch_with_a_minimum_128 = total_flow_stretch_with_a_minimum_128/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum_256 = total_flow_stretch_with_a_minimum_256/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum_1024 = total_flow_stretch_with_a_minimum_1024/nb_job_to_evaluate;
-	//~ printf("here6\n");
 	/* Main file of results */
-	char* file_to_open_2 = malloc(200*sizeof(char));
-	//~ file_to_open_2 = malloc(100*sizeof(char));
-	//~ strcpy(file_to_open_2, "outputs/Results_");
-	//~ strcat(file_to_open_2, scheduler);
-	//~ strcat(file_to_open_2, ".csv");
+	char* file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, output_file);
 	FILE* f = fopen(file_to_open_2, "a");
-	//~ printf("here7\n");
 	if (!f)
 	{
 		perror("Error opening file.\n"); fflush(stdout);
@@ -582,9 +573,9 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d, Nb large queue times (>%d): %d, Mean flow stretch 128 256 1024: %f %f %f, Mean flow stretch with a minimum 128 256 1024: %f %f %f\n\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, what_is_a_large_queue_time, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	fclose(f);
-	//~ printf("la\n");
+
 	/* For flow stretch heat map */
-	file_to_open_2 = malloc(100*sizeof(char));
+	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Stretch_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
@@ -598,7 +589,7 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For max flow stretch heat map */
-	file_to_open_2 = malloc(100*sizeof(char));
+	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Max_Stretch_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
@@ -610,10 +601,9 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	fprintf(f, "%f", max_flow_stretch);
 	fclose(f);
-	//~ printf("la2\n");
 	
 	/* For flow stretch with a minimum heat map */
-	file_to_open_2 = malloc(100*sizeof(char));
+	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Stretch_with_a_minimum_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
@@ -623,13 +613,11 @@ void print_csv(struct To_Print* head_to_print)
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
 	}
-	//~ printf("la2.1.1\n"); fflush(stdout);
 	fprintf(f_bounded_stretch, "%f", mean_flow_stretch_with_a_minimum);
 	fclose(f_bounded_stretch);
-	//~ printf("la2.1\n"); fflush(stdout);
 	
 	/* For max flow stretch with a minimum heat map */
-	file_to_open_2 = malloc(100*sizeof(char));
+	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Max_Stretch_with_a_minimum_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
@@ -641,9 +629,9 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	fprintf(f, "%f", max_flow_stretch_with_a_minimum);
 	fclose(f);
-	//~ printf("la3\n"); fflush(stdout);
+
 	/* For total flow heat map */
-	file_to_open_2 = malloc(100*sizeof(char));
+	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, "outputs/Total_flow_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
@@ -657,7 +645,7 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f);
 	
 	/* For max flow heat map */
-	file_to_open_2 = malloc(100*sizeof(char));	
+	file_to_open_2 = malloc(size_file_to_open*sizeof(char));	
 	strcpy(file_to_open_2, "outputs/Max_flow_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
