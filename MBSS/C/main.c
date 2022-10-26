@@ -37,6 +37,7 @@ struct Job_List* job_list; /* All jobs not available yet */
 struct Job_List* new_job_list; /* New available jobs */
 struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
 struct Job_List* scheduled_job_list; /* Scheduled or available */
+struct Job_List* new_job_list; /* Scheduled or available */
 struct Job_List* running_jobs; /* Started */
 struct Node_List** node_list;
 struct To_Print_List* jobs_to_print_list;
@@ -65,6 +66,10 @@ int data_persistence_exploited;
 
 int main(int argc, char *argv[])
 {
+	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
+	new_job_list->head = NULL;
+	new_job_list->tail = NULL;
+	
 	#ifdef PLOT_STATS
 	number_of_backfilled_jobs = 0;
 	number_of_tie_breaks_before_computing_evicted_files_fcfs_score = 0;
@@ -739,15 +744,37 @@ int main(int argc, char *argv[])
 					/* Update nb of jobs to schedule (not running but available) */
 					nb_job_to_schedule += 1;
 					nb_cores_to_schedule += job_pointer->cores;
-						
+					
 					temp = job_pointer->next;
 					if (sort_by_file_size == true)
 					{
-						copy_delete_insert_job_list_sorted_by_file_size(job_list, scheduled_job_list, job_pointer);
+						if (old_finished_jobs == finished_jobs) /* Que des nouveaux jobs, donc liste séparé */
+						{
+							#ifdef PRINT
+							printf("Copy in new job list\n");
+							#endif
+							
+							copy_delete_insert_job_list_sorted_by_file_size(job_list, new_job_list, job_pointer);
+						}
+						else /* Il y a aussi eu des libérations, je met tout dans scheduled_job_list */
+						{
+							copy_delete_insert_job_list_sorted_by_file_size(job_list, scheduled_job_list, job_pointer);
+						}
 					}
 					else
 					{
-						copy_delete_insert_job_list(job_list, scheduled_job_list, job_pointer);
+						if (old_finished_jobs == finished_jobs) /* Que des nouveaux jobs, donc liste séparé */
+						{
+							#ifdef PRINT
+							printf("Copy in new job list\n");
+							#endif
+							
+							copy_delete_insert_job_list(job_list, new_job_list, job_pointer);
+						}
+						else /* Il y a aussi eu des libérations, je met tout dans scheduled_job_list */
+						{
+							copy_delete_insert_job_list(job_list, scheduled_job_list, job_pointer);
+						}
 					}
 					job_pointer = temp;
 				}
@@ -768,11 +795,12 @@ int main(int argc, char *argv[])
 		}
 
 		//~ if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL works or does anything. */
-		if (old_finished_jobs < finished_jobs || new_jobs == true) /* TODO not sure the head != NULL works or does anything. */
+		//~ if (old_finished_jobs < finished_jobs || new_jobs == true) /* TODO not sure the head != NULL works or does anything. */
+		if (old_finished_jobs < finished_jobs) /* Avec new job list */
 		{
-			//~ #ifdef PRINT
-			//~ printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
-			//~ #endif
+			#ifdef PRINT
+			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
+			#endif
 			
 			/* Reset all cores and jobs. */
 			reset_cores(node_list, t);
@@ -784,395 +812,51 @@ int main(int argc, char *argv[])
 			printf("Reschedule.\n");
 			#endif
 			
-			if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				
-				fcfs_with_a_score_easybf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				if (busy_cluster == 1)
-				{
-					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
-				}
-				else
-				{
-					fcfs_with_a_score_conservativebf_scheduler(scheduled_job_list->head, node_list, t, 1, 0, 0, 0, backfill_mode);
-				}
-			}
-			else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				if (nb_job_to_schedule >= 486 - running_nodes)
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 50, 0, 0, 0, 0);
-				}
-				else
-				{
-					eft_scheduler(scheduled_job_list->head, node_list, t);
-				}
-			}
-			else if (strcmp(scheduler, "EFT") == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				eft_scheduler(scheduled_job_list->head, node_list, t);
-			}
-			else if (strcmp(scheduler, "EFT_if_nb_jobs_superior_to_available_nodes") == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				if (486 - running_nodes >= nb_job_to_schedule)
-				{
-					eft_scheduler(scheduled_job_list->head, node_list, t);
-				}
-				else
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
-				}
-			}
-			else if (strcmp(scheduler, "Mixed_strategy") == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				if (busy_cluster == 1)
-				{
-					locality_scheduler(scheduled_job_list->head, node_list, t);
-				}
-				else
-				{
-					eft_scheduler(scheduled_job_list->head, node_list, t);
-				}
-			}
-			else if (strcmp(scheduler, "Try_EFT_else_do_SCORE") == 0) 
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				
-				/* Create a fake node_list with fake cores that copy the real node_list.
-				 * Copy it's content from the real node_list. */
-				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
-				for (i = 0; i < 3; i++)
-				{
-					/* Allocate */
-					fake_node_list[i] = (struct Node_List*) malloc(sizeof(struct Node_List));
-					fake_node_list[i]->head = NULL;
-					fake_node_list[i]->tail = NULL;
-					/* Copy */
-					struct Node* n = node_list[i]->head;
-					while (n != NULL)
-					{
-						/* The node */
-						struct Node *new = (struct Node*) malloc(sizeof(struct Node));								
-						new->unique_id = n->unique_id;
-						new->memory = n->memory;
-						new->bandwidth = n->bandwidth;
-						new->n_available_cores = n->n_available_cores;
-						new->index_node_list = n->index_node_list;
-						/* The data */
-						new->data = malloc(sizeof(*new->data));
-						new->data->head = NULL;
-						new->data->tail = NULL;
-						struct Data* d = n->data->head;
-						while (d != NULL)
-						{
-							struct Data* new_data = (struct Data*) malloc(sizeof(struct Data));
-							new_data->unique_id = d->unique_id;
-							new_data->start_time = d->start_time;
-							new_data->end_time = d->end_time;
-							
-							#ifndef DATA_PERSISTENCE
-							new_data->nb_task_using_it = d->nb_task_using_it;
-							#endif
-							
-							/* Copy Intervals */
-							/* Pas besoin car je les get au début du schedule. */
-							new_data->size = d->size;
-							new_data->next = NULL;
-							insert_tail_data_list(new->data, new_data);
-							d = d->next;
-						}
-						/* The cores */
-						new->cores = (struct Core**) malloc(20*sizeof(struct Core));
-						for (j = 0; j < 20; j++)
-						{
-							new->cores[j] = (struct Core*) malloc(sizeof(struct Core));
-							new->cores[j]->unique_id = n->cores[j]->unique_id;
-							new->cores[j]->available_time = n->cores[j]->available_time;
-							new->cores[j]->running_job = n->cores[j]->running_job;
-							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
-						}
-						
-						/* For conservative bf */
-						new->number_cores_in_a_hole = 0;
-						//~ new->cores_in_a_hole = NULL;
-						//~ new->start_time_of_the_hole = NULL;
-						//~ new->cores_in_a_hole = NULL; /* free plutot ? */
-						new->cores_in_a_hole = malloc(sizeof(*new->cores_in_a_hole));
-						new->cores_in_a_hole->head = NULL;
-						new->cores_in_a_hole->tail = NULL;
-						
-						#ifdef DATA_PERSISTENCE
-						new->data_occupation = n->data_occupation;
-						new->temp_data = malloc(sizeof(*new->temp_data));
-						new->temp_data->head = NULL;
-						new->temp_data->tail = NULL;
-						#endif
-						
-						/* Insert node */
-						new->next = NULL;
-						insert_tail_node_list(fake_node_list[i], new);
-						n = n->next;
-					}
-				}
-
-				double success = fake_eft_scheduler(scheduled_job_list->head, fake_node_list, t, 1);
-				//~ double success = 1;
-				//~ printf("Mean flow is (-1 if failed t) %f.\n", success);
-				if (success == -1) /* It failed I must do score */
-				{
-					//~ printf("SCORE\n");
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 0, 0, 0);
-					/* Multiplicateur qui dépend  */
-					//~ fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 1, 0, 3, 0, 0);
-				}
-				else /* EFT succeded I can start it. */
-				{
-					//~ printf("EFT\n");
-					eft_scheduler(scheduled_job_list->head, node_list, t); 
-				}
-			}
-			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t") == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 0);
-			}
-			else if (strcmp(scheduler, "Mixed_strategy_if_EAT_is_t_no_TLE") == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				mixed_if_EAT_is_t_scheduler(scheduled_job_list->head, node_list, t, 1);
-			}
-			else if (strncmp(scheduler, "Flow_adaptation", 15) == 0) /** Flow_adaptation_EFT_score or Flow_adaptation_EFT_locality **/
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				
-				/* Create a fake node_list with fake cores that copy the real node_list.
-				 * Copy it's content from the real node_list. */
-				struct Node_List** fake_node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
-				for (i = 0; i < 3; i++)
-				{
-					/* Allocate */
-					fake_node_list[i] = (struct Node_List*) malloc(sizeof(struct Node_List));
-					fake_node_list[i]->head = NULL;
-					fake_node_list[i]->tail = NULL;
-					/* Copy */
-					struct Node* n = node_list[i]->head;
-					while (n != NULL)
-					{
-						/* The node */
-						struct Node *new = (struct Node*) malloc(sizeof(struct Node));								
-						new->unique_id = n->unique_id;
-						new->memory = n->memory;
-						new->bandwidth = n->bandwidth;
-						new->n_available_cores = n->n_available_cores;
-						new->index_node_list = n->index_node_list;
-						/* The data */
-						new->data = malloc(sizeof(*new->data));
-						new->data->head = NULL;
-						new->data->tail = NULL;
-						struct Data* d = n->data->head;
-						while (d != NULL)
-						{
-							struct Data* new_data = (struct Data*) malloc(sizeof(struct Data));
-							new_data->unique_id = d->unique_id;
-							new_data->start_time = d->start_time;
-							new_data->end_time = d->end_time;
-							
-							#ifndef DATA_PERSISTENCE
-							new_data->nb_task_using_it = d->nb_task_using_it;
-							#endif
-							
-							/* Copy Intervals */
-							/* Pas besoin car je les get au début du schedule. */
-							new_data->size = d->size;
-							new_data->next = NULL;
-							insert_tail_data_list(new->data, new_data);
-							d = d->next;
-						}
-						/* The cores */
-						new->cores = (struct Core**) malloc(20*sizeof(struct Core));
-						for (j = 0; j < 20; j++)
-						{
-							new->cores[j] = (struct Core*) malloc(sizeof(struct Core));
-							new->cores[j]->unique_id = n->cores[j]->unique_id;
-							new->cores[j]->available_time = n->cores[j]->available_time;
-							new->cores[j]->running_job = n->cores[j]->running_job;
-							new->cores[j]->running_job_end = n->cores[j]->running_job_end;
-						}
-						
-						/* For conservative bf */
-						new->number_cores_in_a_hole = 0;
-						//~ new->cores_in_a_hole = NULL;
-						//~ new->start_time_of_the_hole = NULL;
-						//~ new->cores_in_a_hole = NULL; /* free plutot ? */
-						new->cores_in_a_hole = malloc(sizeof(*new->cores_in_a_hole));
-						new->cores_in_a_hole->head = NULL;
-						new->cores_in_a_hole->tail = NULL;
-						
-						#ifdef DATA_PERSISTENCE
-						new->data_occupation = n->data_occupation;
-						new->temp_data = malloc(sizeof(*new->temp_data));
-						new->temp_data->head = NULL;
-						new->temp_data->tail = NULL;
-						#endif
-						
-						/* Insert node */
-						new->next = NULL;
-						insert_tail_node_list(fake_node_list[i], new);
-						n = n->next;
-					}
-				}
-				/* La je fais pas l'arret quand tout les cores sont recouvert. Alors que dans le schedule ensuite oui. */
-				double EFT_mean_flow = fake_eft_scheduler(scheduled_job_list->head, fake_node_list, t, 0);			
-				double locality_mean_flow = 0;
-				if (strcmp(scheduler, "Flow_adaptation_EFT_locality") == 0)
-				{
-					locality_mean_flow = fake_locality_scheduler(scheduled_job_list->head, fake_node_list, t);
-				}
-				else if (strcmp(scheduler, "Flow_adaptation_EFT_score") == 0)
-				{
-					locality_mean_flow = fake_fcfs_with_a_score_scheduler(scheduled_job_list->head, fake_node_list, t, 500, 50, 0, 0, 0);
-				}
-				else
-				{
-					printf("Error Flow adapatation scheduler does not exist.\n");
-					exit(EXIT_FAILURE);
-				}
-				//~ printf("EFT flow is %d, Locality flow is %d.\n", EFT_flow, locality_flow);	
-				if (EFT_mean_flow < locality_mean_flow)
-				{
-					//~ printf("EFT\n");
-					eft_scheduler(scheduled_job_list->head, node_list, t);
-				}
-				else
-				{
-					if (strcmp(scheduler, "Flow_adaptation_EFT_locality") == 0)
-					{
-						locality_scheduler(scheduled_job_list->head, node_list, t);
-					}
-					else
-					{
-						//~ printf("SCORE\n");
-						fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 500, 50, 0, 0, 0, 0);
-					}
-				}
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				if (busy_cluster == 1)
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
-				}
-				else
-				{
-					eft_scheduler(scheduled_job_list->head, node_list, t);
-				}
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0) /* Ok avec DATA_PERSISTENCE */
-			{
-				if (busy_cluster == 1)
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
-				}
-				else
-				{
-					fcfs_with_a_score_scheduler(scheduled_job_list->head, node_list, t, 1, 1, 0, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
-				}
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-			}
-			else if (strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_with_a_score_area_filling_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, planned_or_ratio, Ratio_Area);
-			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_with_a_score_area_factor_scheduler(scheduled_job_list->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, division_by_planned_area);
-			}
-			else if ((strcmp(scheduler, "Fcfs") == 0) || (strcmp(scheduler, "Fcfs_no_use_bigger_nodes") == 0) || (strcmp(scheduler, "Fcfs_big_job_first") == 0)) /* Ok avec DATA_PERSISTENCE */
-			{
-				fcfs_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
-			}
-			else if (strcmp(scheduler, "Fcfs_easybf") == 0 || strcmp(scheduler, "Fcfs_no_use_bigger_nodes_easybf") == 0)
-			{
-				fcfs_easybf_scheduler(scheduled_job_list->head, node_list, t, use_bigger_nodes);
-			}
-			else if (strcmp(scheduler, "Fcfs_conservativebf") == 0)
-			{
-				fcfs_conservativebf_scheduler(scheduled_job_list->head, node_list, t, backfill_mode);
-			}
-			else if ((strcmp(scheduler, "Fcfs_backfill_big_nodes_0") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_0_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1_big_job_first") == 0))
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_scheduler_backfill_big_nodes(scheduled_job_list->head, node_list, t, backfill_big_node_mode, total_queue_time, finished_jobs);
-			}
-			else if (strcmp(scheduler, "Fcfs_area_filling_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier") == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_scheduler_ratio_area_filling(scheduled_job_list->head, node_list, t, Ratio_Area);
-			}
-			else if (strcmp(scheduler, "Fcfs_area_filling") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient") == 0 || strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0 || strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0)
-			{
-				#ifdef DATA_PERSISTENCE
-				printf("DATA_PERSISTENCE not dealt with for this scheduler.\n"); exit(1);
-				#endif
-				fcfs_scheduler_planned_area_filling(scheduled_job_list->head, node_list, t);
-			}
-			else
-			{
-				printf("Error: wrong scheduler in arguments.\n"); fflush(stdout);
-				exit(EXIT_FAILURE);
-			}
+			call_scheduler(scheduler, scheduled_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode);
 							
 			#ifdef PRINT	
 			printf("End of reschedule.\n");
 			#endif
 			
+			/* Get started jobs. */
+			if (start_times->head != NULL)
+			{
+				if (start_times->head->time == t)
+				{
+					start_jobs(t, scheduled_job_list->head);
+				}
+			}
+		}
+		else if (new_jobs == true) /* Pas de jobs fini mais des nouveaux jobs à schedule. */
+		{
+			#ifdef PRINT
+			printf("Schedule only new jobs.\n");
+			#endif
+			
+			call_scheduler(scheduler, new_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode);
 
+			job_pointer = new_job_list->head;
+			if (sort_by_file_size == true)
+			{
+				while (job_pointer != NULL)
+				{
+					temp = job_pointer->next;
+					/* Copie des jobs de new job list dans scheduled job list */
+					copy_delete_insert_job_list_sorted_by_file_size(new_job_list, scheduled_job_list, job_pointer);
+					job_pointer = temp;
+				}
+			}
+			else
+			{
+				while (job_pointer != NULL)
+				{
+					temp = job_pointer->next;
+					/* Copie des jobs de new job list dans scheduled job list */
+					copy_delete_insert_job_list(new_job_list, scheduled_job_list, job_pointer);
+					job_pointer = temp;
+				}	
+			}
+			
 			/* Get started jobs. */
 			if (start_times->head != NULL)
 			{

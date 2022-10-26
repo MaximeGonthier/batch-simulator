@@ -26,6 +26,7 @@ extern struct Job_List* job_list; /* All jobs not available yet */
 extern struct Job_List* new_job_list; /* New available jobs */
 extern struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
 extern struct Job_List* scheduled_job_list; /* Scheduled or available */
+extern struct Job_List* new_job_list; /* Scheduled or available */
 extern struct Job_List* running_jobs; /* Started */
 extern struct Node_List** node_list;
 extern struct To_Print_List* jobs_to_print_list;
@@ -340,3 +341,6 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_from_hole, int* nb_cores_from_outside);
 int update_cores_for_backfilled_job(int nb_non_available_cores, struct Job* j, int t, int nb_cores_from_hole, int nb_cores_from_outside);
 void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int backfill_mode, int t);
+
+/* from scheduler_calling.c */
+void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode);
