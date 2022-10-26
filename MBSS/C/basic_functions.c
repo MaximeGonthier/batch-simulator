@@ -252,6 +252,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 							#ifdef PRINT
 							printf("min_time == t, break.\n");
 							#endif
+							
 							i = last_node_size_to_choose_from + 1;
 							//~ parcours_des_nodes = 2;
 							break;
@@ -441,7 +442,10 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		
 		if (backfill_mode == 1 || backfill_mode == 2)
 		{
+			#ifdef PRINT
 			printf("fill_cores_minimize_holes\n");
+			#endif
+			
 			fill_cores_minimize_holes (j, true, backfill_mode, t);
 		}
 		else
@@ -465,6 +469,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 							//~ printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[k]->unique_id); fflush(stdout);
 							printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[i]->unique_id); fflush(stdout);
 							#endif
+							
 							j->node_used->number_cores_in_a_hole += 1;
 							struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 							//~ new->unique_id = j->node_used->cores[k]->unique_id;
@@ -756,6 +761,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					#ifdef PRINT
 					printf("A: EAT is %d.\n", earliest_available_time);
 					#endif
+					
 					if (min_score == -1 || earliest_available_time < min_score)
 					{
 						if (j->data == 0)
@@ -766,6 +772,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 						{
 							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
 						}
+						
 						#ifdef PRINT
 						printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
 						#endif
@@ -793,6 +800,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 							{
 								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
+							
 							#ifdef PRINT
 							printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
 							#endif							
@@ -810,10 +818,12 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 								backfilled_job = false; /* On met à false car ça a pu mettre à true par un trou dans une node précédente. */
 								if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
 								{
+									
 									#ifdef PRINT
 									printf("min_time == t and no file to load/evict, break.\n");
 									printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 									#endif
+									
 									i = last_node_size_to_choose_from + 1;
 									//~ parcours_des_nodes = 2;
 									break;
@@ -824,6 +834,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 				//~ }
 				//~ else
 				//~ {
+				
 					#ifdef PRINT
 					printf("Can I backfill on node %d?\n", n->unique_id);
 					#endif
@@ -832,9 +843,11 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					{
 						earliest_available_time = t;
 						/* Calcul du score dans le trou de la node en question. */
+						
 						#ifdef PRINT
 						printf("A: EAT is %d.\n", earliest_available_time);
 						#endif
+						
 						if (min_score == -1 || earliest_available_time < min_score)
 						{
 							if (j->data == 0)
@@ -1044,6 +1057,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		#ifdef PRINT
 		printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
 		#endif
+		
 		/* Create a class Data for this node. */
 		struct Data* new = (struct Data*) malloc(sizeof(struct Data));
 		new->next = NULL;
