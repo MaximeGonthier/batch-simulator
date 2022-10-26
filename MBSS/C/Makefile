@@ -3,6 +3,9 @@ all: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c l
 
 data_persistence:
 	gcc -Wall -DDATA_PERSISTENCE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c -I. -lm
+	
+data_persistence_plot_stats:
+	gcc -Wall -DDATA_PERSISTENCE -DPLOT_STATS -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c -I. -lm
 
 print_data_persistence:
 	gcc -Wall -DPRINT -DDATA_PERSISTENCE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c -I. -lm

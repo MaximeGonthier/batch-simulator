@@ -2030,6 +2030,14 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 				else
 				{
 					*transfer_time = 0; /* No need to wait to start the job, data is already fully loaded */
+					
+					#ifdef PLOT_STATS
+					if (d->end_time < t)
+					{ 
+						printf("data persistence was exploited\n");
+						data_persistence_exploited++;
+					}
+					#endif
 				}
 			//~ }
 			//~ else /* Need to reload it */
@@ -2474,8 +2482,8 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			//~ if (finished_jobs%2500 == 0)
-			if (finished_jobs%100 == 0)
+			if (finished_jobs%2500 == 0)
+			//~ if (finished_jobs%100 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}

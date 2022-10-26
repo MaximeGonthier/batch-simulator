@@ -48,6 +48,7 @@ extern int busy_cluster; /* 0 = no, 1 = yes. Used for fcfs with a score adaptati
 extern int number_of_backfilled_jobs;
 extern int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;
 extern int total_number_of_scores_computed;
+extern int data_persistence_exploited;
 #endif
 
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that

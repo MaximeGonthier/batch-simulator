@@ -60,6 +60,7 @@ int busy_cluster;
 int number_of_backfilled_jobs;
 int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;
 int total_number_of_scores_computed;
+int data_persistence_exploited;
 #endif
 
 int main(int argc, char *argv[])
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
 	number_of_backfilled_jobs = 0;
 	number_of_tie_breaks_before_computing_evicted_files_fcfs_score = 0;
 	total_number_of_scores_computed = 0;
+	data_persistence_exploited = 0;
 	#endif
 	
 	/* random seed init. */
@@ -765,7 +767,8 @@ int main(int argc, char *argv[])
 			}		
 		}
 
-		if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL works or does anything. */
+		//~ if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL) /* TODO not sure the head != NULL works or does anything. */
+		if (old_finished_jobs < finished_jobs || new_jobs == true) /* TODO not sure the head != NULL works or does anything. */
 		{
 			//~ #ifdef PRINT
 			//~ printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);

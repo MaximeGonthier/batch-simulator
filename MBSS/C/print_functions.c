@@ -324,13 +324,22 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_nb_backfilled_jobs);
 	
 	FILE* tie_breaks_fcfs_score = fopen("outputs/tie_breaks_fcfs_score.txt", "w");
-	if (!f_nb_backfilled_jobs)
+	if (!tie_breaks_fcfs_score)
 	{
 		perror("Error opening file outputs/tie_breaks_fcfs_score.txt.");
 		exit(EXIT_FAILURE);
 	}
 	fprintf(tie_breaks_fcfs_score, "%s: %d/%d\n", scheduler, number_of_tie_breaks_before_computing_evicted_files_fcfs_score, total_number_of_scores_computed);
 	fclose(tie_breaks_fcfs_score);
+	
+	FILE* f_data_persistence_exploited = fopen("outputs/data_persistence_exploited.txt", "w");
+	if (!f_data_persistence_exploited)
+	{
+		perror("Error opening file outputs/data_persistence_exploited.txt.");
+		exit(EXIT_FAILURE);
+	}
+	fprintf(f_data_persistence_exploited, "%s: %d\n", scheduler, data_persistence_exploited);
+	fclose(f_data_persistence_exploited);
 	#endif
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
