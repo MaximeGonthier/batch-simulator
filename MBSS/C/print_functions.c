@@ -294,6 +294,10 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		scheduler = "FCFS CONSERVATIVE BF";
 	}
+	else if (strcmp(scheduler, "Fcfs_easybf") == 0)
+	{
+		scheduler = "FCFS EASY BF";
+	}
 	else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0 || strcmp(scheduler, "Eft") == 0)
 	{
 		scheduler = "EFT";
