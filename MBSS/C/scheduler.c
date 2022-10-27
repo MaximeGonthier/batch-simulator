@@ -159,7 +159,7 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 	while (j != NULL)
 	{
 		//~ if (nb_non_available_cores < nb_cores)
-		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*3)
+		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*2)
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores. nb_cores_rescheduled = %d\n", nb_cores - nb_non_available_cores, nb_cores, nb_cores_rescheduled);
@@ -200,20 +200,30 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	#ifdef PRINT
 	printf("Start fcfs with a score conservative bf at time %d.\n", t);
 	#endif
-			
+	
+	int nb_cores_rescheduled = 0; /* 486*20 = 9720 */
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	struct Job* j = head_job;
 	while (j != NULL)
 	{
-		if (nb_non_available_cores < nb_cores)
+		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*2)
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			#endif
 			
 			nb_non_available_cores = schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, nb_non_available_cores, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode);
+			
+			nb_cores_rescheduled += j->cores;
+			//~ printf("%d/%d\n", nb_cores_rescheduled, 486*3);
+			
+			if (j->start_time < t)
+			{
+				printf("Error: j->start_time < t\n");
+				exit(1);
+			}
 			
 			insert_next_time_in_sorted_list(start_times, j->start_time);
 			j = j->next;
