@@ -417,7 +417,7 @@ do
 done
 echo "Final results are:"
 cat ${OUTPUT_FILE}
-mv ${OUTPUT_FILE} data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+mv ${OUTPUT_FILE} data/Results_FCFS_Score_Easy_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 
 #~ # 10. Tester data persistence

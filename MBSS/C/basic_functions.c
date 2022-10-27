@@ -1639,6 +1639,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 	//~ {		
 		//~ if (nb_non_available_cores < nb_cores)
 		//~ {
+		
 			#ifdef PRINT
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
 			#endif
@@ -1940,7 +1941,7 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 			//~ }
 						
 			/* Insert in start times. */
-			insert_next_time_in_sorted_list(start_times, j->start_time);
+			//~ insert_next_time_in_sorted_list(start_times, j->start_time);
 			
 			/* --- Normal complexity nb of copy --- */
 			/* Free time already checked. */
@@ -3594,7 +3595,7 @@ int try_to_start_job_immediatly_fcfs_score_without_delaying_j1(struct Job* j, st
 				//~ }
 							
 				/* Insert in start times. */
-				insert_next_time_in_sorted_list(start_times, j->start_time);
+				//~ insert_next_time_in_sorted_list(start_times, j->start_time);
 				
 				/* --- Normal complexity nb of copy --- */
 				/* Free time already checked. */

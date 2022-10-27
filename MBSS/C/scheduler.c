@@ -348,6 +348,11 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 			{
 				insert_next_time_in_sorted_list(start_times, j->start_time);
 			}
+			else
+			{
+				j->start_time = -1;
+			}
+			
 			#ifdef PRINT
 			printf("Nb of running cores after starting (or not: %d) Job %d: %d.\n", result, j->unique_id, nb_running_cores);
 			#endif
