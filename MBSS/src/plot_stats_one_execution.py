@@ -4,6 +4,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import sys
+import numpy as np
 
 data = pd.read_csv(sys.argv[1])
 comparaison = sys.argv[2]
@@ -66,27 +67,32 @@ else:
 	exit(1)
 	
 df = pd.DataFrame(data)
-  
-# ~ X = list(df.iloc[:, 0])
-Y = list(df.iloc[:, Y_index])
 
-# ~ plt.axvline(x = first_job_before_day_0, color = 'yellow', linestyle = '-', label = "Submission time first job before day 0")
-# ~ plt.axvline(x = first_job_day_0, color = 'green', linestyle = '-', label = "Submission time first job day 0")
-plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
-plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
-
-plt.plot(Y)
-
-if (comparaison == "Used_nodes"):
-	Y2 = list(df.iloc[:, 3])
-	plt.plot(Y2)
-
-plt.title(plot_title)
-plt.xlabel("Time in seconds")
-plt.ylabel(Y_label)
-
-# ~ if (comparaison != "Nb_scheduled_jobs"):
-	# ~ plt.legend(loc = 'upper left')
+if (comparaison != "Used_nodes"):
+	# X = list(df.iloc[:, 0])
+	Y = list(df.iloc[:, Y_index])
+	# plt.axvline(x = first_job_before_day_0, color = 'yellow', linestyle = '-', label = "Submission time first job before day 0")
+	# plt.axvline(x = first_job_day_0, color = 'green', linestyle = '-', label = "Submission time first job day 0")
+	plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
+	plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
+	plt.title(plot_title)
+	plt.xlabel("Time in seconds")
+	plt.ylabel(Y_label)
+	plt.plot(Y)
+else:
+	Y1 = list(df.iloc[:, Y_index])
+	Y2 = list(df.iloc[:, Y_index + 1])
+	fig, ax1 = plt.subplots()
+	ax2 = ax1.twinx()
+	ax1.plot(Y1, 'b-')
+	ax2.plot(Y2, 'g-')
+	ax1.set_ylim([0, 500])
+	# ~ ax2.set_ylim([0, NULL])
+	# ~ plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
+	# ~ plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
+	ax1.set_xlabel('Time in seconds')
+	ax1.set_ylabel(Y_label, color='b')
+	ax2.set_ylabel('Nb of jobs in the queue', color='g')
 
 filename = "plot/" + title + ".pdf"
 

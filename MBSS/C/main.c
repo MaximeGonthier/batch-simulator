@@ -882,7 +882,7 @@ int main(int argc, char *argv[])
 		}
 				
 		#ifdef PRINT_CLUSTER_USAGE
-		fprintf(f_stats, "%d,%f,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head), running_nodes_workload_minus_2);
+		fprintf(f_stats, "%d,%d,%d,%d\n", running_cores, running_nodes, get_length_job_list(scheduled_job_list->head), running_nodes_workload_minus_2);
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)
