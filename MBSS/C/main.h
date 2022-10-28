@@ -45,6 +45,7 @@ extern char* output_file;
 extern long long Planned_Area[3][3];
 extern int number_node_size[3];
 extern int busy_cluster; /* 0 = no, 1 = yes. Used for fcfs with a score adaptative multiplier that modify multiplier based on cluster contention. */
+extern int backfill_mode; /* 0 = no, 1 = yes. Used for fcfs with a score adaptative multiplier that modify multiplier based on cluster contention. */
 #ifdef PLOT_STATS
 extern int number_of_backfilled_jobs;
 extern int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;

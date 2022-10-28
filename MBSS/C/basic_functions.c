@@ -186,7 +186,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	/* OLD */
 	
 	#ifdef PRINT
-	printf("\nScheduling job %d at time %d.\n", j->unique_id, t);
+	printf("\nScheduling job %d at time %d. Backfill mode is %d.\n", j->unique_id, t, backfill_mode);
 	#endif
 
 	//~ int parcours_des_nodes = 0;
@@ -624,135 +624,6 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					multiplier_file_evicted = 0;
 				}
 
-				//~ if ((parcours_des_nodes == 0 && (backfill_mode == 0 || backfill_mode == 2 || backfill_mode == 3)) || (parcours_des_nodes == 1 && (backfill_mode == 1)))
-				//~ {
-					//~ if (backfill_mode == 1)
-					//~ {
-						//~ /* NEW core selection conservative bf only */
-						//~ #ifdef PRINT
-						//~ printf("%d hole on node %d.\n", n->number_cores_in_a_hole, n->unique_id);
-						//~ if (j->cores > n->number_cores_in_a_hole) { printf("Checking if hole by looking at %d, t is %d.\n", n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time, t); }
-						//~ #endif
-						
-						//~ if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t)) /* Il y a un trou et je peux rentrer dedans! */
-						//~ {
-							//~ nb_cores_from_hole = 0;
-							//~ #ifdef PRINT
-							//~ printf("It could maybe fit in the hole of node %d.\n", n->unique_id);
-							//~ #endif
-							//~ c = n->cores_in_a_hole->head;
-							//~ // for (k = 0; k < j->cores; k++)
-							//~ for (k = 0; k < n->number_cores_in_a_hole; k++)
-							//~ {
-								//~ if (t + j->walltime <= c->start_time_of_the_hole)
-								//~ {
-									//~ nb_cores_from_hole += 1;
-								//~ }
-								//~ if (c->next != NULL)
-								//~ {
-									//~ c = c->next;
-								//~ }
-								//~ else
-								//~ {
-									//~ break;
-								//~ }
-								//~ if (j->cores == nb_cores_from_hole)
-								//~ {
-									//~ break;
-								//~ }
-							//~ }
-							//~ #ifdef PRINT
-							//~ printf("nb_cores_from_hole = %d on node %d. %d are available\n", nb_cores_from_hole, n->unique_id, n->number_cores_in_a_hole); fflush(stdout);
-							//~ #endif
-							
-							//~ if (nb_cores_from_hole > 0)
-							//~ {
-								
-								//~ nb_cores_from_outside = j->cores - nb_cores_from_hole;
-								//~ nb_cores_from_outside_remembered = nb_cores_from_outside;
-								//~ #ifdef PRINT
-								//~ printf("Number of cores from the hole/outside: %d/%d.\n", nb_cores_from_hole, nb_cores_from_outside);
-								//~ #endif
-								
-								//~ k = 0;
-								//~ while (nb_cores_from_outside != 0)
-								//~ {
-									//~ if (n->cores[k]->available_time <= t)
-									//~ {
-										//~ nb_cores_from_outside--;
-										//~ k++;
-									//~ }
-									//~ else
-									//~ {
-										//~ /* je rentre jamais dans ce else donc le if sert à rien ou alors de test unitaire. */
-										//~ #ifdef PRINT
-										//~ printf("Could not fit in the hole in the end.\n");
-										//~ #endif
-										
-										//~ break;
-									//~ }
-								//~ }
-								//~ if (nb_cores_from_outside == 0)
-								//~ {
-									//~ /* On break et on met à vrai le booleen pour dire que le remplissage des cores sera différent et qu'il faut pas sort les cores de la node et qu'il faut mettre à jour le nombre de cores dans un trou de la node et mettre à jour le nb de non available cores. */
-									//~ #ifdef PRINT
-									//~ printf("Can fit in the hole (end at %d but hole closes at %d).\n", t + j->walltime, c->start_time_of_the_hole);
-									//~ #endif
-									
-									//~ if (j->data == 0)
-									//~ {
-										//~ time_to_load_file = 0;
-									//~ }
-									//~ else
-									//~ {
-										//~ time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(t, n, t, j->data, j->data_size, &is_being_loaded);
-									//~ }
-									//~ #ifdef PRINT
-									//~ printf("B in hole: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
-									//~ #endif
-									//~ if (min_score == -1 || t + multiplier_file_to_load*time_to_load_file < min_score)
-									//~ {
-										//~ if (multiplier_file_evicted == 0)
-										//~ {
-											//~ time_to_reload_evicted_files = 0;
-										//~ }
-										//~ else
-										//~ {
-											//~ time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(t, n, j->data, (float) j->cores/20);
-										//~ }
-										//~ #ifdef PRINT
-										//~ printf("C in hole: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
-										//~ #endif							
-										//~ score = t + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
-										//~ #ifdef PRINT	
-										//~ printf("Score in hole for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, t, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
-										//~ #endif													
-										//~ if (min_score == -1 || min_score > score)
-										//~ {
-											//~ min_time = t;
-											//~ min_score = score;
-											//~ j->node_used = n;
-											//~ choosen_time_to_load_file = time_to_load_file;
-											//~ choosen_nb_cores_from_outside_remembered = nb_cores_from_outside_remembered;
-											//~ choosen_nb_cores_from_hole = nb_cores_from_hole;
-											//~ backfilled_job = true;
-											//~ if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
-											//~ {
-												//~ #ifdef PRINT
-												//~ printf("min_time == t in hole and no file to load/evict, break.\n");
-												//~ printf("Score in hole for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, t, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
-												//~ #endif
-												//~ i = last_node_size_to_choose_from + 1;
-												//~ parcours_des_nodes = 2;
-												//~ break;
-											//~ }
-										//~ }
-									//~ }
-								//~ }
-							//~ }
-						//~ }
-						/* End of NEW core selection conservative bf only */
-					//~ }
 					#ifdef PRINT
 					printf("On node %d?\n", n->unique_id);
 					#endif
@@ -803,8 +674,10 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 							
 							#ifdef PRINT
 							printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
-							#endif							
+							#endif	
+													
 							score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
+						
 							#ifdef PRINT	
 							printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 							#endif
@@ -841,6 +714,10 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					
 					if (can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside) == true)
 					{
+						#ifdef PRINT
+						printf("Yes.\n");
+						#endif
+						
 						earliest_available_time = t;
 						/* Calcul du score dans le trou de la node en question. */
 						
@@ -883,11 +760,14 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 								{
 									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 								}
+								
 								#ifdef PRINT
 								printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
-								#endif							
+								#endif
+													
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
-								#ifdef PRINT	
+								
+								#ifdef PRINT
 								printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 								#endif
 																							
@@ -909,6 +789,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 										printf("min_time == t and no file to load/evict, break.\n");
 										printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 										#endif
+										
 										i = last_node_size_to_choose_from + 1;
 										//~ parcours_des_nodes = 2;
 										break;
@@ -1084,11 +965,6 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		#endif
 	}
 	
-	//~ #ifdef PRINT
-	//~ printf("Intervals after scheduling job %d.\n", j->unique_id);
-	//~ print_data_intervals(head_node, t);
-	//~ #endif
-	
 	/* 2 cas en fonction du choix */
 	if (backfilled_job == true)
 	{
@@ -1097,159 +973,9 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		#endif
 		
 		nb_non_available_cores = update_cores_for_backfilled_job(nb_non_available_cores, j, t, choosen_nb_cores_from_hole, choosen_nb_cores_from_outside);
-		
-		//~ if (backfill_mode == 0)
-		//~ {
-			//~ /* Ca ajoute des unavailable cores puisque c'est à t. */
-			//~ nb_non_available_cores += j->cores;
-			//~ /* Mettre les cores dans le job depuis ceux du trou. */
-			//~ c = j->node_used->cores_in_a_hole->head;
-			//~ for (i = 0; i < j->cores; i++)
-			//~ {
-				//~ j->cores_used[i] = c->unique_id;
-				//~ c = c->next;
-			//~ }
-			//~ /* Mettre à jour le nombre de cores (s'il en reste) dans un trou de la node. */
-			//~ #ifdef PRINT
-			//~ printf("Backfilled job, using %d cores, nb of cores in the hole was %d.\n", j->cores, j->node_used->number_cores_in_a_hole); fflush(stdout);
-			//~ #endif
-			//~ j->node_used->number_cores_in_a_hole -= j->cores;
-			//~ if (j->node_used->number_cores_in_a_hole == 0)
-			//~ {
-				//~ free_cores_in_a_hole(&j->node_used->cores_in_a_hole->head);
-			//~ }
-			//~ else
-			//~ {
-				//~ delete_core_in_hole_from_head(j->node_used->cores_in_a_hole, j->cores);
-			//~ }
-			//~ #ifdef PRINT
-			//~ printf("Holes after this backfill are:\n");
-			//~ print_holes(head_node);
-			//~ #endif
-		//~ }
-		//~ if (backfill_mode == 1)
-		//~ {
-			//~ /* NEW core selection conservative bf only */		
-			//~ /* Ca ajoute des unavailable cores puisque c'est à t. */
-			//~ nb_non_available_cores += j->cores;
-			//~ /* Mettre les cores dans le job depuis ceux du trou. */
-			//~ c = j->node_used->cores_in_a_hole->head;
-			//~ i = 0;
-			// printf("3.1.1.\n"); fflush(stdout);
-			//~ #ifdef PRINT
-			//~ printf("%d %d on node %d.\n", choosen_nb_cores_from_hole, j->node_used->number_cores_in_a_hole, j->node_used->unique_id); fflush(stdout);
-			//~ #endif
-			
-			// k = 0;
-			//~ if (choosen_nb_cores_from_hole > j->cores || choosen_nb_cores_from_hole > j->node_used->number_cores_in_a_hole) { printf("eerorr coress: %d cores taken from hole, %d cores on the job, %d cores in a hole of the node.\n", choosen_nb_cores_from_hole, j->cores, j->node_used->number_cores_in_a_hole); fflush(stdout); exit(1); }
-			// for (k = 0; k < j->node_used->number_cores_in_a_hole; k++)
-			//~ for (k = 0; k < choosen_nb_cores_from_hole;)
-			//~ {
-				//~ if (t + j->walltime <= c->start_time_of_the_hole)
-				//~ {
-					//~ j->cores_used[i] = c->unique_id;
-					//~ i++;
-					//~ #ifdef PRINT
-					//~ printf("Adding %d in cores used  from hole of job %d.\n", c->unique_id, j->unique_id);
-					//~ #endif
-					//~ k++;
-				//~ }
-						// if (i == j->cores)
-						// if (i == nb_cores_from_hole)
-						// {
-						// 	printf("i == j->cores break.\n"); fflush(stdout);
-						// 	break;
-						// }
-						
-						//~ /* Je rentre la dedans ? je crois pas. */
-						//~ if (c->next == NULL && k != choosen_nb_cores_from_hole)
-						//~ {
-							//~ #ifdef PRINT
-							//~ printf("next is null\n"); fflush(stdout);
-							//~ #endif
-						//~ }
-						//~ c = c->next;
-							// printf("next\n");
-							// c = c->next;
-						// }
-						// else
-						// {
-						// 	printf("break avant de finir ?\n"); exit(1);
-							// printf("next is nul break.\n"); fflush(stdout);
-							// break;
-						// }
-
-					//~ }
-			// printf("3.2.\n"); fflush(stdout);
-			//~ for (k = 0; k < choosen_nb_cores_from_outside_remembered; k++)
-			//~ {
-				//~ #ifdef PRINT
-				//~ printf("Adding core from outside %d.\n", j->node_used->cores[k]->unique_id);
-				//~ #endif
-				
-				//~ j->cores_used[i] = j->node_used->cores[k]->unique_id;
-				//~ j->node_used->cores[k]->available_time = t + j->walltime;
-			// 	nb_cores_from_outside_remembered--;
-				// k++;
-				//~ i++;
-			//~ }
-			// printf("3.3.\n"); fflush(stdout);
-			// if (j->unique_id == 10) { exit(1); }
-			
-			//~ j->node_used->number_cores_in_a_hole -= choosen_nb_cores_from_hole;
-			// printf("%d hole after job %d.\n", j->node_used->number_cores_in_a_hole, j->unique_id);
-			// print_holes_specific_node(j->node_used);
-
-			//~ if (j->node_used->number_cores_in_a_hole < 0 || j->node_used->number_cores_in_a_hole > 19)
-			//~ {
-				//~ printf("erreur nb core in hole %d on node %d.\n", j->node_used->number_cores_in_a_hole, j->node_used->unique_id);  fflush(stdout); exit(1);
-			//~ }
-			//~ if (j->node_used->number_cores_in_a_hole == 0)
-			//~ {
-				// printf("3.4.\n"); fflush(stdout);
-				//~ #ifdef PRINT
-				//~ printf("Deleting all the cores in the hole cause we use them all.\n");
-				//~ #endif
-				
-				//~ free_cores_in_a_hole(&j->node_used->cores_in_a_hole->head);
-			//~ }
-			//~ else
-			//~ {
-				//~ for (i = 0; i < choosen_nb_cores_from_hole; i++)
-				//~ {
-					//~ #ifdef PRINT
-					//~ printf("Deleting core %d.\n", j->cores_used[i]);
-					//~ #endif
-					
-					//~ delete_core_in_hole_specific_core(j->node_used->cores_in_a_hole, j->cores_used[i]);
-				//~ }
-			//~ }
-			//~ #ifdef PRINT
-			//~ printf("Holes after this backfill are:\n");
-			//~ print_holes(head_node);
-			//~ #endif
-		//~ }
 	}
 	else /* backfilled_job == false */
 	{
-		//~ if (backfill_mode == 0)
-		//~ {
-			//~ start_index = 0;
-		//~ }
-		//~ if (backfill_mode == 1)
-		//~ {
-			//~ /* NEW core selection */
-			//~ i = 19;
-			//~ while(j->node_used->cores[i]->available_time > min_time)
-			//~ {
-				//~ i--;
-			//~ }
-			//~ start_index = i;
-			//~ #ifdef PRINT
-			//~ printf("Start index will be %d.\n", start_index);
-			//~ #endif
-			//~ /* End of NEW core selection */
-		//~ }
 		if (j->start_time == t)
 		{
 			nb_non_available_cores += j->cores;
@@ -1257,19 +983,14 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		
 		if (backfill_mode == 1 || backfill_mode == 2)
 		{
-			fill_cores_minimize_holes (j, true, backfill_mode, t);
+			fill_cores_minimize_holes(j, true, backfill_mode, t);
 		}
 		else
 		{
 			for (i = 0; i < j->cores; i++)
 			{
 				j->cores_used[i] = j->node_used->cores[i]->unique_id;
-				
-				//~ if (j->start_time == t)
-				//~ {
-					//~ nb_non_available_cores += 1;
-				//~ }
-				
+								
 				/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
 				if (j->node_used->cores[i]->available_time <= t && min_time > t)
 				{
@@ -1288,51 +1009,24 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					}
 					else
 					{
-						//~ if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
-						//~ {
-							//~ insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
-						//~ }
-						//~ else
-						//~ {
-							insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
-						//~ }
+						insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
 					}
 				}
 				
 				/* NEW core selection */
 				j->node_used->cores[i]->available_time = min_time + j->walltime;
 				/* End of NEW core selection */
-				
-				//~ if (backfill_mode == 0)
-				//~ {
-					//~ start_index++;
-				//~ }
-				//~ if (backfill_mode == 1)
-				//~ {
-					//~ start_index--;
-				//~ }
 			}
 		}
 	}
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
-	//~ if(j->unique_id == 5) { exit(1); }
-	/* Need to sort cores after each schedule of a job only if it was not backfilled. */
-	//~ if (backfill_mode == 0)
-	//~ {
-		//~ if (backfilled_job == false)
-		//~ {
-			//~ sort_cores_by_available_time_in_specific_node(j->node_used);
-		//~ }
-	//~ }
-	//~ if (backfill_mode == 1)
-	//~ {
-		if (backfilled_job == false || nb_cores_from_outside_remembered > 0)
-		{
-			sort_cores_by_available_time_in_specific_node(j->node_used);
-		}
-	//~ }
+	
+	if (backfilled_job == false || nb_cores_from_outside_remembered > 0)
+	{
+		sort_cores_by_available_time_in_specific_node(j->node_used);
+	}
 
 	return nb_non_available_cores;
 }

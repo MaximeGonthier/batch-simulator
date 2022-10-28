@@ -1,0 +1,35 @@
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609043] oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),cpuset=/,mems_allowed=0,global_oom,task_memcg=/,task=main,pid=18044,uid=1001
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609048] Out of memory: Killed process 18044 (main) total-vm:43824536kB, anon-rss:13625704kB, file-rss:0kB, shmem-rss:0kB, UID:1001 pgtables:85796kB oom_score_adj:0
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609256] Renderer: page allocation failure: order:0, mode:0x104cd2(GFP_HIGHUSER|__GFP_RETRY_MAYFAIL|__GFP_RECLAIMABLE), nodemask=(null),cpuset=/,mems_allowed=0
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609259] CPU: 10 PID: 7200 Comm: Renderer Not tainted 5.4.0-131-generic #147~18.04.1-Ubuntu
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609260] Hardware name: Dell Inc. Precision 3551/0M21VD, BIOS 1.14.0 06/13/2022
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609260] Call Trace:
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609263]  dump_stack+0x6d/0x8b
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609265]  warn_alloc+0x112/0x180
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609266] Purging GPU memory, 0 pages freed, 0 pages still pinned, 28035 pages left available.
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609267]  __alloc_pages_slowpath+0xe19/0xe50
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609270]  ? ___slab_alloc+0x227/0x610
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609271]  __alloc_pages_nodemask+0x2cd/0x320
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609273]  alloc_pages_vma+0x88/0x230
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609275]  shmem_alloc_page+0x4b/0x90
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609277]  shmem_alloc_and_acct_page+0x76/0x1c0
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609278]  shmem_getpage_gfp+0x178/0x8d0
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609280]  shmem_read_mapping_page_gfp+0x44/0x80
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609315]  shmem_get_pages+0x221/0x680 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609332]  ? drm_vma_node_allow+0xa7/0xd0 [drm]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609339]  ? drm_gem_handle_create_tail+0xaf/0x1a0 [drm]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609362]  ____i915_gem_object_get_pages+0x22/0x40 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609381]  __i915_gem_object_get_pages+0x5b/0x70 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609402]  ? i915_gem_object_unpin_from_display_plane+0x40/0x60 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609421]  i915_gem_set_domain_ioctl+0x21a/0x270 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609439]  ? i915_gem_object_set_to_cpu_domain+0xb0/0xb0 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609447]  drm_ioctl_kernel+0xb0/0x100 [drm]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609455]  drm_ioctl+0x39f/0x480 [drm]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609473]  ? i915_gem_object_set_to_cpu_domain+0xb0/0xb0 [i915]
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609476]  ? __seccomp_filter+0x7d/0x710
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609479]  do_vfs_ioctl+0xa9/0x640
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609480]  ? __secure_computing+0xa5/0x100
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609482]  ksys_ioctl+0x75/0x80
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609483]  __x64_sys_ioctl+0x1a/0x20
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609486]  do_syscall_64+0x57/0x190
+Oct 28 13:41:03 gonthier-Precision-3551 kernel: [12851.609487]  entry_SYSCALL_64_after_hwframe+0x44/0xa9

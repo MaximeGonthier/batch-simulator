@@ -57,6 +57,7 @@ long long Allocated_Area[3][3];
 long long Planned_Area[3][3];
 int number_node_size[3];
 int busy_cluster;
+int backfill_mode;
 #ifdef PLOT_STATS
 int number_of_backfilled_jobs;
 int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;
@@ -115,7 +116,8 @@ int main(int argc, char *argv[])
 		printf("Need file output\n");
 		exit(1);
 	}
-	int backfill_mode = atoi(argv[6]);
+	
+	backfill_mode = atoi(argv[6]);
 	if (backfill_mode < 0 || backfill_mode > 3)
 	{
 		printf("Error, backfill_mode = %d not dealt with.\n", backfill_mode);

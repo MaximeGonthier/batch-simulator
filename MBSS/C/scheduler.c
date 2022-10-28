@@ -209,6 +209,7 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	while (j != NULL)
 	{
 		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*2)
+		//~ if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 100)
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
@@ -512,7 +513,7 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 					if (earliest_available_time <= t)				
-					{				
+					{
 						if (start_immediately_if_EAT_is_t == 1 && earliest_available_time == t) /* Ou dans une fenêtre ? */
 						{
 							multiplier_file_to_load = 1;

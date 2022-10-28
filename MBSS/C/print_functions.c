@@ -292,7 +292,23 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	else if (strcmp(scheduler, "Fcfs_conservativebf") == 0)
 	{
-		scheduler = "FCFS CONSERVATIVE BF";
+		if (backfill_mode == 0)
+		{
+			scheduler = "FCFS CONSERVATIVE BF";
+		}
+		else if (backfill_mode == 1)
+		{
+			scheduler = "FCFS CONSERVATIVE BF";
+		}
+		else  if (backfill_mode == 2)
+		{
+			scheduler = "FCFS CONSERVATIVE BF";
+		}
+		else
+		{
+			printf("Error mauvais backfill mode dnas print.\n");
+			exit(1);
+		}
 	}
 	else if (strcmp(scheduler, "Fcfs_easybf") == 0)
 	{
@@ -308,11 +324,83 @@ void print_csv(struct To_Print* head_to_print)
 	}
 	else if (strcmp(scheduler, "Fcfs_with_a_score_conservativebf_x500_x1_x0_x0") == 0)
 	{
-		scheduler = "SCORE CONSERVATIVE BF";
+		if (backfill_mode == 0)
+		{
+			scheduler = "SCORE CONSERVATIVE BF";
+		}
+		else if (backfill_mode == 1)
+		{
+			scheduler = "SCORE CONSERVATIVE BF";
+		}
+		else  if (backfill_mode == 2)
+		{
+			scheduler = "SCORE CONSERVATIVE BF";
+		}
+		else
+		{
+			printf("Error mauvais backfill mode dnas print.\n");
+			exit(1);
+		}
 	}
 	else if (strcmp(scheduler, "Fcfs_with_a_score_easybf_x500_x1_x0_x0") == 0)
 	{
 		scheduler = "SCORE EASY BF";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0") == 0)
+	{
+		scheduler = "OPPORTUNISTIC-SCORE MIX";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_easybf_x500_x1_x0_x0") == 0)
+	{
+		scheduler = "OPPORTUNISTIC-SCORE MIX EASY BF";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0") == 0)
+	{
+		if (backfill_mode == 0)
+		{
+			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF 0";
+		}
+		else if (backfill_mode == 1)
+		{
+			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF 1";
+		}
+		else  if (backfill_mode == 2)
+		{
+			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF 2";
+		}
+		else
+		{
+			printf("Error mauvais backfill mode dnas print.\n");
+			exit(1);
+		}
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0") == 0)
+	{
+		scheduler = "EFT-SCORE MIX";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_easybf_x500_x1_x0_x0") == 0)
+	{
+		scheduler = "EFT-SCORE MIX EASY BF";
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0") == 0)
+	{
+		if (backfill_mode == 0)
+		{
+			scheduler = "EFT-SCORE MIX CONSERVATIVE BF 0";
+		}
+		else if (backfill_mode == 1)
+		{
+			scheduler = "EFT-SCORE MIX CONSERVATIVE BF 1";
+		}
+		else  if (backfill_mode == 2)
+		{
+			scheduler = "EFT-SCORE MIX CONSERVATIVE BF 2";
+		}
+		else
+		{
+			printf("Error mauvais backfill mode dnas print.\n");
+			exit(1);
+		}
 	}
 	
 	#ifdef PLOT_STATS
