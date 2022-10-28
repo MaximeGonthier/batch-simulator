@@ -1427,7 +1427,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 %~ \end{algorithmic}
 %~ \end{algorithm}
 
-\subsection{Backfill}
+\subsection{Conservative Backfill}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-17->2022-01-17_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
@@ -1439,10 +1439,17 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \caption{Locality constraint only - Workload of January 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 18}\end{figure}
 
+\subsection{EASY Backfill}
+
 \begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-04-07->2022-04-09_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-04-07->2022-04-09_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\caption{Locality constraint only - Workload of April 7-9 (13000/23000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 20}\end{figure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Easy_Backfill_2022-01-17->2022-01-17_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Easy_Backfill_2022-01-17->2022-01-17_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Locality constraint only - Workload of January 17 (16000/68000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 18}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Easy_Backfill_2022-01-21->2022-01-21_V9271_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{File's transfers}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Easy_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Locality constraint only - Workload of January 21 (14000/45000 jobs) with resp. 92, 7 and 1\% of files of size 6.4, 12.8 and 51.2 MB per core - October 18}\end{figure}
 
 \subsection{Data persistence}
 
@@ -1468,3 +1475,17 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{Images/Workload_generation.png}\caption{Visualization of the workload creation - August 24}\label{44}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_with_transfer_time.png}\caption{Gantt chart with transfer times}\label{31}\end{figure}
 \end{document}
+
+\subsection{State of the art backfilling strategies}
+
+\subsubsection{SLURM}
+
+\url{https://slurm.schedmd.com/sched_config.html} : seems to be conservative backfilling only : " If the job under consideration can start immediately without impacting the expected start time of any higher priority job, then it does so. Otherwise the resources required by the job will be reserved during the job's expected execution time". D'après \url{https://plafrim-users.gitlabpages.inria.fr/doc/#hardware} PlaFRIM utilises bien SLURM.
+L'article 1-s2.0-S1877050915034249-main.pdf de 2015 avance aussi que du conservative backfilling est utilisé sur leurs cluster avec SLURM.
+
+\subsubsection{OAR}
+
+Grid5k : Attention a bien prendre consciences des contraintes additionnelles qui rendent tres differentes la plateforme Grid'5000 et des plateformes HPC communes: voir la usage policy pour les contraintes jour vs nuit, et bien noter l'usage tres important de la mecanique de reservation à l'avance. Les 2 impactent bcp le scheduling "batch".
+D'après Pierre NEYRON ils font du conservative backfilling. Par contre atention, ils ont des usgaes policy strcte (limite par jour et illimité le soir week end) qui change tout.
+sauf sur nancy ou c'est du fair sharing sans limite jour nuit.
+Usage rate sur \url{https://intranet.grid5000.fr/stats/usage_rate.html#top}
