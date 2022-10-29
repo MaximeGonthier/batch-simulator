@@ -19,6 +19,7 @@ echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 OUTPUT_FILE="outputs/test_fcfs_score_crash.txt"
 
 make -C C/
+ulimit -S -s 10000000
 
 SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"
 BACKFILL_MODE=0
