@@ -50,7 +50,7 @@ fi
 	#~ fi
 	#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE
 #~ done
-for ((i=$((STARTING_I)); i<=16; i++))
+for ((i=$((STARTING_I)); i<=4; i++))
 do
 	# Schedulers
 	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=0
