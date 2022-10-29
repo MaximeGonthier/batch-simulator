@@ -761,7 +761,7 @@ void free_cores_in_a_hole(struct Core_in_a_hole** head_ref)
    *head_ref = NULL;
 }
 
-void free_interval_linked_list(struct Interval** head_ref)
+void free_interval_linked_list(struct Interval** head_ref, struct Interval** tail_ref)
 {
  /* deref head_ref to get the real head */
    struct Interval* current = *head_ref;
@@ -777,6 +777,7 @@ void free_interval_linked_list(struct Interval** head_ref)
    /* deref head_ref to affect the real head back
       in the caller. */
    *head_ref = NULL;
+   *tail_ref = NULL;
 }
 
 void free_time_or_data_already_checked_nb_of_copy_linked_list(struct Time_or_Data_Already_Checked_Nb_of_Copy** head_ref)

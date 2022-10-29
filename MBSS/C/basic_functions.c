@@ -1617,12 +1617,14 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
  * For data persistency, I put it in the temp_data part of nodes. */
 void get_current_intervals(struct Node_List** head_node, int t)
 {
-		//~ print_data_intervals(head_node, t);
-
 	#ifdef DATA_PERSISTENCE
 	free_and_copy_data_and_intervals_in_temp_data(head_node, t);
 	#else
 	int i = 0;
+	
+	//~ printf("BEFORE\n");
+	//~ print_data_intervals(head_node, t);
+	/* Des free se font a des moments ou c'est pas necessaire ? Ce n'st pas vraiment à NULL ou alors il y a un elmeent a vide ? */
 	for (i = 0; i < 3; i++)
 	{
 		struct Node* n = head_node[i]->head;
@@ -1630,13 +1632,34 @@ void get_current_intervals(struct Node_List** head_node, int t)
 		{
 			struct Data* d = n->data->head;
 			while (d != NULL)
-			{					
-					/* TODO : maybe I need to free here each time ? But when I do i get different results from Fcfs with x0_x0_x0. */
-					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+			{
+					/* TODO : maybe I need to free here each time ? But when I do i get different results from Fcfs with x0_x0_x0 compared to Fcfs or even ERROR -1 cores availables. */
+					
+					/* NEW */
+					if (d->intervals != NULL)
+					//~ if (d->intervals->head != NULL) /* Pour éviter les free en trop ? */
+					{
+						free_interval_linked_list(&d->intervals->head, &d->intervals->tail);
+						
+						//~ printf("free %d on node %d.\n", d->unique_id, n->unique_id); 
+						//~ print_data_intervals(head_node, t);
+					}
+
+					/* OLD */
+					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));	
 					d->intervals->head = NULL;
 					d->intervals->tail = NULL;
+				
+					//~ printf("free %d.\n", d->unique_id); print_data_intervals(head_node, t);
+					
 					if (d->nb_task_using_it > 0)
 					{
+						
+					//~ /* NEW */
+					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));					
+					//~ d->intervals->head = NULL;
+					//~ d->intervals->tail = NULL;
+
 						create_and_insert_tail_interval_list(d->intervals, t);
 						if (d->start_time < t)
 						{
