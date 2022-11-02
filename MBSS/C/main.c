@@ -906,6 +906,24 @@ int main(int argc, char *argv[])
 	fclose(f_stats);
 	#endif
 	
+	/* NEW */
+	/* Delete all running and scheduled jobs */
+	job_pointer = running_jobs->head;
+	while (job_pointer != NULL)
+	{
+		struct Job* temp = job_pointer->next;
+		delete_job_linked_list(running_jobs, job_pointer->unique_id);
+		job_pointer = temp;
+	}
+	job_pointer = scheduled_job_list->head;
+	while (job_pointer != NULL)
+	{
+		struct Job* temp = job_pointer->next;
+		delete_job_linked_list(scheduled_job_list, job_pointer->unique_id);
+		job_pointer = temp;
+	}
+
+	
 	printf("Computing and writing results...\n");
 	print_csv(jobs_to_print_list->head);
 

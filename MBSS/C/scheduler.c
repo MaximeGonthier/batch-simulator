@@ -913,6 +913,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	get_current_intervals(head_node, t);
 	
 	#ifdef PRINT
+	printf("AFTER.\n");
 	print_data_intervals(head_node, t);
 	#endif
 	
@@ -1166,6 +1167,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			#else
 			struct Data* d = j->node_used->data->head;
 			#endif
+			
+			//~ printf("Add data %d in node %d\n", j->data, j->node_used->unique_id);
 			
 			while (d != NULL)
 			{

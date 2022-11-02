@@ -501,11 +501,28 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	struct Job* prev = liste->head;
 	
 	// If head node itself holds the key to be deleted
-    if (temp != NULL && temp->unique_id == unique_id_to_delete) {
+    if (temp != NULL && temp->unique_id == unique_id_to_delete)
+    {
         liste->head = temp->next; // Changed head
         //~ if (unique_id_to_delete == 11) {
 			//~ printf("Free the head.\n"); fflush(stdout); }
-        free(temp); // free old head
+        
+        /* OLD */
+        //~ free(temp); // free old head
+        /* NEW */
+		//~ if (temp != NULL)
+		//~ {
+			//~ if (temp->node_used != NULL)
+			//~ {
+				//~ free(temp->node_used);
+			//~ }
+			if (temp->cores_used != NULL)
+			{
+				free(temp->cores_used);
+			}
+			free(temp);
+		//~ } else { printf("NULL\n"); }
+        
         //~ if (unique_id_to_delete == 11) {
         //~ printf("Free the head Ok!\n"); fflush(stdout); }
         return;
@@ -540,12 +557,26 @@ void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete)
 	}
 	
 	/* OLD */
-	//~ free(temp);
+	//~ free(temp->cores_used);
 	/* NEW */
-	// free(temp->node_used);
-	free(temp->cores_used);
-	// free(temp);
-	
+	//~ if (temp != NULL)
+	//~ {
+		//~ if (temp->node_used != NULL)
+		//~ {
+			//~ free(temp->node_used);
+		//~ }
+		//~ if (temp->cores_used != NULL)
+		//~ {
+			//~ free(temp->cores_used);
+		//~ }
+		//~ free(temp);
+	//~ } else { printf("NULL\n"); }
+				if (temp->cores_used != NULL)
+			{
+				free(temp->cores_used);
+			}
+			free(temp);
+
 	//~ if (unique_id_to_delete == 11) {
 	//~ printf("free temp ok!.\n"); fflush(stdout); }
 }
