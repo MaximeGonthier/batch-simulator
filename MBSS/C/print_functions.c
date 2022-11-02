@@ -652,6 +652,7 @@ void print_csv(struct To_Print* head_to_print)
 	mean_flow_stretch_with_a_minimum_128 = total_flow_stretch_with_a_minimum_128/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum_256 = total_flow_stretch_with_a_minimum_256/nb_job_to_evaluate;
 	mean_flow_stretch_with_a_minimum_1024 = total_flow_stretch_with_a_minimum_1024/nb_job_to_evaluate;
+	
 	/* Main file of results */
 	char* file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, output_file);

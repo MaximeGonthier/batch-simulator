@@ -355,7 +355,7 @@ int get_first_time_day_0(struct Job* l)
 		printf("No jobs of category 0. First subtime day 0 is set to 0.\n");
 		return 0;
 	}
-	printf("First time day 0 is %d.\n", j->subtime);
+	//~ printf("First time day 0 is %d.\n", j->subtime);
 	return j->subtime;
 }
 
@@ -396,6 +396,6 @@ void write_in_file_first_times_all_day(struct Job* l, int first_subtime_day_0)
         exit(EXIT_FAILURE);
 	}
 	fprintf(f, "%d %d %d %d", first_subtime_before_0, 0, first_subtime_day_1, first_subtime_day_2);
-	printf("%d %d %d %d\n", first_subtime_before_0, 0, first_subtime_day_1, first_subtime_day_2);
+	//~ printf("%d %d %d %d\n", first_subtime_before_0, 0, first_subtime_day_1, first_subtime_day_2);
 	fclose(f);
 }

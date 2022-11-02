@@ -1637,29 +1637,27 @@ void get_current_intervals(struct Node_List** head_node, int t)
 					/* TODO : maybe I need to free here each time ? But when I do i get different results from Fcfs with x0_x0_x0 compared to Fcfs or even ERROR -1 cores availables. */
 					
 					/* NEW */
-					if (d->intervals->head != NULL)
+					//~ if (d->intervals->head != NULL)
 					//~ if (d->intervals->head != NULL) /* Pour éviter les free en trop ? */
-					{
-						free_interval_linked_list(&d->intervals->head, &d->intervals->tail);
-						
+					//~ {
+						//~ free_interval_linked_list(&d->intervals->head, &d->intervals->tail);
 						//~ printf("free %d on node %d.\n", d->unique_id, n->unique_id); 
 						//~ print_data_intervals(head_node, t);
-					}
+					//~ }
 
-					/* TODO: malloc a faire que ci dessous dans le NEW */
 					/* OLD */
-					//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));	
-					//~ d->intervals->head = NULL;
-					//~ d->intervals->tail = NULL;
+					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));	
+					d->intervals->head = NULL;
+					d->intervals->tail = NULL;
 				
 					//~ printf("free %d.\n", d->unique_id); print_data_intervals(head_node, t);
 					
 					if (d->nb_task_using_it > 0)
 					{
 						/* NEW */
-						d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));					
-						d->intervals->head = NULL;
-						d->intervals->tail = NULL;
+						//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));					
+						//~ d->intervals->head = NULL;
+						//~ d->intervals->tail = NULL;
 
 						create_and_insert_tail_interval_list(d->intervals, t);
 						if (d->start_time < t)

@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 	}
 	#endif
 	
-	printf("Workloads: %s\n", input_job_file);
+	printf("Workload: %s\n", input_job_file);
 	printf("Cluster: %s\n", input_node_file);
 	printf("Scheduler: %s\n", scheduler);
 	if (constraint_on_sizes == 0)
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 	
 	/* Read workload */
 	read_workload(input_job_file, constraint_on_sizes);
-	printf("Read workload done.\n");
+	//~ printf("Read workload done.\n");
 	nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 	first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	
@@ -194,7 +194,7 @@ int main(int argc, char *argv[])
 		nb_cores_to_schedule += job_pointer->cores;
 		job_pointer = job_pointer->next;
 	}
-	printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
+	//~ printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
 
 	
 	/* Just for -2 jobs here */
