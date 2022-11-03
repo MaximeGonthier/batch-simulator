@@ -23,6 +23,7 @@ echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 STARTING_I=$(($4))
 
 make -C C/
+ulimit -S -s 10000000
 
 #~ # 1. Queue times, flow times and stretch of all jobs of FCFS_SCORE VS FCFS
 #~ make print_distribution_queue_times -C C/
