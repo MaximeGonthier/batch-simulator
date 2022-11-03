@@ -53,10 +53,10 @@ fi
 for ((i=$((STARTING_I)); i<=4; i++))
 do
 	# Schedulers
-	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=0
-	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=0
-	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=0
-	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=0
+	if [ $((i)) == 1 ]; then SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=2
+	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
 	fi
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE
 done
