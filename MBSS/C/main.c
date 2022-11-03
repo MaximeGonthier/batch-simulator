@@ -37,7 +37,7 @@ struct Job_List* job_list; /* All jobs not available yet */
 struct Job_List* new_job_list; /* New available jobs */
 struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
 struct Job_List* scheduled_job_list; /* Scheduled or available */
-struct Job_List* new_job_list; /* Scheduled or available */
+//~ struct Job_List* new_job_list; /* Scheduled or available */
 struct Job_List* running_jobs; /* Started */
 struct Node_List** node_list;
 struct To_Print_List* jobs_to_print_list;
@@ -67,6 +67,11 @@ int data_persistence_exploited;
 
 int main(int argc, char *argv[])
 {
+	bool need_to_save_state = false;
+	//~ bool need_to_save_state = true;
+	//~ bool need_to_resume_state = false;
+	bool need_to_resume_state = true;
+	
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
@@ -154,17 +159,22 @@ int main(int argc, char *argv[])
 	}
 	
 	/* Read cluster */
-	read_cluster(input_node_file);
+	if (need_to_resume_state == false)
+	{
+		read_cluster(input_node_file);
+	}
 
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
 	
 	/* Read workload */
-	read_workload(input_job_file, constraint_on_sizes);
-	//~ printf("Read workload done.\n");
-	nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
-	first_subtime_day_0 = get_first_time_day_0(job_list->head);
+	if (need_to_resume_state == false)
+	{
+		read_workload(input_job_file, constraint_on_sizes);	
+		nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
+		first_subtime_day_0 = get_first_time_day_0(job_list->head);
+	}
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
@@ -172,37 +182,45 @@ int main(int argc, char *argv[])
 
 	int next_submit_time = first_subtime_day_0;
 	int t = first_subtime_day_0;
-		
+
 	/* First start jobs from rackham's history. First need to sort it by start time */
-	if (job_list_to_start_from_history->head != NULL)
+	if (need_to_resume_state == false)
 	{
-		get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
+		if (job_list_to_start_from_history->head != NULL)
+		{
+			get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
+		}
 	}
-	
+
 	#ifdef PRINT
 	printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
 	print_job_list(scheduled_job_list->head);
 	#endif
-	
-	/* getting the number of jobs we needto schedule */
-	job_pointer = scheduled_job_list->head;
-	nb_job_to_schedule = 0;
-	nb_cores_to_schedule = 0;
-	while(job_pointer != NULL)
-	{
-		nb_job_to_schedule += 1;
-		nb_cores_to_schedule += job_pointer->cores;
-		job_pointer = job_pointer->next;
-	}
-	//~ printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
 
-	
-	/* Just for -2 jobs here */
-	if (scheduled_job_list->head != NULL)
+	/* getting the number of jobs we need to schedule */
+	if (need_to_resume_state == false)
 	{
-		start_jobs(t, scheduled_job_list->head);
+		job_pointer = scheduled_job_list->head;
+		nb_job_to_schedule = 0;
+		nb_cores_to_schedule = 0;
+		while(job_pointer != NULL)
+		{
+			nb_job_to_schedule += 1;
+			nb_cores_to_schedule += job_pointer->cores;
+			job_pointer = job_pointer->next;
+		}
+		//~ printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
 	}
-	printf("Start jobs before day 0 done.\n");
+	
+	if (need_to_resume_state == false)
+	{
+		/* Just for -2 jobs here */
+		if (scheduled_job_list->head != NULL)
+		{
+			start_jobs(t, scheduled_job_list->head);
+		}
+		printf("Start jobs before day 0 done.\n");
+	}
 	
 	#ifdef PRINT
 	printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
@@ -703,11 +721,31 @@ int main(int argc, char *argv[])
 	}
 	
 	printf("Backfill mode is %d.\n", backfill_mode);
-		
+	
+	if (need_to_resume_state == true)
+	{
+		need_to_resume_state = false;
+		resume_state(&t, &old_finished_jobs, &next_submit_time);
+		exit(1);
+	}
+	
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
+		/* Test pour save l'état et recommencer */
+		if (need_to_save_state == true && t >= 4000)
+		{
+			#ifdef PLOT_SATS
+			printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");
+			exit(1);
+			#endif
+			
+			printf("Save state\n");
+			save_state(t, old_finished_jobs, next_submit_time);
+			exit(1);
+		}
+				
 		/* Get ended job. */
 		old_finished_jobs = finished_jobs;
 		if (end_times->head != NULL && end_times->head->time == t)
@@ -804,7 +842,7 @@ int main(int argc, char *argv[])
 			else
 			{
 				next_submit_time = -1;
-			}		
+			}
 		}
 
 		/* ) && scheduled_job_list->head != NULL est extrèùeent utile, car certain scheduler comme ceux de easy bf ne boucle pas tant que head_job != NULL et peuevnt donc commencer avec un job qui vaut nul (pour j1 de easy bf par xempe. Donc à arder au mons pour easy bf et peut etre d'autres. */

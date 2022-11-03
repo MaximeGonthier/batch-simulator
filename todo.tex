@@ -151,26 +151,27 @@
 		% Uppsala
 		\item Jan 21: 15295 jobs: 617333/14395675 (4.2\%) tie break (avant le evicted file du coup). Donc faut-il l'utilise comme tiebreak ?
 		\item L'ajout de données persistente pose le pb de l'eviction. Je vais faire un LRU qui evince la donnée qui a été fini d'utilisé il y a le + longmemsp (j'aurais aussi pu faire celle qui a commencé le + longemps)
-		\item code data peristence avec LRU pour l'eviction
+		\item code data peristence avec LRU pour l'eviction et tests
 		\item code bf commun en différentes versions. Trop complexe et pas encore retesté
-		\item Réduire complexité en ne reschedulant pas tout quand on a juste un nouveau job. 
+		\item Réduire complexité en ne reschedulant pas tout quand on a juste un nouveau job.
+		\item Compter le nb de fois que la persistence est exploité: pour Janvier 17: 14 fois avec FCFS et 20 fois avec SCORE. pour Janvier 21: 8 fois avec FCFS et 29 fois avec SCORE. Avec conservativ bf et 17 et fcfs: avec easy bf et 17 et fcfs: 8
+		\item test easy bf et conservative bf avec limite  2 * 486 pour le nombre de cors rescheduled.
+		\item test cluster 2 fois plus petit en cours. Rien n'indique que ca correspond.
+		\item visu cluster usgae avec job schedule dans la queue
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ?
-		\item Quand j'ai le choix entre utiliser un trou ou non et que dans les 2 cas ca passe, je dois le faire ? Pour le moment si j'ai le choix, je ne vais pas dans le trou. Dnas mon code corrigé si j'ai le choix je vais dans le trou
-		\item quand je me met dans un trou, si le walltime du job qui forcait au backfil se révèle plus petit mais que mon job backfill a déjà commencé, alors ca delay mon job plus gros (mais pas plus qu ce qu'il aurait attendu si le walltime était correct)
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item mettre les notes de 2A sur Thor
-			\item mail sandrine enlever cours pendant sc et le donner à Denis: att réponse
-			\item se renseigner payement enseirb semestre 1: attendre fin octobre
+			\item se renseigner payement enseirb semestre 1: attendre fin octobre début novembre
 			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment + verifier changement heures dossier
 			\item Répondre a Bora hMETIS
+			\item Imprimer poster demander à Denis
 		\end{enumerate}
 	\subsection{FGCS}
 		\begin{enumerate}
@@ -178,15 +179,28 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item début de code pour limiter reschedule conservatie bf fcfs only
-			\item test conservative bf commencé hier, le finir sur grid 5K
-			\itme test easy bf lancé dans la nuit
-			\item Compter le nb de fois que la persistence est exploité: pour Janvier 17: 14 fois avec FCFS et 20 fois avec SCORE. pour Janvier 21: 8 fois avec FCFS et 29 fois avec SCORE. Avec conservativ bf et 17 et fcfs: avec easy bf et 17 et fcfs: 
-			\item finir et tester conservative bf version optimisé
-			\item tester easy bf, moins couteux à implémenter
-			\item tester conservative avec une et des limite(s) sur le nb de jobs ou de cores reschedule
-			\item Se comparer à EFT
+				\item fcfs score bus error sur mars 15 16 avec conservative bf mais pas sans
+			\item resultats aTtendu correct:
+			1397059                   mgonthier      2022-11-03 10:49:05 R default relancé dans la nuit pour finir
+1397067                   mgonthier      2022-11-03 10:53:35 R default    ok fini   
+1397077                   mgonthier      2022-11-03 10:59:18 R default   mai 21 score en cours
+1397085                   mgonthier      2022-11-03 11:05:14 R default   relancé dans la nuit pour finir
+
+
+			\item score crash avec les longst test masi avant c'était pas le cas
+			\item tester mars 15 16
+			\item verif le nouveau get current intervals: même resultats avec mixed strategy
+			\item 32 et 33 lancé pour voir avec ulimit si ca crash pas: ok mais pas afficher dans le fichier ni sur le printf
+			\item le get interval et le free asocié marche mal: le free me fais encore des erros nb of cores in node a la toute fin
+			\item commencer à faire un résumé.
+			\item test mai easy bf en cours: n'ont pas pu terminer voir les traces
+			\item verif 1 sur Jan 21 easy bf (anormalment proche de 1) Peut etre a cause de l'utilisation du cluster et du peu de nombre de jobs à schedule ?
+			\item verif perf conservative bf avec eft-score mix (anormalement haut)
+			\item test mai avec conservative bf et comparer avec résultats de easy bf sur la même période
+			\item voir ce qui est utilisé sur slurm et oar dans des articles et en demandant directement sur mattermost
+			\item contacter gaupy si il connait des survey: att réponse
 			
+			\item score crash avec conservative backfill
 		
 			\item use a simple backfilling strategy to be fair with fcfs et utiliser la même pour tous. Le premier est bien plus conservateur que le second qui peut delay un job a cause d'un walltime trop grand
 			\item smooth transtion: probability of needing all nodes ? Try math functions ? tester si ca matvch le nb of nodes en testant d'autres tailles de clusters ?
