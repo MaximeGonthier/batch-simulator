@@ -67,10 +67,11 @@ int data_persistence_exploited;
 
 int main(int argc, char *argv[])
 {
+	//~ T = 1406544 pour le save state de fcfs with a score mai 21-22
 	bool need_to_save_state = false;
 	//~ bool need_to_save_state = true;
-	//~ bool need_to_resume_state = false;
-	bool need_to_resume_state = true;
+	bool need_to_resume_state = false;
+	//~ bool need_to_resume_state = true;
 	
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
@@ -735,7 +736,7 @@ int main(int argc, char *argv[])
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
 		/* Test pour save l'état et recommencer */
-		if (need_to_save_state == true && t >= 4000)
+		if (need_to_save_state == true && t >= 3609363)
 		{
 			#ifdef PLOT_SATS
 			printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");

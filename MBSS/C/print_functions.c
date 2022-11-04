@@ -991,35 +991,54 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
-
+	
 	printf("Reading resumed state...\n");
+	
 	FILE *f = fopen("outputs/saved_state.txt", "r");
 	int i = 0;
 	//~ int j = 0;
 	char str[100];
 	int end_before_walltime_bool_converter = 0;
 	
-	fscanf(f, "%s %d\n", str, t);		
+	fscanf(f, "%s %d\n", str, t);
+	
+	#ifdef PRINT		
 	printf("%s %d\n", str, *t);	
+	#endif
 		
 	fscanf(f, "%s %d\n", str, next_submit_time);
+	
+	#ifdef PRINT
 	printf("%s %d\n", str, *next_submit_time);
+	#endif
 	
 	fscanf(f, "%s %d\n", str, &planned_or_ratio);
+	
+	#ifdef PRINT
 	printf("%s %d\n", str, planned_or_ratio);
+	#endif
 	
 	fscanf(f, "%s %d\n", str, &constraint_on_sizes);
 	
 	fscanf(f, "%s %d\n", str, &nb_cores);
 	
 	fscanf(f, "%s %d\n", str, &nb_job_to_evaluate);
+	
+	#ifdef PRINT
 	printf("%s %d\n", str, nb_job_to_evaluate);
+	#endif
 	
 	fscanf(f, "%s %d\n", str, &finished_jobs);
+	
+	#ifdef PRINT
 	printf("%s %d\n", str, finished_jobs);
+	#endif
 	
 	fscanf(f, "%s %d\n", str, old_finished_jobs);
+	
+	#ifdef PRINT
 	printf("%s %d\n", str, *old_finished_jobs);
+	#endif
 	
 	fscanf(f, "%s %d\n", str, &total_number_jobs);
 	
@@ -1030,7 +1049,10 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 	fscanf(f, "%s %d\n", str, &running_nodes);
 	
 	fscanf(f, "%s %d\n", str, &nb_job_to_schedule);
+	
+	#ifdef PRINT
 	printf("%s %d\n", str, nb_job_to_schedule);
+	#endif
 	
 	fscanf(f, "%s %d\n", str, &nb_cores_to_schedule);
 	
@@ -1045,20 +1067,28 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 	fscanf(f, "%s %d %d %d", str, &number_node_size[0], &number_node_size[1], &number_node_size[2]);
 
 	fscanf(f, "%s %d", str, &busy_cluster);
+	
+	#ifdef PRINT
 	printf("busy_cluster: %d\n", busy_cluster);
+	#endif
 	
 	fscanf(f, "%s %d", str, &backfill_mode);
+	
+	#ifdef PRINT
 	printf("backfill_mode: %d\n", backfill_mode);
+	#endif
 	
 	fscanf(f, "%s %lld %lld %lld %lld %lld %lld %lld %lld %lld", str, &Allocated_Area[0][0], &Allocated_Area[0][1], &Allocated_Area[0][2], &Allocated_Area[1][0], &Allocated_Area[1][1], &Allocated_Area[1][2], &Allocated_Area[2][0], &Allocated_Area[2][1], &Allocated_Area[2][2]);
 
 	fscanf(f, "%s %d", str, &nb_job_to_evaluate_started);
+	
+	#ifdef PRINT
 	printf("nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate_started);
+	#endif
 	
 	
 	// Nodes
 	fscanf(f, "%s", str); // node_list:
-	printf("%s\n", str);
 	node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
 	for (i = 0; i < 3; i++)
 	{
@@ -1067,12 +1097,14 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		node_list[i]->tail = NULL;
 	}
 	fscanf(f, "%s", str); // premier unique_id
-	printf("%s ", str);
 	while (strcmp(str, "job_list:") != 0) /* tant qu'on a pas lu toutes les nodes */
 	{
 		struct Node *new_node = (struct Node*) malloc(sizeof(struct Node));
 		fscanf(f, "%d %s %s %d %s %s %f %s %s %s", &new_node->unique_id, str, str, &new_node->memory, str, str, &new_node->bandwidth, str, str, str);
+		
+		#ifdef PRINT
 		printf("%d %d %f", new_node->unique_id, new_node->memory, new_node->bandwidth);
+		#endif
 		
 		new_node->data = (struct Data_List*) malloc(sizeof(struct Data_List));
 		new_node->data->head = NULL;
@@ -1080,7 +1112,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		
 		/* Lecture des données */
 		fscanf(f, "%s", str); // premier unique_id ou ]
-		printf(" %s", str);
 		while (strcmp(str, "],") != 0)
 		{
 			struct Data *new_data = (struct Data*) malloc(sizeof(struct Data));
@@ -1114,9 +1145,10 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 			}
 		}
 		fscanf(f, "%s", str); // ],
-		printf("%s\n", str);
 		
+		#ifdef PRINT
 		print_cores_in_specific_node(new_node);
+		#endif
 		
 		/* For conservative bf */
 		new_node->number_cores_in_a_hole = 0;
@@ -1153,17 +1185,17 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		}
 		
 		fscanf(f, "%s", str); // unique_id suivant ou fin de la node list et donc job_list:
-		printf("%s\n", str);
 	}
 
 
 	// Main job list
 	fscanf(f, "%s", str);
-	printf("%s\n", str);
-	printf("Next str: %s\n", str);
 	while (strcmp(str, "new_job_list:") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a job in job_list\n");
+		#endif
+		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
 		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
 		
@@ -1180,23 +1212,30 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		new_job->cores_used = (int*) malloc(new_job->cores*sizeof(int));
 		new_job->next = NULL;
 		
+		#ifdef PRINT
 		printf("unique_id: %d, subtime: %d, delay: %d, walltime: %d, cores: %d, data: %d, data_size: %f, index_node_list: %d start_time: %d end_time: %d end_before_walltime: %d transfer_time: %d waiting_for_a_load_time: %d workload: %d start_time_from_history: %d node_from_history: %d\n", new_job->unique_id, new_job->subtime, new_job->delay, new_job->walltime, new_job->cores, new_job->data, new_job->data_size, new_job->index_node_list, new_job->start_time, new_job->end_time, new_job->end_before_walltime, new_job->transfer_time, new_job->waiting_for_a_load_time, new_job->workload, new_job->start_time_from_history, new_job->node_from_history);
+		#endif
 		
 		insert_tail_job_list(job_list, new_job);
 
 		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
 	}
+	
+	#ifdef PRINT
 	printf("Job list:\n");
 	print_job_list(job_list->head);
 	printf("\n");
+	#endif
 	
 	
 	// New job list
 	fscanf(f, "%s", str);
-	printf("Next str: %s\n", str);
 	while (strcmp(str, "scheduled_job_list:") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a job in new_job_list\n");
+		#endif
+		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
 		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
 		
@@ -1213,23 +1252,29 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		new_job->cores_used = (int*) malloc(new_job->cores*sizeof(int));
 		new_job->next = NULL;
 		
+		#ifdef PRINT
 		printf("unique_id: %d, subtime: %d, delay: %d, walltime: %d, cores: %d, data: %d, data_size: %f, index_node_list: %d start_time: %d end_time: %d end_before_walltime: %d transfer_time: %d waiting_for_a_load_time: %d workload: %d start_time_from_history: %d node_from_history: %d\n", new_job->unique_id, new_job->subtime, new_job->delay, new_job->walltime, new_job->cores, new_job->data, new_job->data_size, new_job->index_node_list, new_job->start_time, new_job->end_time, new_job->end_before_walltime, new_job->transfer_time, new_job->waiting_for_a_load_time, new_job->workload, new_job->start_time_from_history, new_job->node_from_history);
+		#endif
 		
 		insert_tail_job_list(new_job_list, new_job);
 		
 		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
 	}
+	
+	#ifdef PRINT
 	printf("New list:\n");
 	print_job_list(new_job_list->head);
 	printf("\n");
-
+	#endif
 	
 	// Scheduled job list
 	fscanf(f, "%s", str);
-	printf("Next str: %s\n", str);
 	while (strcmp(str, "running_jobs:") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a job in scheduled_job_list\n");
+		#endif
+		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
 		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
 		
@@ -1246,25 +1291,32 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		new_job->cores_used = (int*) malloc(new_job->cores*sizeof(int));
 		new_job->next = NULL;
 		
+		#ifdef PRINT
 		printf("unique_id: %d, subtime: %d, delay: %d, walltime: %d, cores: %d, data: %d, data_size: %f, index_node_list: %d start_time: %d end_time: %d end_before_walltime: %d transfer_time: %d waiting_for_a_load_time: %d workload: %d start_time_from_history: %d node_from_history: %d\n", new_job->unique_id, new_job->subtime, new_job->delay, new_job->walltime, new_job->cores, new_job->data, new_job->data_size, new_job->index_node_list, new_job->start_time, new_job->end_time, new_job->end_before_walltime, new_job->transfer_time, new_job->waiting_for_a_load_time, new_job->workload, new_job->start_time_from_history, new_job->node_from_history);
+		#endif
 		
 		insert_tail_job_list(scheduled_job_list, new_job);
 		
 		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
 	}
+	
+	#ifdef PRINT
 	printf("Scheduled job list:\n");
 	print_job_list(scheduled_job_list->head);
 	printf("\n");
+	#endif
 	
 	
 	// Running jobs
 	struct Node* n = (struct Node*) malloc(sizeof(struct Node));
 	int node_used_id = 0;
 	fscanf(f, "%s", str);
-	printf("Next str: %s\n", str);
 	while (strcmp(str, "job_to_print:") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a job in running_jobs\n");
+		#endif
+		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
 		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, &node_used_id);
 		
@@ -1284,7 +1336,10 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 				n = n->next;
 			}
 		}
+		
+		#ifdef PRINT
 		printf("Node used: %d\n", new_job->node_used->unique_id);
+		#endif
 		
 		// Cores 
 		new_job->cores_used = (int*) malloc(new_job->cores*sizeof(int));
@@ -1309,15 +1364,19 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 
 		new_job->next = NULL;
 		
+		#ifdef PRINT
 		printf("unique_id: %d, subtime: %d, delay: %d, walltime: %d, cores: %d, data: %d, data_size: %f, index_node_list: %d start_time: %d end_time: %d end_before_walltime: %d transfer_time: %d waiting_for_a_load_time: %d workload: %d start_time_from_history: %d node_from_history: %d\n", new_job->unique_id, new_job->subtime, new_job->delay, new_job->walltime, new_job->cores, new_job->data, new_job->data_size, new_job->index_node_list, new_job->start_time, new_job->end_time, new_job->end_before_walltime, new_job->transfer_time, new_job->waiting_for_a_load_time, new_job->workload, new_job->start_time_from_history, new_job->node_from_history);
+		#endif
 		
 		insert_tail_job_list(running_jobs, new_job);
 		
 		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
 	}
+	#ifdef PRINT
 	printf("running_jobs:\n");
 	print_job_list(running_jobs->head);
 	printf("\n");
+	#endif
 	
 	
 	// Job To Print
@@ -1325,15 +1384,19 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 	jobs_to_print_list->head = NULL;
 	jobs_to_print_list->tail = NULL;
 	fscanf(f, "%s", str);
-	printf("Next str: %s\n", str);
 	while (strcmp(str, "next_start_time:") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a job in job_to_print\n");
+		#endif
+		
 		struct To_Print* new_job = (struct To_Print*) malloc(sizeof(struct To_Print));
 
 		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %f %s %s %d", &new_job->job_unique_id, str, str, &new_job->job_subtime, str, str, &new_job->time, str, str, &new_job->time_used, str, str, &new_job->transfer_time, str, str, &new_job->job_start_time, str, str, &new_job->job_end_time, str, str, &new_job->job_cores, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->empty_cluster_time, str, str, &new_job->data_type, str, str, &new_job->job_data_size, str, str, &new_job->upgraded);
 		
+		#ifdef PRINT
 		printf("%d %d %d %d %d %d %d %d %d %f %d %f %d", new_job->job_unique_id, new_job->job_subtime, new_job->time, new_job->time_used, new_job->transfer_time, new_job->job_start_time, new_job->job_end_time, new_job->job_cores, new_job->waiting_for_a_load_time, new_job->empty_cluster_time, new_job->data_type, new_job->job_data_size, new_job->upgraded);
+		#endif
 		
 		new_job->next = NULL;
 				
@@ -1341,45 +1404,53 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		
 		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
 	}
+	#ifdef PRINT
 	printf("\n");
+	#endif
 	
 	
 	// Next start times
 	start_times = malloc(sizeof(*start_times));
 	start_times->head = NULL;
 	fscanf(f, "%s", str);
-	printf("Next str: %s\n", str);
 	int new_time = 0;
 	while (strcmp(str, "next_end_time:") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a time in next_start_time\n");
-
+		#endif
+		
 		fscanf(f, "%d", &new_time);
 						
 		insert_next_time_in_sorted_list(start_times, new_time);
 		
 		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
 	}
+	#ifdef PRINT
 	print_time_list(start_times->head, 0);
 	printf("\n");
+	#endif
 	
 	// Next end times
 	end_times = malloc(sizeof(*end_times));
 	end_times->head = NULL;
 	fscanf(f, "%s", str);
-	printf("Next str: %s\n", str);
 	while (strcmp(str, "end_of_file") != 0)
 	{
+		#ifdef PRINT
 		printf("Add a time in next_end_time\n");
-
+		#endif
+		
 		fscanf(f, "%d", &new_time);
 						
 		insert_next_time_in_sorted_list(end_times, new_time);
 		
 		fscanf(f, "%s", str); /* prochain teps ou fin du fichier */
 	}
+	#ifdef PRINT
 	print_time_list(end_times->head, 1);
 	printf("\n");
+	#endif
 	
 	printf("Successfully read state.\n");
 	fclose(f);
