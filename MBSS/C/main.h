@@ -26,7 +26,7 @@ extern struct Job_List* job_list; /* All jobs not available yet */
 extern struct Job_List* new_job_list; /* New available jobs */
 extern struct Job_List* job_list_to_start_from_history; /* With -2 and before start */
 extern struct Job_List* scheduled_job_list; /* Scheduled or available */
-extern struct Job_List* new_job_list; /* Scheduled or available */
+//~ extern struct Job_List* new_job_list; /* Scheduled or available */
 extern struct Job_List* running_jobs; /* Started */
 extern struct Node_List** node_list;
 extern struct To_Print_List* jobs_to_print_list;
@@ -246,6 +246,8 @@ void print_data_intervals(struct Node_List** list, int t);
 void print_tab_of_int (int arr[], int n);
 void print_holes(struct Node_List** head_node);
 void print_holes_specific_node(struct Node* n);
+void save_state(int t, int old_finished_jobs, int next_submit_time);
+void resume_state(int* t, int* old_finished_jobs, int* next_submit_time);
 
 /* From basic_functions.c */
 int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t);
