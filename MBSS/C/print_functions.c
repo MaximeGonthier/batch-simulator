@@ -889,7 +889,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time)
 			fprintf(f, "n_available_cores: %d, index_node_list: %d, number_cores_in_a_hole: %d, cores_in_a_hole: null", n->n_available_cores, n->index_node_list, n->number_cores_in_a_hole);
 			
 			#ifdef DATA_PERSISTENCE
-			fprintf(f, "data_occupation: %d, temp_data: null\n", n->data_occupation);
+			fprintf(f, ", data_occupation: %d, temp_data: null\n", n->data_occupation);
 			#else
 			fprintf(f, "\n");
 			#endif
@@ -1156,13 +1156,16 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 		new_node->cores_in_a_hole->head = NULL;
 		new_node->cores_in_a_hole->tail = NULL;
 
+		#ifndef DATA_PERSISTENCE
 		fscanf(f, "%s %d %s %s %d %s %s %d %s %s %s", str, &new_node->n_available_cores, str, str, &new_node->index_node_list, str, str, &new_node->number_cores_in_a_hole, str, str, str);
+		#else
+		fscanf(f, "%s %d %s %s %d %s %s %d %s %s %s %s %d %s %s %s", str, &new_node->n_available_cores, str, str, &new_node->index_node_list, str, str, &new_node->number_cores_in_a_hole, str, str, str, str, &new_node->data_occupation, str, str, str);
+		#endif
 		
 		#ifdef DATA_PERSISTENCE
-		new->data_occupation = 0; /* From 0 to 128 */
-		new->temp_data = malloc(sizeof(*new->temp_data));
-		new->temp_data->head = NULL;
-		new->temp_data->tail = NULL;
+		new_node->temp_data = malloc(sizeof(*new_node->temp_data));
+		new_node->temp_data->head = NULL;
+		new_node->temp_data->tail = NULL;
 		#endif
 
 		new_node->next = NULL;

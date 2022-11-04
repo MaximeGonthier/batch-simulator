@@ -67,11 +67,42 @@ int data_persistence_exploited;
 
 int main(int argc, char *argv[])
 {
-	//~ T = 1406544 pour le save state de fcfs with a score mai 21-22
+	if (argc != 7 && argc != 8 && argc != 9)
+	{
+		printf("Error: args must be 7, 8 or 9!\n");
+		exit(EXIT_FAILURE);
+	}
+	
+	/* By default I don't save/resume */
 	bool need_to_save_state = false;
-	//~ bool need_to_save_state = true;
 	bool need_to_resume_state = false;
-	//~ bool need_to_resume_state = true;
+	int time_to_save = 0;
+	
+	/* If you add save or resume as the last argument */
+	if (argc > 7)
+	{
+		// T = 1406544 pour le save state de fcfs with a score mai 21-22
+		// T = 2237306 pour le save state de fcfs with a score mars 15 16 data persistence
+		if (strcmp(argv[7], "save") == 0)
+		{
+			need_to_save_state = true;
+			time_to_save = atoi(argv[8]);
+		}
+		else if (strcmp(argv[7], "resume") == 0)
+		{
+			need_to_resume_state = true;
+			if (argc > 8)
+			{
+				printf("Error: no arg must be after resume.\n");
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			printf("Error: argv[7] must be save or resume.\n");
+			exit(EXIT_FAILURE);
+		}
+	}
 	
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
@@ -736,14 +767,14 @@ int main(int argc, char *argv[])
 	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
 	{
 		/* Test pour save l'état et recommencer */
-		if (need_to_save_state == true && t >= 3609363)
+		if (need_to_save_state == true && t >= time_to_save)
 		{
 			#ifdef PLOT_SATS
 			printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");
 			exit(1);
 			#endif
 			
-			printf("Save state\n");
+			printf("Save state at time %d >= %d (time_to_save)\n", t, time_to_save);
 			save_state(t, old_finished_jobs, next_submit_time);
 			exit(1);
 		}
