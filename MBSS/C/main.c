@@ -726,7 +726,8 @@ int main(int argc, char *argv[])
 	{
 		need_to_resume_state = false;
 		resume_state(&t, &old_finished_jobs, &next_submit_time);
-		exit(1);
+		
+		printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
 	}
 	
 	/** START OF SIMULATION **/
