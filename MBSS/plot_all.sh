@@ -34,6 +34,9 @@ bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_45
 DATE="2022-01-21->2022-01-21"
 bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V9271_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
 
+DATE="2022-03-15->2022-03-16"
+bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V9271_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
+
 DATE="2022-05-21->2022-05-22"
 bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V9271_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
 
@@ -46,6 +49,9 @@ DATE="2022-01-17->2022-01-17"
 bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_Data_Persistence_${DATE}_V9271_450_128_32_256_4_1024.csv Data_Persistence
 
 DATE="2022-01-21->2022-01-21"
+bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_Data_Persistence_${DATE}_V9271_450_128_32_256_4_1024.csv Data_Persistence
+
+DATE="2022-03-15->2022-03-16"
 bash plot.sh inputs/workloads/converted/${DATE}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_Data_Persistence_${DATE}_V9271_450_128_32_256_4_1024.csv Data_Persistence
 
 
