@@ -180,13 +180,12 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item test lancé:
-		 
-%~ mgonthier@flyon:~/data-aware-batch-scheduling/MBSS$ oarsub -p nova -l core=16,walltime=62:00:00 -r '2022-11-04 19:00:00' "./C/main inputs/workloads/converted/2022-05-21-\>2022-05-22_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_x500_x1_x0_x0 0 outputs/test.csv 0"
-%~ OAR_JOB_ID=1400025
-%~ mgonthier@flyon:~/data-aware-batch-scheduling/MBSS$ oarsub -p nova -l core=16,walltime=62:00:00 -r '2022-11-04 19:00:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_x500_x1_x0_x0 0 outputs/test.csv 0"
-%~ OAR_JOB_ID=1400039
+		%~ mgonthier@flyon:~/data-aware-batch-scheduling/MBSS$ oarsub -p nova -l core=16,walltime=55:00:00 -r '2022-11-05 00:10:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 6"
+		%~ OAR_JOB_ID=1400573
+		
+		%~ + 1 job avec mai 21 pour fcfs score classique (OAR.1400569.stdout)
 
+			\item Comprendre les resultats de score 08 16
 			\item fcfs score bus error sur mars 15 16 avec conservative bf mais pas sans: j'ai retesté avce moins de loop
 
 			\item score crash avec les longst test masi avant c'était pas le cas
