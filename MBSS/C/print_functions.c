@@ -185,7 +185,7 @@ void to_print_job_csv(struct Job* job, int time)
 			new->upgraded = 0;
 		}
 		
-		print_job_to_print(new);
+		//~ print_job_to_print(new);
 		
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
