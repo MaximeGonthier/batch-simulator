@@ -180,11 +180,12 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-		%~ mgonthier@flyon:~/data-aware-batch-scheduling/MBSS$ oarsub -p nova -l core=16,walltime=55:00:00 -r '2022-11-05 00:10:00' "bash Compare_FCFS_Score.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 6"
-		%~ OAR_JOB_ID=1400573: pas eu le temps de finir
 		
-		%~ + 1 job avec mai 21 pour fcfs score classique (OAR.1400569.stdout): pas eu le temps de finir
-			
+%~ 1401676                   mgonthier      2022-11-07 20:10:19 R default   
+%~ 1401677                   mgonthier      2022-11-07 20:10:32 R default   
+%~ 1401678                   mgonthier      2022-11-07 20:10:38 R default   
+%~ 1401683                   mgonthier      2022-11-07 20:13:34 L default   
+
 			\item score crash avec les longst test masi avant c'était pas le cas
 			\item tester mars 15 16
 			\item le get interval et le free asocié marche mal: le free me fais encore des erros nb of cores in node a la toute fin
@@ -198,7 +199,7 @@
 			\item voir ce qui est utilisé sur slurm et oar dans des articles et en demandant directement sur mattermost
 			\item contacter gaupy si il connait des survey: att réponse
 			
-			\item score crash avec conservative backfill
+			\item score crash avec conservative backfill car c'est trop long je dois réduire du coup
 		
 			\item use a simple backfilling strategy to be fair with fcfs et utiliser la même pour tous. Le premier est bien plus conservateur que le second qui peut delay un job a cause d'un walltime trop grand
 			\item smooth transtion: probability of needing all nodes ? Try math functions ? tester si ca matvch le nb of nodes en testant d'autres tailles de clusters ?
