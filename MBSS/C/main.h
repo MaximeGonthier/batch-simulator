@@ -248,6 +248,7 @@ void print_holes(struct Node_List** head_node);
 void print_holes_specific_node(struct Node* n);
 void save_state(int t, int old_finished_jobs, int next_submit_time);
 void resume_state(int* t, int* old_finished_jobs, int* next_submit_time);
+void print_job_to_print(struct To_Print* tp);
 
 /* From basic_functions.c */
 int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t);

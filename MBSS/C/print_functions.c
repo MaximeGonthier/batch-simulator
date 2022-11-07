@@ -135,6 +135,11 @@ void print_cores_in_specific_node(struct Node* n)
 	printf("%d(%d).\n", n->cores[19]->unique_id, n->cores[19]->available_time);
 }
 
+void print_job_to_print(struct To_Print* tp)
+{
+	printf("Job to print %d, subtime %d, time %d, time used %d, transfer+waiting time %d, start/end %d/%d, empty cluster time %f will give a stretch of %f.\n", tp->job_unique_id, tp->job_subtime, tp->time, tp->time_used, tp->transfer_time + tp->waiting_for_a_load_time, tp->job_start_time, tp->job_end_time, tp->empty_cluster_time, (tp->job_end_time - tp->job_subtime)/tp->empty_cluster_time);
+}
+
 /* Print in a csv file the results of this job allocation */
 void to_print_job_csv(struct Job* job, int time)
 {
@@ -155,6 +160,7 @@ void to_print_job_csv(struct Job* job, int time)
 	
 	/* Only evaluate jobs from workload 1 */
 	if (job->workload == 1)
+	//~ if (job->workload == 1 && job->cores > 2) /* juste pour tester sur le workload d'Août */
 	{
 		struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));
 		new->next = NULL;
@@ -178,6 +184,9 @@ void to_print_job_csv(struct Job* job, int time)
 		{
 			new->upgraded = 0;
 		}
+		
+		print_job_to_print(new);
+		
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
 	
@@ -633,6 +642,10 @@ void print_csv(struct To_Print* head_to_print)
 		printf("Error verify_nb_job_to_evaluate %d != nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate);
 		exit(EXIT_FAILURE);
 	}
+	else
+	{
+		printf("verify_nb_job_to_evaluate %d == nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate);
+	}
 	
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
@@ -641,6 +654,7 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_stretch);
 	fclose(f_bounded_stretch);
 	#endif
+	
 	/* Compute mean values */
 	mean_queue_time = total_queue_time/nb_job_to_evaluate;
 	mean_flow = total_flow/nb_job_to_evaluate;
@@ -663,8 +677,9 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	printf("Scheduler: %s, Number of jobs evaluated: %d, Max queue time: %f, Mean queue time: %f, Total queue time: %f, Max flow: %f, Mean flow: %f, Total flow: %f, Transfer time: %f, Makespan: %f, Core time: %f, Waiting for a load time: %f, Transfer + waiting time: %f, Mean flow stretch: %f, Mean bounded flow stretch: %f, Max flow stretch: %f, Max bounded flow stretch: %f, Nb of upgraded jobs: %d, Nb large queue times (>%d): %d, Mean flow stretch 128 256 1024: %f %f %f, Mean flow stretch with a minimum 128 256 1024: %f %f %f\n\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, what_is_a_large_queue_time, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
+	
+	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024);
 	fclose(f);
 
 	/* For flow stretch heat map */
@@ -700,14 +715,14 @@ void print_csv(struct To_Print* head_to_print)
 	strcpy(file_to_open_2, "outputs/Stretch_with_a_minimum_");
 	strcat(file_to_open_2, scheduler);
 	strcat(file_to_open_2, ".txt");
-	FILE* f_bounded_stretch = fopen(file_to_open_2, "w");
-	if (!f_bounded_stretch)
+	FILE* f_bounded_stretch2 = fopen(file_to_open_2, "w");
+	if (!f_bounded_stretch2)
 	{
 		perror("Error opening file.\n");
 		exit(EXIT_FAILURE);
 	}
-	fprintf(f_bounded_stretch, "%f", mean_flow_stretch_with_a_minimum);
-	fclose(f_bounded_stretch);
+	fprintf(f_bounded_stretch2, "%f", mean_flow_stretch_with_a_minimum);
+	fclose(f_bounded_stretch2);
 	
 	/* For max flow stretch with a minimum heat map */
 	file_to_open_2 = malloc(size_file_to_open*sizeof(char));

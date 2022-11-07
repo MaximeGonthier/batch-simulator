@@ -1516,6 +1516,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Easy_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \caption{EASY backfilling - Locality constraint only - Workload of January 21 (14000/45000 jobs) - October 18}\end{figure}
+anormalment proche de 1: Peut etre a cause de l'utilisation du cluster et du peu de nombre de jobs à schedule ? Oui c'est exactement ca
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-15->2022-03-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
@@ -1531,7 +1532,22 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-08-16->2022-08-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Easy_Backfill_2022-08-16->2022-08-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
 \caption{EASY backfilling - Locality constraint only - Workload of August 16 (41000/110000 jobs) - November 2}\end{figure}
+Bcp de jobs à 1 core contrairement aux autres workloads. Par contre maximum quuee time bien plus haut.
+(autres jobs) 2129 == nb_job_to_evaluate 41306 (jobs 1 ou 2 cores)
+Resultats en ignorant ces pettis jobs de fcfs: Scheduler: FCFS, Number of jobs evaluated: 41306, Max queue time: 98864.000000, Mean queue time: 2771.667480, Total queue time: 114486496.000000, Max flow: 709333.000000, Mean flow: 4365.129395, Total flow: 180306032.000000, Transfer time: 1139264.000000, Makespan: 4758547.000000, Core time: 1048956160.000000, Waiting for a load time: 89656.000000, Transfer + waiting time: 1228920.000000, Mean flow stretch: 3.134025, Mean bounded flow stretch: 3.134025, Max flow stretch: 224.671127, Max bounded flow stretch: 224.671127, Nb of upgraded jobs: 0, Nb large queue times (>25000): 1366, Mean flow stretch 128 256 1024: 3.125052 0.007363 0.001610, Mean flow stretch with a minimum 128 256 1024: 3.125052 0.007363 0.001610
+Pk fcfs galère sur les petits jobs ? C'est du snowball ?
 
+Resultats de score normal:
+Scheduler: SCORE, Number of jobs evaluated: 41306, Max queue time: 561600.000000, Mean queue time: 3700.877197, Total queue time: 152868432.000000, Max flow: 705101.000000, Mean flow: 8613.409180, Total flow: 355785472.000000, Transfer time: 861824.000000, Makespan: 4754315.000000, Core time: 1193320448.000000, Waiting for a load time: 768494.000000, Transfer + waiting time: 1630318.000000, Mean flow stretch: 3.880358, Mean bounded flow stretch: 3.591555, Max flow stretch: 62.251282, Max bounded flow stretch: 41.673267, Nb of upgraded jobs: 0, Nb large queue times (>25000): 317, Mean flow stretch 128 256 1024: 3.879896 0.000330 0.000131, Mean flow stretch with a minimum 128 256 1024: 3.591094 0.000330 0.000131
+
+Resultats avec un subset qui commence par des gros chargements:
+#~ Scheduler: FCFS, Number of jobs evaluated: 2476, Max queue time: 10365.000000, Mean queue time: 10339.049805, Total queue time: 25599488.000000, Max flow: 67052.000000, Mean flow: 10562.382812, Total flow: 26152460.000000, Transfer time: 8064.000000, Makespan: 4148263.000000, Core time: 553026.000000, Waiting for a load time: 150400.000000, Transfer + waiting time: 158464.000000, Mean flow stretch: 55.720737, Mean bounded flow stretch: 35.065506, Max flow stretch: 56.962162, Max bounded flow stretch: 35.183334, Nb of upgraded jobs: 0, Nb large queue times (>25000): 0, Mean flow stretch 128 256 1024: 55.720737 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 35.065506 0.000000 0.000000
+
+#~ Scheduler: SCORE, Number of jobs evaluated: 2476, Max queue time: 0.000000, Mean queue time: 0.000000, Total queue time: 0.000000, Max flow: 56708.000000, Mean flow: 223.164780, Total flow: 552556.000000, Transfer time: 8064.000000, Makespan: 4137919.000000, Core time: 552556.000000, Waiting for a load time: 149930.000000, Transfer + waiting time: 157994.000000, Mean flow stretch: 0.998991, Mean bounded flow stretch: 0.628984, Max flow stretch: 1.000000, Max bounded flow stretch: 1.000000, Nb of upgraded jobs: 0, Nb large queue times (>25000): 0, Mean flow stretch 128 256 1024: 0.998991 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 0.628984 0.000000 0.000000
+
++ gantt charts
+
+aussi les petits jobs sont ecrasé par leurs strecth car le temps de chargement ecrase le temps total et le snowball va vite.
 
 \subsection{Data persistence}
 

@@ -724,7 +724,7 @@ int main(int argc, char *argv[])
 		print_job_list(scheduled_job_list->head);
 		#endif
 	}
-	
+
 	/* Besoin de calculer le nombre de nodes dans chaque catégorie pour certains algos. */
 	int number_node_size_128_and_more = 0;
 	int number_node_size_256_and_more = 0;
@@ -995,7 +995,7 @@ int main(int argc, char *argv[])
 	}
 
 	
-	printf("Computing and writing results...\n");
+	printf("\nComputing and writing results...\n");
 	print_csv(jobs_to_print_list->head);
 
 	return 1;

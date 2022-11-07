@@ -1,4 +1,5 @@
-# python3 plot_stretch_multiple_schedulers ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ...
+# Il faut avoir lancé avant au moins deux schedulers avec make plot_stats -C C/
+# python3 plot_stretch_multiple_schedulers Stretch/Bounded_Stretch ${SCHEDULER_1} ${SCHEDULER_2} ${SCHEDULER_3} ...
 
 # Imports
 import matplotlib.pyplot as plt

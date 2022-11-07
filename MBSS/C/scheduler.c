@@ -208,8 +208,8 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	struct Job* j = head_job;
 	while (j != NULL)
 	{
-		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*2)
-		//~ if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 200) /* Pour faire finir fcfs with a score sans bus error. */
+		//~ if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 486*2)
+		if (nb_non_available_cores < nb_cores && nb_cores_rescheduled < 200) /* Pour faire finir fcfs with a score sans bus error. */
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
