@@ -54,7 +54,6 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 			#ifdef PRINT
 			printf("Number of cores from the hole/outside: %d/%d.\n", *nb_cores_from_hole, *nb_cores_from_outside);
 			#endif
-			//~ exit(1);
 						
 			//~ k = 0;
 			//~ while (nb_cores_from_outside != 0)

@@ -576,8 +576,15 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	int score = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
+	
+	/* Pour garder les temps si ETA == t dans le cas du check des trous */
+	bool want_to_save_times_for_backfill = false;
+	float time_to_load_file_saved = 0;
+	float time_to_reload_evicted_files_saved = 0;
+	
 	//~ struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 	//~ int parcours_des_nodes = 0;
+	
 	
 	/* In which node size I can pick. */
 	if (j->index_node_list == 0)
@@ -597,7 +604,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 	}
 	else
 	{
-		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+		printf("Error index value in schedule_job_on_earliest_available_cores.\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 	//~ #ifdef PRINT
@@ -612,10 +619,14 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 			struct Node* n = head_node[i]->head;
 			while (n != NULL)
 			{
+				want_to_save_times_for_backfill = false;
 				earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 				if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 				{
 					earliest_available_time = t;
+					want_to_save_times_for_backfill = true; /* pour ne pas répeter les calculs lors du backfill */
+					time_to_load_file_saved = -1;
+					time_to_reload_evicted_files_saved = -1;
 				}
 					
 				if (start_immediately_if_EAT_is_t == 1 && earliest_available_time == t) /* Ou dans une fenêtre ? */
@@ -624,32 +635,135 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 					multiplier_file_evicted = 0;
 				}
 
-					#ifdef PRINT
-					printf("On node %d?\n", n->unique_id);
-					#endif
+				#ifdef PRINT
+				printf("On node %d?\n", n->unique_id);
+				#endif
 					
-					/* Computing score on the node outside of holes. */
+				/* Computing score on the node outside of holes. */
+				#ifdef PRINT
+				printf("A: EAT is %d.\n", earliest_available_time);
+				#endif
+					
+				if (min_score == -1 || earliest_available_time < min_score)
+				{
+					if (j->data == 0)
+					{
+						time_to_load_file = 0;
+					}
+					else
+					{
+						time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
+					}
+					
+					if (want_to_save_times_for_backfill == true)
+					{
+						time_to_load_file_saved = time_to_load_file;
+					}
+					
+					#ifdef PRINT
+					printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
+					#endif
+						
+					//~ printf("Score for job %d is %f (EAT: %d + TL %d*%f) with node %d.\n", j->unique_id, earliest_available_time + multiplier_file_to_load*time_to_load_file, earliest_available_time, multiplier_file_to_load, time_to_load_file, n->unique_id);
+						
+					#ifdef PLOT_STATS
+					if (min_score != -1 && min_score == earliest_available_time + multiplier_file_to_load*time_to_load_file)
+					{
+						tie = true;
+					}
+					else
+					{
+						tie = false;
+					}
+					#endif
+		
+					if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
+					{
+						if (multiplier_file_evicted == 0)
+						{
+							time_to_reload_evicted_files = 0;
+						}
+						else
+						{
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
+						}
+						
+						if (want_to_save_times_for_backfill == true)
+						{
+							time_to_reload_evicted_files_saved = time_to_reload_evicted_files;
+						}
+						
+						#ifdef PRINT
+						printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
+						#endif	
+													
+						score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
+						
+						#ifdef PRINT	
+						printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
+						#endif
+																						
+						if (min_score == -1 || min_score > score)
+						{
+							min_time = earliest_available_time;
+							min_score = score;
+							j->node_used = n;
+							choosen_time_to_load_file = time_to_load_file;
+							backfilled_job = false; /* On met à false car ça a pu mettre à true par un trou dans une node précédente. */
+								
+							if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
+							{			
+								#ifdef PRINT
+								printf("min_time == t and no file to load/evict, break.\n");
+								printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
+								#endif
+									
+								i = last_node_size_to_choose_from + 1;
+								//~ parcours_des_nodes = 2;
+								break;
+							}
+						}
+					}
+				}
+				//~ }
+				//~ else
+				//~ {
+				
+				#ifdef PRINT
+				printf("Can I backfill on node %d?\n", n->unique_id);
+				#endif
+					
+				if (can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside) == true)
+				{
+					#ifdef PRINT
+					printf("Yes.\n");
+					#endif
+						
+					earliest_available_time = t;
+					/* Calcul du score dans le trou de la node en question. */
+						
 					#ifdef PRINT
 					printf("A: EAT is %d.\n", earliest_available_time);
 					#endif
-					
+						
 					if (min_score == -1 || earliest_available_time < min_score)
 					{
 						if (j->data == 0)
 						{
 							time_to_load_file = 0;
 						}
+						else if (want_to_save_times_for_backfill == true && time_to_load_file_saved != -1)
+						{
+							time_to_load_file = time_to_load_file_saved;
+						}
 						else
 						{
 							time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
 						}
-						
 						#ifdef PRINT
 						printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
 						#endif
-						
-						//~ printf("Score for job %d is %f (EAT: %d + TL %d*%f) with node %d.\n", j->unique_id, earliest_available_time + multiplier_file_to_load*time_to_load_file, earliest_available_time, multiplier_file_to_load, time_to_load_file, n->unique_id);
-						
+														
 						#ifdef PLOT_STATS
 						if (min_score != -1 && min_score == earliest_available_time + multiplier_file_to_load*time_to_load_file)
 						{
@@ -660,117 +774,36 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 							tie = false;
 						}
 						#endif
-		
+			
 						if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
-						{
+						{	
+							//~ if (multiplier_file_evicted == 0 || time_to_load_file == 0) /* Attention ça avec mon calcul de evicted file en % c'est complètement faux! */
 							if (multiplier_file_evicted == 0)
 							{
 								time_to_reload_evicted_files = 0;
+							}
+							else if (want_to_save_times_for_backfill == true && time_to_reload_evicted_files_saved != -1)
+							{
+								time_to_reload_evicted_files = time_to_reload_evicted_files_saved;
 							}
 							else
 							{
 								time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
 							}
-							
+								
 							#ifdef PRINT
 							printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
-							#endif	
-													
-							score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
-						
-							#ifdef PRINT	
-							printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 							#endif
-																						
-							if (min_score == -1 || min_score > score)
-							{
-								min_time = earliest_available_time;
-								min_score = score;
-								j->node_used = n;
-								choosen_time_to_load_file = time_to_load_file;
-								backfilled_job = false; /* On met à false car ça a pu mettre à true par un trou dans une node précédente. */
-								if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
-								{
-									
-									#ifdef PRINT
-									printf("min_time == t and no file to load/evict, break.\n");
-									printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
-									#endif
-									
-									i = last_node_size_to_choose_from + 1;
-									//~ parcours_des_nodes = 2;
-									break;
-								}
-							}
-						}
-					}
-				//~ }
-				//~ else
-				//~ {
-				
-					#ifdef PRINT
-					printf("Can I backfill on node %d?\n", n->unique_id);
-					#endif
-					
-					if (can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside) == true)
-					{
-						#ifdef PRINT
-						printf("Yes.\n");
-						#endif
-						
-						earliest_available_time = t;
-						/* Calcul du score dans le trou de la node en question. */
-						
-						#ifdef PRINT
-						printf("A: EAT is %d.\n", earliest_available_time);
-						#endif
-						
-						if (min_score == -1 || earliest_available_time < min_score)
-						{
-							if (j->data == 0)
-							{
-								time_to_load_file = 0;
-							}
-							else
-							{
-								time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(earliest_available_time, n, t, j->data, j->data_size, &is_being_loaded);
-							}
-							#ifdef PRINT
-							printf("B: Time to load file: %f. Is being loaded? %d.\n", time_to_load_file, is_being_loaded);
-							#endif
-														
-							#ifdef PLOT_STATS
-							if (min_score != -1 && min_score == earliest_available_time + multiplier_file_to_load*time_to_load_file)
-							{
-								tie = true;
-							}
-							else
-							{
-								tie = false;
-							}
-							#endif
-			
-							if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file < min_score)
-							{
-								if (multiplier_file_evicted == 0)
-								{
-									time_to_reload_evicted_files = 0;
-								}
-								else
-								{
-									time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(earliest_available_time, n, j->data, (float) j->cores/20);
-								}
 								
-								#ifdef PRINT
-								printf("C: Time to reload evicted files %f.\n", time_to_reload_evicted_files);
-								#endif
-													
+							/* Je ne veux backfill que si je n'évince pas de fichiers */
+							if (time_to_load_file == 0 || time_to_reload_evicted_files == 0)
+							{
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
-								
+									
 								#ifdef PRINT
 								printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 								#endif
-																							
+																								
 								if (min_score == -1 || min_score > score)
 								{
 									min_time = earliest_available_time;
@@ -778,18 +811,18 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 									j->node_used = n;
 									choosen_time_to_load_file = time_to_load_file;
 									backfilled_job = true; /* On met à false car ça a pu mettre à true par un trou dans une node précédente. */
-									
+										
 									/* maj choosen numbers is important for fcs score. */
 									choosen_nb_cores_from_hole = nb_cores_from_hole;
 									choosen_nb_cores_from_outside = nb_cores_from_outside;
-									
+										
 									if (min_time == t && min_score == t) /* Temps de début est t et pas de temps de chargements du tout */
 									{
 										#ifdef PRINT
 										printf("min_time == t and no file to load/evict, break.\n");
 										printf("Score for job %d is %d (EAT: %d + TL %d*%f + TRL %d*%f) with node %d.\n", j->unique_id, score, earliest_available_time, multiplier_file_to_load, time_to_load_file, multiplier_file_evicted, time_to_reload_evicted_files, n->unique_id);
 										#endif
-										
+											
 										i = last_node_size_to_choose_from + 1;
 										//~ parcours_des_nodes = 2;
 										break;
@@ -798,6 +831,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 							}
 						}
 					}
+				}
 				//~ }
 				//~ else
 				//~ {

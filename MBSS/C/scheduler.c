@@ -147,7 +147,7 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
  * nb_non_available_cores ne vaut que quand c'est t qui est recouvert, pas plus loin.
  **/
 void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int backfill_mode)
-{	
+{
 	#ifdef PRINT
 	printf("Start fcfs conservative bf at time %d. backfill mode %d.\n", t, backfill_mode);
 	#endif
