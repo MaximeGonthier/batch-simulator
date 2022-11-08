@@ -52,6 +52,7 @@ extern int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;
 extern int total_number_of_scores_computed;
 extern int data_persistence_exploited;
 #endif
+extern int biggest_hole;
 
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
  * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of
@@ -277,9 +278,8 @@ void fcfs_with_a_score_scheduler_without_delaying_j1(struct Job* j, struct Job* 
 int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List** head_node, int t, int nb_running_cores, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t);
 void sort_tab_of_int_decreasing_order(long long arr[], int n);
 void swap(long long* xp, long long* yp);
-int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int backfill_mode);
-//~ int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t);
-int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode);
+void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t);
+void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);
@@ -345,8 +345,9 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 
 /* From backfill_functions.c */
 bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_from_hole, int* nb_cores_from_outside);
-int update_cores_for_backfilled_job(int nb_non_available_cores, struct Job* j, int t, int nb_cores_from_hole, int nb_cores_from_outside);
-void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int backfill_mode, int t);
+void update_cores_for_backfilled_job(struct Job* j, int t, int nb_cores_from_hole, int nb_cores_from_outside);
+void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int backfill_mode, int t, int* nb_non_available_cores);
+bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores_at_time_t);
 
 /* from scheduler_calling.c */
 void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode);

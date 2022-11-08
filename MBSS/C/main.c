@@ -64,6 +64,7 @@ int number_of_tie_breaks_before_computing_evicted_files_fcfs_score;
 int total_number_of_scores_computed;
 int data_persistence_exploited;
 #endif
+int biggest_hole;
 
 int main(int argc, char *argv[])
 {
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
 	bool need_to_save_state = false;
 	bool need_to_resume_state = false;
 	int time_to_save = 0;
-	
+		
 	/* If you add save or resume as the last argument */
 	if (argc > 7)
 	{
@@ -958,7 +959,7 @@ int main(int argc, char *argv[])
 		
 		if (start_times->head != NULL && t > start_times->head->time)
 		{
-			printf("ERROR, next start time is %d  and t is %d.\n", start_times->head->time, t); fflush(stdout);
+			printf("ERROR in main.c, next start time is %d and t is %d.\n", start_times->head->time, t); fflush(stdout);
 			exit(EXIT_FAILURE);
 		}
 		

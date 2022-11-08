@@ -172,8 +172,8 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
  * 2: Minimise la création de trous. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
  **/
 /* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. 
- * nb_non_available_cores est que sur t pas plus loin à cause du backfill. */
-int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int backfill_mode)
+ * nb_non_available_cores est que sur t et pas sur t y en a 2 pas plus loin à cause du backfill. */
+void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t)
 {
 	/* NEW core selection conservative bf only */
 	int nb_cores_from_hole = 0;
@@ -285,8 +285,15 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	 
 	if (backfilled_job == true)
 	{
-		nb_non_available_cores = update_cores_for_backfilled_job(nb_non_available_cores, j, t, nb_cores_from_hole, nb_cores_from_outside);
+		update_cores_for_backfilled_job(j, t, nb_cores_from_hole, nb_cores_from_outside);
 		//~ exit(1);
+		*nb_non_available_cores_at_time_t += j->cores;
+		*nb_non_available_cores += nb_cores_from_outside;
+		
+		if (j->node_used->unique_id == biggest_hole_unique_id)
+		{
+			get_new_biggest_hole(head_node);
+		}
 	}
 	 
 	//~ if (backfill_mode == 1)
@@ -437,7 +444,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 		/* En commentaire: version plus longue qui prend les cores les plus utilisées pour remplir le job courant; A tester. */
 		if (j->start_time == t)
 		{
-			nb_non_available_cores += j->cores;
+			*nb_non_available_cores_at_time_t += j->cores;
 		}
 		
 		if (backfill_mode == 1 || backfill_mode == 2)
@@ -446,7 +453,7 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 			printf("fill_cores_minimize_holes\n");
 			#endif
 			
-			fill_cores_minimize_holes (j, true, backfill_mode, t);
+			fill_cores_minimize_holes (j, true, backfill_mode, t, nb_non_available_cores);
 		}
 		else
 		{
@@ -461,6 +468,11 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 						//~ j->cores_used[i] = j->node_used->cores[k]->unique_id;
 						j->cores_used[i] = j->node_used->cores[i]->unique_id;
 						
+						if (j->node_used->cores[i]->available_time <= t)
+						{
+							*nb_non_available_cores += 1;
+						}
+						
 						/* Spécifique au cas avec backfilling */
 						//~ if (j->node_used->cores[k]->available_time <= t && j->start_time > t)
 						if (j->node_used->cores[i]->available_time <= t && j->start_time > t)
@@ -471,6 +483,12 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 							#endif
 							
 							j->node_used->number_cores_in_a_hole += 1;
+							
+							if (j->node_used->number_cores_in_a_hole > biggest_hole)
+							{
+								biggest_hole = j->node_used->number_cores_in_a_hole;
+							}
+							
 							struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 							//~ new->unique_id = j->node_used->cores[k]->unique_id;
 							new->unique_id = j->node_used->cores[i]->unique_id;
@@ -534,10 +552,10 @@ int schedule_job_on_earliest_available_cores_with_conservative_backfill(struct J
 	print_cores_in_specific_node(j->node_used);
 	#endif
 	
-	return nb_non_available_cores;
+	//~ return nb_non_available_cores;
 }
 
-int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode)
+void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t)
 {
 	#ifdef PLOT_STATS
 	total_number_of_scores_computed += 1;
@@ -1006,25 +1024,32 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		number_of_backfilled_jobs+= 1;
 		#endif
 		
-		nb_non_available_cores = update_cores_for_backfilled_job(nb_non_available_cores, j, t, choosen_nb_cores_from_hole, choosen_nb_cores_from_outside);
+		update_cores_for_backfilled_job(j, t, choosen_nb_cores_from_hole, choosen_nb_cores_from_outside);
+		*nb_non_available_cores_at_time_t += j->cores;
+		*nb_non_available_cores += choosen_nb_cores_from_outside;
 	}
 	else /* backfilled_job == false */
 	{
 		if (j->start_time == t)
 		{
-			nb_non_available_cores += j->cores;
+			*nb_non_available_cores_at_time_t += j->cores;
 		}
-		
+				
 		if (backfill_mode == 1 || backfill_mode == 2)
 		{
-			fill_cores_minimize_holes(j, true, backfill_mode, t);
+			fill_cores_minimize_holes(j, true, backfill_mode, t, nb_non_available_cores);
 		}
 		else
 		{
 			for (i = 0; i < j->cores; i++)
 			{
 				j->cores_used[i] = j->node_used->cores[i]->unique_id;
-								
+
+				if (j->node_used->cores[i]->available_time <= t)
+				{
+					*nb_non_available_cores += 1;
+				}
+							
 				/* Est-ce que je créé un trou ? Si oui je le rajoute dans les infos de la node. */
 				if (j->node_used->cores[i]->available_time <= t && min_time > t)
 				{
@@ -1062,7 +1087,7 @@ int schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Nod
 		sort_cores_by_available_time_in_specific_node(j->node_used);
 	}
 
-	return nb_non_available_cores;
+	//~ return nb_non_available_cores;
 }
 
 /* Pour easybf fcfs */

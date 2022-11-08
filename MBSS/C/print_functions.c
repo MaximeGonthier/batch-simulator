@@ -303,15 +303,15 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		if (backfill_mode == 0)
 		{
-			scheduler = "FCFS CONSERVATIVE BF";
+			scheduler = "FCFS CONSERVATIVE BF MODE 0";
 		}
 		else if (backfill_mode == 1)
 		{
-			scheduler = "FCFS CONSERVATIVE BF";
+			scheduler = "FCFS CONSERVATIVE BF MODE 1";
 		}
 		else  if (backfill_mode == 2)
 		{
-			scheduler = "FCFS CONSERVATIVE BF";
+			scheduler = "FCFS CONSERVATIVE BF MODE 2";
 		}
 		else
 		{
@@ -323,7 +323,27 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		scheduler = "FCFS EASY BF";
 	}
-	else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0 || strcmp(scheduler, "Eft") == 0)
+	else if (strcmp(scheduler, "Fcfs_with_a_score_conservativebf_x1_x0_x0_x0") == 0 || strcmp(scheduler, "Eft") == 0)
+	{
+		if (backfill_mode == 0)
+		{
+			scheduler = "EFT CONSERVATIVE BF MODE 0";
+		}
+		else if (backfill_mode == 1)
+		{
+			scheduler = "EFT CONSERVATIVE BF MODE 1";
+		}
+		else  if (backfill_mode == 2)
+		{
+			scheduler = "EFT CONSERVATIVE BF MODE 2";
+		}
+		else
+		{
+			printf("Error mauvais backfill mode dnas print.\n");
+			exit(1);
+		}
+	}
+	else if (strcmp(scheduler, "Fcfs_with_a_score_x1_x0_x0_x0") == 0)
 	{
 		scheduler = "EFT";
 	}
@@ -335,15 +355,15 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		if (backfill_mode == 0)
 		{
-			scheduler = "SCORE CONSERVATIVE BF";
+			scheduler = "SCORE CONSERVATIVE BF MODE 0";
 		}
 		else if (backfill_mode == 1)
 		{
-			scheduler = "SCORE CONSERVATIVE BF";
+			scheduler = "SCORE CONSERVATIVE BF MODE 1";
 		}
 		else  if (backfill_mode == 2)
 		{
-			scheduler = "SCORE CONSERVATIVE BF";
+			scheduler = "SCORE CONSERVATIVE BF MODE 2";
 		}
 		else
 		{
