@@ -3,10 +3,16 @@
 //~ #include <stdint.h>
 //~ #include <limits.h>
 //~ #include <stdlib.h>
-//~ #include <stdbool.h>
+#include <stdbool.h>
 //~ #include <math.h>
 //~ #include <time.h>
 //~ #include <limits.h>
+
+bool is_true()
+{
+	printf("Return true.\n");
+	return true;
+}
 
 int main()
 {
@@ -27,5 +33,27 @@ int main()
 	}
 	printf("i: %d\n", i);
 	
+	int c = 2;
+
+	if (c == 1 && is_true() == true)
+	{
+		printf("Dans le if.\n");
+	}
+	else
+	{
+		printf("Dans le else.\n");
+	}
+
+	int d = 1;
+
+	if (d == 1 || is_true() == true)
+	{
+		printf("dans le if du OU\n");
+	}
+	else
+	{
+		printf("dans le else du OU\n");
+	}
+
 	return 1;
 }
