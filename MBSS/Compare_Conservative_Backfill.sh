@@ -37,7 +37,7 @@ do
 	elif [ $((i)) == 2 ]; then SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=0
 	elif [ $((i)) == 3 ]; then SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=1
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=2
-	if [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x1_x0_x0_x0"; BACKFILL_MODE=0
+	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x1_x0_x0_x0"; BACKFILL_MODE=0
 	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x1_x0_x0_x0"; BACKFILL_MODE=0
 	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x1_x0_x0_x0"; BACKFILL_MODE=1
 	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x1_x0_x0_x0"; BACKFILL_MODE=2

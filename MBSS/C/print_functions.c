@@ -388,15 +388,15 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		if (backfill_mode == 0)
 		{
-			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF 0";
+			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF MODE 0";
 		}
 		else if (backfill_mode == 1)
 		{
-			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF 1";
+			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF MODE 1";
 		}
 		else  if (backfill_mode == 2)
 		{
-			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF 2";
+			scheduler = "OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF MODE 2";
 		}
 		else
 		{
@@ -416,15 +416,15 @@ void print_csv(struct To_Print* head_to_print)
 	{
 		if (backfill_mode == 0)
 		{
-			scheduler = "EFT-SCORE MIX CONSERVATIVE BF 0";
+			scheduler = "EFT-SCORE MIX CONSERVATIVE BF MODE 0";
 		}
 		else if (backfill_mode == 1)
 		{
-			scheduler = "EFT-SCORE MIX CONSERVATIVE BF 1";
+			scheduler = "EFT-SCORE MIX CONSERVATIVE BF MODE 1";
 		}
 		else  if (backfill_mode == 2)
 		{
-			scheduler = "EFT-SCORE MIX CONSERVATIVE BF 2";
+			scheduler = "EFT-SCORE MIX CONSERVATIVE BF MODE 2";
 		}
 		else
 		{
