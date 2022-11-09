@@ -150,8 +150,9 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 {
 	//~ int nb_cores_rescheduled = 0; /* 486*20 = 9720 */
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
-	int nb_non_available_cores_at_time_t = nb_non_available_cores;
-	biggest_hole = 0;
+	int nb_non_available_cores_at_time_t = global_nb_non_available_cores_at_time_t;
+	//~ printf("biggest hole is %d.\n", biggest_hole);
+	//~ biggest_hole = 0;
 	
 	#ifdef PRINT
 	printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
@@ -193,7 +194,7 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 			printf("Biggest hole is %d on node %d.\n", biggest_hole, biggest_hole_unique_id);
 			#endif
 						
-			if (j->cores <= biggest_hole && only_check_conservative_backfill(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, false) == true)
+			if (j->cores <= biggest_hole && only_check_conservative_backfill(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t) == true)
 			{
 				if (j->start_time < t)
 				{
@@ -227,14 +228,16 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 			break;
 		}
 	}
+	
+	global_nb_non_available_cores_at_time_t = nb_non_available_cores_at_time_t;
 }
 
 void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode)
 {
 	//~ int nb_cores_rescheduled = 0; /* 486*20 = 9720 */
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
-	int nb_non_available_cores_at_time_t = nb_non_available_cores;
-	biggest_hole = 0;
+	int nb_non_available_cores_at_time_t = global_nb_non_available_cores_at_time_t;
+	//~ biggest_hole = 0;
 	
 	#ifdef PRINT
 	printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
@@ -274,11 +277,12 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
 			printf("There are %d/%d available cores at time t.\n", nb_cores - nb_non_available_cores_at_time_t, nb_cores);
-			printf("Only check backfill.\n");
+			printf("Only check backfill for job %d.\n", j->unique_id);
 			printf("Biggest hole is %d on node %d.\n", biggest_hole, biggest_hole_unique_id);
 			#endif
 						
-			if (j->cores <= biggest_hole && only_check_conservative_backfill(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, true) == true)
+			if (j->cores <= biggest_hole && only_check_conservative_backfill_with_a_score(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, multiplier_file_to_load, multiplier_file_evicted, start_immediately_if_EAT_is_t) == true)
+			//~ if (j->cores <= biggest_hole && only_check_conservative_backfill(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t) == true)
 			{
 				if (j->start_time < t)
 				{
@@ -292,7 +296,7 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			{
 				j->start_time = -1;
 			}
-			
+						
 			j = j->next;
 		}
 		else
@@ -312,6 +316,8 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			break;
 		}
 	}
+	
+	global_nb_non_available_cores_at_time_t = nb_non_available_cores_at_time_t;
 }
 
 void fcfs_easybf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)

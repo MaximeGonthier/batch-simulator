@@ -261,7 +261,7 @@ void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int back
  * There is an option for a locality backfil that only backfill if no data is evicted.
  * I don't need to check cores from outside car dans ce cas tout est recouvert déjà.
  */
-bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores_at_time_t, bool locality_backfill)
+bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores_at_time_t)
 {
 	/* NEW core selection conservative bf only */
 	int nb_cores_from_hole = 0;
@@ -277,7 +277,7 @@ bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_nod
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
 	bool backfilled_job = false;
-	bool is_being_loaded = false;
+	//~ bool is_being_loaded = false;
 	
 	/* In which node size I can pick. */
 	if (j->index_node_list == 0)
@@ -315,8 +315,8 @@ bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_nod
 			if (n->number_cores_in_a_hole > 0 && j->cores <= n->number_cores_in_a_hole)
 			{
 				/* Dans le cas localité utilisé par fcfs with a score je veux backfill que si j'évince pas une donnée; Pas utilisé dans le cas fcfs ou eft. */
-				if (locality_backfill == false || is_my_file_on_node_at_certain_time_and_transfer_time(t, n, t, j->data, j->data_size, &is_being_loaded) == 0 || is_being_loaded == true || time_to_reload_percentage_of_files_ended_at_certain_time(t, n, j->data, (float) j->cores/20) == 0)
-				{
+				//~ if (locality_backfill == false || is_my_file_on_node_at_certain_time_and_transfer_time(t, n, t, j->data, j->data_size, &is_being_loaded) == 0 || is_being_loaded == true || time_to_reload_percentage_of_files_ended_at_certain_time(t, n, j->data, (float) j->cores/20) == 0)
+				//~ {
 					nb_cores_from_hole = 0;
 					struct Core_in_a_hole* c = n->cores_in_a_hole->head;
 					for (int k = 0; k < n->number_cores_in_a_hole; k++)
@@ -333,7 +333,7 @@ bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_nod
 						}
 						c = c->next;
 					}
-				}
+				//~ }
 			}
 					
 			if (backfilled_job == true)
@@ -368,6 +368,174 @@ bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_nod
 			n = n->next;
 		}
 	}
+	return false;
+}
+
+bool only_check_conservative_backfill_with_a_score(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores_at_time_t, int multiplier_file_to_load, int multiplier_file_evicted, int start_immediately_if_EAT_is_t)
+{
+	/* NEW core selection conservative bf only */
+	int nb_cores_from_hole = 0;
+	int nb_cores_from_outside = 0;
+	/* End of NEW core selection conservative bf only */
+		
+	#ifdef PRINT
+	printf("\nScheduling job %d at time %d. Backfill mode is %d.\n", j->unique_id, t, backfill_mode);
+	#endif
+
+	int i = 0;
+	//~ int min_time = -1;
+	int first_node_size_to_choose_from = 0;
+	int last_node_size_to_choose_from = 0;
+	bool backfilled_job = false;
+	bool can_backfill_on_this_node = false;
+	
+	int min_score = -1;
+	float time_to_load_file = 0;
+	bool is_being_loaded = false;
+	float time_to_reload_evicted_files = 0;
+	int score = 0;
+	int choosen_time_to_load_file = 0;
+	
+	/* In which node size I can pick. */
+	if (j->index_node_list == 0)
+	{
+		first_node_size_to_choose_from = 0;
+		last_node_size_to_choose_from = 2;
+	}
+	else if (j->index_node_list == 1)
+	{
+		first_node_size_to_choose_from = 1;
+		last_node_size_to_choose_from = 2;
+	}
+	else if (j->index_node_list == 2)
+	{
+		first_node_size_to_choose_from = 2;
+		last_node_size_to_choose_from = 2;
+	}
+	else
+	{
+		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+		exit(EXIT_FAILURE);
+	}
+	
+	if (start_immediately_if_EAT_is_t == 1)
+	{
+		multiplier_file_to_load = 1;
+		multiplier_file_evicted = 0;
+	}
+
+	for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		while (n != NULL)
+		{
+			can_backfill_on_this_node = false;
+			
+			#ifdef PRINT
+			printf("Checking node %d.\n", n->unique_id);
+			#endif
+			
+			if (n->number_cores_in_a_hole > 0 && j->cores <= n->number_cores_in_a_hole)
+			{
+				nb_cores_from_hole = 0;
+				struct Core_in_a_hole* c = n->cores_in_a_hole->head;
+				for (int k = 0; k < n->number_cores_in_a_hole; k++)
+				{
+					if (t + j->walltime <= c->start_time_of_the_hole)
+					{
+						nb_cores_from_hole += 1;
+					}
+						
+					if (j->cores == nb_cores_from_hole)
+					{
+						can_backfill_on_this_node = true;
+						break;
+					}
+					c = c->next;
+				}
+			}
+					
+			if (can_backfill_on_this_node == true)
+			{
+				backfilled_job = true;
+				//~ if (min_score == -1 || earliest_available_time < min_score)
+				//~ {
+					if (j->data == 0)
+					{
+						time_to_load_file = 0;
+					}
+					else
+					{
+						time_to_load_file = is_my_file_on_node_at_certain_time_and_transfer_time(t, n, t, j->data, j->data_size, &is_being_loaded);
+					}
+																	
+					if (min_score == -1 || multiplier_file_to_load*time_to_load_file < min_score)
+					{
+						if (multiplier_file_evicted == 0)
+						{
+							time_to_reload_evicted_files = 0;
+						}
+						else
+						{
+							time_to_reload_evicted_files = time_to_reload_percentage_of_files_ended_at_certain_time(t, n, j->data, (float) j->cores/20);
+						}
+																
+						score = multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
+																													
+						if (min_score == -1 || min_score > score)
+						{
+							min_score = score;
+							j->node_used = n;
+							choosen_time_to_load_file = time_to_load_file;
+										
+							/* maj choosen numbers is important for fcs score. */
+							//~ choosen_nb_cores_from_hole = nb_cores_from_hole;
+							//~ choosen_nb_cores_from_outside = nb_cores_from_outside;
+										
+							if (min_score == 0) /* Temps de début est t et pas de temps de chargements du tout */
+							{			
+								//~ printf("break.\n");
+								i = last_node_size_to_choose_from + 1;
+								break;
+							}
+						}
+					}
+				//~ }
+			}
+			n = n->next;
+		}
+	}
+	
+	if(backfilled_job == true)
+	{
+		//~ j->node_used = n;
+		j->start_time = t;
+		j->end_time = t + j->walltime;
+		j->transfer_time = choosen_time_to_load_file;
+		//~ update_cores_for_backfilled_job(j, t, nb_cores_from_hole, nb_cores_from_outside);
+		update_cores_for_backfilled_job(j, t, j->cores, 0);
+		*nb_non_available_cores_at_time_t += j->cores;
+					
+		/* NEW core selection */
+		if (nb_cores_from_outside > 0)
+		{
+			sort_cores_by_available_time_in_specific_node(j->node_used);
+		}
+		/* End of NEW core selection */
+			
+		if (j->node_used->unique_id == biggest_hole_unique_id)
+		{
+			get_new_biggest_hole(head_node);
+		}
+			
+		#ifdef PRINT
+		print_decision_in_scheduler(j);
+		print_cores_in_specific_node(j->node_used);
+		#endif
+		
+		return true;
+	}
+
 	return false;
 }
 

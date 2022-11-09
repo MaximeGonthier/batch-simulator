@@ -223,6 +223,7 @@ void to_print_job_csv(struct Job* job, int time)
 	/* Print transfer time if any */
 	if (job->transfer_time > 0)
 	{
+		if (job->transfer_time > job->walltime) { job->transfer_time = job->walltime; }
 		fprintf(f, "I/O-%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->data, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, job->transfer_time, job->start_time - first_subtime_day_0 + job->transfer_time, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
 		/* Printing the cores used. */
 		if (job->cores > 1)
@@ -339,7 +340,7 @@ void print_csv(struct To_Print* head_to_print)
 		}
 		else
 		{
-			printf("Error mauvais backfill mode dnas print.\n");
+			printf("Error mauvais backfill mode dans print.\n");
 			exit(1);
 		}
 	}

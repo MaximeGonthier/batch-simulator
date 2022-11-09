@@ -66,6 +66,7 @@ int data_persistence_exploited;
 #endif
 int biggest_hole;
 int biggest_hole_unique_id;
+int global_nb_non_available_cores_at_time_t;
 
 int main(int argc, char *argv[])
 {
