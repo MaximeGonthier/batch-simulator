@@ -744,16 +744,22 @@ void copy_delete_insert_job_list_sorted_by_file_size(struct Job_List* to_delete_
 	insert_job_sorted_by_decreasing_file_size(&to_append_to->head, new);
 }
 
-int get_length_job_list(struct Job* head)
+void get_length_job_list(struct Job* head, int* nb_jobs_in_queue, int* nb_cores_in_queue, int* nb_cores_from_workload_1_in_queue)
 {
-	int length = 0;
+	*nb_jobs_in_queue = 0;
+	*nb_cores_in_queue = 0;
+	*nb_cores_from_workload_1_in_queue = 0;
 	struct Job* j = head;
 	while (j != NULL)
 	{
-		length += 1;
+		*nb_jobs_in_queue += 1;
+		*nb_cores_in_queue += j->cores;
+		if (j->workload == 1)
+		{
+			*nb_cores_from_workload_1_in_queue += j->cores;
+		}
 		j = j->next;
 	}
-	return length;
 }
 
 void free_next_time_linked_list(struct Next_Time** head_ref)

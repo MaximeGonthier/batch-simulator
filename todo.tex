@@ -161,7 +161,7 @@
 		
 		% Depuis la reu de mardi 8/11
 		\item Code: coder fcfs score conservative backfill qui ne backfill pas du tout si le job ne peux pas reutiliser une donnée. J'ai pu tester en entier pour que ce soit réaliste
-		\item conservative locality pour les algos score j'ai ajouté comme codition sur le backfill: if(time_to_load_file == 0 || time_to_reload_evicted_files == 0 || is_being_loaded == true): ne sert pas en réalité car la donnée sera évincé de toute facon si il y a un trou. Du coup ce que je fais c'est que je cherche juste si un trou me permet de reutiliser la donné. si oui je vais dessus sinon je me backfill sur le premier toru qui viens.
+		\item conservative locality pour les algos score j'ai ajouté comme codition sur le backfill: if(time_to_load_file == 0 || time_to_reload_evicted_files == 0 || is_being_loaded == true): ne sert pas en réalité car la donnée sera évincé de toute facon si il y a un trou. Du coup ce que je fais c'est que je cherche juste si un trou me permet de reutiliser la donné. si oui je vais dessus sinon je me backfill sur le premier trou qui viens.
 		\item Code: reduire complexité fcfs score conservatif, si j'ai tout recouvert, je scheule pas mais je regarde juste si il rentre dans le trou ou pas.
 	\end{enumerate}
 	
@@ -184,6 +184,13 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+%~ 1403405                   mgonthier      2022-11-09 19:22:43 R default   
+%~ 1403406                   mgonthier      2022-11-09 19:25:58 R default   
+%~ 1403407                   mgonthier      2022-11-09 19:26:25 R default   
+%~ 1403408                   mgonthier      2022-11-09 19:26:53 R default   
+%~ 1403409                   mgonthier      2022-11-09 19:27:17 R default   
+%~ 1403410                   mgonthier      2022-11-09 19:27:53 R default   
+
 		\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé, mail à Loris
 		\item retester conservative bf pour nos algos et fcfs sans cette contrainte de tour de boucles et avec note condition sur le backfill que si ré utilisations
 		\item plotter le nb de cores demandé en attente a la place de nb de jobs en attente

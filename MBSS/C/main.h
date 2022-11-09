@@ -291,7 +291,7 @@ void insert_tail_data_list(struct Data_List* liste, struct Data* d);
 void delete_job_linked_list(struct Job_List* liste, int unique_id_to_delete);
 void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j);
 void copy_delete_insert_job_list_sorted_by_file_size(struct Job_List* to_delete_from, struct Job_List* to_append_to, struct Job* j);
-int get_length_job_list(struct Job* head);
+void get_length_job_list(struct Job* head, int* nb_jobs_in_queue, int* nb_cores_in_queue, int* nb_cores_from_workload_1_in_queue);
 void insert_next_time_in_sorted_list(struct Next_Time_List* liste, int time_to_insert);
 void delete_next_time_linked_list(struct Next_Time_List* liste, int time_to_delete);
 void free_next_time_linked_list(struct Next_Time** head_ref);

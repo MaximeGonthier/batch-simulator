@@ -80,19 +80,23 @@ if (comparaison != "Used_nodes"):
 	plt.ylabel(Y_label)
 	plt.plot(Y)
 else:
+	# L'écriture se fais ainsi:	fprintf(f_stats, "%d,%d,%d,%d,%d,%d\n", running_cores, running_nodes, nb_jobs_in_queue, running_nodes_workload_minus_2, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
 	Y1 = list(df.iloc[:, Y_index])
-	Y2 = list(df.iloc[:, Y_index + 1])
+	Y2 = list(df.iloc[:, Y_index + 3])
+	Y3 = list(df.iloc[:, Y_index + 4])
 	fig, ax1 = plt.subplots()
 	ax2 = ax1.twinx()
+	ax3 = ax1.twinx()
 	ax1.plot(Y1, 'b-')
 	ax2.plot(Y2, 'g-')
+	ax3.plot(Y3, 'r-')
 	ax1.set_ylim([0, 500])
 	# ~ ax2.set_ylim([0, NULL])
 	plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-', label = "Submission time first job day 1")
-	plt.axvline(x = first_job_day_2, color = 'red', linestyle = '-', label = "Submission time first job day 2 and beyond")
+	plt.axvline(x = first_job_day_2, color = 'orange', linestyle = '-', label = "Submission time first job day 2 and beyond")
 	ax1.set_xlabel('Time in seconds')
 	ax1.set_ylabel(Y_label, color='b')
-	ax2.set_ylabel('Nb of jobs in the queue', color='g')
+	ax2.set_ylabel('Nb of required cores in the queue', color='g')
 
 filename = "plot/" + title + ".pdf"
 

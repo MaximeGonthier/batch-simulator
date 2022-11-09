@@ -1612,3 +1612,31 @@ have difficulty backfilling (e.g wide jobs) get a reservation
 only when they manage to get to the head of the queue,
 thus resulting in significant worsening in the worst-case
 turnaround time."
+
+\section{What can we show in an article ?}
+
+\subsection{State of the art}
+
+By default, SLURM, used in many HPC clusters uses FCFS coupled with 
+a backfiling strategy. Conservative allow for a fair treatmant and 
+gives an expected start time of a job that is guaranteed.
+EASY is better to avoid starvation but does not guarentee a start time.
+Conservative is preferred among most of the HPC clusters.
+Conservative is classicaly implemented as follow:
+\includegraphics[scale = 0.3]{Images/conservative_backfill.png}
+(There are 2 ways to implement the way you choose a hole (you can have
+holes with 2 different starting time on a single node), 1 is to try and fill the smallest
+holes first, the other one the biggest one. I suppose the first one is commonly used).
+
+\subsection{Our problem}
+
+When using a HPC cluster, users may submits tens to hundreds jobs using the same multi-GB input file.
+Users tend to submit each such run as a separate batch job.
+The job will read inputs directly from a shared file system, which can be disastrous if the number of I/O are important.
+We can thus ask ourselves, \textbf{how can we minimize the amount of transfers between the shared file system and the nodes ?}
+
+\subsection{Our algorithms}
+
+
+
+\subsection{Experimental Evaluations}
