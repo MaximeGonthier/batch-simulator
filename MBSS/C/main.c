@@ -65,6 +65,7 @@ int total_number_of_scores_computed;
 int data_persistence_exploited;
 #endif
 int biggest_hole;
+int biggest_hole_unique_id;
 
 int main(int argc, char *argv[])
 {

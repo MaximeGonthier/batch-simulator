@@ -53,6 +53,7 @@ extern int total_number_of_scores_computed;
 extern int data_persistence_exploited;
 #endif
 extern int biggest_hole;
+extern int biggest_hole_unique_id;
 
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
  * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of
@@ -347,7 +348,8 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_from_hole, int* nb_cores_from_outside);
 void update_cores_for_backfilled_job(struct Job* j, int t, int nb_cores_from_hole, int nb_cores_from_outside);
 void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int backfill_mode, int t, int* nb_non_available_cores);
-bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores_at_time_t);
+bool only_check_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores_at_time_t, bool locality_backfill);
+void get_new_biggest_hole(struct Node_List** head_node);
 
 /* from scheduler_calling.c */
 void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode);

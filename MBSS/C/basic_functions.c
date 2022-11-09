@@ -453,7 +453,12 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 			printf("fill_cores_minimize_holes\n");
 			#endif
 			
-			fill_cores_minimize_holes (j, true, backfill_mode, t, nb_non_available_cores);
+			fill_cores_minimize_holes(j, true, backfill_mode, t, nb_non_available_cores);
+			
+			if (j->node_used->unique_id == biggest_hole_unique_id)
+			{
+				get_new_biggest_hole(head_node);
+			}
 		}
 		else
 		{
@@ -483,31 +488,20 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 							#endif
 							
 							j->node_used->number_cores_in_a_hole += 1;
-							
-							if (j->node_used->number_cores_in_a_hole > biggest_hole)
-							{
-								biggest_hole = j->node_used->number_cores_in_a_hole;
-							}
-							
+														
 							struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 							//~ new->unique_id = j->node_used->cores[k]->unique_id;
 							new->unique_id = j->node_used->cores[i]->unique_id;
 							new->start_time_of_the_hole = min_time;
 							new->next = NULL;
+							
 							if (j->node_used->cores_in_a_hole == NULL)
 							{
 								initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
 							}
 							else
 							{
-								//~ if (backfill_mode == 3) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
-								//~ {
-									//~ insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
-								//~ }
-								//~ else
-								//~ {
-									insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
-								//~ }
+								insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
 							}
 						}
 						/* Fin de spécifique au cas avec backfilling */
@@ -519,6 +513,12 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 					//~ }
 					//~ k++;
 				//~ }
+			}
+			
+			if (j->node_used->number_cores_in_a_hole > biggest_hole)
+			{
+				biggest_hole = j->node_used->number_cores_in_a_hole;
+				biggest_hole_unique_id = j->node_used->unique_id;
 			}
 		}
 	}
@@ -602,7 +602,6 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 	
 	//~ struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 	//~ int parcours_des_nodes = 0;
-	
 	
 	/* In which node size I can pick. */
 	if (j->index_node_list == 0)
@@ -814,7 +813,7 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 							#endif
 								
 							/* Je ne veux backfill que si je n'évince pas de fichiers */
-							if (time_to_load_file == 0 || time_to_reload_evicted_files == 0)
+							if (time_to_load_file == 0 || time_to_reload_evicted_files == 0 || is_being_loaded == true)
 							{
 								score = earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files;
 									
@@ -1027,6 +1026,11 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 		update_cores_for_backfilled_job(j, t, choosen_nb_cores_from_hole, choosen_nb_cores_from_outside);
 		*nb_non_available_cores_at_time_t += j->cores;
 		*nb_non_available_cores += choosen_nb_cores_from_outside;
+				
+		if (j->node_used->unique_id == biggest_hole_unique_id)
+		{
+			get_new_biggest_hole(head_node);
+		}
 	}
 	else /* backfilled_job == false */
 	{
@@ -1034,10 +1038,16 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 		{
 			*nb_non_available_cores_at_time_t += j->cores;
 		}
+		
 				
 		if (backfill_mode == 1 || backfill_mode == 2)
 		{
 			fill_cores_minimize_holes(j, true, backfill_mode, t, nb_non_available_cores);
+			
+			if (j->node_used->unique_id == biggest_hole_unique_id)
+			{
+				get_new_biggest_hole(head_node);
+			}
 		}
 		else
 		{
@@ -1076,6 +1086,13 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 				j->node_used->cores[i]->available_time = min_time + j->walltime;
 				/* End of NEW core selection */
 			}
+			
+			if (j->node_used->number_cores_in_a_hole > biggest_hole)
+			{
+				biggest_hole = j->node_used->number_cores_in_a_hole;
+				biggest_hole_unique_id = j->node_used->unique_id;
+			}
+			
 		}
 	}
 	#ifdef PRINT
