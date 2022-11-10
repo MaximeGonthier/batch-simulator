@@ -161,13 +161,15 @@
 		
 		% Depuis la reu de mardi 8/11
 		\item Code: coder fcfs score conservative backfill qui ne backfill pas du tout si le job ne peux pas reutiliser une donnée. J'ai pu tester en entier pour que ce soit réaliste
-		\item conservative locality pour les algos score j'ai ajouté comme codition sur le backfill: if(time_to_load_file == 0 || time_to_reload_evicted_files == 0 || is_being_loaded == true): ne sert pas en réalité car la donnée sera évincé de toute facon si il y a un trou. Du coup ce que je fais c'est que je cherche juste si un trou me permet de reutiliser la donné. si oui je vais dessus sinon je me backfill sur le premier trou qui viens.
+		\item conservative locality pour les algos score j'ai ajouté comme condition sur le backfill: if(time\_to\_load\_file == 0 || time\_to\_reload\_evicted\_files == 0 || is\_being\_loaded == true): ne sert pas en réalité car la donnée sera évincé de toute facon si il y a un trou. Du coup ce que je fais c'est que je cherche juste si un trou me permet de reutiliser la donné. si oui je vais dessus sinon je me backfill sur le premier trou qui viens.
 		\item Code: reduire complexité fcfs score conservatif, si j'ai tout recouvert, je scheule pas mais je regarde juste si il rentre dans le trou ou pas.
+		\item regarder pic job queu mars 15 16 workload: plein de jobs de taille 4 - 20 mais bcp similaires c'est ca le truc
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ?
+		\item demander pour les petits jobs le temps de chargement fes fichiers cohérent ? 6.4 pour 125 de delai ca ne l'est pas.
 	\end{enumerate}
 	
 \section{Todo}
@@ -184,21 +186,10 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-%~ 1403405                   mgonthier      2022-11-09 19:22:43 R default   
-%~ 1403406                   mgonthier      2022-11-09 19:25:58 R default   
-%~ 1403407                   mgonthier      2022-11-09 19:26:25 R default   
-%~ 1403408                   mgonthier      2022-11-09 19:26:53 R default   
-%~ 1403409                   mgonthier      2022-11-09 19:27:17 R default   
-%~ 1403410                   mgonthier      2022-11-09 19:27:53 R default   
-
+		\item test may 21 consevative bf pour nos algos
 		\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé, mail à Loris
-		\item retester conservative bf pour nos algos et fcfs sans cette contrainte de tour de boucles et avec note condition sur le backfill que si ré utilisations
-		\item plotter le nb de cores demandé en attente a la place de nb de jobs en attente
 		\item sur cluster usage plot nb jobs evalué au temps t soumis avec une autre courbe
-		\item demander pour les petits jobs le temps de chargement fes fichiers cohérent ? 6.4 pour 125 de delai ca ne l'est pas.
 		\item compter le nb de reutilisation des données (hors persistence)
-		\item regarder pic job queu mars 15 16 workload
-		\item faire petit résumé pour jeudi soir	
 		
 		
 		

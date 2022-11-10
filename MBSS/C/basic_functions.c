@@ -2047,6 +2047,12 @@ void start_jobs(int t, struct Job* head)
 				j->waiting_for_a_load_time = waiting_for_a_load_time;
 			//~ }
 			
+			/* Pour compter le nombre de fois qu'on reutilise des données (ou du moins que 2 jobs utilisant le même fichier ont été schedule en même temps sur la même node. Que pour les jobs du workload évalué. */
+			if (j->workload == 1 && (j->transfer_time == 0 || j->waiting_for_a_load_time != 0))
+			{
+				nb_data_reuse += 1;
+			}
+			
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
 			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list)
 			{

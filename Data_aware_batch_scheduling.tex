@@ -1205,7 +1205,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{algorithm}[htbp]
 \caption{EFT-SCORE MIX}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
+\begin{algorithmic}[1]
 \State $occupation\_threshold \gets 100$ 
 \State $occupation \gets$ the percentage of nodes running at least one job
 %~ \ForEach {$J_i \in \jobset$}
@@ -1221,7 +1221,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{algorithm}[htbp]
 \caption{EFT}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
+\begin{algorithmic}[1]
 \ForEach {$J_i \in \jobset$}
 	\State Schedule $J_i$ on the node with the earliest completion time. \Comment{Thus taking into consideration the transfer time.}
 	%~ \State Remove $J_i$ from $\jobset$
@@ -1232,7 +1232,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{algorithm}[htbp]
 \caption{SCORE}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
+\begin{algorithmic}[1]
 \State $B\_multiplier \gets 500$
 \State $C\_multiplier \gets 1$
 \ForEach {$J_i \in \jobset$}
@@ -1253,7 +1253,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{algorithm}[htbp]
 \caption{OPPORTUNISTIC-SCORE MIX}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
+\begin{algorithmic}[1]
 \ForEach {$J_i \in \jobset$}
 	\State $B\_multiplier \gets 500$
 	\State $C\_multiplier \gets 1$
@@ -1278,7 +1278,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{algorithm}[htbp]
 \caption{SCORE CONSERVATIVE BF}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-\begin{algorithmic}[0]
+\begin{algorithmic}[1]
 \State $B\_multiplier \gets 500$
 \State $C\_multiplier \gets 1$
 \ForEach {$J_i \in \jobset$}
@@ -1307,7 +1307,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 %~ \begin{algorithm}[htbp]
 %~ \caption{SCORE LOCALITY-CONSERVATIVE BF}
 %~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-%~ \begin{algorithmic}[0]
+%~ \begin{algorithmic}[1]
 %~ \State $B\_multiplier \gets 500$
 %~ \State $C\_multiplier \gets 1$
 %~ \ForEach {$J_i \in \jobset$}
@@ -1399,7 +1399,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 %~ \begin{algorithm}[htbp]
 %~ \caption{FLOW ADAPTATION}
 %~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-%~ \begin{algorithmic}[0]
+%~ \begin{algorithmic}[1]
 	%~ \State $Flow\_EFT \gets$ EFT($\jobset$, $\nodeset$) 
 	%~ \State $Flow\_locality \gets$ LOCALITY($\jobset$, $\nodeset$)
 	%~ \If{$Flow\_EFT < Flow\_locality$}
@@ -1414,7 +1414,7 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 %~ \begin{algorithm}[htbp]
 %~ \caption{LOCALITY}
 %~ \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.} \\
-%~ \begin{algorithmic}[0]
+%~ \begin{algorithmic}[1]
 	%~ \ForEach{$J_i \in \jobset$}
 		%~ \ForEach {$\Node{k} \in \nodeset$}
 			%~ \State $EAT_{\Node{k}} \gets$ earliest available time to have $\core(J_i)$ available cores.
@@ -1491,25 +1491,22 @@ I suffer on underused parts of the workloads. Idea: mixed strategy for FCFS with
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-15->2022-03-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-03-15->2022-03-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\caption{Conservative backfill - Locality constraint only - Workload of March 15-16 (31000/75000 jobs) - November 2 mean stretch are: {5.695045, 1.567447, 7527.519043, 11.773719, 6.308573. FCFS SCORE a moins de loop la}
-}\end{figure}
-
-\begin{figure}[H]\centering
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-15->2022-03-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
-\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_no_score_conservativebf_2022-03-15->2022-03-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\caption{Conservative backfill - Locality constraint only - Workload of March 15-16 (31000/75000 jobs) - November 2 mean stretch are: {5.695045, 1.567447, 7527.519043, 11.773719, 6.308573.}
-}\end{figure}
+\caption{Conservative backfill - Locality constraint only - Workload of March 15-16 (31000/75000 jobs) - November 10}\end{figure}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-04-07->2022-04-09_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-04-07->2022-04-09_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\caption{Conservative backfill - Locality constraint only - Workload of April 7-9 - November 2}\end{figure}
+\caption{Conservative backfill - Locality constraint only - Workload of April 7-9 - November 10}\end{figure}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-05-21->2022-05-22_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-05-21->2022-05-22_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\caption{Conservative backfill - Locality constraint only - Workload of May 21-22 - November 2}\end{figure}
+\caption{Conservative backfill - Locality constraint only - Workload of May 21-22 - November 10}\end{figure}
 
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-08-16->2022-08-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Locality constraint only - Workload of August 16 (41000/110000 jobs) - November 10}\end{figure}
 
 \subsection{EASY Backfill}
 
@@ -1585,7 +1582,6 @@ Aussi les petits jobs sont ecrasé par leurs strecth car le temps de chargement 
 \caption{Statistics on a workload of 5 days with the NEW (see Figure~\ref{44}) workload generation - normal cluster - August 24}\label{43}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{Images/Workload_generation.png}\caption{Visualization of the workload creation - August 24}\label{44}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{MBSS/plot/Gantt_charts/Fcfs_with_transfer_time.png}\caption{Gantt chart with transfer times}\label{31}\end{figure}
-\end{document}
 
 \subsection{State of the art backfilling strategies}
 
@@ -1603,7 +1599,7 @@ Usage rate sur \url{https://intranet.grid5000.fr/stats/usage_rate.html#top}
 
 \subsubsection{Autres}
 
-Characterization_of_backfilling_strategies_for_parallel_job_scheduling.pdf compare EASY et conservative:
+Characterization\_of\_backfilling\_strategies\_for\_parallel\_job\_scheduling.pdf compare EASY et conservative:
 "We observed that conserva-
 tive backfilling, by providing reservations to all jobs, limits
 backfilling opportunities. EASY backfilling on the other
@@ -1613,30 +1609,192 @@ only when they manage to get to the head of the queue,
 thus resulting in significant worsening in the worst-case
 turnaround time."
 
+
 \section{What can we show in an article ?}
 
 \subsection{State of the art}
 
 By default, SLURM, used in many HPC clusters uses FCFS coupled with 
-a backfiling strategy. Conservative allow for a fair treatmant and 
-gives an expected start time of a job that is guaranteed.
-EASY is better to avoid starvation but does not guarentee a start time.
+a backfilling strategy. Conservative allow for a fair treatment and 
+gives an expected start time to each job that is guaranteed.
+EASY is better to avoid starvation but does not guarantee a start time.
 Conservative is preferred among most of the HPC clusters.
-Conservative is classicaly implemented as follow:
-\includegraphics[scale = 0.3]{Images/conservative_backfill.png}
-(There are 2 ways to implement the way you choose a hole (you can have
-holes with 2 different starting time on a single node), 1 is to try and fill the smallest
-holes first, the other one the biggest one. I suppose the first one is commonly used).
+Conservative is classically implemented as follow:\\
+\begin{figure}[H]\centering\includegraphics[scale = 0.5]{Images/conservative_backfill.png}\end{figure}
+
+There are 2 ways to implement the way you choose a hole (you can have
+holes with different starting times on a single node):
+\begin{itemize}
+	\item First fill the holes with the smallest next start time (better for backfilled jobs)
+	\item First fill the holes with the biggest next start time (better for jobs submitted earlier)
+\end{itemize}
 
 \subsection{Our problem}
 
 When using a HPC cluster, users may submits tens to hundreds jobs using the same multi-GB input file.
 Users tend to submit each such run as a separate batch job.
 The job will read inputs directly from a shared file system, which can be disastrous if the number of I/O are important.
-We can thus ask ourselves, \textbf{how can we minimize the amount of transfers between the shared file system and the nodes ?}
+We can thus ask ourselves: \textbf{how can we minimize the amount of transfers between the shared file system and the nodes ?}
 
 \subsection{Our algorithms}
 
+2 baseline schedulers: FCFS and EFT. EFT would be an enhanced version of FCFS that also consider the time for loading a file when choosing a node.
+We can imagine that it would be used by default by clusters if large inputs files are used.
 
+\begin{algorithm}[htbp]
+\caption{EFT}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\ForEach {$J_i \in \jobset$}
+	\State Schedule $J_i$ on the node with the earliest completion time. \Comment{Thus taking into consideration the transfer time.}
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+1 algorithm to focus on data locality.
+
+\begin{algorithm}[htbp]
+\caption{SCORE}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\State $B\_multiplier \gets 500$
+\State $C\_multiplier \gets 1$
+\ForEach {$J_i \in \jobset$}
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$ \Comment{Or time waiting for the file to be loaded by another job.}
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+	\EndFor
+	\State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest index in case of a tie.
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+2 algorithms to mix locality and EFT in order to deal with half used clusters.
+
+\begin{algorithm}[htbp]
+\caption{EFT-SCORE MIX}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\State $occupation\_threshold \gets 100$ 
+\State $occupation \gets$ the percentage of nodes running at least one job
+%~ \ForEach {$J_i \in \jobset$}
+	\If{$occupation < occupation\_threshold$}
+		\State $EFT(\jobset,\nodeset)$
+	\Else
+		\State $SCORE(\jobset,\nodeset)$
+	\EndIf
+%~ \EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{OPPORTUNISTIC-SCORE MIX}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\ForEach {$J_i \in \jobset$}
+	\State $B\_multiplier \gets 500$
+	\State $C\_multiplier \gets 1$
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\If{$A = current~time$}
+			\State $B\_multiplier \gets 1$
+			\State $C\_multiplier \gets 0$
+		\EndIf
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+	\EndFor
+	\State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest index in case of a tie.
+	%~ \State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{SCORE CONSERVATIVE BF}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\State $B\_multiplier \gets 500$
+\State $C\_multiplier \gets 1$
+\ForEach {$J_i \in \jobset$}
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\If {$\Node{k}$ has a hole and $j_i$ can use it}
+			\State $A \gets current~time$
+			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+			\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\EndIf
+	\EndFor
+	\State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
+	\If {$Backfill\_mode = 1$ OR $Backfill\_mode = 2$}
+		\State Minimize hole creation when affecting cores to $j_i$
+		\If {$Backfill\_mode = 1$}
+			\State Schedule $j_i$ on the cores with the biggest next start time
+		\Else
+			\State Schedule $j_i$ on the cores with the smallest next start time
+		\EndIf
+	\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Experimental Evaluations}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-17->2022-01-17_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-17->2022-01-17_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Workload of January 17 (16000/68000 jobs) - November 10: Underused cluster, mixed strategy get performances as good as the baselines.}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Workload of January 21 (14000/45000 jobs) - November 10: Underused cluster and few jobs in the queue when it's full, without backfiling, our 3 heuristics are better than the baselines.With backfilling ,mixed strategy are as good as the baselines.}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-15->2022-03-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-03-15->2022-03-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Workload of March 15-16 (31000/75000 jobs) - November 10: Lot of jobs int the queue at once, score and mixed strategy are beter even without backfilling}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-04-07->2022-04-09_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-04-07->2022-04-09_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Workload of April 7-9 - November 10: Both underused and saturated, mixed strategy with backfill is better.}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-05-21->2022-05-22_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-05-21->2022-05-22_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Workload of May 21-22 - November 10: Score better if no backfill. I have not yet been able to test with backfill. I know that SCORE + EASY BF get the same stretch as EFT + backfill.}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-08-16->2022-08-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Conservative backfill - Workload of August 16 (41000/110000 jobs) - November 10: a lot of jobs using 1 or 2 cores and very short. The stretch is very influenced by the I/O time. With better locality, SCORE greatly reduce the stretch. A snowball effect increases the stretch a lot.}\end{figure}
+
+\begin{figure}[H]\centering
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-17->2022-01-17_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
+\begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_Data_Persistence_2022-01-17->2022-01-17_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
+\caption{Data persistence - Workload of January 17 (16000/68000 jobs) - November 2: data persistence (a file can stay in memory if it's not replaced, the eviction policy used is LRU) does not really improve performance.}\end{figure}
+
+\subsection{Variations for experimental Evaluations}
+
+We can also experiment with:
+\begin{itemize}
+	\item More workloads
+	\item A different proportion of files size used (by default it's 92\% of 6.4GB/core jobs, 7\% of 12.8GB/core jobs, 1\% of 51.2GB/core jobs) ?
+	\item Add jobs with no file ?
+	\item Add file size proportional to the jobs delay ?
+\end{itemize}
+
+\end{document}
