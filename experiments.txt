@@ -1,0 +1,34 @@
+oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+OAR_JOB_ID=1403627
+
+oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-21-\>2022-01-21_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+OAR_JOB_ID=1403620
+
+oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-15-\>2022-03-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+OAR_JOB_ID=1403621
+
+oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-07-\>2022-04-09_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+OAR_JOB_ID=1403622
+
+oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-05-21-\>2022-05-22_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+OAR_JOB_ID=1403625
+
+oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+OAR_JOB_ID=1403626
+
+En cours:
+1403620                   mgonthier      2022-11-10 21:21:53 R default   
+1403621                   mgonthier      2022-11-10 21:22:09 R default   
+1403625                   mgonthier      2022-11-10 21:23:29 R default   
+1403626                   mgonthier      2022-11-10 21:24:14 R default   
+1403627                   mgonthier      2022-11-10 21:24:55 R default   
+1403636                   mgonthier      2022-11-10 23:37:17 R default   
+1403638                   mgonthier      2022-11-10 23:39:43 R default   
+1403639                   mgonthier      2022-11-10 23:40:07 R default   
+1403640                   mgonthier      2022-11-10 23:40:39 R default   
+1403641                   mgonthier      2022-11-10 23:45:12 R default   
+1403642                   mgonthier      2022-11-10 23:45:29 R default   
+1403643                   mgonthier      2022-11-10 23:47:03 W default   
+
+Pour générer un workload:
+

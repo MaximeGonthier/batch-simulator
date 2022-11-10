@@ -94,6 +94,10 @@ void read_cluster(char* input_node_file)
 		new->temp_data->head = NULL;
 		new->temp_data->tail = NULL;
 		#endif
+		
+		#ifdef PRINT_CLUSTER_USAGE
+		new->nb_jobs_workload_1 = 0;
+		#endif
 
 		new->next = NULL;
 		if (new->memory == 128)

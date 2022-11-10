@@ -37,7 +37,9 @@ extern int running_cores;
 extern int running_nodes;
 extern int nb_job_to_schedule; /* Jobs ready but not running */
 extern int nb_cores_to_schedule; /* Cores ready but not running */
-extern int running_nodes_workload_minus_2;
+#ifdef PRINT_CLUSTER_USAGE
+extern int running_nodes_workload_1;
+#endif
 extern int total_queue_time;
 extern int first_subtime_day_0;
 extern char* scheduler;
@@ -157,6 +159,10 @@ struct Node {
     #ifdef DATA_PERSISTENCE
     int data_occupation; /* From 0 to 20 */
     struct Data_List* temp_data; /* To get local temporary intervals not interferring with start_jobs */
+    #endif
+    
+    #ifdef PRINT_CLUSTER_USAGE
+    int nb_jobs_workload_1;
     #endif
 };
 
