@@ -1629,6 +1629,10 @@ holes with different starting times on a single node):
 	\item First fill the holes with the biggest next start time (better for jobs submitted earlier)
 \end{itemize}
 
+\subsection{Model}
+
+Yes you can have small jobs with small delay and large I/O. Not recommanded but can happen.
+
 \subsection{Our problem}
 
 When using a HPC cluster, users may submits tens to hundreds jobs using the same multi-GB input file.
@@ -1794,8 +1798,6 @@ We can also experiment with:
 	\item More workloads
 	\item A different proportion of files size used (by default it's 92\% of 6.4GB/core jobs, 7\% of 12.8GB/core jobs, 1\% of 51.2GB/core jobs) ?
 	\item Add jobs with no file ?
-	\item Try also easy backfilling ? When it's used all algorithms have the same performance expect in the two workloads where score is better.
-	\item Add file size proportional to the jobs delay ?
 \end{itemize}
 
 \end{document}

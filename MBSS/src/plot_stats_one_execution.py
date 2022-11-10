@@ -40,7 +40,7 @@ if (comparaison == "Used_cores"):
 elif (comparaison == "Used_nodes"):
 	Y_index = 1
 	plot_title = "Used nodes" + " " + scheduler
-	Y_label = "Number of nodes used"
+	Y_label = "Number of cores"
 	if (cluster == "41_128_3_256_1_1024"):
 		line = 45
 	elif (cluster == "95_128_4_256_1_1024"):
@@ -85,19 +85,22 @@ else:
 	Y2 = list(df.iloc[:, Y_index + 3])
 	Y3 = list(df.iloc[:, Y_index + 4])
 	fig, ax1 = plt.subplots()
-	ax2 = ax1.twinx()
+	# ~ ax2 = ax1.twinx()
 	# ~ ax3 = ax1.twinx()
 	# ~ ax3 = ax2.twiny()
 	# ~ ax1 = ax2.twinx()
-	ax1.plot(Y1, 'b-', label='Used nodes')
-	ax2.plot(Y2, 'g-', label='All jobs')
-	ax2.plot(Y3, 'r-', label='Evaluated jobs')
-	ax1.set_ylim([0, 500])
-	plt.axvline(x = first_job_day_1, color = 'orange', linestyle = '-')
-	plt.axvline(x = first_job_day_2, color = 'orange', linestyle = '-')
+	ax1.plot(Y1, 'b-', label='Used cores')
+	# ~ ax2.plot(Y2, 'g-', label='All jobs')
+	ax1.plot(Y2, 'g-', label='All jobs')
+	# ~ ax2.plot(Y3, 'r-', label='Evaluated jobs')
+	ax1.plot(Y3, 'r-', label='Evaluated jobs')
+	# ~ ax1.set_ylim([0, 500])
+	plt.axvline(x = first_job_day_1, color = 'orange', linestyle = "dotted")
+	plt.axvline(x = first_job_day_2, color = 'orange', linestyle = "dotted")
+	plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
 	ax1.set_xlabel('Time in seconds')
 	ax1.set_ylabel(Y_label, color='b')
-	ax2.set_ylabel('Nb of required cores in the queue', color='g')
+	# ~ ax2.set_ylabel('Nb of required cores in the queue', color='g')
 	plt.legend()
 	
 filename = "plot/" + title + ".pdf"

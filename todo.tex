@@ -164,19 +164,24 @@
 		\item conservative locality pour les algos score j'ai ajouté comme condition sur le backfill: if(time\_to\_load\_file == 0 || time\_to\_reload\_evicted\_files == 0 || is\_being\_loaded == true): ne sert pas en réalité car la donnée sera évincé de toute facon si il y a un trou. Du coup ce que je fais c'est que je cherche juste si un trou me permet de reutiliser la donné. si oui je vais dessus sinon je me backfill sur le premier trou qui viens.
 		\item Code: reduire complexité fcfs score conservatif, si j'ai tout recouvert, je scheule pas mais je regarde juste si il rentre dans le trou ou pas.
 		\item regarder pic job queu mars 15 16 workload: plein de jobs de taille 4 - 20 mais bcp similaires c'est ca le truc
+		\item score crash avec les longst test masi avant c'était pas le cas: diviser en 2
+		\item verif perf conservative bf avec eft-score mix (anormalement haut): corrigé
+
+		% Pour mercredi
+		\item compter le nb de reutilisation des données (hors persistence)
+		\item Figure cluster usage: nb of nodes * 20 et 1 seul axe y, 
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Faire de multiplier evicted file un tie breaker seulement ? Pareil avec nb of copy en second tiebreaker ? Comme ça on enlève un peu ce côté mélange de scores. On peut meme l'ajouter au locality only comme tie breaker avant le EAT ?
-		\item demander pour les petits jobs le temps de chargement fes fichiers cohérent ? 6.4 pour 125 de delai ca ne l'est pas.
+		\item Quel nom pour les courbes de cluster usage ?
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
 			\item mail joachim correction
-			\item demander paiement cours mars et le voir sur l'ent: voir rh 2ème étage Enseirb nouveau bâtiment + verifier changement heures dossier
+			\item Finir corriger algo
 			\item Répondre a Bora hMETIS
 			\item Imprimer poster demander à Denis
 		\end{enumerate}
@@ -186,20 +191,15 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-		\item test may 21 consevative bf pour nos algos
-		\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé, mail à Loris
-		\item sur cluster usage plot nb jobs evalué au temps t soumis avec une autre courbe
-		\item compter le nb de reutilisation des données (hors persistence)
-		
-		
-		
-			\item score crash avec les longst test masi avant c'était pas le cas
-			\item tester mars 15 16
-			\item commencer à faire un résumé.
-			\item test mai easy bf en cours: n'ont pas pu terminer voir les traces
+			\item test mai 21-22
+			\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé, mail à Loris
+			\item verif perf eft score mix car sur cluster occupé ca devrait être comme score. ptet le cluster est pas 100\% utilisé du coup.
+			\item test cluster usage avec d'autres algo (utile pour ci dessus peut etre ?)
+			\item test + de workload et plot les \% de différences
+			\item tester en changeant \% de fichiers dans le workload
+			\item Abstract le 25 Novembre - Soumission le 2 Décembre
+			\item Fig cluster usage: couper un peu a gauche et prendre un peu a droite pour ne montrer quele milieu dans un cas a part special pour montrer + courbe avec cores used workload 1 seuleemnt qui devrais tomber vers la fin + faire demarrer courbe rouge (cores in queue workload 1) que au debut sdu temps d'evaluation et la couper à la fin quand ca vaut 0 si on plot un peu apres (donc avant quanad c'est 0 pas la plot). Tronquer en bloc de exactement 24h ou 12h ou autre.
 			
-			
-			\item verif perf conservative bf avec eft-score mix (anormalement haut)
 			
 			\item test mai avec conservative bf et comparer avec résultats de easy bf sur la même période
 			\item voir ce qui est utilisé sur slurm et oar dans des articles et en demandant directement sur mattermost
