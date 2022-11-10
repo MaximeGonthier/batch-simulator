@@ -1760,7 +1760,7 @@ We can imagine that it would be used by default by clusters if large inputs file
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-01-21->2022-01-21_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=0.9\linewidth]{MBSS/plot/Results_FCFS_Score_Backfill_2022-01-21->2022-01-21_V9271_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs}\end{subfigure}
-\caption{Conservative backfill - Workload of January 21 (14000/45000 jobs) - November 10: Underused cluster and few jobs in the queue when it's full, without backfiling, our 3 heuristics are better than the baselines.With backfilling ,mixed strategy are as good as the baselines.}\end{figure}
+\caption{Conservative backfill - Workload of January 21 (14000/45000 jobs) - November 10: Underused cluster and few jobs in the queue when it's full, without backfiling, our 3 heuristics are better than the baselines. With backfilling, mixed strategy is a little better than the baselines (Stretch of 1.13 vs 1.11) with slightly lower file transfers..}\end{figure}
 
 \begin{figure}[H]\centering
 \begin{subfigure}[b]{0.4\linewidth}\centering\includegraphics[width=1\linewidth]{MBSS/plot/2022-03-15->2022-03-16_V9271_Fcfs_Used_nodes_450_128_32_256_4_1024.pdf}\caption{Cluster's usage}\end{subfigure}
@@ -1794,6 +1794,7 @@ We can also experiment with:
 	\item More workloads
 	\item A different proportion of files size used (by default it's 92\% of 6.4GB/core jobs, 7\% of 12.8GB/core jobs, 1\% of 51.2GB/core jobs) ?
 	\item Add jobs with no file ?
+	\item Try also easy backfilling ? When it's used all algorithms have the same performance expect in the two workloads where score is better.
 	\item Add file size proportional to the jobs delay ?
 \end{itemize}
 
