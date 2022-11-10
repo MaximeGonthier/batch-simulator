@@ -529,7 +529,7 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 	//~ {
 		
 		/* NEW core selection */
-		if (backfilled_job == false || nb_cores_from_outside > 0)
+		if (backfilled_job == false || backfill_mode > 0 || nb_cores_from_outside > 0)
 		{
 			sort_cores_by_available_time_in_specific_node(j->node_used);
 		}
@@ -638,7 +638,8 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 			{
 				want_to_save_times_for_backfill = false;
 				earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
-				if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
+				
+				if (earliest_available_time <= t) /* A core can't be available before t. This happens when a node is idling. */				
 				{
 					earliest_available_time = t;
 					want_to_save_times_for_backfill = true; /* pour ne pas répeter les calculs lors du backfill */
@@ -742,9 +743,6 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 						}
 					}
 				}
-				//~ }
-				//~ else
-				//~ {
 				
 				#ifdef PRINT
 				printf("Can I backfill on node %d?\n", n->unique_id);
@@ -940,7 +938,6 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 		{
 			*nb_non_available_cores_at_time_t += j->cores;
 		}
-		
 				
 		if (backfill_mode == 1 || backfill_mode == 2)
 		{
@@ -1001,7 +998,7 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 	print_decision_in_scheduler(j);
 	#endif
 	
-	if (backfilled_job == false || nb_cores_from_outside_remembered > 0)
+	if (backfilled_job == false || backfill_mode > 0 || nb_cores_from_outside_remembered > 0)
 	{
 		sort_cores_by_available_time_in_specific_node(j->node_used);
 	}

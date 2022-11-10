@@ -201,14 +201,75 @@ void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int back
 {
 	int i = 0;
 	int k = 0;
+	//~ if (j->unique_id == 8679) { printf("Avant le sort\n"); print_cores_in_specific_node(j->node_used); }
 	sort_cores_by_unique_id_in_specific_node(j->node_used); /* Attention, il faut faire gaffe que dans le scheduler c'est ensuite re sort dans le sens des temps disponible le plus tôt. */
-	for (i = 0; i < j->cores; i++)
+	//~ for (i = 0; i < j->cores; i++)
+	//~ {
+		//~ while()
+		//~ {
+			//~ if (j->node_used->cores[k]->available_time <= j->start_time) /* Si c'est un core que je peux sélectionner */
+			//~ {
+				//~ j->cores_used[i] = j->node_used->cores[k]->unique_id;
+				
+				//~ if (j->node_used->cores[k]->available_time <= t)
+				//~ {
+					//~ *nb_non_available_cores += 1;
+				//~ }
+						
+				//~ if (backfill_activated == true)
+				//~ {
+					//~ /* Spécifique au cas avec backfilling */
+					//~ if (j->node_used->cores[k]->available_time <= t && j->start_time > t)
+					//~ {
+						//~ #ifdef PRINT
+						//~ printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[k]->unique_id); fflush(stdout);
+						//~ #endif
+						
+						//~ j->node_used->number_cores_in_a_hole += 1;
+						//~ struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
+						//~ new->unique_id = j->node_used->cores[k]->unique_id;
+						//~ new->start_time_of_the_hole = j->start_time;
+						//~ new->next = NULL;
+						
+						//~ if (j->node_used->cores_in_a_hole == NULL)
+						//~ {
+							//~ initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
+						//~ }
+						//~ else
+						//~ {
+							//~ if (backfill_mode == 2) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+							//~ {
+								//~ insert_cores_in_a_hole_list_sorted_increasing_order(j->node_used->cores_in_a_hole, new);
+							//~ }
+							//~ else
+							//~ {
+								//~ insert_cores_in_a_hole_list_sorted_decreasing_order(j->node_used->cores_in_a_hole, new);
+							//~ }
+						//~ }
+					//~ }
+					//~ /* Fin de spécifique au cas avec backfilling */
+				//~ }
+
+				//~ j->node_used->cores[k]->available_time = j->start_time + j->walltime;
+				//~ k++; /* k est pas censé valoir 20 la quand même */
+				//~ break;
+			//~ }
+			//~ k++;
+			// if (k > 20) { break; }
+		//~ }
+	//~ }
+	
+	//~ if (j->unique_id == 8679) { printf("Apres le sort\n"); print_cores_in_specific_node(j->node_used); }
+	
+	for (k = 0; k < 20; k++)
 	{
-		while(1)
-		{
-			if (j->node_used->cores[k]->available_time <= j->start_time)
+		//~ while()
+		//~ {
+			if (j->node_used->cores[k]->available_time <= j->start_time) /* Si c'est un core que je peux sélectionner */
 			{
 				j->cores_used[i] = j->node_used->cores[k]->unique_id;
+				
+				i++;
 				
 				if (j->node_used->cores[k]->available_time <= t)
 				{
@@ -223,11 +284,13 @@ void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int back
 						#ifdef PRINT
 						printf("Il va y avoir un trou sur node %d core %d.\n", j->node_used->unique_id, j->node_used->cores[k]->unique_id); fflush(stdout);
 						#endif
+						
 						j->node_used->number_cores_in_a_hole += 1;
 						struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 						new->unique_id = j->node_used->cores[k]->unique_id;
 						new->start_time_of_the_hole = j->start_time;
 						new->next = NULL;
+						
 						if (j->node_used->cores_in_a_hole == NULL)
 						{
 							initialize_cores_in_a_hole(j->node_used->cores_in_a_hole, new);
@@ -248,12 +311,19 @@ void fill_cores_minimize_holes (struct Job* j, bool backfill_activated, int back
 				}
 
 				j->node_used->cores[k]->available_time = j->start_time + j->walltime;
-				k++;
+				//~ k++; /* k est pas censé valoir 20 la quand même */
+				//~ break;
+			}
+			//~ k++;
+			// if (k > 20) { break; }
+			if (i == j->cores)
+			{
 				break;
 			}
-			k++;
-		}
+		//~ }
 	}
+	
+	if (i != j->cores) { printf("Error fill_cores_minimize_holes. i = %d job %d j->cores = %d j->start time is %d\n", i, j->unique_id, j->cores, j->start_time); printf("Dans l'erreur\n"); print_cores_in_specific_node(j->node_used); exit(1); }
 }
 
 /** 
