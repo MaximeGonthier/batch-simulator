@@ -2120,7 +2120,7 @@ void start_jobs(int t, struct Job* head)
 			#endif
 			
 			
-			/*For easy bf */
+			/* For easy bf */
 			running_cores += j->cores;
 			
 			#ifdef PRINT
@@ -2130,6 +2130,7 @@ void start_jobs(int t, struct Job* head)
 			/** Defining cluster usage **/
 			if (j->node_used->n_available_cores == 20)
 			{
+				/* Just for PRINT_CLUSTER_USAGE or I use it elsewhere ? */
 				running_nodes += 1;
 				
 				// if (j->workload == -2)
@@ -2137,6 +2138,18 @@ void start_jobs(int t, struct Job* head)
 					// running_nodes_workload_minus_2 += 1;
 				//~}
 			}
+			
+			#ifdef PRINT_CLUSTER_USAGE
+			if (j->workload == 1)
+			{
+				if (j->node_used->nb_jobs_workload_1 == 0)
+				{
+					running_nodes_workload_1 += 1;
+				}
+				j->node_used->nb_jobs_workload_1 += 1;
+			}
+			#endif
+			
 			j->node_used->n_available_cores -= j->cores;
 			//~ #ifdef PRINT_CLUSTER_USAGE
 			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
@@ -2277,6 +2290,17 @@ void end_jobs(struct Job* job_list_head, int t)
 				printf("ERROR ERROR end jobs\n");
 				exit(1); 
 			}
+			
+			#ifdef PRINT_CLUSTER_USAGE
+			if (j->workload == 1)
+			{
+				if (j->node_used->nb_jobs_workload_1 == 1)
+				{
+					running_nodes_workload_1 -= 1;
+				}
+				j->node_used->nb_jobs_workload_1 -= 1;
+			}
+			#endif
 			/** End of defining cluster usage **/
 									
 			for (i = 0; i < j->cores; i++)

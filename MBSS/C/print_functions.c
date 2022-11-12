@@ -861,7 +861,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time)
 	fprintf(f, "running_nodes: %d\n", running_nodes);
 	fprintf(f, "nb_job_to_schedule: %d\n", nb_job_to_schedule);
 	fprintf(f, "nb_cores_to_schedule: %d\n", nb_cores_to_schedule);
-	fprintf(f, "running_nodes_workload_minus_2: %d\n", running_nodes_workload_minus_2);
+	//~ fprintf(f, "running_nodes_workload_minus_2: %d\n", running_nodes_workload_minus_2);
 	fprintf(f, "total_queue_time: %d\n", total_queue_time);
 	fprintf(f, "first_subtime_day_0: %d\n", first_subtime_day_0);
 	fprintf(f, "Planned_Area[3][3]:"); 
@@ -1092,7 +1092,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 	
 	fscanf(f, "%s %d\n", str, &nb_cores_to_schedule);
 	
-	fscanf(f, "%s %d\n", str, &running_nodes_workload_minus_2);
+	//~ fscanf(f, "%s %d\n", str, &running_nodes_workload_minus_2);
 	
 	fscanf(f, "%s %d\n", str, &total_queue_time);
 	

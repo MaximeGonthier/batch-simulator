@@ -43,7 +43,9 @@ struct Node_List** node_list;
 struct To_Print_List* jobs_to_print_list;
 int running_cores;
 int running_nodes;
-int running_nodes_workload_minus_2;
+#ifdef PRINT_CLUSTER_USAGE
+int running_nodes_workload_1;
+#endif
 int total_queue_time;
 int first_subtime_day_0;
 int nb_job_to_schedule;
@@ -130,7 +132,9 @@ int main(int argc, char *argv[])
 	total_number_jobs = 0;
 	running_cores = 0;
 	running_nodes = 0;
-	running_nodes_workload_minus_2 = 0;
+	#ifdef PRINT_CLUSTER_USAGE
+	running_nodes_workload_1 = 0;
+	#endif
 	//~ nb_job_to_evaluate_finished = 0;
 	nb_job_to_evaluate_started = 0;
 	total_queue_time = 0;
@@ -298,7 +302,7 @@ int main(int argc, char *argv[])
 		perror("fopen in main");
         exit(EXIT_FAILURE);
 	}
-	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs,Used nodes workload -2,Cores required in queue,Cores required from evaluated jobs in queue\n");
+	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue\n");
 	free(title);
 	int nb_jobs_in_queue = 0;
 	int nb_cores_in_queue = 0;
@@ -963,8 +967,7 @@ int main(int argc, char *argv[])
 				
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
-		fprintf(f_stats, "%d,%d,%d,%d,%d,%d\n", running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_minus_2, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
-		//~ printf("%d,%d,%d,%d,%d,%d\n", running_cores, running_nodes, nb_jobs_in_queue, running_nodes_workload_minus_2, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
+		fprintf(f_stats, "%d,%d,%d,%d,%d,%d\n", running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)
