@@ -32,3 +32,39 @@ En cours:
 
 Pour générer un workload:
 
+Bus error sur: 
+Workload: inputs/workloads/converted/2022-05-21->2022-05-22_V9271
+Cluster: inputs/clusters/rackham_450_128_32_256_4_1024.txt
+Scheduler: Fcfs_with_a_score_conservativebf_x1_x0_x0_x0
+No constraint on sizes (0).
+Start jobs before day 0 done.
+Multiplier file to load: 1 / Multiplier file evicted: 0 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 0.
+busy_cluster_threshold is 100.
+Backfill mode is 2.
+Start simulation.
+Evaluated jobs: 0/6084 | All jobs: 2500/26625 | T = 1007893.
+Evaluated jobs: 0/6084 | All jobs: 5000/26625 | T = 1032508.
+Evaluated jobs: 0/6084 | All jobs: 7500/26625 | T = 1038167.
+Evaluated jobs: 6/6084 | All jobs: 10000/26625 | T = 1073886.
+Evaluated jobs: 2196/6084 | All jobs: 12500/26625 | T = 1216115.
+Evaluated jobs: 2786/6084 | All jobs: 15000/26625 | T = 1346054.
+Evaluated jobs: 3300/6084 | All jobs: 17500/26625 | T = 1365534.
+Evaluated jobs: 3902/6084 | All jobs: 20000/26625 | T = 1393237.
+
+Workload: inputs/workloads/converted/2022-05-21->2022-05-22_V85105
+Cluster: inputs/clusters/rackham_450_128_32_256_4_1024.txt
+Scheduler: Fcfs_with_a_score_conservativebf_x1_x0_x0_x0
+No constraint on sizes (0).
+Start jobs before day 0 done.
+Multiplier file to load: 1 / Multiplier file evicted: 0 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 0.
+busy_cluster_threshold is 100.
+Backfill mode is 2.
+Start simulation.
+Evaluated jobs: 0/6084 | All jobs: 2500/26625 | T = 1007961.
+Evaluated jobs: 0/6084 | All jobs: 5000/26625 | T = 1032570.
+Evaluated jobs: 0/6084 | All jobs: 7500/26625 | T = 1038411.
+Evaluated jobs: 6/6084 | All jobs: 10000/26625 | T = 1074580.
+Evaluated jobs: 2194/6084 | All jobs: 12500/26625 | T = 1214757.
+Evaluated jobs: 2767/6084 | All jobs: 15000/26625 | T = 1322507.
+Evaluated jobs: 3282/6084 | All jobs: 17500/26625 | T = 1361938.
+Evaluated jobs: 3844/6084 | All jobs: 20000/26625 | T = 1393763.

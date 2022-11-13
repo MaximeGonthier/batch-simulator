@@ -13,3 +13,6 @@ libtool_2.4.6-15.dsc
 libtool_2.4.6.orig.tar.xz
 libtool_2.4.6.orig.tar.xz.asc
 test_calculs
+CCGrid/CCGrid-paper.aux
+CCGrid/CCGrid-paper.pdf
+CCGrid/CCgrid-paper.log
