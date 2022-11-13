@@ -1,0 +1,2 @@
+percentage of reduction = ((v1-v2)/(-v2))*100 avec v2 valeur de fcfs
+

@@ -15,7 +15,12 @@ first_job_before_day_0 = int(sys.argv[6])
 first_job_day_0 = int(sys.argv[7])
 first_job_day_1 = int(sys.argv[8])
 first_job_day_2 = int(sys.argv[9])
-title = workload + "_" + scheduler + "_" + comparaison + "_" + cluster
+mode = int(sys.argv[10]) # 0 normal, 1 reduced
+
+if (mode == 0):
+	title = workload + "_" + scheduler + "_" + comparaison + "_" + cluster
+else:
+	title = workload + "_" + scheduler + "_" + comparaison + "_Reduced_" + cluster
 
 if (comparaison == "Used_cores"):
 	Y_index = 0
@@ -81,24 +86,27 @@ if (comparaison != "Used_nodes"):
 	plt.plot(Y)
 else:
 	# L'écriture se fais ainsi:	fprintf(f_stats, "%d,%d,%d,%d,%d,%d\n", running_cores, running_nodes, nb_jobs_in_queue, running_nodes_workload_minus_2, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
-	Y1 = list(df.iloc[:, Y_index])
-	Y2 = list(df.iloc[:, Y_index + 3])
-	Y3 = list(df.iloc[:, Y_index + 4])
-	Y4 = list(df.iloc[:, Y_index + 2])
+	Y1 = list(df.iloc[:, Y_index + 1])
+	Y2 = list(df.iloc[:, Y_index + 3 + 1])
+	Y3 = list(df.iloc[:, Y_index + 4 + 1])
+	Y4 = list(df.iloc[:, Y_index + 2 + 1])
 	fig, ax1 = plt.subplots()
 	# ~ ax2 = ax1.twinx()
 	# ~ ax3 = ax1.twinx()
 	# ~ ax3 = ax2.twiny()
 	# ~ ax1 = ax2.twinx()
-	ax1.plot(Y1, 'b-', label='Used cores')
+	ax1.plot(Y1, 'b-', label='Used cores by all jobs')
 	# ~ ax2.plot(Y2, 'g-', label='All jobs')
-	ax1.plot(Y2, 'g-', label='All jobs')
+	ax1.plot(Y2, 'g-', label='Cores in queue from all jobs jobs')
 	# ~ ax2.plot(Y3, 'r-', label='Evaluated jobs')
-	ax1.plot(Y3, 'r-', label='Evaluated jobs')
+	ax1.plot(Y3, 'r-', label='Cores in queue from evaluated jobs')
 	ax1.plot(Y4, "pink", label='Used cores by evaluated jobs')
 	# ~ ax1.set_ylim([0, 500])
-	plt.axvline(x = first_job_day_1, color = 'orange', linestyle = "dotted")
-	plt.axvline(x = first_job_day_2, color = 'orange', linestyle = "dotted")
+	
+	if (mode == 0):
+		plt.axvline(x = first_job_day_1, color = 'orange', linestyle = "dotted")
+		plt.axvline(x = first_job_day_2, color = 'orange', linestyle = "dotted")
+		
 	plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
 	ax1.set_xlabel('Time in seconds')
 	ax1.set_ylabel(Y_label, color='b')

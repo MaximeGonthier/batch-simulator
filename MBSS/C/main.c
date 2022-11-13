@@ -292,6 +292,7 @@ int main(int argc, char *argv[])
 	#endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
+	/* Fichier complet */
 	char* title = malloc(100*sizeof(char));
 	strcpy(title, "outputs/Stats_");
 	strcat(title, scheduler);
@@ -302,11 +303,25 @@ int main(int argc, char *argv[])
 		perror("fopen in main");
         exit(EXIT_FAILURE);
 	}
-	fprintf(f_stats, "Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue\n");
-	free(title);
+	fprintf(f_stats, "Time,Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue\n");
+	//~ free(title);
 	int nb_jobs_in_queue = 0;
 	int nb_cores_in_queue = 0;
 	int nb_cores_from_workload_1_in_queue = 0;
+	
+	/* Fichier avec que 5h avant et 5h après les jobs évaluées */
+	title = malloc(100*sizeof(char));
+	strcpy(title, "outputs/Reduced_Stats_");
+	strcat(title, scheduler);
+	strcat(title, ".csv");
+	FILE* f_reduced_stats = fopen(title, "w");
+	if (!f_reduced_stats)
+	{
+		perror("fopen in main");
+        exit(EXIT_FAILURE);
+	}
+	fprintf(f_reduced_stats, "Time,Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue\n");
+	free(title);
 	#endif
 	
 	int i = 0;
@@ -777,7 +792,12 @@ int main(int argc, char *argv[])
 	
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
-	while(nb_job_to_evaluate != nb_job_to_evaluate_started)
+	
+	#ifdef PRINT_CLUSTER_USAGE
+	while (finished_jobs != total_number_jobs)
+	#else
+	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
+	#endif
 	{
 		/* Test pour save l'état et recommencer */
 		if (need_to_save_state == true && t >= time_to_save)
@@ -967,7 +987,13 @@ int main(int argc, char *argv[])
 				
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
-		fprintf(f_stats, "%d,%d,%d,%d,%d,%d\n", running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
+		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
+		
+		//~ if (t >= 86400 - 18000 && t <= 86400*2 + 18000)
+		if (t >= first_subtime_day_0 + 86400 - 18000 && t <= first_subtime_day_0 + 86400*2 + 18000)
+		{
+			fprintf(f_reduced_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
+		}
 		#endif
 		
 		if (start_times->head != NULL && t > start_times->head->time)
@@ -989,6 +1015,7 @@ int main(int argc, char *argv[])
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	fclose(f_stats);
+	fclose(f_reduced_stats);
 	#endif
 	
 	/* NEW */
