@@ -35,16 +35,16 @@ for row in mycsv:
         stretch_fcfsbf = float(row[13])
         stretch_with_a_min_fcfsbf = float(row[14])
         continue
-    if eftline:
-        eftline = False
-        continue
+    # ~ if eftline:
+        # ~ eftline = False
+        # ~ continue
     
-    # ~ if pair:
-	    # ~ pair = False
-	    # ~ output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
-    # ~ else:
-	    # ~ pair = True
-    output_data_bf.write(row[0] + "," + str(((float(row[2])-max_queue_fcfsbf)/(max_queue_fcfsbf))*100) + "," + str(((float(row[7])-total_flow_fcfsbf)/(total_flow_fcfsbf))*100) + "," + str(((float(row[12])-transfer_time_fcfsbf)/(transfer_time_fcfsbf))*100) + "," + str(((float(row[13])-stretch_fcfsbf)/(stretch_fcfsbf))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfsbf)/(stretch_with_a_min_fcfsbf))*100) + "\n")
+    if pair:
+	    pair = False
+	    output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
+    else:
+	    pair = True
+	    output_data_bf.write(row[0] + "," + str(((float(row[2])-max_queue_fcfsbf)/(max_queue_fcfsbf))*100) + "," + str(((float(row[7])-total_flow_fcfsbf)/(total_flow_fcfsbf))*100) + "," + str(((float(row[12])-transfer_time_fcfsbf)/(transfer_time_fcfsbf))*100) + "," + str(((float(row[13])-stretch_fcfsbf)/(stretch_fcfsbf))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfsbf)/(stretch_with_a_min_fcfsbf))*100) + "\n")
 
     #print("fcfs max queue is" + max_queue_fcfs + "and bf is" + max_queue_fcfsbf)
     # ~ max_queue = row[2]

@@ -130,10 +130,10 @@ if (percentages_mode == 0):
 		plt.ylabel("Difference ratio with a schedule on an empty cluster")
 	else:
 		plt.ylabel("Seconds")
-# ~ elif (percentages_mode == 1):
-	# ~ plt.ylabel("% difference with fcfs (the lower the better)")
-# ~ elif (percentages_mode == 2):
-else:
+elif (percentages_mode == 1):
+	plt.ylabel("% difference with fcfs (the lower the better)")
+elif (percentages_mode == 2):
+# ~ else:
 	plt.ylabel("% difference with fcfs conservative bf (the lower the better)")
   
 # Show the plot

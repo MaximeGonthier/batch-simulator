@@ -169,12 +169,14 @@
 
 		% Pour mercredi
 		\item compter le nb de reutilisation des données (hors persistence)
-		\item Figure cluster usage: nb of nodes * 20 et 1 seul axe y, 
+		\item Figure cluster usage: nb of nodes * 20 et 1 seul axe y. La courbe used nodes by evaluated jobs ne tombe à 0 que très loin car moi j'arrête de regarder dès que j'ai commencé tout les jobs évalués
+		\item Début de rédaction de l'article
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Quel nom pour les courbes de cluster usage ?
+		\item Quand j'ai plusieurs jours d'affilé ou un seul je compte double le ircentage d'amélioration ?
 	\end{enumerate}
 	
 \section{Todo}
@@ -191,14 +193,19 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item test mai 21-22
-			\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé, mail à Loris
+%~ EN cours OAR_JOB_ID=1403900 pour save eft bf
+			\item plot ou comparer nombre de reutilisations de données
+			\item Pull
+			\item voir comment modifier valeur x avec matplotlib
+			\item recup template ccgrid
+			\item test mai 21-22 en cours
+			\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé
 			\item verif perf eft score mix car sur cluster occupé ca devrait être comme score. ptet le cluster est pas 100\% utilisé du coup.
 			\item test cluster usage avec d'autres algo (utile pour ci dessus peut etre ?)
 			\item test + de workload et plot les \% de différences
 			\item tester en changeant \% de fichiers dans le workload
 			\item Abstract le 25 Novembre - Soumission le 2 Décembre
-			\item Fig cluster usage: couper un peu a gauche et prendre un peu a droite pour ne montrer quele milieu dans un cas a part special pour montrer + courbe avec cores used workload 1 seuleemnt qui devrais tomber vers la fin + faire demarrer courbe rouge (cores in queue workload 1) que au debut sdu temps d'evaluation et la couper à la fin quand ca vaut 0 si on plot un peu apres (donc avant quanad c'est 0 pas la plot). Tronquer en bloc de exactement 24h ou 12h ou autre.
+			\item Fig cluster usage: couper un peu a gauche et prendre un peu a droite pour ne montrer quele milieu dans un cas a part special pour montrer + courbe avec cores used workload 1 seuleemnt qui devrais tomber vers la fin + faire demarrer courbe rouge (cores in queue workload 1) que au debut sdu temps d'evaluation et la couper à la fin quand ca vaut 0 si on plot un peu apres (donc avant quanad c'est 0 pas la plot). De même pour cores used evaluated jobs qu'on veut pas voir à 0 avant et apres son utilisation. Tronquer en bloc de exactement 24h ou 12h ou autre. Changer la légende en heures du jour 
 			
 			
 			\item test mai avec conservative bf et comparer avec résultats de easy bf sur la même période
