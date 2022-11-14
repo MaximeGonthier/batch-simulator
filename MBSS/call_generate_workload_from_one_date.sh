@@ -34,7 +34,7 @@ fi
 echo "Day0 is ${day0}"
 echo "Month0 is ${month0}"
 
-call="bash Generate_workload_from_rackham.sh inputs/workloads/raw/${year}-${month0}-${day0} start inputs/workloads/raw/${main_day} end inputs/workloads/raw/${year}-"
+call="Generate_workload_from_rackham.sh inputs/workloads/raw/${year}-${month0}-${day0} start inputs/workloads/raw/${main_day} end inputs/workloads/raw/${year}-"
 
 if [ ${month} = "04" ] || [ ${month} = "06" ] || [ ${month} = "09" ] || [ ${month} = "11" ]; then
 	if [ ${day} = "30" ]; then
@@ -160,6 +160,6 @@ done
 
 echo "Will call ${call}"
 
+bash ${call}
 
-
-#~ bash Generate_workload_from_rackham.sh inputs/workloads/raw/2022-04-10 start inputs/workloads/raw/${main_day} end inputs/workloads/raw/2022-04-12 collection inputs/workloads/raw/2022-04-13 inputs/workloads/raw/2022-04-14 inputs/workloads/raw/2022-04-15 inputs/workloads/raw/2022-04-16 inputs/workloads/raw/2022-04-17 inputs/workloads/raw/2022-04-18 inputs/workloads/raw/2022-04-19 inputs/workloads/raw/2022-04-20 inputs/workloads/raw/2022-04-21 inputs/workloads/raw/2022-04-22 inputs/workloads/raw/2022-04-23
+bash Stats_single_workload.sh inputs/workloads/converted/${main_day}-\>${main_day}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0
