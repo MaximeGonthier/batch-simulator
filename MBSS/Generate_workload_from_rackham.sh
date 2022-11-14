@@ -27,10 +27,6 @@ do
 		collection=$((i-1))
 	fi
 done
-#~ echo $start
-#~ FILE_START=$2
-#~ # N=$(($#))
-#~ FILE_END=$2
 START=${FILE_START:21}
 END=${FILE_END:21}
 OUTPUT="inputs/workloads/raw/"$START"->"$END
