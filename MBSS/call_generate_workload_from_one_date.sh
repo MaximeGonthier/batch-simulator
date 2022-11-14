@@ -24,6 +24,17 @@ if [ ${day} = "01" ]; then
 		month0="0"$((month0))
 	fi
 else
+			#~ if [ ${lastday} = "08" ]; then
+				#~ nextday="09"
+			#~ elif [ ${lastday} = "09" ]; then
+				#~ nextday="10"
+			#~ else
+				#~ nextday=$((lastday+1))
+				#~ if [ $((nextday)) -lt 10 ]; then
+					#~ nextday="0"$((nextday))
+				#~ fi
+			#~ fi
+
 	day0=$((day-1))
 	if [ $((day0)) -lt 10 ]; then
 		day0="0"$((day0))
