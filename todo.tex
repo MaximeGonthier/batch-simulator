@@ -195,6 +195,11 @@
 	\subsection{Uppsala}
 		\begin{enumerate}
 %~ OAR_JOB_ID=1404284 pour mai score save
+script a lancé à midi
+oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-11-15 19:00:00' "bash Compare_Conservative_Backfill_Save.sh inputs/workloads/converted/2022-06-29-\>2022-06-29_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1 8470058"
+
+
+
 			\item plot ou comparer nombre de reutilisations de données
 			\item voir comment modifier valeur x avec matplotlib pour afficher les heures plutots
 			\item recup template ccgrid
