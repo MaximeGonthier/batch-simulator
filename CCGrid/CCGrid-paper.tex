@@ -57,7 +57,7 @@ users may submits tens to hundreds jobs using the same multi-GB input file.
 The sum of these communications, adds significant queue times for
 all subsequent jobs.
 Users could manually group together input files into a single job to
-reduce the effects from I/O reads. However for more flexibility ofr the 
+reduce the effects from I/O reads. However to offer more flexibility to the 
 user and avoid jobs monopolizing a large number of nodes, we would like
 to let the user submit jobs the way they want and schedule efficiently
 those jobs on our nodes. The workers have a way to store files
@@ -92,11 +92,11 @@ to prioritize jobs by their submission time, in other words a First-Come First-S
 
 On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
 %~ Backfilling is, most often, based on the First Come - First Served principle as well.
-%~ While the scheduler is running, jobs in the queue are sorted by priority and queueing time~\cite{New_Backfill}.
-%~ Then, the backfilling will start immediatly all jobs that can be started and completed without delaying the planned schedule.
+%~ While the scheduler is running, jobs in the queue are sorted by priority and queuing time~\cite{New_Backfill}.
+%~ Then, the backfilling will start immediately all jobs that can be started and completed without delaying the planned schedule.
 %~ This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
 %~ for execution~\cite{Maui_Scheduler}.
-%~ There are two types of backfills. Coservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
+%~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
 
 \paragraph{Improving SLURM and other batch systems' schedulers}
 
@@ -139,26 +139,26 @@ thrashing limitation. Our focus will be to control data loads and eviction so th
 processing order will naturally limits thrashing.
 
 \subsection{HDFS, a popular distributed file system}
-HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that incorporate memory-aware scheduling.
-HDFS is suitable for applications that have large data sets. 
-"Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
-It will migrate a computation closer to where the data is located rather than moving the data to where
-the application is running.
-Here are our main differences with HDFS. Firstly, HDFS is made for commodity hardware, prone
-to more errors and breakdown, so to minimize the risk of failure, data are redundant on the nodes.
-In our use case, the scheduler will run on professional clusters and the main point is to load as 
-little data as possible. Secondly, HDFS is mainly a storage system, with metadata as transactions historic or
-block location. Those concept are not relevant in our use case. Thirdly, the scheduling 
-can have issues. A paper describe in detail some problems from MapReduce~\cite{issue_with_hdfs}, the
-programming language used in HFDS: the static configuration of the memory allocation, the one-task assigned buffers, the
-lake of concurrent task running strategy and the I/O negative impact in memory during the shuffling phase.
-To resolve these issues, Mammoth~\cite{Mammoth} was created. It optimize memory usage on a node depending on the hardware configuration.
-Our approach is different because we are not dealing with MapReduce or memory allocation.
-Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would like to maintain
-equity among users  while optimizing I/O.
-In addition, HDFS is particularly efficient when the input data used are identical over time.
-In our case, one user will submit a lot of different jobs using the same data, but between users,
-the inputs are not the same. So HDFS would be less efficient.
+%~ HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that
+%~ incorporate memory-aware scheduling. HDFS is suitable for applications that have large data sets. 
+%~ "Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
+%~ It will migrate a computation closer to where the data is located rather than moving the data to where
+%~ the application is running.
+%~ Here are our main differences with HDFS. Firstly, HDFS is made for commodity hardware, prone
+%~ to more errors and breakdown, so to minimize the risk of failure, data are redundant on the nodes.
+%~ In our use case, the scheduler will run on professional clusters and the main point is to load as 
+%~ little data as possible. Secondly, HDFS is mainly a storage system, with metadata as transactions historic or
+%~ block location. Those concept are not relevant in our use case. Thirdly, the scheduling 
+%~ can have issues. A paper describe in detail some problems from MapReduce~\cite{issue_with_hdfs}, the
+%~ programming language used in HFDS: the static configuration of the memory allocation, the one-task assigned buffers, the
+%~ lake of concurrent task running strategy and the I/O negative impact in memory during the shuffling phase.
+%~ To resolve these issues, Mammoth~\cite{Mammoth} was created. It optimize memory usage on a node depending on the hardware configuration.
+%~ Our approach is different because we are not dealing with MapReduce or memory allocation.
+%~ Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would like to maintain
+%~ equity among users  while optimizing I/O.
+%~ In addition, HDFS is particularly efficient when the input data used are identical over time.
+%~ In our case, one user will submit a lot of different jobs using the same data, but between users,
+%~ the inputs are not the same. So HDFS would be less efficient.
 
 \section{Framework}\label{sec.framework}
 
@@ -204,14 +204,14 @@ be re-used.
 	\end{algorithmic}
 \end{algorithm}
 
-Coupled with it, we add the conservative backfilling strategy mentionned earlier:
+Coupled with it, we add the conservative backfilling strategy mentioned earlier:
 
 \subsection{A locality-focused algorithm: SCORE\todo{Max: Or another name}}
 
 The previous strategies are focusing on starting as soon as possible (FCFS)
 of finishing as soon as possible a job (EFT).
 Those are good methods to avoid starvation of a node and reduce queue times.
-However, they are ignoring the effect multipling the number of copy of a file
+However, they are ignoring the effect multiplying the number of copy of a file
 over multiple nodes. Indeed, selecting different nodes for jobs using a common
 file will increase file loads in order to minimize immediate queue times.
 Our strategy (called SCORE) aims at favoring locality in order to reduce
@@ -239,7 +239,7 @@ on the node with the lowest score.
 	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
 \end{algorithmic}\end{algorithm}
 
-In order to take advantage of backfilling, anb adaptation was made
+In order to take advantage of backfilling, and adaptation was made
 
 \section{Working with a real workload and cluster\todo[inline]{Max: Find a better name}}\label{sec.working}
 
