@@ -175,6 +175,7 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
+		\item on est bon sur des cas mais pas tous,  ya des cas vraiment cata pour score et tout le monde est pareil a par lui?. Ca tue un peu les moyenne de tous les workloads.
 		\item Quel nom pour les courbes de cluster usage ?
 		\item Quand j'ai plusieurs jours d'affilé ou un seul je compte double le ircentage d'amélioration ?
 	\end{enumerate}
@@ -193,22 +194,14 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-1404068                   mgonthier      2022-11-14 16:28:38 W default   resume eft mai2122
-1404071                   mgonthier      2022-11-14 16:37:36 W default   
-1404092                   mgonthier      2022-11-14 18:51:36 W default   
-1404093                   mgonthier      2022-11-14 18:53:19 W default   
-1404094                   mgonthier      2022-11-14 18:54:14 W default   
-1404095                   mgonthier      2022-11-14 18:54:53 W default   
+%~ OAR_JOB_ID=1404169 pour mai score save
 			\item plot ou comparer nombre de reutilisations de données
-			\item Pull
-			\item voir comment modifier valeur x avec matplotlib
+			\item voir comment modifier valeur x avec matplotlib pour afficher les heures plutots
 			\item recup template ccgrid
-			\item test mai 21-22 en cours
 			\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé
 			\item verif perf eft score mix car sur cluster occupé ca devrait être comme score. ptet le cluster est pas 100\% utilisé du coup.
 			\item test cluster usage avec d'autres algo (utile pour ci dessus peut etre ?)
 			\item test + de workload et plot les \% de différences
-			\item tester en changeant \% de fichiers dans le workload
 			\item Abstract le 25 Novembre - Soumission le 2 Décembre
 			\item Fig cluster usage: couper un peu a gauche et prendre un peu a droite pour ne montrer quele milieu dans un cas a part special pour montrer + courbe avec cores used workload 1 seuleemnt qui devrais tomber vers la fin + faire demarrer courbe rouge (cores in queue workload 1) que au debut sdu temps d'evaluation et la couper à la fin quand ca vaut 0 si on plot un peu apres (donc avant quanad c'est 0 pas la plot). De même pour cores used evaluated jobs qu'on veut pas voir à 0 avant et apres son utilisation. Tronquer en bloc de exactement 24h ou 12h ou autre. Changer la légende en heures du jour 
 			

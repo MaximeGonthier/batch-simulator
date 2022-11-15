@@ -2,7 +2,7 @@ all: clean CCGrid-paper.pdf
 
 %.pdf: %.tex
 	pdflatex $*.tex
-#~ 	bibtex $*
+	bibtex $*
 	pdflatex $*.tex
 	pdflatex $*.tex
 	rm -f $*.aux $*.log $*.out $*.blg $*.bbl
