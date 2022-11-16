@@ -59,6 +59,7 @@ extern int biggest_hole;
 extern int biggest_hole_unique_id;
 extern int global_nb_non_available_cores_at_time_t;
 extern int nb_data_reuse;
+extern int busy_cluster_threshold;
 
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
  * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of

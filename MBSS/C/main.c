@@ -71,6 +71,7 @@ int biggest_hole;
 int biggest_hole_unique_id;
 int global_nb_non_available_cores_at_time_t;
 int nb_data_reuse;
+int busy_cluster_threshold;
 
 int main(int argc, char *argv[])
 {
@@ -558,7 +559,7 @@ int main(int argc, char *argv[])
 		}
 		multiplier_area_bigger_nodes = (int) strtol(to_copy4, NULL, 10);
 						
-		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multiplier : %d / Penalty on sizes : %d / Start immeditaly if EAT is t: %d Mixed strategy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
+		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multiplier : %d / Penalty on sizes : %d / Start immeditaly if EAT is t: %d / Mixed strategy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
 		
 		/* Error I have sometimes when the int is not what I putted */
 		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
@@ -589,8 +590,9 @@ int main(int argc, char *argv[])
 		//~ busy_cluster_threshold = 100;
 		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	//~ }
-	//~ int busy_cluster_threshold = 99;
-	int busy_cluster_threshold = 100;
+	busy_cluster_threshold = 95;
+	//~ int busy_cluster_threshold =  99;
+	//~ int busy_cluster_threshold = 100;
 	printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 		
 	int division_by_planned_area = 0;
