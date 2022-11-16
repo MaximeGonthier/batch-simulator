@@ -79,7 +79,7 @@
 \begin{document}
 \newpage
 
-%~ /data-aware-batch-scheduling/MBSS$ oarsub -p orion -l core=2,walltime=08:00:00 -r '2022-06-14 19:00:00' "bash Stats_single_workload.sh inputs/workloads/converted/test-11 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0"
+%~ /data-aware-batch-scheduling/MBSS$ oarsub -p orion -l core=2,walltime=08:00:00 -r '2022-06-14 22:37:00' "bash Stats_single_workload.sh inputs/workloads/converted/test-11 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0"
 
 \section{Informations for the article}
 	\begin{enumerate}
@@ -194,10 +194,17 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-%~ OAR_JOB_ID=1404284 pour mai score save
-script a lancé à midi
-oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-11-15 19:00:00' "bash Compare_Conservative_Backfill_Save.sh inputs/workloads/converted/2022-06-29-\>2022-06-29_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1 8470058"
-
+%~ OAR_JOB_ID=1404614 pour mai score resume
+%~ script a lancé à midi
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill_Save.sh inputs/workloads/converted/2022-06-29-\>2022-06-29_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1 8470058"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-04-\>2022-07-04_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-14-\>2022-07-14_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-15-\>2022-07-15_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-16-\>2022-07-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-17-\>2022-07-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-18-\>2022-07-18_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-19-\>2022-07-19_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-29-\>2022-07-29_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"-
 
 
 			\item plot ou comparer nombre de reutilisations de données

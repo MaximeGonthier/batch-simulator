@@ -26,7 +26,7 @@
 \newcommand{\Node}[1]{\ensuremath{\mathrm{Node}_{#1}}\xspace}
 \newcommand{\flow}[1]{\ensuremath{\mathit{flow}_{#1}}\xspace}
 \newcommand{\inputs}{\ensuremath{\mathcal{F}}\xspace}
-\newcommand{\memory}{\ensuremath{\mathcal{M}}\xspace}
+\newcommand{\memory}{\ensuremath{\mathit{Mem}}\xspace}
 \newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
 \newcommand{\bandwidth}{\mathit{BW}\xspace}
@@ -51,11 +51,30 @@
 \maketitle
 
 \begin{abstract}
+Schedulers proposed by resource manager like SLURM or OAR are
+efficient enough for a normal use of a cluster. However, 
+users may submits tens to hundreds jobs using the same multi-GB input file.
+The sum of these communications, adds significant queue times for
+all subsequent jobs.
+Users could manually group together input files into a single job to
+reduce the effects from I/O reads. However to offer more flexibility to the 
+user and avoid jobs monopolizing a large number of nodes, we would like
+to let the user submit jobs the way they want and schedule efficiently
+those jobs on our nodes. The workers have a way to store files
+(with a limit on the memory size). Thus, a way to minimize data transfers
+is to create a scheduler that \textbf{take into consideration data locality
+and schedule on the same node jobs sharing inputs}.
 
+We present three schedulers\todo{Max: 2?} able to \textbf{distribute the load
+between the workers but also to have a vision of what the memory of each worker
+contains in order to re-use as much as possible a file already loaded on a worker's
+local memory}.
+
+We also ... \todo[inline]{Max: more contributions todo}
 \end{abstract}
 
 \begin{IEEEkeywords}
-batch scheduling, I/O, clusters, real workload, locality-aware
+batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo{Max: I've added a lot of keywords, we should only choose a few of those I think?}
 \end{IEEEkeywords}
 
 \todo[inline]{Maxime: Do not hesitate to add a lot of todo notes.}
@@ -66,66 +85,42 @@ batch scheduling, I/O, clusters, real workload, locality-aware
 
 \paragraph{Scheduling jobs on large clusters}
 
-To schedule jobs on batch systems, two systems are prominent: SLURM and OAR.
-SLURM is used on most HPC clusters; It's default strategy to schedule jobs is 
-First-Come First-Serve with conservative backfilling\footnote{{\scriptsize\url{https://slurm.schedmd.com/sched_config.html}}}
+To schedule jobs on batch systems, two systems are prominent: SLURM~\cite{SLURM} and OAR~\cite{oar}.
+SLURM is used on most HPC clusters. It's default strategy to schedule jobs is
+to prioritize jobs by their submission time, in other words a First-Come First-Serve strategy
+(or FCFS)\footnote{{\scriptsize\url{https://slurm.schedmd.com/sched_config.html}}}.
 
-
-SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tolerant and highly scalable.
-%~ First, jobs are scheduled in the FCFS order. 
-%~ On top of that, the Backfill algorithm is very widely used~\cite{New_Backfill}.
-%~ Backfill is, most often, based on the First Come - First Served principle as well. While the scheduler is running, jobs in the queue are sorted by priority and queueing time~\cite{New_Backfill}.
-%~ Then, Backfill will start immediatly all jobs that can be started and completed without delaying the planned schedule.
+On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
+%~ Backfilling is, most often, based on the First Come - First Served principle as well.
+%~ While the scheduler is running, jobs in the queue are sorted by priority and queuing time~\cite{New_Backfill}.
+%~ Then, the backfilling will start immediately all jobs that can be started and completed without delaying the planned schedule.
 %~ This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
 %~ for execution~\cite{Maui_Scheduler}.
-%~ There are two types of backfills. Coservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
-%~ EASY backfill is known to be efficient and able to prevent starvation~\cite{easybf}.
-%~ \textbf{Thus our main competitor will be the EASY-Backfill algorithm.}
-%~ \url{https://slurm.schedmd.com/sched_config.html} : seems to be conservative backfilling only : " If the job under consideration can start immediately without impacting the expected start time of any higher priority job, then it does so. Otherwise the resources required by the job will be reserved during the job's expected execution time". D'après \url{https://plafrim-users.gitlabpages.inria.fr/doc/#hardware} PlaFRIM utilises bien SLURM.
-%~ L'article 1-s2.0-S1877050915034249-main.pdf de 2015 avance aussi que du conservative backfilling est utilisé sur leurs cluster avec SLURM.
-%~ \subsubsection{OAR}
-%~ Grid5k : Attention a bien prendre consciences des contraintes additionnelles qui rendent tres differentes la plateforme Grid'5000 et des plateformes HPC communes: voir la usage policy pour les contraintes jour vs nuit, et bien noter l'usage tres important de la mecanique de reservation à l'avance. Les 2 impactent bcp le scheduling "batch".
-%~ D'après Pierre NEYRON ils font du conservative backfilling. Par contre atention, ils ont des usgaes policy strcte (limite par jour et illimité le soir week end) qui change tout.
-%~ sauf sur nancy ou c'est du fair sharing sans limite jour nuit.
-%~ Usage rate sur \url{https://intranet.grid5000.fr/stats/usage_rate.html#top}
+%~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
 
-%~ By default, SLURM, used in many HPC clusters uses FCFS coupled with 
-%~ a backfilling strategy. Conservative allow for a fair treatment and 
-%~ gives an expected start time to each job that is guaranteed.
-%~ EASY is better to avoid starvation but does not guarantee a start time.
-%~ Conservative is preferred among most of the HPC clusters.
-%~ Conservative is classically implemented as follow:\\
-%~ \begin{figure}[H]\centering\includegraphics[scale = 0.5]{Images/conservative_backfill.png}\end{figure}
+\paragraph{Improving SLURM and other batch systems' schedulers}
 
-\paragraph{Ways to improve SLURM and other batch systems}
+To deal with communication-intensive jobs on SLURM, a solution can be to
+minimize network contention by allocating nodes on the least
+contended nodes and switches~\cite{minimize_network_contention}. 
+In our model we are not studying the network topology and consider independant nodes.
+Moreover, this requires a tree-based network topologies, which is different from our modem.
+Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
 
-\paragraph{Memory-aware scheduling in other domains}
-
-\paragraph{HDFS, a popular distributed file system}
+Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
+are a system designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
+It adds storage servers that export access to the disk.
+They use detailed knowledge of workload characteristics.
+However, the main idea is not data reuse but to
+facilitates the execution of I/O intensive batch
+jobs by selecting appropriate storage policies
+in regards to I/O scoping (creating a custom environment for each job
+for data that will be used a lot by the job, thus not accessing the main disk too
+much) and space allocation.
 
 
-%~ \subsection{Other ways to improve SLURM and other batch systems}
-%~ To deal with communication-intensive jobs on SLURM, a solution is to minimize network contention by allocating nodes on the least
-%~ contended switches~\cite{minimize_network_contention}. In our case we have
-%~ jobs with one large file transfers that must be done before the computation start, which is different.
-%~ Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
-
-%~ In "Explicit Control in a Batch-Aware Distributed File System"~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
-%~ we are presented with "Batch-Aware Distributed File System", a system designed to orchestrate large, 
-%~ I/O-intensive batch workloads on remote computing clusters.
-%~ It adds "storage servers" that export access to the disk. And a scheduler that
-%~ manage jobs. 
-%~ Like us, they use detailed knowledge of workload characteristics.
-%~ However, the main idea is not data reuse but to
-%~ facilitates the execution of I/O intensive batch
-%~ jobs by selecting appropriate storage policies
-%~ in regards to I/O scoping (creating a custom environment for each job
-%~ for data that will be used a lot by the job, thus not accessing the main disk too
-%~ much) and space allocation.
-
-
-%~ \subsection{Other papers about memory-aware scheduling}
-%~ Memory-aware scheduling on clusters have been studied in the past.
+\subsection{Other papers about memory-aware scheduling}
+Memory-aware scheduling on clusters have been studied in the past.
  
 %~ "Algorithmic Modifications to the
 %~ Jacobi-Davidson Parallel Eigensolver to Dynamically Balance External CPU and Memory Load"~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
@@ -138,15 +133,14 @@ SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tole
 %~ manage eviction and optimize data reuse during the scheduling phase, instead of
 %~ receding execution on nodes.
 
-%~ Some researchers~\cite{Nikolopoulos2003AdaptiveSU}
-%~ are focusing on a better utilization of idling memory together with 
-%~ thrashing limitation. Our focus will be to control data loads and eviction so the
-%~ processing order will naturally limits thrashing.
+Some researchers~\cite{Nikolopoulos2003AdaptiveSU}
+are focusing on a better utilization of idling memory together with 
+thrashing limitation. Our focus will be to control data loads and eviction so the
+processing order will naturally limits thrashing.
 
-
-%~ \subsection{HDFS, a popular distributed file system}
-%~ HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that incorporate memory-aware scheduling.
-%~ HDFS is suitable for applications that have large data sets. 
+\subsection{HDFS, a popular distributed file system}
+%~ HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that
+%~ incorporate memory-aware scheduling. HDFS is suitable for applications that have large data sets. 
 %~ "Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
 %~ It will migrate a computation closer to where the data is located rather than moving the data to where
 %~ the application is running.
@@ -166,23 +160,20 @@ SLURM~\cite{SLURM} is a cluster resource management system, flexible, fault-tole
 %~ In our case, one user will submit a lot of different jobs using the same data, but between users,
 %~ the inputs are not the same. So HDFS would be less efficient.
 
-
-%~ \subsubsection{Autres}
-
-%~ Characterization\_of\_backfilling\_strategies\_for\_parallel\_job\_scheduling.pdf compare EASY et conservative:
-%~ "We observed that conserva-
-%~ tive backfilling, by providing reservations to all jobs, limits
-%~ backfilling opportunities. EASY backfilling on the other
-%~ hand, improves backfilling opportunities but the jobs that
-%~ have difficulty backfilling (e.g wide jobs) get a reservation
-%~ only when they manage to get to the head of the queue,
-%~ thus resulting in significant worsening in the worst-case
-%~ turnaround time."
-
-
-%~ \section{What can we show in an article ?}
-
 \section{Framework}\label{sec.framework}
+
+We consider the problem of scheduling a set of independent jobs $\jobset = {J_1, J_2, ..., J_k}$ on
+a set of independent nodes $\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
+
+\todo[inline]{Max: Do we describe a generic framework ($m$ cores per node etc...) or do we
+already talk about our application case with 20 cores per nodes, 486 nodes etc... ?}
+
+Each node is equipped with $m$ cores noted: $\Node{1}(C_1, C_2, ..., C_m)$.
+
+Let's note $\mathbb{M} = M_1, M_2, ..., M_o$ the set of available memory sizes, with $M_1 < M_2 < ... < M_o$.
+Each node has a limited memory $\memory(\Node{i})$ such that $\memory(\Node{i}) \in \mathbb{M}$.
+
+We are in a non-preemptive case, meaning that a job cannot be stopped and resumed.
 
 \section{Schedulers}\label{sec.schedulers}
 
@@ -213,14 +204,14 @@ be re-used.
 	\end{algorithmic}
 \end{algorithm}
 
-Coupled with it, we add the conservative backfilling strategy mentionned earlier:
+Coupled with it, we add the conservative backfilling strategy mentioned earlier:
 
 \subsection{A locality-focused algorithm: SCORE\todo{Max: Or another name}}
 
 The previous strategies are focusing on starting as soon as possible (FCFS)
 of finishing as soon as possible a job (EFT).
 Those are good methods to avoid starvation of a node and reduce queue times.
-However, they are ignoring the effect multipling the number of copy of a file
+However, they are ignoring the effect multiplying the number of copy of a file
 over multiple nodes. Indeed, selecting different nodes for jobs using a common
 file will increase file loads in order to minimize immediate queue times.
 Our strategy (called SCORE) aims at favoring locality in order to reduce
@@ -248,19 +239,19 @@ on the node with the lowest score.
 	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
 \end{algorithmic}\end{algorithm}
 
-In order to take advantage of backfilling, anb adaptation was made
+In order to take advantage of backfilling, and adaptation was made
 
-\section{Evaluations on Rackham's job history}\label{sec.evaluations}
+\section{Working with a real workload and cluster\todo[inline]{Max: Find a better name}}\label{sec.working}
+
+\section{Evaluations}\label{sec.evaluations}
 
 \section{Conclusion}\label{sec.conclusion}
 
+\todo[inline]{Max: 
 Some schedulers do fairness as well with slurm or advance reservation with limitations (OAR).
 We can tune our algorithms to do that as well.
-
 Improve score to be efficient in any situation, any workload.
-
-Improve mixed strategy to deal more with locality.
-
+Improve mixed strategy to do more locality.}
 
 \bibliographystyle{IEEEtran}
 \bibliography{ref.bib}
