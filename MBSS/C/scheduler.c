@@ -943,12 +943,12 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	}
 }
 
-void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t)
+void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int mixed_strategy)
 {
 	#ifdef PRINT
 	printf("\nFcfs_score\n");
 	#endif
-	
+		
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	int i = 0;
 	int min_score = -1;
@@ -1023,6 +1023,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	int temp_multiplier_file_evicted = multiplier_file_evicted;
 	int temp_multiplier_nb_copy = multiplier_nb_copy;
 
+	//~ if (mixed_strategy == 1)
+	//~ {
+		int temp_running_nodes = running_nodes;
+	//~ }
 	
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
@@ -1060,6 +1064,25 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				multiplier_file_to_load = temp_multiplier_file_to_load;
 				multiplier_file_evicted = temp_multiplier_file_evicted;
 				multiplier_nb_copy = temp_multiplier_nb_copy;
+			}
+			
+			if (mixed_strategy == 1)
+			{
+				if (temp_running_nodes < 486)
+				{
+					multiplier_file_to_load = 1;
+					multiplier_file_evicted = 0;
+					multiplier_nb_copy = 0;
+				}
+				else
+				{
+					multiplier_file_to_load = temp_multiplier_file_to_load;
+					multiplier_file_evicted = temp_multiplier_file_evicted;
+					multiplier_nb_copy = temp_multiplier_nb_copy;
+				}
+				#ifdef PRINT
+				printf("running nodes is %d. Multiplier are %d %d %d.\n", temp_running_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+				#endif
 			}
 			
 			/* 2. Choose a node. */		
@@ -1262,6 +1285,35 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			j->start_time = min_time;
 			j->end_time = min_time + j->walltime;
 			
+			
+			/* Cas mixte */
+			//~ print_decision_in_scheduler(j);
+			if (mixed_strategy == 1 && j->node_used->n_available_cores == 20 && j->start_time == t)
+			{
+				#ifdef PRINT
+				printf("Used node is %d.\n", j->node_used->unique_id);
+				#endif
+				
+				bool new_running_node = true;
+				for (int v = 0; v < 20; v++)
+				{
+					if (j->node_used->cores[v]->available_time > t)
+					{
+						new_running_node = false;
+						break;
+					}
+				}
+				if (new_running_node == true)
+				{
+					temp_running_nodes += 1;
+					//~ printf("New running nodes.\n");
+				}
+				else
+				{
+					//~ printf("Not a new running node.\n");
+				}
+			}
+			
 			for (int k = 0; k < j->cores; k++)
 			{
 				j->cores_used[k] = j->node_used->cores[k]->unique_id;
@@ -1363,6 +1415,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
 				//~ printf("Increment ok for job %d.\n", j->unique_id); fflush(stdout);
 			}
+			
 			
 			j = j->next;
 		}				

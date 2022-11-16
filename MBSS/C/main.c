@@ -340,6 +340,7 @@ int main(int argc, char *argv[])
 	//~ (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	int start_immediately_if_EAT_is_t = 0;
+	int mixed_strategy = 0;
 	
 	/* Getting informations for certain schedulers. */
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_weighted_random_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_a_score_x", 32) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_with_a_score_x", 43) == 0 || strncmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_with_a_score_x", 54) == 0 || strncmp(scheduler, "Fcfs_area_filling_with_ratio_7_days_earlier_with_a_score_x", 58) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_x", 31) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_x", 57) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0 || strncmp(scheduler, "Fcfs_with_a_score_conservativebf_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_conservativebf_x", 49) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x", 68) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_easybf_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_easybf_x", 41) == 0)
@@ -437,17 +438,20 @@ int main(int argc, char *argv[])
 		{
 			i = 34;
 			j = 34;
+			mixed_strategy = 1;
 		}
 		else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0)
 		{
 			i = 43;
 			j = 43;
+			mixed_strategy = 1;
 		}
 		else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0)
 		{
 			i = 56;
 			j = 56;
 			adaptative_multiplier = 2;
+			mixed_strategy = 1;
 		}
 		else if (strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0)
 		{
@@ -476,11 +480,13 @@ int main(int argc, char *argv[])
 		{
 			i = 49;
 			j = 49;
+			mixed_strategy = 1;
 		}
 		else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_easybf_x", 41) == 0)
 		{
 			i = 41;
 			j = 41;
+			mixed_strategy = 1;
 		}
 		else
 		{
@@ -552,7 +558,7 @@ int main(int argc, char *argv[])
 		}
 		multiplier_area_bigger_nodes = (int) strtol(to_copy4, NULL, 10);
 						
-		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multiplier : %d / Penalty on sizes : %d / Start immeditaly if EAT is t: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
+		printf("Multiplier file to load: %d / Multiplier file evicted: %d / Multiplier nb of copy: %d / Multiplier area bigger nodes: %d / Adaptative multiplier : %d / Penalty on sizes : %d / Start immeditaly if EAT is t: %d Mixed strategy: %d.\n", multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, multiplier_area_bigger_nodes, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
 		
 		/* Error I have sometimes when the int is not what I putted */
 		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
@@ -933,7 +939,7 @@ int main(int argc, char *argv[])
 			printf("Reschedule.\n");
 			#endif
 			
-			call_scheduler(scheduler, scheduled_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode);
+			call_scheduler(scheduler, scheduled_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode, mixed_strategy);
 							
 			#ifdef PRINT	
 			printf("End of reschedule.\n");
@@ -954,7 +960,7 @@ int main(int argc, char *argv[])
 			printf("Schedule only new jobs.\n");
 			#endif
 			
-			call_scheduler(scheduler, new_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode);
+			call_scheduler(scheduler, new_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode, mixed_strategy);
 
 			job_pointer = new_job_list->head;
 			if (sort_by_file_size == true)
@@ -998,7 +1004,7 @@ int main(int argc, char *argv[])
 			fprintf(f_reduced_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
 		}
 		
-		printf("%d,%d,%d,%d\n", running_nodes, nb_jobs_in_queue, mixed_mode, busy_cluster);
+		//~ printf("%d,%d,%d,%d\n", running_nodes, nb_jobs_in_queue, mixed_mode, busy_cluster);
 		#endif
 				
 		if (start_times->head != NULL && t > start_times->head->time)

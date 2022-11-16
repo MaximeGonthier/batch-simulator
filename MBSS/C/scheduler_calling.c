@@ -1,13 +1,13 @@
 #include <main.h>
 
-void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode)
+void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode, int mixed_strategy)
 {
 	int i = 0;
 	int j = 0;
 	
 	if (strncmp(scheduler, "Fcfs_with_a_score_x", 19) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_x", 41) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_3_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_4_x", 43) == 0 || strncmp(scheduler, "Fcfs_with_a_score_penalty_on_big_jobs_x", 39) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x", 53) == 0) /* Ok avec DATA_PERSISTENCE */
 	{
-		fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
+		fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, 0);
 	}
 	else if (strncmp(scheduler, "Fcfs_with_a_score_easybf_x", 26) == 0 || strncmp(scheduler, "Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_easybf_x", 60) == 0)
 	{
@@ -47,7 +47,7 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 			{
 				if (nb_job_to_schedule >= 486 - running_nodes)
 				{
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 50, 0, 0, 0, 0);
+					fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 50, 0, 0, 0, 0, 0);
 				}
 				else
 				{
@@ -66,7 +66,7 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 		}
 		else
 				{
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 1, 0, 0, 0, 0);
+					fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 1, 0, 0, 0, 0, 0);
 				}
 			}
 			else if (strcmp(scheduler, "Mixed_strategy") == 0) /* Ok avec DATA_PERSISTENCE */
@@ -169,7 +169,7 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 		if (success == -1) /* It failed I must do score */
 				{
 					//~ printf("SCORE\n");
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 1, 0, 0, 0, 0);
+					fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 1, 0, 0, 0, 0, 0);
 					/* Multiplicateur qui dépend  */
 					//~ fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 1, 0, 3, 0, 0);
 				}
@@ -300,40 +300,41 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 					else
 					{
 						//~ printf("SCORE\n");
-						fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 50, 0, 0, 0, 0);
+						fcfs_with_a_score_scheduler(liste->head, node_list, t, 500, 50, 0, 0, 0, 0, 0);
 					}
 				}
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
-				if (busy_cluster == 1)
-				{
-					#ifdef PRINT_CLUSTER_USAGE
-					mixed_mode = 0;
-					#endif
+				//~ if (busy_cluster == 1)
+				//~ {
+					//~ #ifdef PRINT_CLUSTER_USAGE
+					//~ mixed_mode = 1;
+					//~ #endif
 					
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
-				}
-				else
-				{
-					#ifdef PRINT_CLUSTER_USAGE
-					mixed_mode = 1;
-					#endif
+					//~ fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
+				//~ }
+				//~ else
+				//~ {
+					//~ #ifdef PRINT_CLUSTER_USAGE
+					//~ mixed_mode = 0;
+					//~ #endif
 					
-					//~ eft_scheduler(liste->head, node_list, t);
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, 1, 0, 0, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
-					/* try score avec 1 ? */
-				}
+					//~ // eft_scheduler(liste->head, node_list, t);
+					//~ fcfs_with_a_score_scheduler(liste->head, node_list, t, 1, 0, 0, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
+					//~ /* try score avec 1 ? */
+				//~ }
+				fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				if (busy_cluster == 1)
 				{
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
+					fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
 				}
 				else
 				{
-					fcfs_with_a_score_scheduler(liste->head, node_list, t, 1, 1, 0, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
+					fcfs_with_a_score_scheduler(liste->head, node_list, t, 1, 1, 0, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, mixed_strategy);
 				}
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_backfill_big_nodes_95th_percentile_x", 54) == 0)
