@@ -308,11 +308,21 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 			{
 				if (busy_cluster == 1)
 				{
+					#ifdef PRINT_CLUSTER_USAGE
+					mixed_mode = 0;
+					#endif
+					
 					fcfs_with_a_score_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
 				}
 				else
 				{
-					eft_scheduler(liste->head, node_list, t);
+					#ifdef PRINT_CLUSTER_USAGE
+					mixed_mode = 1;
+					#endif
+					
+					//~ eft_scheduler(liste->head, node_list, t);
+					fcfs_with_a_score_scheduler(liste->head, node_list, t, 1, 0, 0, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t);
+					/* try score avec 1 ? */
 				}
 			}
 			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_not_EFT_x", 43) == 0) /* Ok avec DATA_PERSISTENCE */

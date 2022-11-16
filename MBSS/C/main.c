@@ -45,6 +45,7 @@ int running_cores;
 int running_nodes;
 #ifdef PRINT_CLUSTER_USAGE
 int running_nodes_workload_1;
+int mixed_mode;
 #endif
 int total_queue_time;
 int first_subtime_day_0;
@@ -134,6 +135,7 @@ int main(int argc, char *argv[])
 	running_nodes = 0;
 	#ifdef PRINT_CLUSTER_USAGE
 	running_nodes_workload_1 = 0;
+	mixed_mode = 0;
 	#endif
 	//~ nb_job_to_evaluate_finished = 0;
 	nb_job_to_evaluate_started = 0;
@@ -790,6 +792,7 @@ int main(int argc, char *argv[])
 		printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
 	}
 	
+	
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
 	
@@ -994,8 +997,10 @@ int main(int argc, char *argv[])
 		{
 			fprintf(f_reduced_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
 		}
-		#endif
 		
+		printf("%d,%d,%d,%d\n", running_nodes, nb_jobs_in_queue, mixed_mode, busy_cluster);
+		#endif
+				
 		if (start_times->head != NULL && t > start_times->head->time)
 		{
 			printf("ERROR in main.c, next start time is %d and t is %d.\n", start_times->head->time, t); fflush(stdout);
@@ -1017,7 +1022,7 @@ int main(int argc, char *argv[])
 	fclose(f_stats);
 	fclose(f_reduced_stats);
 	#endif
-	
+		
 	/* NEW */
 	/* Delete all running and scheduled jobs */
 	job_pointer = running_jobs->head;

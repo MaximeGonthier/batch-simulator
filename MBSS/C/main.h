@@ -39,6 +39,7 @@ extern int nb_job_to_schedule; /* Jobs ready but not running */
 extern int nb_cores_to_schedule; /* Cores ready but not running */
 #ifdef PRINT_CLUSTER_USAGE
 extern int running_nodes_workload_1;
+extern int mixed_mode;
 #endif
 extern int total_queue_time;
 extern int first_subtime_day_0;
