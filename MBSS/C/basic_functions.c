@@ -555,7 +555,7 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 	//~ return nb_non_available_cores;
 }
 
-void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t)
+void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t, int mixed_strategy, int* temp_running_nodes)
 {
 	#ifdef PLOT_STATS
 	total_number_of_scores_computed += 1;
@@ -864,6 +864,34 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 	j->transfer_time = choosen_time_to_load_file;
 	/* Need to add here intervals for current scheduling. */
 	found = false;
+	
+			/* Cas mixte */
+			//~ print_decision_in_scheduler(j);
+			if (mixed_strategy == 1 && j->node_used->n_available_cores == 20 && j->start_time == t)
+			{
+				#ifdef PRINT
+				printf("Used node is %d.\n", j->node_used->unique_id);
+				#endif
+				
+				bool new_running_node = true;
+				for (int v = 0; v < 20; v++)
+				{
+					if (j->node_used->cores[v]->available_time > t)
+					{
+						new_running_node = false;
+						break;
+					}
+				}
+				if (new_running_node == true)
+				{
+					*temp_running_nodes += 1;
+					//~ printf("New running nodes.\n");
+				}
+				//~ else
+				//~ {
+					//~ printf("Not a new running node.\n");
+				//~ }
+			}
 	
 	/* TODO: crash malloc corrupted top size içi ? */
 	#ifdef DATA_PERSISTENCE

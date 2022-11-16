@@ -273,7 +273,7 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 	global_nb_non_available_cores_at_time_t = nb_non_available_cores_at_time_t;
 }
 
-void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode)
+void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int mixed_strategy)
 {
 	//~ int nb_cores_rescheduled = 0; /* 486*20 = 9720 */
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
@@ -289,10 +289,15 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	/* Get intervals of data. */ 
 	get_current_intervals(head_node, t);
 	
+	/* For mixed */
+	int temp_running_nodes = running_nodes;
+	
 	struct Job* j = head_job;
 	
 	while (j != NULL)
 	{
+		//~ printf("At time %d there are %d running nodes.\n", t, temp_running_nodes);
+		
 		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
@@ -301,7 +306,23 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			printf("Schedule and backfill.\n");
 			#endif
 			
-			schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t);
+			if (mixed_strategy == 1)
+			{
+				if ((temp_running_nodes*100)/486 < busy_cluster_threshold)
+				{
+					//~ printf("Call not busy.\n");
+					schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, 1, 0, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t, mixed_strategy, &temp_running_nodes);
+				}
+				else
+				{
+					//~ printf("Call busy.\n");
+					schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t, mixed_strategy, &temp_running_nodes);
+				}
+			}
+			else
+			{
+				schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t, mixed_strategy, &temp_running_nodes);
+			}
 						
 			if (j->start_time < t)
 			{
@@ -321,23 +342,63 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			printf("Only check backfill for job %d.\n", j->unique_id);
 			printf("Biggest hole is %d on node %d.\n", biggest_hole, biggest_hole_unique_id);
 			#endif
-						
-			if (j->cores <= biggest_hole && only_check_conservative_backfill_with_a_score(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, multiplier_file_to_load, multiplier_file_evicted, start_immediately_if_EAT_is_t) == true)
-			//~ if (j->cores <= biggest_hole && only_check_conservative_backfill(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t) == true)
+				
+			//~ printf("%d running nodes.\n", temp_running_nodes);
+
+			if (mixed_strategy == 1)
 			{
-				if (j->start_time < t)
+				if ((temp_running_nodes*100)/486 < busy_cluster_threshold)
 				{
-					printf("Error: j->start_time < t\n");
-					exit(1);
+					//~ printf("Call hole not busy.\n");
+					if (j->cores <= biggest_hole && only_check_conservative_backfill_with_a_score(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, 1, 0, start_immediately_if_EAT_is_t) == true)
+					{
+						if (j->start_time < t)
+						{
+							printf("Error: j->start_time < t\n");
+							exit(1);
+						}
+						insert_next_time_in_sorted_list(start_times, j->start_time);
+					}
+					else
+					{
+						j->start_time = -1;
+					}
 				}
-					
-				insert_next_time_in_sorted_list(start_times, j->start_time);
+				else
+				{
+					//~ printf("Call hole busy.\n");
+					if (j->cores <= biggest_hole && only_check_conservative_backfill_with_a_score(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, multiplier_file_to_load, multiplier_file_evicted, start_immediately_if_EAT_is_t) == true)
+					{
+						if (j->start_time < t)
+						{
+							printf("Error: j->start_time < t\n");
+							exit(1);
+						}
+						insert_next_time_in_sorted_list(start_times, j->start_time);
+					}
+					else
+					{
+						j->start_time = -1;
+					}
+				}
 			}
 			else
 			{
-				j->start_time = -1;
+				if (j->cores <= biggest_hole && only_check_conservative_backfill_with_a_score(j, head_node, t, backfill_mode, &nb_non_available_cores_at_time_t, multiplier_file_to_load, multiplier_file_evicted, start_immediately_if_EAT_is_t) == true)
+				{
+					if (j->start_time < t)
+					{
+						printf("Error: j->start_time < t\n");
+						exit(1);
+					}
+					insert_next_time_in_sorted_list(start_times, j->start_time);
+				}
+				else
+				{
+					j->start_time = -1;
+				}
 			}
-						
+							
 			j = j->next;
 		}
 		else
@@ -1082,7 +1143,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					multiplier_nb_copy = temp_multiplier_nb_copy;
 				}
 				#ifdef PRINT
-				printf("At time %d, running nodes is %d. Multiplier are %d %d %d.\n", t, temp_running_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+				//~ if (finished_jobs % 15 == 0)
+				//~ {
+					printf("At time %d, running nodes is %d. Multiplier are %d %d %d.\n", t, temp_running_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
+				//~ }
 				#endif
 			}
 			
