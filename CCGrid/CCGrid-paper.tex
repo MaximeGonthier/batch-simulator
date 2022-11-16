@@ -1,4 +1,6 @@
 % 10 pages, excluding references
+% Abstract 25/11
+% Paper 02/12
 % CCGrid will be following a double-blind review process
 % IEEE two-column conference proceedings template
 
@@ -224,7 +226,7 @@ time, the time to load or wait for the files to be available and the cost of
 reloading evicted files is computed for each node. The job is then scheduled
 on the node with the lowest score.
 
-\begin{algorithm}[htbp]\caption{SCORE}\label{algo.score}\begin{algorithmic}[1]
+\begin{algorithm}[htbp]\caption{SCORE (Draft)}\label{algo.score}\begin{algorithmic}[1]
 	\Statex For each job $J_i$ in the queue
 	\State $B\_multiplier \gets 500$
 	\State $C\_multiplier \gets 1$
@@ -239,7 +241,80 @@ on the node with the lowest score.
 	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
 \end{algorithmic}\end{algorithm}
 
-In order to take advantage of backfilling, and adaptation was made
+\begin{algorithm}[htbp]
+\caption{EFT-SCORE MIX (Draft)}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\State $occupation\_threshold \gets 100$ 
+\State $occupation \gets$ the percentage of nodes running at least one job
+%~ \ForEach {$J_i \in \jobset$}
+	\If{$occupation < occupation\_threshold$}
+		\State $EFT(\jobset,\nodeset)$
+	\Else
+		\State $SCORE(\jobset,\nodeset)$
+	\EndIf
+%~ \EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{OPPORTUNISTIC-SCORE MIX (Draft)}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\ForEach {$J_i \in \jobset$}
+	\State $B\_multiplier \gets 500$
+	\State $C\_multiplier \gets 1$
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\If{$A = current~time$}
+			\State $B\_multiplier \gets 1$
+			\State $C\_multiplier \gets 0$
+		\EndIf
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		%~ \State $C \gets (\memory(\inputs(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+	\EndFor
+	\State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest index in case of a tie.
+	%~ \State Remove $J_i$ from $\jobset$
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[htbp]
+\caption{SCORE CONSERVATIVE BF (Draft)}
+\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\begin{algorithmic}[1]
+\State $B\_multiplier \gets 500$
+\State $C\_multiplier \gets 1$
+\ForEach {$J_i \in \jobset$}
+	\ForEach {$\Node{k} \in \nodeset$}
+		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\If {$\Node{k}$ has a hole and $j_i$ can use it}
+			\State $A \gets current~time$
+			\State $B \gets$ the time to load $\inputs(J_i)$ on $\Node{k}$ at time $A$
+			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+			\State $C \gets (\inputs(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\EndIf
+	\EndFor
+	\State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
+	\If {$Backfill\_mode = 1$ OR $Backfill\_mode = 2$}
+		\State Minimize hole creation when affecting cores to $j_i$
+		\If {$Backfill\_mode = 1$}
+			\State Schedule $j_i$ on the cores with the biggest next start time
+		\Else
+			\State Schedule $j_i$ on the cores with the smallest next start time
+		\EndIf
+	\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
 \section{Working with a real workload and cluster\todo[inline]{Max: Find a better name}}\label{sec.working}
 
