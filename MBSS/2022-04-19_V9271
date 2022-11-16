@@ -1,8 +1,0 @@
-make : on entre dans le répertoire « /home/gonthier/data-aware-batch-scheduling/MBSS/C »
-gcc -Wall -DPRINT_CLUSTER_USAGE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c scheduler_calling.c -I. -lm
-make : on quitte le répertoire « /home/gonthier/data-aware-batch-scheduling/MBSS/C »
-Workload: inputs/workloads/converted/2022-04-19-
-Cluster: inputs/clusters/rackham_450_128_32_256_4_1024.txt
-Scheduler: Fcfs
-No constraint on sizes (0).
-Execution complete! It lasted 0 minute(s) and 7 second(s).

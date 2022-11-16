@@ -39,8 +39,18 @@ for row in mycsv:
         # ~ eftline = False
         # ~ continue
     
+    if (max_queue_fcfs == 0):
+	    max_queue_fcfs = 1
+    if (max_queue_fcfsbf == 0):
+	    max_queue_fcfsbf = 1
+    # ~ if (stretch_fcfs == 0):
+	    # ~ stretch_fcfs = 1
+    # ~ if (stretch_with_a_min_fcfs == 0):
+	    # ~ stretch_with_a_min_fcfs = 1
+    
     if pair:
 	    pair = False
+	    # ~ print(max_queue_fcfs, total_flow_fcfs)
 	    output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
     else:
 	    pair = True
