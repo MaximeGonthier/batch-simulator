@@ -590,8 +590,9 @@ int main(int argc, char *argv[])
 		//~ busy_cluster_threshold = 100;
 		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	//~ }
-	busy_cluster_threshold = 90;
-	//~ busy_cluster_threshold = 95;
+	// busy_cluster_threshold = 50;
+	busy_cluster_threshold = 70;
+	// busy_cluster_threshold = 95;
 	//~ int busy_cluster_threshold =  99;
 	//~ int busy_cluster_threshold = 100;
 	printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
