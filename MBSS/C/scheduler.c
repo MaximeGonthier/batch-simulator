@@ -296,7 +296,7 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	
 	while (j != NULL)
 	{
-		//~ printf("At time %d there are %d running nodes. busy is %d\n", t, temp_running_nodes, busy_cluster_threshold);
+		//~ printf("At time %d there are %d running nodes. busy is %d. %d %d %d\n", t, temp_running_nodes, busy_cluster_threshold, multiplier_file_to_load, multiplier_file_evicted, mixed_strategy);
 		
 		if (nb_non_available_cores < nb_cores)
 		{

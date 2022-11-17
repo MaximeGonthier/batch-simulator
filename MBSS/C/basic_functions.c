@@ -562,6 +562,8 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 	bool tie = false;
 	#endif
 	
+	//~ printf("Multipliers are %d, %d.\n", multiplier_file_to_load, multiplier_file_evicted);
+	
 	/* NEW core selection conservative bf only */
 	int nb_cores_from_hole = 0;
 	int nb_cores_from_outside = 0;
