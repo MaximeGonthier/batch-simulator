@@ -27,15 +27,15 @@ eftline = True
 output_data_bf.write("Scheduler, Maximum queue time, Total flow, Total transfer time, Stretch, Stretch with a minimum\n")
 
 # ~ sum_max_queue_time = [0, 0, 0, 0, 0, 0, 0]
-sum_max_queue_time = [[], [], [], []]
+sum_max_queue_time = [[], [], [], [], []]
 # ~ sum_total_flow = [0, 0, 0, 0, 0, 0, 0]
-sum_total_flow = [[], [], [], []]
+sum_total_flow = [[], [], [], [], []]
 # ~ sum_transfer_time = [0, 0, 0, 0, 0, 0, 0]
-sum_transfer_time = [[], [], [], []]
+sum_transfer_time = [[], [], [], [], []]
 # ~ sum_stretch = [0, 0, 0, 0, 0, 0, 0]
-sum_stretch = [[], [], [], []]
+sum_stretch = [[], [], [], [], []]
 # ~ sum_stretch_with_min = [0, 0, 0, 0, 0, 0, 0]
-sum_stretch_with_min = [[], [], [], []]
+sum_stretch_with_min = [[], [], [], [], []]
 
 nargs = float(sys.argv[1])
 nargs2 = int(sys.argv[1])
@@ -102,14 +102,29 @@ for i in range(0, nargs2):
 
 print(sum_stretch)
 
-# Mediane
+# ~ # Mediane
+# ~ if (int(sys.argv[2]) == 1):
+	# ~ output_data_bf.write("EFT CONSERVATIVE BF" + "," + str(statistics.median(sum_max_queue_time[0])) + "," + str(statistics.median(sum_total_flow[0])) + "," + str(statistics.median(sum_transfer_time[0])) + "," + str(statistics.median(sum_stretch[0])) + "," + str(statistics.median(sum_stretch_with_min[0])) + "\n")
+	# ~ output_data_bf.write("SCORE CONSERVATIVE BF"  + "," + str(statistics.median(sum_max_queue_time[1])) + "," + str(statistics.median(sum_total_flow[1])) + "," + str(statistics.median(sum_transfer_time[1])) + "," + str(statistics.median(sum_stretch[1])) + "," + str(statistics.median(sum_stretch_with_min[1]))  + "\n")
+	# ~ output_data_bf.write("EFT-SCORE MIX CONSERVATIVE BF"  + "," + str(statistics.median(sum_max_queue_time[2])) + "," + str(statistics.median(sum_total_flow[2])) + "," + str(statistics.median(sum_transfer_time[2])) + "," + str(statistics.median(sum_stretch[2])) + "," + str(statistics.median(sum_stretch_with_min[2]))  + "\n")
+	# ~ output_data_bf.write("OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF"  + "," + str(statistics.median(sum_max_queue_time[3])) + "," + str(statistics.median(sum_total_flow[3])) + "," + str(statistics.median(sum_transfer_time[3])) + "," + str(statistics.median(sum_stretch[3])) + "," + str(statistics.median(sum_stretch_with_min[3]))  +"\n")
+	# ~ output_data_bf.write("EFT-SCORE MIX CONSERVATIVE BF V2"  + "," + str(statistics.median(sum_max_queue_time[4])) + "," + str(statistics.median(sum_total_flow[4])) + "," + str(statistics.median(sum_transfer_time[4])) + "," + str(statistics.median(sum_stretch[4])) + "," + str(statistics.median(sum_stretch_with_min[4]))  + "\n")
+# ~ else:
+	# ~ output_data_bf.write("EFT" + "," + str(statistics.median(sum_max_queue_time[0])) + "," + str(statistics.median(sum_total_flow[0])) + "," + str(statistics.median(sum_transfer_time[0])) + "," + str(statistics.median(sum_stretch[0])) + "," + str(statistics.median(sum_stretch_with_min[0])) + "\n")
+	# ~ output_data_bf.write("SCORE"  + "," + str(statistics.median(sum_max_queue_time[1])) + "," + str(statistics.median(sum_total_flow[1])) + "," + str(statistics.median(sum_transfer_time[1])) + "," + str(statistics.median(sum_stretch[1])) + "," + str(statistics.median(sum_stretch_with_min[1])) + "\n")
+	# ~ output_data_bf.write("EFT-SCORE MIX"  + "," + str(statistics.median(sum_max_queue_time[2])) + "," + str(statistics.median(sum_total_flow[2])) + "," + str(statistics.median(sum_transfer_time[2])) + "," + str(statistics.median(sum_stretch[2])) + "," + str(statistics.median(sum_stretch_with_min[2]))  + "\n")
+	# ~ output_data_bf.write("OPPORTUNISTIC-SCORE MIX"  + "," + str(statistics.median(sum_max_queue_time[3])) + "," + str(statistics.median(sum_total_flow[3])) + "," + str(statistics.median(sum_transfer_time[3])) + "," + str(statistics.median(sum_stretch[3])) + "," + str(statistics.median(sum_stretch_with_min[3])) + "\n")
+	# ~ output_data_bf.write("EFT-SCORE MIX V2"  + "," + str(statistics.median(sum_max_queue_time[4])) + "," + str(statistics.median(sum_total_flow[4])) + "," + str(statistics.median(sum_transfer_time[4])) + "," + str(statistics.median(sum_stretch[4])) + "," + str(statistics.median(sum_stretch_with_min[4]))  + "\n")
+# Moyenne
 if (int(sys.argv[2]) == 1):
-	output_data_bf.write("EFT CONSERVATIVE BF" + "," + str(statistics.median(sum_max_queue_time[0])) + "," + str(statistics.median(sum_total_flow[0])) + "," + str(statistics.median(sum_transfer_time[0])) + "," + str(statistics.median(sum_stretch[0])) + "," + str(statistics.median(sum_stretch_with_min[0])) + "\n")
-	output_data_bf.write("SCORE CONSERVATIVE BF"  + "," + str(statistics.median(sum_max_queue_time[1])) + "," + str(statistics.median(sum_total_flow[1])) + "," + str(statistics.median(sum_transfer_time[1])) + "," + str(statistics.median(sum_stretch[1])) + "," + str(statistics.median(sum_stretch_with_min[1]))  + "\n")
-	output_data_bf.write("EFT-SCORE MIX CONSERVATIVE BF"  + "," + str(statistics.median(sum_max_queue_time[2])) + "," + str(statistics.median(sum_total_flow[2])) + "," + str(statistics.median(sum_transfer_time[2])) + "," + str(statistics.median(sum_stretch[2])) + "," + str(statistics.median(sum_stretch_with_min[2]))  + "\n")
-	output_data_bf.write("OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF"  + "," + str(statistics.median(sum_max_queue_time[3])) + "," + str(statistics.median(sum_total_flow[3])) + "," + str(statistics.median(sum_transfer_time[3])) + "," + str(statistics.median(sum_stretch[3])) + "," + str(statistics.median(sum_stretch_with_min[3]))  +"\n")
+	output_data_bf.write("EFT CONSERVATIVE BF" + "," + str(statistics.mean(sum_max_queue_time[0])) + "," + str(statistics.mean(sum_total_flow[0])) + "," + str(statistics.mean(sum_transfer_time[0])) + "," + str(statistics.mean(sum_stretch[0])) + "," + str(statistics.mean(sum_stretch_with_min[0])) + "\n")
+	output_data_bf.write("SCORE CONSERVATIVE BF"  + "," + str(statistics.mean(sum_max_queue_time[1])) + "," + str(statistics.mean(sum_total_flow[1])) + "," + str(statistics.mean(sum_transfer_time[1])) + "," + str(statistics.mean(sum_stretch[1])) + "," + str(statistics.mean(sum_stretch_with_min[1]))  + "\n")
+	output_data_bf.write("EFT-SCORE MIX CONSERVATIVE BF"  + "," + str(statistics.mean(sum_max_queue_time[2])) + "," + str(statistics.mean(sum_total_flow[2])) + "," + str(statistics.mean(sum_transfer_time[2])) + "," + str(statistics.mean(sum_stretch[2])) + "," + str(statistics.mean(sum_stretch_with_min[2]))  + "\n")
+	output_data_bf.write("OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF"  + "," + str(statistics.mean(sum_max_queue_time[3])) + "," + str(statistics.mean(sum_total_flow[3])) + "," + str(statistics.mean(sum_transfer_time[3])) + "," + str(statistics.mean(sum_stretch[3])) + "," + str(statistics.mean(sum_stretch_with_min[3]))  +"\n")
+	output_data_bf.write("EFT-SCORE MIX CONSERVATIVE BF V2"  + "," + str(statistics.mean(sum_max_queue_time[4])) + "," + str(statistics.mean(sum_total_flow[4])) + "," + str(statistics.mean(sum_transfer_time[4])) + "," + str(statistics.mean(sum_stretch[4])) + "," + str(statistics.mean(sum_stretch_with_min[4]))  + "\n")
 else:
-	output_data_bf.write("EFT" + "," + str(statistics.median(sum_max_queue_time[0])) + "," + str(statistics.median(sum_total_flow[0])) + "," + str(statistics.median(sum_transfer_time[0])) + "," + str(statistics.median(sum_stretch[0])) + "," + str(statistics.median(sum_stretch_with_min[0])) + "\n")
-	output_data_bf.write("SCORE"  + "," + str(statistics.median(sum_max_queue_time[1])) + "," + str(statistics.median(sum_total_flow[1])) + "," + str(statistics.median(sum_transfer_time[1])) + "," + str(statistics.median(sum_stretch[1])) + "," + str(statistics.median(sum_stretch_with_min[1])) + "\n")
-	output_data_bf.write("EFT-SCORE MIX"  + "," + str(statistics.median(sum_max_queue_time[2])) + "," + str(statistics.median(sum_total_flow[2])) + "," + str(statistics.median(sum_transfer_time[2])) + "," + str(statistics.median(sum_stretch[2])) + "," + str(statistics.median(sum_stretch_with_min[2]))  + "\n")
-	output_data_bf.write("OPPORTUNISTIC-SCORE MIX"  + "," + str(statistics.median(sum_max_queue_time[3])) + "," + str(statistics.median(sum_total_flow[3])) + "," + str(statistics.median(sum_transfer_time[3])) + "," + str(statistics.median(sum_stretch[3])) + "," + str(statistics.median(sum_stretch_with_min[3])) + "\n")
+	output_data_bf.write("EFT" + "," + str(statistics.mean(sum_max_queue_time[0])) + "," + str(statistics.mean(sum_total_flow[0])) + "," + str(statistics.mean(sum_transfer_time[0])) + "," + str(statistics.mean(sum_stretch[0])) + "," + str(statistics.mean(sum_stretch_with_min[0])) + "\n")
+	output_data_bf.write("SCORE"  + "," + str(statistics.mean(sum_max_queue_time[1])) + "," + str(statistics.mean(sum_total_flow[1])) + "," + str(statistics.mean(sum_transfer_time[1])) + "," + str(statistics.mean(sum_stretch[1])) + "," + str(statistics.mean(sum_stretch_with_min[1])) + "\n")
+	output_data_bf.write("EFT-SCORE MIX"  + "," + str(statistics.mean(sum_max_queue_time[2])) + "," + str(statistics.mean(sum_total_flow[2])) + "," + str(statistics.mean(sum_transfer_time[2])) + "," + str(statistics.mean(sum_stretch[2])) + "," + str(statistics.mean(sum_stretch_with_min[2]))  + "\n")
+	output_data_bf.write("OPPORTUNISTIC-SCORE MIX"  + "," + str(statistics.mean(sum_max_queue_time[3])) + "," + str(statistics.mean(sum_total_flow[3])) + "," + str(statistics.mean(sum_transfer_time[3])) + "," + str(statistics.mean(sum_stretch[3])) + "," + str(statistics.mean(sum_stretch_with_min[3])) + "\n")
+	output_data_bf.write("EFT-SCORE MIX V2"  + "," + str(statistics.mean(sum_max_queue_time[4])) + "," + str(statistics.mean(sum_total_flow[4])) + "," + str(statistics.mean(sum_transfer_time[4])) + "," + str(statistics.mean(sum_stretch[4])) + "," + str(statistics.mean(sum_stretch_with_min[4]))  + "\n")
