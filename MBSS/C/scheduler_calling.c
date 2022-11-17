@@ -44,7 +44,8 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 		//~ }
 		
 		/* NEW */
-		fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, 1, 0, 0, 0, backfill_mode, mixed_strategy);
+		//~ fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, 1, 0, 0, 0, backfill_mode, mixed_strategy);
+		fcfs_with_a_score_conservativebf_scheduler(liste->head, node_list, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, mixed_strategy);
 	}
 	else if (strcmp(scheduler, "Mix_score_nb_running_jobs") == 0) /* Ok avec DATA_PERSISTENCE */
 			{
