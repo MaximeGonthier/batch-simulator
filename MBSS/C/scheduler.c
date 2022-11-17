@@ -306,7 +306,7 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			printf("Schedule and backfill.\n");
 			#endif
 			
-			if (mixed_strategy == 1)
+			if (mixed_strategy == 2)
 			{
 				if ((temp_running_nodes*100)/486 < busy_cluster_threshold)
 				{
@@ -345,7 +345,7 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 				
 			//~ printf("%d running nodes.\n", temp_running_nodes);
 
-			if (mixed_strategy == 1)
+			if (mixed_strategy == 2)
 			{
 				if ((temp_running_nodes*100)/486 < busy_cluster_threshold)
 				{
