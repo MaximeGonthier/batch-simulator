@@ -591,7 +591,8 @@ int main(int argc, char *argv[])
 		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	//~ }
 	// busy_cluster_threshold = 50;
-	busy_cluster_threshold = 70;
+	busy_cluster_threshold = 70; // best one so far
+	// busy_cluster_threshold = 75;
 	// busy_cluster_threshold = 80;
 	// busy_cluster_threshold = 95;
 	//~ int busy_cluster_threshold =  99;
