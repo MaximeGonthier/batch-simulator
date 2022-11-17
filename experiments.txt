@@ -1,56 +1,58 @@
-oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-OAR_JOB_ID=1403627
+Experiments to the new mixed strategy. Je dois avoir 16*2 résultats à la fin.
 
-oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-21-\>2022-01-21_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-OAR_JOB_ID=1403620
+walltime=01:50:00
+2022-11-17 07:00:00
 
-oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-15-\>2022-03-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-OAR_JOB_ID=1403621
+make -C C/
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-02-02-\>2022-02-03_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-03-15-\>2022-03-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-04-07-\>2022-04-09_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-09-08-\>2022-09-08_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-01-28-\>2022-01-28_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-02-01-\>2022-02-01_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-05-06-\>2022-05-06_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-04-19-\>2022-04-19_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-13-\>2022-07-13_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-16-\>2022-07-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-17-\>2022-07-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-14-\>2022-07-14_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0"
 
-oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-07-\>2022-04-09_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-OAR_JOB_ID=1403622
+make -C C/
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-02-02-\>2022-02-03_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-03-15-\>2022-03-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-04-07-\>2022-04-09_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-09-08-\>2022-09-08_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-01-28-\>2022-01-28_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-02-01-\>2022-02-01_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-05-06-\>2022-05-06_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-04-19-\>2022-04-19_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-13-\>2022-07-13_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-16-\>2022-07-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-17-\>2022-07-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
+oarsub -p nova -l core=16,walltime=01:50:00 -r '2022-11-17 07:00:00' "./C/main inputs/workloads/converted/2022-07-14-\>2022-07-14_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2"
 
-oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-05-21-\>2022-05-22_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-OAR_JOB_ID=1403625
-
-oarsub -p nova -l core=16,walltime=11:30:00 -r '2022-11-10 21:15:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-OAR_JOB_ID=1403626
-
-Pour générer un workload:
-
-Bus error sur: 
-Workload: inputs/workloads/converted/2022-05-21->2022-05-22_V9271
-Cluster: inputs/clusters/rackham_450_128_32_256_4_1024.txt
-Scheduler: Fcfs_with_a_score_conservativebf_x1_x0_x0_x0
-No constraint on sizes (0).
-Start jobs before day 0 done.
-Multiplier file to load: 1 / Multiplier file evicted: 0 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 0.
-busy_cluster_threshold is 100.
-Backfill mode is 2.
-Start simulation.
-Evaluated jobs: 0/6084 | All jobs: 2500/26625 | T = 1007893.
-Evaluated jobs: 0/6084 | All jobs: 5000/26625 | T = 1032508.
-Evaluated jobs: 0/6084 | All jobs: 7500/26625 | T = 1038167.
-Evaluated jobs: 6/6084 | All jobs: 10000/26625 | T = 1073886.
-Evaluated jobs: 2196/6084 | All jobs: 12500/26625 | T = 1216115.
-Evaluated jobs: 2786/6084 | All jobs: 15000/26625 | T = 1346054.
-Evaluated jobs: 3300/6084 | All jobs: 17500/26625 | T = 1365534.
-Evaluated jobs: 3902/6084 | All jobs: 20000/26625 | T = 1393237.
-
-Workload: inputs/workloads/converted/2022-05-21->2022-05-22_V85105
-Cluster: inputs/clusters/rackham_450_128_32_256_4_1024.txt
-Scheduler: Fcfs_with_a_score_conservativebf_x1_x0_x0_x0
-No constraint on sizes (0).
-Start jobs before day 0 done.
-Multiplier file to load: 1 / Multiplier file evicted: 0 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 0.
-busy_cluster_threshold is 100.
-Backfill mode is 2.
-Start simulation.
-Evaluated jobs: 0/6084 | All jobs: 2500/26625 | T = 1007961.
-Evaluated jobs: 0/6084 | All jobs: 5000/26625 | T = 1032570.
-Evaluated jobs: 0/6084 | All jobs: 7500/26625 | T = 1038411.
-Evaluated jobs: 6/6084 | All jobs: 10000/26625 | T = 1074580.
-Evaluated jobs: 2194/6084 | All jobs: 12500/26625 | T = 1214757.
-Evaluated jobs: 2767/6084 | All jobs: 15000/26625 | T = 1322507.
-Evaluated jobs: 3282/6084 | All jobs: 17500/26625 | T = 1361938.
-Evaluated jobs: 3844/6084 | All jobs: 20000/26625 | T = 1393763.
+Results non bf:
+EFT-SCORE MIX,7434,916.000000,46.643799,346750.000000,396734.000000,3376.655273,25102056.000000,783168.000000,10023714.000000,152655584.000000,532296.000000,1315464.000000,1.036049,1.022577,3.623656,3.370000,0,0,1.027451,0.008194,0.000403,1.013979,0.008194,0.000403,5640
+EFT-SCORE MIX,10034,2087.000000,80.348015,806212.000000,990253.000000,2608.703125,26175728.000000,1625536.000000,10733046.000000,205606240.000000,732996.000000,2358532.000000,1.009334,0.969857,1.776414,1.776414,0,0,1.001738,0.006898,0.000698,0.962261,0.006898,0.000698,7696
+EFT-SCORE MIX,8693,183872.000000,956.108154,8311448.000000,608159.000000,7440.479004,64680084.000000,577984.000000,6650985.000000,435465344.000000,261595.000000,839579.000000,1.984170,1.970484,10.577181,10.506667,0,29,1.977508,0.002053,0.004609,1.963823,0.002053,0.004609,7475
+EFT-SCORE MIX,26481,10800.000000,365.409119,9676399.000000,456032.000000,3467.824951,91831472.000000,3529152.000000,3112033.000000,886763456.000000,1225515.000000,4754667.000000,1.200978,1.052654,16.746031,10.550000,0,0,1.192771,0.005731,0.002477,1.044446,0.005731,0.002477,19608
+EFT-SCORE MIX,30798,27112.000000,535.936951,16505786.000000,691200.000000,1829.485840,56344504.000000,1254847.000000,2334369.000000,211519456.000000,1139061.000000,2393908.000000,1.397708,1.066699,26.373697,26.373697,0,19,1.396717,0.000789,0.000202,1.065708,0.000789,0.000202,24076
+EFT-SCORE MIX,12890,54201.000000,2653.689941,34206064.000000,510178.000000,12892.893555,166189392.000000,2211904.000000,3543599.000000,945301504.000000,719044.000000,2930948.000000,1.815889,1.778265,41.216930,25.966667,0,325,1.797406,0.017397,0.001084,1.759782,0.017397,0.001084,8705
+EFT-SCORE MIX,25854,47648.000000,2480.676025,64135396.000000,501115.000000,7000.454102,180989744.000000,659840.000000,9900583.000000,232713120.000000,538899.000000,1198739.000000,2.239517,2.198187,15.388128,12.423333,0,47,2.238848,0.000526,0.000143,2.197518,0.000526,0.000143,23804
+EFT-SCORE MIX,16755,17584.000000,713.340942,11952027.000000,864000.000000,4785.634766,80183312.000000,2042432.000000,4486409.000000,664234560.000000,1132964.000000,3175396.000000,1.733197,1.492570,9.070271,6.034734,0,0,1.710886,0.022084,0.000227,1.470258,0.022084,0.000227,12110
+EFT-SCORE MIX,8548,104012.000000,1498.853760,12812202.000000,604800.000000,10441.237305,89251696.000000,2518528.000000,2410210.000000,804477888.000000,333479.000000,2852007.000000,1.714728,1.646237,20.870270,12.870000,0,21,1.701428,0.010384,0.002917,1.632937,0.010384,0.002917,4353
+EFT-SCORE MIX,16086,713656.000000,5601.096680,90099240.000000,1546756.000000,29542.832031,475225984.000000,2303808.000000,11386212.000000,4895236608.000000,398831.000000,2702639.000000,3.454767,3.031449,37.727505,37.727505,0,289,3.437574,0.016900,0.000294,3.014256,0.016900,0.000294,11028
+EFT-SCORE MIX,15295,124358.000000,1908.520996,29190828.000000,746190.000000,6850.931152,104784992.000000,1190912.000000,4702510.000000,567158144.000000,547409.000000,1738321.000000,3.458369,3.324883,48.884815,35.258427,0,130,3.455274,0.002762,0.000333,3.321789,0.002762,0.000333,11338
+EFT-SCORE MIX,31784,148499.000000,1750.951172,55652232.000000,472027.000000,7948.687988,252641104.000000,3330750.000000,2608395.000000,987292608.000000,1220409.000000,4551159.000000,1.549774,1.476745,48.160999,48.160999,0,435,1.540729,0.005988,0.003056,1.467700,0.005988,0.003056,24487
+EFT-SCORE MIX,39232,274050.000000,3157.333496,123868512.000000,864000.000000,38067.093750,1493448192.000000,1478272.000000,6287151.000000,1548819968.000000,1163506.000000,2641778.000000,6.478819,6.368931,137.619873,137.619873,0,32,6.477777,0.000677,0.000365,6.367890,0.000677,0.000365,35953
+EFT-SCORE MIX,45514,29841.000000,918.421387,41801032.000000,864000.000000,3867.529541,176026736.000000,3166784.000000,10380056.000000,641326592.000000,1172934.000000,4339718.000000,1.958957,1.934329,33.059784,20.276667,0,43,1.954232,0.004488,0.000235,1.929605,0.004488,0.000235,39812
+EFT-SCORE MIX,24248,244416.000000,1107.796875,26861860.000000,864000.000000,2959.656494,71765752.000000,808128.000000,6311198.000000,385601216.000000,725817.000000,1533945.000000,2.657081,2.482247,70.638290,70.638290,0,65,2.652604,0.004429,0.000048,2.477770,0.004429,0.000048,21541
+08-16 en cours
