@@ -24,7 +24,6 @@ else:
 		output_data_bf = open("data/Percentages_to_fcfs_all_workloads_mediane", "w")
 	else:
 		output_data_bf = open("data/Percentages_to_fcfs_all_workloads_mean", "w")
-		
 firstline = True
 fcfsline = True
 fcfsbfline = True
