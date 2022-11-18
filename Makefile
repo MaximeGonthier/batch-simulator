@@ -13,6 +13,11 @@ todo:
 	pdflatex todo.tex
 	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
 	
+summary:
+	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
+	pdflatex summary.tex
+	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo *.nav
+	
 clean:
 	rm -f *.toc *.aux *.log *.out *.blg *.xml *.dvi *.bbl *-blx.bib *.bcf *.ist *glsdefs *.lof *.acn *.glo
 
