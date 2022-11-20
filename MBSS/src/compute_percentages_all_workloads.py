@@ -2,6 +2,11 @@ import sys
 import argparse
 import csv
 import statistics
+
+import pandas as pd
+from matplotlib import pyplot as plt
+import numpy as np
+
 def calculate_median(l):
     l = sorted(l)
     l_len = len(l)
@@ -136,3 +141,83 @@ else:
 		output_data_bf.write("EFT-SCORE MIX"  + "," + str(statistics.mean(sum_max_queue_time[2])) + "," + str(statistics.mean(sum_total_flow[2])) + "," + str(statistics.mean(sum_transfer_time[2])) + "," + str(statistics.mean(sum_stretch[2])) + "," + str(statistics.mean(sum_stretch_with_min[2]))  + "\n")
 		output_data_bf.write("OPPORTUNISTIC-SCORE MIX"  + "," + str(statistics.mean(sum_max_queue_time[3])) + "," + str(statistics.mean(sum_total_flow[3])) + "," + str(statistics.mean(sum_transfer_time[3])) + "," + str(statistics.mean(sum_stretch[3])) + "," + str(statistics.mean(sum_stretch_with_min[3])) + "\n")
 		output_data_bf.write("EFT-SCORE MIX V2"  + "," + str(statistics.mean(sum_max_queue_time[4])) + "," + str(statistics.mean(sum_total_flow[4])) + "," + str(statistics.mean(sum_transfer_time[4])) + "," + str(statistics.mean(sum_stretch[4])) + "," + str(statistics.mean(sum_stretch_with_min[4]))  + "\n")
+
+# Hist for each category
+# Attention je print que dans le cas mediane
+if (sys.argv[3] == "mediane"):
+	for i in range(0, 5):
+		print("marche pas les hist a refaire en faisant 1 par 1")
+		exit
+		print("i:", i)
+		# ~ FILENAME=sys.argv[1]
+		if (i == 0):
+			SCHEDULER = "EFT"
+			if (int(sys.argv[2]) == 1):
+				SCHEDULER += "_CONSERVATIVE_BF"
+			x = sum_stretch[i]
+			x = pd.Series(x)
+			print(x)
+			plt.hist(x)
+			plt.xlabel("Speedup")
+			plt.ylabel("#Occurences")
+			plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
+			plt.close()
+		elif (i == 2):
+			SCHEDULER = "SCORE"
+			if (int(sys.argv[2]) == 1):
+				SCHEDULER += "_CONSERVATIVE_BF"
+			x = sum_stretch[i]
+			x = pd.Series(x)
+			print(x)
+			plt.hist(x)
+			plt.xlabel("Speedup")
+			plt.ylabel("#Occurences")
+			plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
+			plt.close()
+		elif (i == 3):
+			SCHEDULER = "EFT-SCORE-MIX"
+			if (int(sys.argv[2]) == 1):
+				SCHEDULER += "_CONSERVATIVE_BF"
+			x = sum_stretch[i]
+			x = pd.Series(x)
+			print(x)
+			plt.hist(x)
+			plt.xlabel("Speedup")
+			plt.ylabel("#Occurences")
+			plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
+			plt.close()
+		elif (i == 4):
+			SCHEDULER = "OPPORTUNISTIC-SCORE-MIX"
+			if (int(sys.argv[2]) == 1):
+				SCHEDULER += "_CONSERVATIVE_BF"
+			x = sum_stretch[i]
+			x = pd.Series(x)
+			print(x)
+			plt.hist(x)
+			plt.xlabel("Speedup")
+			plt.ylabel("#Occurences")
+			plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
+			plt.close()
+		else:
+			SCHEDULER = "EFT-SCORE-MIX-V2"
+			if (int(sys.argv[2]) == 1):
+				SCHEDULER += "_CONSERVATIVE_BF"
+			x = sum_stretch[i]
+			x = pd.Series(x)
+			print(x)
+			plt.hist(x)
+			plt.xlabel("Speedup")
+			plt.ylabel("#Occurences")
+			plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
+			plt.close()
+	
+	# ~ if (int(sys.argv[2]) == 1):
+		# ~ SCHEDULER += "_CONSERVATIVE_BF"
+	# ~ x = sum_stretch[i]
+	# ~ x = pd.Series(x)
+	# ~ print(x)
+	# ~ plt.hist(x)
+	# ~ plt.xlabel("Speedup")
+	# ~ plt.ylabel("#Occurences")
+	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
+	# ~ plt.close()
