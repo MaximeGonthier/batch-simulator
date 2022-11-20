@@ -176,15 +176,16 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item on est bon sur des cas mais pas tous,  ya des cas vraiment cata pour score et tout le monde est pareil a par lui?. Ca tue un peu les moyenne de tous les workloads.
-		\item Quel nom pour les courbes de cluster usage ?
-		\item Quand j'ai plusieurs jours d'affilé ou un seul je compte double le ircentage d'amélioration ?
+		\item since we are in the case were a job can be computed on any node, maybe I should have only had jobs with a file of size 128 ? Here I have jobs with sie from 128 to 1024 but they can be computed on any node.
+		\item le speedup que je montre c'est le pourcentage de reduction du stretch obtenu avec la formule: c'est correct ?
+		\item On veut stretch ou stretch with a min ? Quel min ? Entre les 2 les résultats sont très similaires.
+		\item Pas sûr de ce qu'ols veulent pour cluster usage (cluster usage, green on top of the rest ce qui va squeeze le bleu) ?
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
-			\item mail joachim correction
+			\item correction RE216 15 janvier
 			\item Finir corriger algo
 			\item Répondre a Bora hMETIS
 			\item Imprimer poster demander à Denis
@@ -195,28 +196,10 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-%~ OAR_JOB_ID=1404614 pour mai score resume
-%~ script a lancé à midi
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill_Save.sh inputs/workloads/converted/2022-06-29-\>2022-06-29_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1 8470058"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-04-\>2022-07-04_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-14-\>2022-07-14_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-15-\>2022-07-15_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-16-\>2022-07-16_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-17-\>2022-07-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-18-\>2022-07-18_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-19-\>2022-07-19_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
-%~ oarsub -p nova -l core=16,walltime=10:15:00 -r '2022-11-15 22:37:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-29-\>2022-07-29_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"-
 			\item tester 16 mais en prenant 3 jours de end au lieu de 1
-			\item perf mixte contre score, bouger le threshold verifier qu'il fais bien score voir sur July 18/ Plot quand je fais score et quand je fais eft. Checker si le cluster est full a chaque schedule de jobs pour switcer de eft à score.
-			\item cluster usage, green on top of the rest ce qui va squeeze le bleu
 			\item Plot histogram for each day for mix and score on each for stretch
 			\item show the quartiles on figure 50 to see if all days are like that. Same do an histogram with all stretch percentage of amelioration, repartition en fait.
-			\item mettre les algo en draft dans le papier pour loris
-			\item envoyer resultats des que j'en ai de mixte
-			\item je ferais pseudocode, evaluation et framework
-			\item coder mixte qui re evalue a chaque schedule de job le busy cluster et tester sur juillet 18.
-			\item tester avec un threshold différent
-			\item bf mode 0 est ptet mieux pour eft score mix ? en tout cas c'est le cas pour juillet 18
+			
 			
 			\item plot ou comparer nombre de reutilisations de données
 			\item voir comment modifier valeur x avec matplotlib pour afficher les heures plutots
