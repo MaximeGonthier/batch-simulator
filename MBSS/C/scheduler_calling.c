@@ -308,7 +308,7 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 					}
 				}
 			}
-			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0) /* Ok avec DATA_PERSISTENCE */
+			else if (strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_x", 34) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_adaptative_multiplier_x", 56) == 0 || strncmp(scheduler, "Fcfs_with_a_score_mixed_strategy_non_dynamic_x", 46) == 0) /* Ok avec DATA_PERSISTENCE */
 			{
 				//~ if (busy_cluster == 1)
 				//~ {
