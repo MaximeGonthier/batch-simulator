@@ -4,8 +4,8 @@
 
 start=`date +%s`
 
-if [ "$#" -ne 4 ]; then
-    echo "Usage is bash Compare_Conservative_Backfill.sh converted_workload cluster size_constraint(0, 1 or 2) starting_i"
+if [ "$#" -ne 3 ]; then
+    echo "Usage is bash Compare_Conservative_Backfill.sh converted_workload cluster starting_i"
     exit
 fi
 
@@ -17,9 +17,9 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 echo "Workload:" ${WORKLOAD_TP}
 echo "Cluster:" ${CLUSTER_TP}
-CONTRAINTES_TAILLES=$3 # 1 if you want both constraints
+CONTRAINTES_TAILLES=0
 echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
-STARTING_I=$(($4))
+STARTING_I=$(($3))
 
 make -C C/
 
@@ -39,10 +39,10 @@ do
 	elif [ $((i)) == 4 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x1_x0_x0_x0"; BACKFILL_MODE=2
 	elif [ $((i)) == 5 ]; then SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"; BACKFILL_MODE=0
 	elif [ $((i)) == 6 ]; then SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
-	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"; BACKFILL_MODE=0
-	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
-	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0"; BACKFILL_MODE=0
-	elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	elif [ $((i)) == 7 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0"; BACKFILL_MODE=0
+	elif [ $((i)) == 8 ]; then SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"; BACKFILL_MODE=0
+	elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
 	fi
 	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE
 done

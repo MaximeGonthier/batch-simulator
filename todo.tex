@@ -176,11 +176,7 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item contraintes sur les tailles ou je peux executer que sur ma taille de noeurd ? Car la je peux executer sur toutes les tailles meme si je suis troo gros.
-		\item since we are in the case were a job can be computed on any node, maybe I should have only had jobs with a file of size 128 ? Here I have jobs with sie from 128 to 1024 but they can be computed on any node.
-		\item le speedup que je montre c'est le pourcentage de reduction du stretch obtenu avec la formule: c'est correct ?
-		\item On veut stretch ou stretch with a min ? Quel min ? Entre les 2 les résultats sont très similaires.
-		\item Pas sûr de ce qu'ols veulent pour cluster usage (cluster usage, green on top of the rest ce qui va squeeze le bleu) ?
+		\item
 	\end{enumerate}
 	
 \section{Todo}
@@ -188,6 +184,7 @@
 		\begin{enumerate}
 			\item correction RE216 15 janvier
 			\item Finir corriger algo
+			\item remboursment transports
 			\item Répondre a Bora hMETIS
 			\item Imprimer poster demander à Denis
 		\end{enumerate}
@@ -197,12 +194,20 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item tester 16 mais en prenant 3 jours de end au lieu de 1
-			\item Plot histogram for each day for mix and score on each for stretch
-			\item show the quartiles on figure 50 to see if all days are like that. Same do an histogram with all stretch percentage of amelioration, repartition en fait.
-			
-			
+			\item faire abstract avant le 25
+			\item retester avec V10000
+			\item tester avec plus de jours
+			\item refaire cluster usage en allant lus loin dans les jours d'après, en coupant a une certine time frame et en metant les courbes de queue au dessus (en faisant juste la somme) et en pointillé meme couleur que node used.
+			\item calculer pourcentage avec juste valeurfcfs/valeur a comparer
+			\item plot speedup all workloads
+			\item plot speedupen nuage de points avec les jours en abcsiscce
+			\item dans l'article mettre exemple de 1 ou 2 jours + wuleter usage + pourcentgae all + nuage de points
+			\item montrer cluster usage fcfs et eft score mix
 			\item plot ou comparer nombre de reutilisations de données
+			
+			
+			
+			
 			\item voir comment modifier valeur x avec matplotlib pour afficher les heures plutots
 			\item recup template ccgrid
 			\item maj algo et ecrire pseudocode EASY et CONSERVATIVE BF, comment ca se code d'habitude et comment moi je l'ai codé

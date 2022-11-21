@@ -79,8 +79,8 @@ done
 echo "Start and end times"
 cat outputs/start_end_date_evaluated_jobs.txt
 
-#~ VARIANCE=10000
-#~ python3 src/generate_workload_from_rackham.py $START"->"$END 0 0 1 $((VARIANCE))
+VARIANCE=10000
+python3 src/generate_workload_from_rackham.py $START"->"$END 0 0 1 $((VARIANCE))
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
 
 #~ VARIANCE=85105
@@ -91,8 +91,8 @@ cat outputs/start_end_date_evaluated_jobs.txt
 #~ python3 src/generate_workload_from_rackham.py $START"->"$END 3 2 1 $((VARIANCE))
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
 
-VARIANCE=9271
-python3 src/generate_workload_from_rackham.py $START"->"$END 7 1 1 $((VARIANCE))
+#~ VARIANCE=9271
+#~ python3 src/generate_workload_from_rackham.py $START"->"$END 7 1 1 $((VARIANCE))
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
 
 echo "Plotting stats done!"
