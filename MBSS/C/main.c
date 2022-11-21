@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 	char* input_job_file = argv[1];
 	char* input_node_file = argv[2];
 	scheduler = argv[3]; /* malloc ? */
-	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. */
+	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. 3 for constraint and you can only execute on your specific size. */
 	output_file = argv[5];
 	if (output_file == NULL)
 	{
@@ -196,6 +196,10 @@ int main(int argc, char *argv[])
 	else if (constraint_on_sizes == 2)
 	{
 		printf("Constraint on sizes but data transfers ignored (%d).\n", constraint_on_sizes);
+	}
+	else if (constraint_on_sizes == 3)
+	{
+		printf("Constraint on sizes and can only execute on your size (%d).\n", constraint_on_sizes);
 	}
 	else
 	{

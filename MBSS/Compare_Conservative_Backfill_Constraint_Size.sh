@@ -17,7 +17,7 @@ CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 echo "Workload:" ${WORKLOAD_TP}
 echo "Cluster:" ${CLUSTER_TP}
-CONTRAINTES_TAILLES=1 # 1 if you want both constraints
+CONTRAINTES_TAILLES=3 # 1 if you want both constraints
 echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 STARTING_I=$(($3))
 

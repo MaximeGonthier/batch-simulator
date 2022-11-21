@@ -49,26 +49,27 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	/* In which node size I can pick. */
 	if (use_bigger_nodes == true)
 	{
-		if (j->index_node_list == 0)
-		{
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 2;
-		}
-		else if (j->index_node_list == 1)
-		{
-			first_node_size_to_choose_from = 1;
-			last_node_size_to_choose_from = 2;
-		}
-		else if (j->index_node_list == 2)
-		{
-			first_node_size_to_choose_from = 2;
-			last_node_size_to_choose_from = 2;
-		}
-		else
-		{
-			printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-			exit(EXIT_FAILURE);
-		}
+		get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+		//~ if (j->index_node_list == 0)
+		//~ {
+			//~ first_node_size_to_choose_from = 0;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else if (j->index_node_list == 1)
+		//~ {
+			//~ first_node_size_to_choose_from = 1;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else if (j->index_node_list == 2)
+		//~ {
+			//~ first_node_size_to_choose_from = 2;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else
+		//~ {
+			//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+			//~ exit(EXIT_FAILURE);
+		//~ }
 	}
 	else
 	{
@@ -201,26 +202,27 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 	//~ struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 	
 	/* In which node size I can pick. */
-	if (j->index_node_list == 0)
-	{
-		first_node_size_to_choose_from = 0;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 1)
-	{
-		first_node_size_to_choose_from = 1;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 2)
-	{
-		first_node_size_to_choose_from = 2;
-		last_node_size_to_choose_from = 2;
-	}
-	else
-	{
-		printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-		exit(EXIT_FAILURE);
-	}
+	get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+	//~ if (j->index_node_list == 0)
+	//~ {
+		//~ first_node_size_to_choose_from = 0;
+		//~ last_node_size_to_choose_from = 2;
+	//~ }
+	//~ else if (j->index_node_list == 1)
+	//~ {
+		//~ first_node_size_to_choose_from = 1;
+		//~ last_node_size_to_choose_from = 2;
+	//~ }
+	//~ else if (j->index_node_list == 2)
+	//~ {
+		//~ first_node_size_to_choose_from = 2;
+		//~ last_node_size_to_choose_from = 2;
+	//~ }
+	//~ else
+	//~ {
+		//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+		//~ exit(EXIT_FAILURE);
+	//~ }
 
 	/* Finding the node with the earliest available time. */
 	//~ for (parcours_des_nodes = 0; parcours_des_nodes < 2; parcours_des_nodes++) /* Pour faire nodes puis trou ou l'inverse. */
@@ -606,26 +608,27 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 	//~ int parcours_des_nodes = 0;
 	
 	/* In which node size I can pick. */
-	if (j->index_node_list == 0)
-	{
-		first_node_size_to_choose_from = 0;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 1)
-	{
-		first_node_size_to_choose_from = 1;
-		last_node_size_to_choose_from = 2;
-	}
-	else if (j->index_node_list == 2)
-	{
-		first_node_size_to_choose_from = 2;
-		last_node_size_to_choose_from = 2;
-	}
-	else
-	{
-		printf("Error index value in schedule_job_on_earliest_available_cores.\n"); fflush(stdout);
-		exit(EXIT_FAILURE);
-	}
+	get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+	//~ if (j->index_node_list == 0)
+	//~ {
+		//~ first_node_size_to_choose_from = 0;
+		//~ last_node_size_to_choose_from = 2;
+	//~ }
+	//~ else if (j->index_node_list == 1)
+	//~ {
+		//~ first_node_size_to_choose_from = 1;
+		//~ last_node_size_to_choose_from = 2;
+	//~ }
+	//~ else if (j->index_node_list == 2)
+	//~ {
+		//~ first_node_size_to_choose_from = 2;
+		//~ last_node_size_to_choose_from = 2;
+	//~ }
+	//~ else
+	//~ {
+		//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n"); fflush(stdout);
+		//~ exit(EXIT_FAILURE);
+	//~ }
 	//~ #ifdef PRINT
 	//~ print_data_intervals(head_node, t);
 	//~ #endif
@@ -1048,26 +1051,27 @@ int schedule_job_on_earliest_available_cores_return_running_cores(struct Job* j,
 	/* In which node size I can pick. */
 	if (use_bigger_nodes == true)
 	{
-		if (j->index_node_list == 0)
-		{
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 2;
-		}
-		else if (j->index_node_list == 1)
-		{
-			first_node_size_to_choose_from = 1;
-			last_node_size_to_choose_from = 2;
-		}
-		else if (j->index_node_list == 2)
-		{
-			first_node_size_to_choose_from = 2;
-			last_node_size_to_choose_from = 2;
-		}
-		else
-		{
-			printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-			exit(EXIT_FAILURE);
-		}
+		get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+		//~ if (j->index_node_list == 0)
+		//~ {
+			//~ first_node_size_to_choose_from = 0;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else if (j->index_node_list == 1)
+		//~ {
+			//~ first_node_size_to_choose_from = 1;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else if (j->index_node_list == 2)
+		//~ {
+			//~ first_node_size_to_choose_from = 2;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else
+		//~ {
+			//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+			//~ exit(EXIT_FAILURE);
+		//~ }
 	}
 	else
 	{
@@ -1351,26 +1355,27 @@ int schedule_job_fcfs_score_return_running_cores(struct Job* j, struct Node_List
 			//~ nb_copy_file_to_load = 0;
 			
 			/* In which node size I can pick. */
-			if (j->index_node_list == 0)
-			{
-				first_node_size_to_choose_from = 0;
-				last_node_size_to_choose_from = 2;
-			}
-			else if (j->index_node_list == 1)
-			{
-				first_node_size_to_choose_from = 1;
-				last_node_size_to_choose_from = 2;
-			}
-			else if (j->index_node_list == 2)
-			{
-				first_node_size_to_choose_from = 2;
-				last_node_size_to_choose_from = 2;
-			}
-			else
-			{
-				printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-				exit(EXIT_FAILURE);
-			}
+			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			//~ if (j->index_node_list == 0)
+			//~ {
+				//~ first_node_size_to_choose_from = 0;
+				//~ last_node_size_to_choose_from = 2;
+			//~ }
+			//~ else if (j->index_node_list == 1)
+			//~ {
+				//~ first_node_size_to_choose_from = 1;
+				//~ last_node_size_to_choose_from = 2;
+			//~ }
+			//~ else if (j->index_node_list == 2)
+			//~ {
+				//~ first_node_size_to_choose_from = 2;
+				//~ last_node_size_to_choose_from = 2;
+			//~ }
+			//~ else
+			//~ {
+				//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+				//~ exit(EXIT_FAILURE);
+			//~ }
 						
 			/* --- Reduced complexity nb of copy --- */
 			if (multiplier_nb_copy != 0)
@@ -2746,26 +2751,27 @@ int try_to_start_job_immediatly_without_delaying_j1(struct Job* j, struct Job* j
 	/* In which node size I can pick. */
 	if (use_bigger_nodes == true)
 	{
-		if (j->index_node_list == 0)
-		{
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 2;
-		}
-		else if (j->index_node_list == 1)
-		{
-			first_node_size_to_choose_from = 1;
-			last_node_size_to_choose_from = 2;
-		}
-		else if (j->index_node_list == 2)
-		{
-			first_node_size_to_choose_from = 2;
-			last_node_size_to_choose_from = 2;
-		}
-		else
-		{
-			printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-			exit(EXIT_FAILURE);
-		}
+		get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+		//~ if (j->index_node_list == 0)
+		//~ {
+			//~ first_node_size_to_choose_from = 0;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else if (j->index_node_list == 1)
+		//~ {
+			//~ first_node_size_to_choose_from = 1;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else if (j->index_node_list == 2)
+		//~ {
+			//~ first_node_size_to_choose_from = 2;
+			//~ last_node_size_to_choose_from = 2;
+		//~ }
+		//~ else
+		//~ {
+			//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+			//~ exit(EXIT_FAILURE);
+		//~ }
 	}
 	else
 	{
@@ -3337,6 +3343,38 @@ void swap(long long* xp, long long* yp)
     *yp = temp;
 }
 
+void get_node_size_to_choose_from(int index, int* first_node_size_to_choose_from, int* last_node_size_to_choose_from)
+{
+	if (constraint_on_sizes != 3)
+	{
+		if (index == 0)
+		{
+			*first_node_size_to_choose_from = 0;
+			*last_node_size_to_choose_from = 2;
+		}
+		else if (index == 1)
+		{
+			*first_node_size_to_choose_from = 1;
+			*last_node_size_to_choose_from = 2;
+		}
+		else if (index == 2)
+		{
+			*first_node_size_to_choose_from = 2;
+			*last_node_size_to_choose_from = 2;
+		}
+		else
+		{
+			printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		*first_node_size_to_choose_from = index;
+		*last_node_size_to_choose_from = index;
+	}
+}
+		
 /** Pas utile car je peux pas savoir en fait, si les cores qui sont utilisées c'est les 20 19 18, bah en prenant 1 2 3 je bloque autre chose, donc autant ne rien faire. **/
 //~ /* Update cores available times and fill the cores used in the job. Uses the lowest index cores possible. */
 //~ int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t)
