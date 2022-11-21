@@ -331,6 +331,22 @@ on the node with the lowest score.
 \end{algorithm}
 
 \section{Working with a real workload and cluster\todo[inline]{Max: Find a better name}}\label{sec.working}
+Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
+that are non-trivial to replicate in a fully artificial simulted job pattern. We believe that this is especially
+true for data-dependent patterns, where a project might launch a burst of jobs using the same file just a few thousand
+core hours in length, then be quiet for a long time processing the results, and then launch another such burst.
+
+On the other hand, it would be disruptive to expose a real user community to a wide variety of experimental scheduling strategies.
+
+For this reason, we used logs of historical submitted jobs, in terms of their exact submission time, size, stated runtime, and actual runtime.
+Since explicit data dependencies are not encoded in Slurm job specifications, we created an artificial pattern for this. \todo[inline]{Carl: Max, please elaborate}
+
+The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 512GB nodes.
+The utilization levels are typically high (>90\%), but
+not fully consistently so. The vast majority of jobs on this resources are single node jobs, even sometimes single core jobs. Run times
+could extent to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
+but rather it is an empirical observation of an actual user community including, but not exlusively consisting of, many subfields of the life sciences
+with highly data-dependent workflows.
 
 \section{Evaluations}\label{sec.evaluations}
 
