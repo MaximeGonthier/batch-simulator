@@ -1,7 +1,7 @@
 import sys
 import csv
 
-# ~ percentage of reduction = ((v1-v2)/(-v2))*100 avec v2 valeur de fcfs
+# ~ percentage of reduction = valeur de fcfs/valeur a comparer
 
 input_data = sys.argv[1]
 output_data = open("data/Percentages_to_fcfs_" + sys.argv[2], "w")
@@ -52,7 +52,6 @@ for row in mycsv:
     # ~ if pair:
     if (row[0] == "FCFS" or row[0] == "EFT" or row[0] == "SCORE" or  row[0] == "OPPORTUNISTIC-SCORE MIX" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH100" or row[0] == "EFT-SCORE MIX DYNAMIC TH70" or row[0] == "EFT-SCORE MIX DYNAMIC TH100" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH70"):
 	    pair = False
-	    # ~ print(max_queue_fcfs, total_flow_fcfs)
 	    output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
     else:
 	    pair = True
