@@ -49,8 +49,8 @@ for row in mycsv:
     # ~ if (stretch_with_a_min_fcfs == 0):
 	    # ~ stretch_with_a_min_fcfs = 1
     
-    # ~ if pair:
-    if (row[0] == "FCFS" or row[0] == "EFT" or row[0] == "SCORE" or  row[0] == "OPPORTUNISTIC-SCORE MIX" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH100" or row[0] == "EFT-SCORE MIX DYNAMIC TH70" or row[0] == "EFT-SCORE MIX DYNAMIC TH100" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH70"):
+    if pair:
+    # ~ if (row[0] == "FCFS" or row[0] == "EFT" or row[0] == "SCORE" or  row[0] == "OPPORTUNISTIC-SCORE MIX" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH100" or row[0] == "EFT-SCORE MIX DYNAMIC TH70" or row[0] == "EFT-SCORE MIX DYNAMIC TH100" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH70"):
 	    pair = False
 	    output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
     else:

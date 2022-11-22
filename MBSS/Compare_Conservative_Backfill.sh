@@ -20,6 +20,7 @@ echo "Cluster:" ${CLUSTER_TP}
 CONTRAINTES_TAILLES=0
 echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 STARTING_I=$(($3))
+BUSY_CLUSTER_THRESHOLD=70
 
 make -C C/
 
@@ -44,7 +45,7 @@ do
 	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"; BACKFILL_MODE=0
 	elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
 	fi
-	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE
+	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE $BUSY_CLUSTER_THRESHOLD
 done
 
 echo "Final results are:"
