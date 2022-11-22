@@ -89,19 +89,19 @@ int main(int argc, char *argv[])
 	int time_to_save = 0;
 		
 	/* If you add save or resume as the last argument */
-	if (argc > 7)
+	if (argc > 8)
 	{
 		// T = 1406544 pour le save state de fcfs with a score mai 21-22
 		// T = 2237306 pour le save state de fcfs with a score mars 15 16 data persistence
-		if (strcmp(argv[7], "save") == 0)
+		if (strcmp(argv[8], "save") == 0)
 		{
 			need_to_save_state = true;
 			time_to_save = atoi(argv[8]);
 		}
-		else if (strcmp(argv[7], "resume") == 0)
+		else if (strcmp(argv[8], "resume") == 0)
 		{
 			need_to_resume_state = true;
-			if (argc > 8)
+			if (argc > 9)
 			{
 				printf("Error: no arg must be after resume.\n");
 				exit(EXIT_FAILURE);
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("Error: argv[7] must be save or resume.\n");
+			printf("Error: argv[8] must be save or resume.\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -601,12 +601,13 @@ int main(int argc, char *argv[])
 		//~ printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 	//~ }
 	// busy_cluster_threshold = 50;
-	busy_cluster_threshold = 70; // best one so far. One I used for current exp
+	//~ busy_cluster_threshold = 70; // best one so far. One I used for current exp
 	// busy_cluster_threshold = 75;
 	// busy_cluster_threshold = 80;
 	// busy_cluster_threshold = 95;
 	// busy_cluster_threshold =  99;
 	//~ busy_cluster_threshold = 100;
+	busy_cluster_threshold = atoi(argv[7]);
 	printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
 		
 	int division_by_planned_area = 0;
