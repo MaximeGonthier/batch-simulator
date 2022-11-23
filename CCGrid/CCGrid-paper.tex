@@ -52,29 +52,41 @@
 
 \maketitle
 
+
 \begin{abstract}
-Schedulers proposed by resource manager like SLURM or OAR are
-efficient enough for a classical use of a cluster. However, 
-users may submits tens to hundreds jobs using the same multi-GB input file.
-The sum of these communications, adds significant queue times for
-all subsequent jobs. Users could manually group together input files into a 
-single job to reduce the effects from I/O reads. However, to offer more
-flexibility to the users and avoid jobs monopolizing a large number of nodes,
-we would like to let users submit jobs the way they want and schedule efficiently
-those jobs on our nodes. The workers have a way to store files
-(with a limit on the memory size). Thus, a way to minimize data transfers
-is to schedule jobs using identical files on the same set of nodes.
-We present in this paper, three schedulers that \textbf{take into consideration data locality
-to minimize data transfers and thus reduce the mean waiting time of a job}.
+  Clusters and supercomputers make use of workload schedulers such as
+  SLURM or OAR to allocate computing jobs onto nodes. These schedulers
+  usually aim at a good trade-off between increasing resource
+  utilization and user satisfaction (decreasing job waiting
+  time). However, these schedulers are typically unaware of jobs
+  sharing large input files: in data-intensive scenarios, tens to
+  hundreds of jobs dedicated to the study of the same multi-GB input
+  file may be successively submitted. Computing each of this jobs
+  first requires to load the input file, leading to a large data
+  transfer overhead. Users could manually group together some of these
+  jobs to reduce data transfers, but this would result in a much
+  larger job, more difficult to schedule by the resource manager, and
+  thus to a larger delay. We study how to design a \textbf{data-aware
+    job scheduler} that is able to keep large input files on 
+  computing nodes, provided it does not impact the storage need of
+  other jobs, and can used previously loaded files to \textbf{limit
+    data transfers in order to reduce waiting times of jobs}.
 
-We present three schedulers able to \textbf{distribute the load
-between the workers as well as having a vision of what the memory of each worker
-contains in order to re-use as much as possible an input file already loaded on a worker's
-local memory}.
-Experiments were performed using real cluster's history (\todo[inline]{Max: Can we talk about Rackham in double blind?}) allowing us to replicate the behavior of real users.
+  We present three schedulers capable of distributing the load between
+  computing nodes as well as being aware of what the storage of each
+  node contains in order to re-use as much as possible an input file
+  already loaded in the storage of some node.
 
-We also persent \todo[inline]{Max: Other contributions?}
+  We report simulations performed using real cluster usage traces. The
+  results show that keeping data in local storages between successive
+  jobs and using data locality information to schedule jobs allows to
+  reduce job waiting time and to largely decrease the amount of data
+  transfers.
+
+% We also persent \todo[inline]{Max: Other contributions?}
 \end{abstract}
+
+\todo[inline]{LM: I changed memory into storage: is it correct ?}
 
 \begin{IEEEkeywords}
 batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo[inline]{Max: I've added a lot of keywords, we should only choose a few of those I think?}
