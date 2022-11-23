@@ -4,8 +4,8 @@
 
 start=`date +%s`
 
-if [ "$#" -ne 3 ]; then
-    echo "Usage is bash Compare_Conservative_Backfill.sh converted_workload cluster starting_i"
+if [ "$#" -ne 4 ]; then
+    echo "Usage is bash Compare_Conservative_Backfill.sh converted_workload cluster starting_i save_time"
     exit
 fi
 
@@ -23,6 +23,9 @@ STARTING_I=$(($3))
 BUSY_CLUSTER_THRESHOLD=80
 
 make -C C/
+ulimit -S -s 10000000
+
+SAVE_TIME=$(($4))
 
 OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 if (($((STARTING_I)) == 1))
@@ -45,7 +48,14 @@ do
 	elif [ $((i)) == 9 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"; BACKFILL_MODE=0
 	elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
 	fi
-	./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE $BUSY_CLUSTER_THRESHOLD
+	
+	if (($((SAVE_TIME)) == 1))
+	then
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE $BUSY_CLUSTER_THRESHOLD
+	else
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE $BUSY_CLUSTER_THRESHOLD save $SAVE_TIME
+		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE $BUSY_CLUSTER_THRESHOLD resume
+	fi
 done
 
 echo "Final results are:"
