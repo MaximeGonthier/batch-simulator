@@ -91,11 +91,11 @@
 
 %~ Abstract by Loris:
   Clusters and supercomputers make use of workload schedulers such as
-  SLURM or OAR to allocate computing jobs onto nodes. These schedulers
+  SLURM \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?} or OAR to allocate computing jobs onto nodes. These schedulers
   usually aim at a good trade-off between increasing resource
   utilization and user satisfaction (decreasing job waiting
   time). However, these schedulers are typically unaware of jobs
-  sharing large input files: in data-intensive scenarios, tens to
+  sharing large input files: in data-intensive scenarios \todo[inline]{Max: should we precise that it's in certain areas of research that you are really highly data-dependent?}, tens to
   hundreds of jobs dedicated to the study of the same multi-GB input
   file may be successively submitted. Computing each of this jobs
   first requires to load the input file, leading to a large data
@@ -105,14 +105,16 @@
   thus to a larger delay. We study how to design a \textbf{data-aware
     job scheduler} that is able to keep large input files on 
   computing nodes, provided it does not impact the storage need of
-  other jobs, and can used previously loaded files to \textbf{limit
+  other jobs, and can use previously loaded files to \textbf{limit
     data transfers in order to reduce waiting times of jobs}.
+    \todo[inline]{Max: The abstract is already in bold, we might want to use textit instead of textbf}
 
   We present three schedulers capable of distributing the load between
   computing nodes as well as being aware of what the storage of each
   node contains in order to re-use as much as possible an input file
   already loaded in the storage of some node.
-
+  \todo[inline]{Max: Should we talk about our competitors FCFS and EFT with backfilling?}
+  
   We report simulations performed using real cluster usage traces. The
   results show that keeping data in local storages between successive
   jobs and using data locality information to schedule jobs allows to
@@ -398,8 +400,6 @@ with highly data-dependent workflows.
 
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_bigger_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of July 16}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-01-28->2022-01-28_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of January 28}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of January 28}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of july 13}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 13}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of August 16}\end{figure}
