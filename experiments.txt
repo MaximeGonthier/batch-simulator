@@ -74,6 +74,11 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "./C/main i
 1412034                   mgonthier      2022-11-23 22:17:57 W default   
 1412035                   mgonthier      2022-11-23 22:18:16 W default   
 1412036                   mgonthier      2022-11-23 22:18:35 W default   
+1412038                   mgonthier      2022-11-23 22:24:40 R default   
+1412039                   mgonthier      2022-11-23 22:25:11 R default   
+1412040                   mgonthier      2022-11-23 22:25:28 R default   
+1412041                   mgonthier      2022-11-23 22:26:56 W default   
+1412042                   mgonthier      2022-11-23 22:27:56 R default   
 
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-23-\>2022-03-23_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-25-\>2022-03-25_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
