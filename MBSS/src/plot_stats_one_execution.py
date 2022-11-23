@@ -91,26 +91,21 @@ else:
 	Y3 = list(df.iloc[:, Y_index + 4 + 1])
 	Y4 = list(df.iloc[:, Y_index + 2 + 1])
 	fig, ax1 = plt.subplots()
-	# ~ ax2 = ax1.twinx()
-	# ~ ax3 = ax1.twinx()
-	# ~ ax3 = ax2.twiny()
-	# ~ ax1 = ax2.twinx()
 	ax1.plot(Y1, 'b-', label='Used cores by all jobs')
-	# ~ ax2.plot(Y2, 'g-', label='All jobs')
-	ax1.plot(Y2, 'g-', label='Cores in queue from all jobs jobs')
-	# ~ ax2.plot(Y3, 'r-', label='Evaluated jobs')
-	ax1.plot(Y3, 'r-', label='Cores in queue from evaluated jobs')
-	ax1.plot(Y4, "pink", label='Used cores by evaluated jobs')
-	# ~ ax1.set_ylim([0, 500])
+	ax1.plot(Y2, 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
+	ax1.plot(Y3, 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
+	ax1.plot(Y4, "r-", label='Used cores by evaluated jobs')
 	
-	if (mode == 0):
+	if (mode == 0): # mode full
 		plt.axvline(x = first_job_day_1, color = 'orange', linestyle = "dotted")
 		plt.axvline(x = first_job_day_2, color = 'orange', linestyle = "dotted")
+	else: # mode reduced
+		plt.axvline(x = 86400, color = 'orange', linestyle = "dotted")
+		plt.axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
 		
 	plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
 	ax1.set_xlabel('Time in seconds')
 	ax1.set_ylabel(Y_label, color='b')
-	# ~ ax2.set_ylabel('Nb of required cores in the queue', color='g')
 	plt.legend()
 	
 filename = "plot/" + title + ".pdf"

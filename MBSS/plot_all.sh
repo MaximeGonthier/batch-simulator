@@ -159,6 +159,11 @@ bash plot.sh inputs/workloads/converted/All_workloads_mean inputs/clusters/rackh
 python3 src/compute_percentages_all_workloads.py 15 1 mediane data/Percentages_to_fcfs_bf_2022-01-17-\>2022-01-17_V10000 data/Percentages_to_fcfs_bf_2022-01-21-\>2022-01-21_V10000 data/Percentages_to_fcfs_bf_2022-02-01-\>2022-02-01_V10000 data/Percentages_to_fcfs_bf_2022-02-02-\>2022-02-03_V10000 data/Percentages_to_fcfs_bf_2022-03-15-\>2022-03-16_V10000 data/Percentages_to_fcfs_bf_2022-04-07-\>2022-04-09_V10000 data/Percentages_to_fcfs_bf_2022-04-19-\>2022-04-19_V10000 data/Percentages_to_fcfs_bf_2022-08-16-\>2022-08-16_V10000 data/Percentages_to_fcfs_bf_2022-01-28-\>2022-01-28_V10000 data/Percentages_to_fcfs_bf_2022-05-06-\>2022-05-06_V10000 data/Percentages_to_fcfs_bf_2022-07-13-\>2022-07-13_V10000 data/Percentages_to_fcfs_bf_2022-07-16-\>2022-07-16_V10000 data/Percentages_to_fcfs_bf_2022-07-17-\>2022-07-17_V10000 data/Percentages_to_fcfs_bf_2022-07-18-\>2022-07-18_V10000 data/Percentages_to_fcfs_bf_2022-07-14-\>2022-07-14_V10000
 bash plot.sh inputs/workloads/converted/All_workloads_mediane inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_all_workloads_mediane Percentage_FCFS_BF 2
 
-# Histograms
-#~ python3 src/histogram_stretch.py data/Percentages_to_fcfs_all_workloads_histograms
-#~ python3 src/histogram_stretch.py data/Percentages_to_fcfs_bf_all_workloads_histograms
+#~ # Best TH
+#~ PROPORTION="V10000"
+#~ DATE="2022-07-16->2022-07-16"
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Threshold_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Threshold 0
+#~ DATE="2022-07-13->2022-07-13"
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Threshold_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Threshold 0
+#~ DATE="2022-07-18->2022-07-18"
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Threshold_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Threshold 0

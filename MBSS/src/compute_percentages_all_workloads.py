@@ -7,15 +7,15 @@ import pandas as pd
 from matplotlib import pyplot as plt
 import numpy as np
 
-def calculate_median(l):
-    l = sorted(l)
-    l_len = len(l)
-    if l_len < 1:
-        return None
-    if l_len % 2 == 0 :
-        return ( l[(l_len-1)/2] + l[(l_len+1)/2] ) / 2.0
-    else:
-        return l[(l_len-1)/2]
+# ~ def calculate_median(l):
+    # ~ l = sorted(l)
+    # ~ l_len = len(l)
+    # ~ if l_len < 1:
+        # ~ return None
+    # ~ if l_len % 2 == 0 :
+        # ~ return ( l[(l_len-1)/2] + l[(l_len+1)/2] ) / 2.0
+    # ~ else:
+        # ~ return l[(l_len-1)/2]
 
 # ~ input_data = sys.argv[1]
 # ~ output_data = open("data/Percentages_to_fcfs_" + sys.argv[2], "w")
@@ -39,12 +39,12 @@ eftline = True
 output_data_bf.write("Scheduler, Maximum queue time, Total flow, Total transfer time, Stretch, Stretch with a minimum\n")
 
 # ~ if (int(sys.argv[2]) == 1): # bf
-sum_max_queue_time = [[], [], [], [], []]
-sum_total_flow = [[], [], [], [], []]
-sum_transfer_time = [[], [], [], [], []]
-sum_stretch = [[], [], [], [], []]
-sum_stretch_with_min = [[], [], [], [], []]
-	# ~ algo = [[], [], [], [], []]
+sum_max_queue_time = [[], [], [], []]
+sum_total_flow = [[], [], [], []]
+sum_transfer_time = [[], [], [], []]
+sum_stretch = [[], [], [], []]
+sum_stretch_with_min = [[], [], [], []]
+# ~ algo = [[], [], [], []]
 # ~ else:
 	# ~ sum_max_queue_time = [[], [], [], [], [], [], []]
 	# ~ sum_total_flow = [[], [], [], [], [], [], []]
@@ -73,12 +73,14 @@ for i in range(0, nargs2):
 		# ~ algo[j].append(row[0])
 		j += 1
 
-print(sum_stretch)
+# ~ print(sum_stretch)
 
 # ~ for j in sum_stretch:
 	# ~ for i in j:
 		# ~ output_hist.write("," + str(i))
 	# ~ output_hist.write("\n")
+
+print(sum_stretch)
 
 if (sys.argv[3] == "mediane"):
 	# Mediane

@@ -815,6 +815,9 @@ int main(int argc, char *argv[])
 		printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
 	}
 	
+	#ifdef PRINT_CLUSTER_USAGE
+	int time_all_job_workload_1_started = -1;
+	#endif
 	
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
@@ -825,6 +828,14 @@ int main(int argc, char *argv[])
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
 	#endif
 	{
+		#ifdef PRINT_CLUSTER_USAGE
+		if (nb_job_to_evaluate == nb_job_to_evaluate_started && time_all_job_workload_1_started == -1)
+		{
+			time_all_job_workload_1_started = t;
+		}
+		#endif
+		
+		
 		/* Test pour save l'état et recommencer */
 		if (need_to_save_state == true && t >= time_to_save)
 		{
@@ -1013,12 +1024,13 @@ int main(int argc, char *argv[])
 				
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
-		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
+		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + running_nodes*20, nb_cores_from_workload_1_in_queue + running_nodes*20);
 		
-		//~ if (t >= 86400 - 18000 && t <= 86400*2 + 18000)
-		if (t >= first_subtime_day_0 + 86400 - 18000 && t <= first_subtime_day_0 + 86400*2 + 18000)
+		// half a day after and before day 1
+		//~ printf("%d, %d, %d\n", t, first_subtime_day_0 + 86400/2, first_subtime_day_0 + 86400 + 86400 + 86400/2);
+		if (t >= first_subtime_day_0 + 86400/2 && t <= time_all_job_workload_1_started + 86400/2)
 		{
-			fprintf(f_reduced_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue, nb_cores_from_workload_1_in_queue);
+			fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + running_nodes*20, nb_cores_from_workload_1_in_queue + running_nodes*20);
 		}
 		
 		//~ printf("%d,%d,%d,%d\n", running_nodes, nb_jobs_in_queue, mixed_mode, busy_cluster);

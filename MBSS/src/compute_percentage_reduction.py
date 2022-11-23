@@ -39,7 +39,7 @@ for row in mycsv:
     # ~ if eftline:
         # ~ eftline = False
         # ~ continue
-    
+    # ~ print(row)
     if (max_queue_fcfs == 0):
 	    max_queue_fcfs = 1
     if (max_queue_fcfsbf == 0):
@@ -48,13 +48,20 @@ for row in mycsv:
 	    # ~ stretch_fcfs = 1
     # ~ if (stretch_with_a_min_fcfs == 0):
 	    # ~ stretch_with_a_min_fcfs = 1
+	   
+    if (float(row[2]) == 0):
+	    max_queue_to_compare = 1
+    else:
+	    max_queue_to_compare = float(row[2])
     
     if pair:
     # ~ if (row[0] == "FCFS" or row[0] == "EFT" or row[0] == "SCORE" or  row[0] == "OPPORTUNISTIC-SCORE MIX" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH100" or row[0] == "EFT-SCORE MIX DYNAMIC TH70" or row[0] == "EFT-SCORE MIX DYNAMIC TH100" or row[0] == "EFT-SCORE MIX NON DYNAMIC TH70"):
 	    pair = False
-	    output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
+	    # ~ output_data.write(row[0] + "," + str(((float(row[2])-max_queue_fcfs)/(max_queue_fcfs))*100) + "," + str(((float(row[7])-total_flow_fcfs)/(total_flow_fcfs))*100) + "," + str(((float(row[12])-transfer_time_fcfs)/(transfer_time_fcfs))*100) + "," + str(((float(row[13])-stretch_fcfs)/(stretch_fcfs))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfs)/(stretch_with_a_min_fcfs))*100) + "\n")
+	    output_data.write(row[0] + "," + str(max_queue_fcfs/max_queue_to_compare) + "," + str(total_flow_fcfs/float(row[7])) + "," + str(transfer_time_fcfs/float(row[12])) + "," + str(stretch_fcfs/float(row[13])) + "," + str(stretch_with_a_min_fcfs/float(row[14])) + "\n")
     else:
 	    pair = True
-	    output_data_bf.write(row[0] + "," + str(((float(row[2])-max_queue_fcfsbf)/(max_queue_fcfsbf))*100) + "," + str(((float(row[7])-total_flow_fcfsbf)/(total_flow_fcfsbf))*100) + "," + str(((float(row[12])-transfer_time_fcfsbf)/(transfer_time_fcfsbf))*100) + "," + str(((float(row[13])-stretch_fcfsbf)/(stretch_fcfsbf))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfsbf)/(stretch_with_a_min_fcfsbf))*100) + "\n")
+	    # ~ output_data_bf.write(row[0] + "," + str(((float(row[2])-max_queue_fcfsbf)/(max_queue_fcfsbf))*100) + "," + str(((float(row[7])-total_flow_fcfsbf)/(total_flow_fcfsbf))*100) + "," + str(((float(row[12])-transfer_time_fcfsbf)/(transfer_time_fcfsbf))*100) + "," + str(((float(row[13])-stretch_fcfsbf)/(stretch_fcfsbf))*100) + "," + str(((float(row[14])-stretch_with_a_min_fcfsbf)/(stretch_with_a_min_fcfsbf))*100) + "\n")
+	    output_data_bf.write(row[0] + "," + str(max_queue_fcfsbf/max_queue_to_compare) + "," + str(total_flow_fcfsbf/float(row[7])) + "," + str(transfer_time_fcfsbf/float(row[12])) + "," + str(stretch_fcfsbf/float(row[13])) + "," + str(stretch_with_a_min_fcfsbf/float(row[14])) + "\n")
 
 

@@ -54,29 +54,30 @@
 
 \begin{abstract}
 Schedulers proposed by resource manager like SLURM or OAR are
-efficient enough for a normal use of a cluster. However, 
+efficient enough for a classical use of a cluster. However, 
 users may submits tens to hundreds jobs using the same multi-GB input file.
 The sum of these communications, adds significant queue times for
-all subsequent jobs.
-Users could manually group together input files into a single job to
-reduce the effects from I/O reads. However to offer more flexibility to the 
-user and avoid jobs monopolizing a large number of nodes, we would like
-to let the user submit jobs the way they want and schedule efficiently
+all subsequent jobs. Users could manually group together input files into a 
+single job to reduce the effects from I/O reads. However, to offer more
+flexibility to the users and avoid jobs monopolizing a large number of nodes,
+we would like to let users submit jobs the way they want and schedule efficiently
 those jobs on our nodes. The workers have a way to store files
 (with a limit on the memory size). Thus, a way to minimize data transfers
-is to create a scheduler that \textbf{take into consideration data locality
-and schedule on the same node jobs sharing inputs}.
+is to schedule jobs using identical files on the same set of nodes.
+We present in this paper, three schedulers that \textbf{take into consideration data locality
+to minimize data transfers and thus reduce the mean waiting time of a job}.
 
-We present three schedulers\todo{Max: 2?} able to \textbf{distribute the load
-between the workers but also to have a vision of what the memory of each worker
-contains in order to re-use as much as possible a file already loaded on a worker's
+We present three schedulers able to \textbf{distribute the load
+between the workers as well as having a vision of what the memory of each worker
+contains in order to re-use as much as possible an input file already loaded on a worker's
 local memory}.
+Experiments were performed using real cluster's history (\todo[inline]{Max: Can we talk about Rackham in double blind?}) allowing us to replicate the behavior of real users.
 
-We also ... \todo[inline]{Max: more contributions todo}
+We also persent \todo[inline]{Max: Other contributions?}
 \end{abstract}
 
 \begin{IEEEkeywords}
-batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo{Max: I've added a lot of keywords, we should only choose a few of those I think?}
+batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo[inline]{Max: I've added a lot of keywords, we should only choose a few of those I think?}
 \end{IEEEkeywords}
 
 \todo[inline]{Maxime: Do not hesitate to add a lot of todo notes.}
@@ -259,7 +260,7 @@ on the node with the lowest score.
 \caption{EFT-SCORE MIX (Draft)}
 \hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
 \begin{algorithmic}[1]
-\State $occupation\_threshold \gets 100$ 
+\State $occupation\_threshold \gets 80$ 
 \State $occupation \gets$ the percentage of nodes running at least one job
 %~ \ForEach {$J_i \in \jobset$}
 	\If{$occupation < occupation\_threshold$}

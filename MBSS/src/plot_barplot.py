@@ -131,10 +131,11 @@ if (percentages_mode == 0):
 	else:
 		plt.ylabel("Seconds")
 elif (percentages_mode == 1):
-	plt.ylabel("% difference with fcfs (the lower the better)")
+	plt.ylabel("Speedup compared to FCFS")
+	plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 elif (percentages_mode == 2):
-# ~ else:
-	plt.ylabel("% difference with fcfs conservative bf (the lower the better)")
+	plt.ylabel("Speedup compared to FCFS with BF")
+	plt.axhline(y = 1, color = 'black', linestyle = "dotted")
   
 # Show the plot
 # ~ plt.show()

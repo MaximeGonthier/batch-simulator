@@ -24,20 +24,15 @@ if [ ${day} = "01" ]; then
 		month0="0"$((month0))
 	fi
 else
-			#~ if [ ${lastday} = "08" ]; then
-				#~ nextday="09"
-			#~ elif [ ${lastday} = "09" ]; then
-				#~ nextday="10"
-			#~ else
-				#~ nextday=$((lastday+1))
-				#~ if [ $((nextday)) -lt 10 ]; then
-					#~ nextday="0"$((nextday))
-				#~ fi
-			#~ fi
-
-	day0=$((day-1))
-	if [ $((day0)) -lt 10 ]; then
-		day0="0"$((day0))
+	if [ ${day} = "08" ]; then
+		day0="07"
+	elif [ ${day} = "09" ]; then
+		day0="08"
+	else
+		day0=$((day-1))
+		if [ $((day0)) -lt 10 ]; then
+			day0="0"$((day0))
+		fi
 	fi
 	month0=${month}
 fi
@@ -55,11 +50,17 @@ if [ ${month} = "04" ] || [ ${month} = "06" ] || [ ${month} = "09" ] || [ ${mont
 			month2="0"$((month2))
 		fi
 	else
-		day2=$((day+1))
-		month2=${month}
-		if [ $((day2)) -lt 10 ]; then
-			day2="0"$((day2))
+		if [ ${day} = "08" ]; then
+			day2="09"
+		elif [ ${day} = "09" ]; then
+			day2="10"
+		else
+			day2=$((day+1))
+			if [ $((day2)) -lt 10 ]; then
+				day2="0"$((day2))
+			fi
 		fi
+		month2=${month}
 	fi
 elif [ ${month} = "02" ]; then
 	if [ ${day} = "28" ]; then
@@ -173,4 +174,4 @@ echo "Will call ${call}"
 
 bash ${call}
 
-bash Stats_single_workload.sh inputs/workloads/converted/${main_day}-\>${main_day}_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0
+#~ bash Stats_single_workload.sh inputs/workloads/converted/${main_day}-\>${main_day}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs
