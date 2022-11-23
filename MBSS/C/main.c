@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 		else if (strcmp(argv[8], "resume") == 0)
 		{
 			need_to_resume_state = true;
-			if (argc > 8)
+			if (argc > 9)
 			{
 				printf("Error: no arg must be after resume.\n");
 				exit(EXIT_FAILURE);
