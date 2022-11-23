@@ -93,12 +93,12 @@ int main(int argc, char *argv[])
 	{
 		// T = 1406544 pour le save state de fcfs with a score mai 21-22
 		// T = 2237306 pour le save state de fcfs with a score mars 15 16 data persistence
-		if (strcmp(argv[8], "save") == 0)
+		if (strcmp(argv[9], "save") == 0)
 		{
 			need_to_save_state = true;
-			time_to_save = atoi(argv[8]);
+			time_to_save = atoi(argv[10]);
 		}
-		else if (strcmp(argv[8], "resume") == 0)
+		else if (strcmp(argv[9], "resume") == 0)
 		{
 			need_to_resume_state = true;
 			if (argc > 9)
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("Error: argv[8] must be save or resume.\n");
+			printf("Error: argv[9] must be save or resume.\n");
 			exit(EXIT_FAILURE);
 		}
 	}
