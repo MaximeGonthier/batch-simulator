@@ -77,9 +77,9 @@ int main(int argc, char *argv[])
 {
 	nb_data_reuse = 0;
 	
-	if (argc != 7 && argc != 8 && argc != 9)
+	if (argc != 8 && argc != 9 && argc != 10)
 	{
-		printf("Error: args must be 7, 8 or 9!\n");
+		printf("Error: args must be 8, 9 or 10!\n");
 		exit(EXIT_FAILURE);
 	}
 	
