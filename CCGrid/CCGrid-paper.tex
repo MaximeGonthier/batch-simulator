@@ -218,22 +218,58 @@ We consider the problem of scheduling a set of independent jobs $\jobset = {J_1,
 a set of independent nodes $\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
 
 Each node is equipped with $m$ cores noted: $\Node{1}(C_1, C_2, ..., C_m)$.
-
-%~ Let's note $\mathbb{M} = M_1, M_2, ..., M_o$ the set of available memory sizes, with $M_1 < M_2 < ... < M_o$.
-%~ Each node has a limited memory $\memory(\Node{i})$ such that $\memory(\Node{i}) \in \mathbb{M}$.
+the memory of a node is set to $M\,GB$.
 
 We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files.
 Each file has a size in GB noted $\memory(F_i)$.
 The size of a file is proportional to the number of cores requested by the job using the file.
-This size is thus a multiple of $\frac{M_i}{\core(J_j)}$, $M_i \in \mathbb{M}$.
+This size is thus a multiple of $\frac{M}{m}$.
 
 Each job is equipped with the folowing attributes:
 \begin{itemize}
-	\item A number of required cores $\core(J_i)$ such as $1 \leq \core(J_i) \leq 20$.
+	\item A number of required cores $\core(J_i)$ such as $1 \leq \core(J_i) \leq m$.
 	\item An input file $\file(J_i) \in \fileset$.
 	\item A submission time $\submissiontime(J_i)$.
 	\item A walltime $\walltime(J_i)$ corresponding to the maximum time during which $J_i$ can run on a node.
+	\item The real execution time of the job named $\duration(J_i)$. This attribute is not know by the scheduer. If $\duration(J_i) \l \walltime(J_i)$, then the job will terminate before the allocated time. Else the job will be terminated before it's completion at time $\start(J_i) + \walltime(J_i)$.
 \end{itemize}
+
+Initially, all input files are stored in the main shared file system.
+During the processing of a job $J_i$ on $\Node{k}$,
+$\file(J_i)$ must be in the memory of $\Node{k}$. 
+We do not consider the data output of jobs.
+Each of the $m$ jobs must be processed on some of the $K$ nodes. 
+We consider that all jobs are single nodes.
+
+The file sharing system initially contains all of $\fileset$.
+Each node is connected to the file sharing system with a limited bandwidth.
+Each node has the same bandwidth noted $\bandwidth$.
+The bounded bandwidth as well as the sizes of the files are the reasons why
+we aim at restricting the amount of data movement.
+
+The memory of a node is used only by physical writing of files and denoted by $\memory(\Node{i})$.
+A file can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
+\begin{enumerate}
+	\item $J_i$ and $J_j$ are computed in parallel on the same node.
+	\item $J_i$ and $J_j$ are computed on the same node consecutively.
+\end{enumerate}
+Otherwise we consider that memory operations will cause the files to be evicted.
+
+We now define more formally the allocation of the jobs to the node and
+their schedule.
+We denote by $\sigma(k,i)$ the $i^\text{th}$ job
+processed on $\Node{k}$ and by $\evict(k,i)$ the set of file to
+be evicted from the memory of $\Node{k}$ before the processing
+of this $i^\text{th}$ job ($\evict(k,i)$ can be empty if there is enough space to fit the new files).
+
+On $\Node{k}$, the schedule is made of a
+succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
+following stages (in this order):
+\begin{enumerate}
+\item The input file in $\file(J_{\sigma(k,i)})$ that is not yet in memory is loaded in the memory of $\Node{k}$
+\item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
+\end{enumerate}
+It is important to note that the file transfers are done before the computation and can not be overlapped.
 
 We are in a non-preemptive case, meaning that a job cannot be stopped and resumed.
 \todo[inline]{Max: I'm not sure where this sentence should go.}

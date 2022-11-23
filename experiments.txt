@@ -1,65 +1,74 @@
 Experiments to the new mixed strategy. Je dois avoir 16*2 résultats à la fin.
 
-walltime=11:20:00
-2022-11-22 21:18:00
+walltime=07:30:00
+2022-11-23 01:19:00
 
 make -C C/
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-28-\>2022-01-28_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-02-01-\>2022-02-01_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-15-\>2022-03-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-19-\>2022-04-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-05-06-\>2022-05-06_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-13-\>2022-07-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-16-\>2022-07-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-17-\>2022-07-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-14-\>2022-07-14_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-28-\>2022-01-28_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-02-01-\>2022-02-01_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-15-\>2022-03-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-19-\>2022-04-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-05-06-\>2022-05-06_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-13-\>2022-07-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-16-\>2022-07-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-17-\>2022-07-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-07-14-\>2022-07-14_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
 
 make -C C/
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-01-28-\>2022-01-28_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-02-01-\>2022-02-01_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-03-15-\>2022-03-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-04-19-\>2022-04-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-05-06-\>2022-05-06_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-13-\>2022-07-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-14-\>2022-07-14_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-16-\>2022-07-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-17-\>2022-07-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-01-28-\>2022-01-28_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-02-01-\>2022-02-01_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-03-15-\>2022-03-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-04-19-\>2022-04-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-05-06-\>2022-05-06_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-13-\>2022-07-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-14-\>2022-07-14_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-16-\>2022-07-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-17-\>2022-07-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80"
 
 make -C C/
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-01-28-\>2022-01-28_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-02-01-\>2022-02-01_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-03-15-\>2022-03-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-04-19-\>2022-04-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-05-06-\>2022-05-06_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-13-\>2022-07-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-14-\>2022-07-14_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-16-\>2022-07-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-17-\>2022-07-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-01-28-\>2022-01-28_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-02-01-\>2022-02-01_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-03-15-\>2022-03-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-04-19-\>2022-04-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-05-06-\>2022-05-06_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-13-\>2022-07-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-14-\>2022-07-14_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-16-\>2022-07-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-17-\>2022-07-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
+oarsub -p nova -l core=16,walltime=07:30:00 -r '2022-11-23 01:19:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
 
-# New days launched this night
-make -C C/
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022---\>2022--_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022---\>2022--_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022---\>2022--_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
-oarsub -p nova -l core=16,walltime=11:20:00 -r '2022-11-22 21:18:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022---\>2022--_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1"
+# New days not finished yet 8 et 11 juin, 19 et 25 mai
+1411785                   mgonthier      2022-11-23 11:12:48 R default   
+1411882                   mgonthier      2022-11-23 15:20:05 R default   
+1411915                   mgonthier      2022-11-23 17:10:07 W default   
+1411917                   mgonthier      2022-11-23 17:13:37 W default  
 
-walltime=11:20:00
-2022-11-22 21:18:00
+# En cours avec un save:
+mgonthier@flyon:~/data-aware-batch-scheduling/MBSS$ oarsub -p nova -l core=16,walltime=03:05:00 -r '2022-11-23 14:49:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-05-19-\>2022-05-19_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 4702743"
+oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-11-23 19:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-06-08-\>2022-06-08_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 5 6553737"
+mgonthier@flyon:~/data-aware-batch-scheduling/MBSS$ oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-11-23 19:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-05-25-\>2022-05-25_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 3 5177671"
+
+# A lancer:
+1411785     a reprendre            
+1411882		a reprendre
+get_best_threshold.sh sur le 08-16 pour mettre dans l'article le choix du th80
+
+walltime=07:30:00
+2022-11-23 01:19:00
