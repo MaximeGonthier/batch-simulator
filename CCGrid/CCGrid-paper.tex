@@ -53,34 +53,44 @@
 \maketitle
 
 \begin{abstract}
-Schedulers proposed by resource manager like SLURM or OAR are
-efficient enough for a classical use of a cluster. However, 
-users may submits tens to hundreds jobs using the same multi-GB input file.
-The sum of these communications, adds significant queue times for
-all subsequent jobs. Users could manually group together input files into a 
-single job to reduce the effects from I/O reads. However, to offer more
-flexibility to the users and avoid jobs monopolizing a large number of nodes,
-we would like to let users submit jobs the way they want and schedule efficiently
-those jobs on our nodes. The workers have a way to store files
-(with a limit on the memory size). Thus, a way to minimize data transfers
-is to schedule jobs using identical files on the same set of nodes.
-We present in this paper, three schedulers that \textbf{take into consideration data locality
+Schedulers proposed by resource manager like SLURM
+(Simple Linux Utility for Resource Management) or OAR are
+efficient enough for a classical use of a cluster. 
+Certain areas of research are highly data-dependent, and thus
+requires large input files to be loaded ahead of the computation.
+In these cases, users may submits tens to hundreds of jobs using the
+same multi-GB input file.
+The sum of these large communications, adds significant queue times for
+all subsequent jobs. A solution to reduce the effects from I/O reads would be to 
+force users to manually group together input files into a single job. 
+However, to offer more flexibility to the users and avoid creating jobs
+monopolizing a large number of nodes for a very long time, we would like to
+let users submit jobs the way they want and schedule efficiently those jobs
+on our nodes. 
+
+The workers have a way to store files (with a limit on the memory size).
+Thus, a way to minimize data transfers is to schedule jobs using identical files
+on the same set of nodes. In this work we address the problem of
+\textit{distributing jobs sharing large input files on a cluster.}
+We present three schedulers that \textit{take into consideration data locality
 to minimize data transfers and thus reduce the mean waiting time of a job}.
 
-We present three schedulers able to \textbf{distribute the load
-between the workers as well as having a vision of what the memory of each worker
-contains in order to re-use as much as possible an input file already loaded on a worker's
-local memory}.
-Experiments were performed using real cluster's history (\todo[inline]{Max: Can we talk about Rackham in double blind?}) allowing us to replicate the behavior of real users.
+These new approaches are evaluated using real cluster's history
+\todo[inline]{Max: Can we talk about Rackham in double blind?}
+allowing us to replicate the behavior of real users.
+We compare our heuristics to the First-Come-First-Serve heuristic
+coupled with a conservative backfilling strategy, as well as a communication-aware strategy
+called Earliest-Finish-Time. We show that overall, our algorithms achieve
+a significant speed-up, mainly under job-intensive periods.
 
-We also persent \todo[inline]{Max: Other contributions?}
+In addition we study a few different typical usage of a cluster. 
+and show that our strategy can be tuned regarding different user
+behavior on different clusters.
 \end{abstract}
 
 \begin{IEEEkeywords}
-batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo[inline]{Max: I've added a lot of keywords, we should only choose a few of those I think?}
+Batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo[inline]{Max: I've added a lot of keywords, we should only choose a few of those I think?}
 \end{IEEEkeywords}
-
-\todo[inline]{Maxime: Do not hesitate to add a lot of todo notes.}
 
 \section{Introduction}\label{sec.introduction}
 
@@ -351,6 +361,16 @@ but rather it is an empirical observation of an actual user community including,
 with highly data-dependent workflows.
 
 \section{Evaluations}\label{sec.evaluations}
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_bigger_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of July 16}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-01-28->2022-01-28_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of January 28}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of January 28}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of july 13}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 13}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of August 16}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of August 16}\end{figure}
+
 
 \section{Conclusion}\label{sec.conclusion}
 
