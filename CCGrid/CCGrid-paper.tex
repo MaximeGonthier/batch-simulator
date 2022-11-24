@@ -91,28 +91,28 @@
 
 %~ Abstract by Loris:
   Clusters and supercomputers make use of workload schedulers such as
-  SLURM \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?LM: I think it's fine in the abstract, we give a reference below} or OAR to allocate computing jobs onto nodes. These schedulers
+  SLURM \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?LM: I think it's fine in the abstract, we give a reference below. Max: Okay.} or OAR to allocate computing jobs onto nodes. These schedulers
   usually aim at a good trade-off between increasing resource
   utilization and user satisfaction (decreasing job waiting
   time). However, these schedulers are typically unaware of jobs
-  sharing large input files: in data-intensive scenarios \todo[inline]{Max: Should we precise that it's in certain areas of research that you are really highly data-dependent? LM: maybe again give details about this in the introduction}, tens to
+  sharing large input files: in data-intensive scenarios \todo[inline]{Max: Should we precise that it's in certain areas of research that you are really highly data-dependent? LM: maybe again give details about this in the introduction. Max: alright.}, tens to
   hundreds of jobs dedicated to the study of the same multi-GB input
-  file may be successively submitted. Computing each of this jobs
+  file may be successively submitted. Running each of these jobs
   first requires to load the input file, leading to a large data
   transfer overhead. Users could manually group together some of these
   jobs to reduce data transfers, but this would result in a much
-  larger job, more difficult to schedule by the resource manager, and
-  thus in a larger delay as well. We study how to design a \textit{data-aware
-    job scheduler} that is able to keep large input files on 
+  larger job, more difficult to schedule by the resource manager, and would
+  thus result in a larger delay as well. We study how to design a \textit{data-aware
+    job scheduler} that is able to keep large input files on the 
   computing nodes, provided it does not impact the storage needs of
   other jobs, and can use previously loaded files to \textit{limit
-    data transfers in order to reduce waiting times of jobs}.
+    data transfers in order to reduce the waiting times of jobs}.
     %\todo[inline]{Max: The abstract is already in bold, we might want to use textit instead of textbf}
 
   We present three schedulers capable of distributing the load between
-  computing nodes as well as being aware of what the storage of each
-  node contains in order to re-use as much as possible an input file
-  already loaded in the storage of some node.
+  the computing nodes as well as being aware of what the storage of each
+  node contains in order to re-use an input file
+  already loaded in the storage of some node as many times as possible.
   \todo[inline]{Max: Should we talk about our competitors FCFS and EFT
   with and without backfilling? Sam: we can say that we compare with
   schedulers currently used by job schedulers. Max: Okay, I added a sentence.}
@@ -142,7 +142,7 @@ a few of those I think? Sam: Real workload is probably not useful. Batch
 systems seems duplicate with Batch scheduling?  Communication-aware does
 not really seem appropriate (we don't look at the communications that
 happen during execution), rather something like job input aware or more
-idiomatic equivalent.}
+idiomatic equivalent. Max: Okay I updated it.}
 \end{IEEEkeywords}
 
 \section{Introduction}\label{sec.introduction}
