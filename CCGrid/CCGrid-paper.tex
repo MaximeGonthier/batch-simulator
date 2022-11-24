@@ -115,10 +115,12 @@
   already loaded in the storage of some node.
   \todo[inline]{Max: Should we talk about our competitors FCFS and EFT
   with and without backfilling? Sam: we can say that we compare with
-  schedulers currently used by job schedulers}
+  schedulers currently used by job schedulers. Max: Okay, I added a sentence.}
   
-  We report simulations performed using real cluster usage traces. The
-  results show that keeping data in local storage between successive
+  
+  We report simulations performed using real cluster usage traces. 
+  Our approach is compared to currently used schedulers in batch systems.
+  The results show that keeping data in local storage between successive
   jobs and using data locality information to schedule jobs allows to
   reduce job waiting time and to largely decrease the amount of data
   transfers.
@@ -129,11 +131,12 @@
 \begin{IEEEkeywords}
 Batch scheduling,
 Jobs sharing inputs,
-Real workload,
+%~ Real workload,
 Data-aware,
 Job scheduling,
-Communication-aware,
-Batch systems
+Job-input-aware
+%~ Communication-aware,
+%~ Batch systems
 \todo[inline]{Max: I've added a lot of keywords, we should only choose
 a few of those I think? Sam: Real workload is probably not useful. Batch
 systems seems duplicate with Batch scheduling?  Communication-aware does
