@@ -95,7 +95,7 @@
   usually aim at a good trade-off between increasing resource
   utilization and user satisfaction (decreasing job waiting
   time). However, these schedulers are typically unaware of jobs
-  sharing large input files: in data-intensive scenarios \todo[inline]{Max: should we precise that it's in certain areas of research that you are really highly data-dependent?}, tens to
+  sharing large input files: in data-intensive scenarios \todo[inline]{Max: Should we precise that it's in certain areas of research that you are really highly data-dependent?}, tens to
   hundreds of jobs dedicated to the study of the same multi-GB input
   file may be successively submitted. Computing each of this jobs
   first requires to load the input file, leading to a large data
@@ -113,7 +113,7 @@
   computing nodes as well as being aware of what the storage of each
   node contains in order to re-use as much as possible an input file
   already loaded in the storage of some node.
-  \todo[inline]{Max: Should we talk about our competitors FCFS and EFT with backfilling?}
+  \todo[inline]{Max: Should we talk about our competitors FCFS and EFT with and without backfilling?}
   
   We report simulations performed using real cluster usage traces. The
   results show that keeping data in local storages between successive
