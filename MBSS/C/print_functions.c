@@ -1033,12 +1033,12 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
 	
-	printf("Reading resumed state...\n");
+	//~ printf("Reading resumed state...\n");
 	
 	char* to_open = malloc(37*sizeof(char));
 	strcpy(to_open, "outputs/saved_state_");
 	strcat(to_open, (char *)input_job_file + strlen(input_job_file) - 17);
-	printf("File to resume: %s\n", to_open);
+	//~ printf("File to resume: %s\n", to_open);
 	FILE *f = fopen(to_open, "r");
 	free(to_open);
 	

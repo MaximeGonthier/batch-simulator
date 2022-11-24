@@ -24,19 +24,19 @@ echo "Workload: ${WORKLOAD_TP} | Model: ${MODEL} | Percentage mode: ${PERCENTAGE
 #~ else
 #~ fi
 
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+#~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_queue_time ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Maximum_flow ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_flow ${CLUSTER_TP} 0 ${DATA_FILE}
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+#~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_flow ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Transfer_time ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 ${DATA_FILE}
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+#~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+#~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Max_Stretch ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Max_Stretch_With_a_Minimum ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Nb_Upgraded_Jobs ${CLUSTER_TP} 0 ${DATA_FILE}

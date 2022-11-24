@@ -54,30 +54,6 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "./C/main i
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "./C/main inputs/workloads/converted/2022-07-18-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "./C/main inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80"
 
-Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le deuxieme resume dans les resultats.
-
-# En cours: + voir ce qu'on terminé
-1412027                   mgonthier      2022-11-23 22:15:48 R default   
-1412028                   mgonthier      2022-11-23 22:16:06 R default   
-1412029                   mgonthier      2022-11-23 22:16:25 R default   
-1412030                   mgonthier      2022-11-23 22:16:43 R default   
-1412031                   mgonthier      2022-11-23 22:17:02 W default   
-1412032                   mgonthier      2022-11-23 22:17:20 W default   
-1412033                   mgonthier      2022-11-23 22:17:39 W default   
-1412034                   mgonthier      2022-11-23 22:17:57 W default   
-1412035                   mgonthier      2022-11-23 22:18:16 W default   
-1412036                   mgonthier      2022-11-23 22:18:35 W default   
-1412038                   mgonthier      2022-11-23 22:24:40 R default   
-1412039                   mgonthier      2022-11-23 22:25:11 R default   
-1412040                   mgonthier      2022-11-23 22:25:28 R default   
-1412041                   mgonthier      2022-11-23 22:26:56 W default   
-1412042                   mgonthier      2022-11-23 22:27:56 R default   
-1412043                   mgonthier      2022-11-23 22:35:13 R default   
-1412047                   mgonthier      2022-11-23 22:39:24 W default   
-1412048                   mgonthier      2022-11-23 22:39:35 W default   
-1412049                   mgonthier      2022-11-23 22:40:04 W default   
-1412050                   mgonthier      2022-11-23 22:40:22 W default   
-
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-23-\>2022-03-23_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-25-\>2022-03-25_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-26-\>2022-03-26_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
@@ -91,12 +67,23 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compa
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-03-\>2022-04-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-04-\>2022-04-04_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 
+Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le deuxieme resume dans les resultats.
+
 06-08 - T=6553737 - 1412264
 06-11 - T=6672934 - 1412407
 08-16 - T=1 - 1412414
-03-10 - T=1628359 - 1412429
-03-24 - T=2007190 - 1412435
 03-23 - T=1 - 1412437
+03-25 - T=2088450 - 1412455 lancé à 19h
+03-27 - T=1 - 1412457 lancé à 19h
+03-28 - T=2351568 - pas encore lancé il faut resume a 3 les algos
+03-31 - T=1 - 1412530
+04-21 - T=4204612 - pas encore lancé il faut resume a 3 les algos
+04-22 - T=4213316 - pas encore lancé il faut resume a 3 les algos
+04-23 - T=4452249 - pas encore lancé il faut resume a 3 les algos
+04-24 - T=4468120 - pas encore lancé il faut resume a 3 les algos
+04-25 - T=4548822 - pas encore lancé il faut resume a 4 les algos
+01-02 - T=1 - pas encore lancé il faut resume a 6 les algos
+01-03 - T=3117409 - pas encore lancé il faut resume a 3 les algos
 
 walltime=10:40:00
 2022-11-23 22:11:00

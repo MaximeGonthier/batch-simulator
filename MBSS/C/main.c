@@ -814,7 +814,7 @@ int main(int argc, char *argv[])
 		need_to_resume_state = false;
 		resume_state(&t, &old_finished_jobs, &next_submit_time, input_job_file);
 		
-		printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
+		//~ printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
 	}
 	
 	//~ #ifdef PRINT_CLUSTER_USAGE
@@ -848,7 +848,7 @@ int main(int argc, char *argv[])
 			#endif
 			
 			//~ printf("%s\n", input_job_file[10:12]); exit(1);
-			printf("Save state at time %d >= %d (time_to_save)\n", t, time_to_save);
+			//~ printf("Save state at time %d >= %d (time_to_save)\n", t, time_to_save);
 			save_state(t, old_finished_jobs, next_submit_time, input_job_file);
 			exit(1);
 		}

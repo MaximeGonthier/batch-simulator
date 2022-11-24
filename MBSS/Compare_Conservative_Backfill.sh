@@ -15,15 +15,15 @@ WORKLOAD_TP=${WORKLOAD:27}
 CLUSTER=$2
 CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
-echo "Workload:" ${WORKLOAD_TP}
-echo "Cluster:" ${CLUSTER_TP}
+#~ echo "Workload:" ${WORKLOAD_TP}
+#~ echo "Cluster:" ${CLUSTER_TP}
 CONTRAINTES_TAILLES=0
-echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
+#~ echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
 STARTING_I=$(($3))
 BUSY_CLUSTER_THRESHOLD=80
 
 make -C C/
-ulimit -S -s 10000000
+#~ ulimit -S -s 10000000
 
 SAVE_TIME=$(($4))
 

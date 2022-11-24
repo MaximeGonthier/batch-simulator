@@ -20,13 +20,11 @@ import numpy as np
 # ~ input_data = sys.argv[1]
 # ~ output_data = open("data/Percentages_to_fcfs_" + sys.argv[2], "w")
 if (int(sys.argv[2]) == 1):
-	output_hist = open("data/Percentages_to_fcfs_bf_all_workloads_histograms", "w") # For histograms later on
 	if (sys.argv[3] == "mediane"):
 		output_data_bf = open("data/Percentages_to_fcfs_bf_all_workloads_mediane", "w")
 	else:
 		output_data_bf = open("data/Percentages_to_fcfs_bf_all_workloads_mean", "w")
 else:
-	output_hist = open("data/Percentages_to_fcfs_all_workloads_histograms", "w") # For histograms later on
 	if (sys.argv[3] == "mediane"):
 		output_data_bf = open("data/Percentages_to_fcfs_all_workloads_mediane", "w")
 	else:
@@ -55,12 +53,23 @@ sum_stretch_with_min = [[], [], [], []]
 
 nargs = float(sys.argv[1])
 nargs2 = int(sys.argv[1])
+
+if (sys.argv[3] == "mean"):
+	if (int(sys.argv[2]) == 1):
+		scatter_mean_stretch_all_workloads = open("outputs/scatter_mean_stretch_all_workloads_bf.csv", "w")
+		scatter_mean_stretch_all_workloads.write("EFT CONSERVATIVE BF,SCORE CONSERVATIVE BF,OPPORTUNISTIC-SCORE MIX CONSERVATIVE BF,EFT-SCORE MIX CONSERVATIVE BF\n")
+	else:
+		scatter_mean_stretch_all_workloads = open("outputs/scatter_mean_stretch_all_workloads.csv", "w")
+		scatter_mean_stretch_all_workloads.write("EFT,SCORE,OPPORTUNISTIC-SCORE MIX,EFT-SCORE MIX\n")
+
+row_index = 0
 print("Number of files:", nargs)
 for i in range(0, nargs2):
 	mycsv = csv.reader(open(sys.argv[i + 4]))
 	print("Read " + sys.argv[i + 4] + "...")
 	firstline = True
 	j = 0
+	row_index = 0
 	for row in mycsv:
 		if firstline:
 			firstline = False
@@ -70,15 +79,27 @@ for i in range(0, nargs2):
 		sum_transfer_time[j].append(float(row[3]))
 		sum_stretch[j].append(float(row[4]))
 		sum_stretch_with_min[j].append(float(row[5]))
-		# ~ algo[j].append(row[0])
+		
+		# for scatter plot later on
+		if (sys.argv[3] == "mean"):
+			if (row_index < 3):
+				scatter_mean_stretch_all_workloads.write(str(float(row[4])) + ",")
+			else:
+				scatter_mean_stretch_all_workloads.write(str(float(row[4])))
+		row_index = row_index + 1
+		
 		j += 1
+	
+	if (sys.argv[3] == "mean"):
+		scatter_mean_stretch_all_workloads.write("\n")
 
-# ~ print(sum_stretch)
 
-# ~ for j in sum_stretch:
-	# ~ for i in j:
-		# ~ output_hist.write("," + str(i))
-	# ~ output_hist.write("\n")
+	# ~ for i in sum_stretch:
+		# ~ for j in i:
+			# ~ scatter_mean_stretch_all_workloads.write()
+
+if (sys.argv[3] == "mean"):
+	scatter_mean_stretch_all_workloads.close()
 
 print(sum_stretch)
 
@@ -117,96 +138,3 @@ else:
 		# ~ output_data_bf.write("EFT-SCORE MIX DYNAMIC TH100"  + "," + str(statistics.mean(sum_max_queue_time[5])) + "," + str(statistics.mean(sum_total_flow[5])) + "," + str(statistics.mean(sum_transfer_time[5])) + "," + str(statistics.mean(sum_stretch[5])) + "," + str(statistics.mean(sum_stretch_with_min[5]))  + "\n")
 		# ~ output_data_bf.write("EFT-SCORE MIX NON DYNAMIC TH70"  + "," + str(statistics.mean(sum_max_queue_time[6])) + "," + str(statistics.mean(sum_total_flow[6])) + "," + str(statistics.mean(sum_transfer_time[6])) + "," + str(statistics.mean(sum_stretch[6])) + "," + str(statistics.mean(sum_stretch_with_min[6]))  + "\n")
 		output_data_bf.write("EFT-SCORE MIX"  + "," + str(statistics.mean(sum_max_queue_time[3])) + "," + str(statistics.mean(sum_total_flow[3])) + "," + str(statistics.mean(sum_transfer_time[3])) + "," + str(statistics.mean(sum_stretch[3])) + "," + str(statistics.mean(sum_stretch_with_min[3]))  + "\n")
-
-
-
-# ~ if (int(sys.argv[2]) != 1): # non bf
-	# ~ SCHEDULER = "SCORE"
-	# ~ x = sum_stretch[1]
-	# ~ x = pd.Series(x)
-	# ~ print(x)
-	# ~ plt.hist(x)
-	# ~ plt.xlabel("Speedup (the lower the better)")
-	# ~ plt.ylabel("#Occurences")
-	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
-	# ~ plt.close()
-# ~ else:
-	# ~ SCHEDULER = "SCORE BF"
-	# ~ x = sum_stretch[1]
-	# ~ x = pd.Series(x)
-	# ~ print(x)
-	# ~ plt.hist(x)
-	# ~ plt.xlabel("Speedup (the lower the better)")
-	# ~ plt.ylabel("#Occurences")
-	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_bf_" + SCHEDULER + ".pdf")
-	# ~ plt.close()
-
-# ~ if (int(sys.argv[2]) != 1): # non bf
-	# ~ SCHEDULER = "EFT-SCORE MIX NON DYNAMIC TH100"
-	# ~ x = sum_stretch[3]
-	# ~ x = pd.Series(x)
-	# ~ print(x)
-	# ~ plt.hist(x)
-	# ~ plt.xlabel("Speedup (the lower the better)")
-	# ~ plt.ylabel("#Occurences")
-	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
-	# ~ plt.close()
-# ~ else:
-	# ~ SCHEDULER = "EFT-SCORE MIX NON DYNAMIC TH100 BF"
-	# ~ x = sum_stretch[3]
-	# ~ x = pd.Series(x)
-	# ~ print(x)
-	# ~ plt.hist(x)
-	# ~ plt.xlabel("Speedup (the lower the better)")
-	# ~ plt.ylabel("#Occurences")
-	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_bf_" + SCHEDULER + ".pdf")
-	# ~ plt.close()
-	
-# ~ if (int(sys.argv[2]) != 1): # non bf
-	# ~ SCHEDULER = "EFT-SCORE MIX DYNAMIC TH70"
-	# ~ x = sum_stretch[4]
-	# ~ x = pd.Series(x)
-	# ~ print(x)
-	# ~ plt.hist(x)
-	# ~ plt.xlabel("Speedup (the lower the better)")
-	# ~ plt.ylabel("#Occurences")
-	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
-	# ~ plt.close()
-# ~ else:
-	# ~ SCHEDULER = "EFT-SCORE MIX DYNAMIC TH70 BF"
-	# ~ x = sum_stretch[4]
-	# ~ x = pd.Series(x)
-	# ~ print(x)
-	# ~ plt.hist(x)
-	# ~ plt.xlabel("Speedup (the lower the better)")
-	# ~ plt.ylabel("#Occurences")
-	# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_bf_" + SCHEDULER + ".pdf")
-	# ~ plt.close()
-
-
-
-			# ~ plt.close()
-		# ~ elif (i == 4):
-			# ~ SCHEDULER = "OPPORTUNISTIC-SCORE-MIX"
-			# ~ if (int(sys.argv[2]) == 1):
-				# ~ SCHEDULER += "_CONSERVATIVE_BF"
-			# ~ x = sum_stretch[i]
-			# ~ x = pd.Series(x)
-			# ~ print(x)
-			# ~ plt.hist(x)
-			# ~ plt.xlabel("Speedup")
-			# ~ plt.ylabel("#Occurences")
-			# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
-			# ~ plt.close()
-		# ~ else:
-			# ~ SCHEDULER = "EFT-SCORE-MIX-V2"
-			# ~ if (int(sys.argv[2]) == 1):
-				# ~ SCHEDULER += "_CONSERVATIVE_BF"
-			# ~ x = sum_stretch[i]
-			# ~ x = pd.Series(x)
-			# ~ print(x)
-			# ~ plt.hist(x)
-			# ~ plt.xlabel("Speedup")
-			# ~ plt.ylabel("#Occurences")
-			# ~ plt.savefig("plot/Distribution/Stretch/Stretch_all_workloads_" + SCHEDULER + ".pdf")
-			# ~ plt.close()
