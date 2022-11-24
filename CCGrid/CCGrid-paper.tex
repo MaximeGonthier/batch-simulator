@@ -91,11 +91,11 @@
 
 %~ Abstract by Loris:
   Clusters and supercomputers make use of workload schedulers such as
-  SLURM \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?} or OAR to allocate computing jobs onto nodes. These schedulers
+  SLURM \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?LM: I think it's fine in the abstract, we give a reference below} or OAR to allocate computing jobs onto nodes. These schedulers
   usually aim at a good trade-off between increasing resource
   utilization and user satisfaction (decreasing job waiting
   time). However, these schedulers are typically unaware of jobs
-  sharing large input files: in data-intensive scenarios \todo[inline]{Max: Should we precise that it's in certain areas of research that you are really highly data-dependent?}, tens to
+  sharing large input files: in data-intensive scenarios \todo[inline]{Max: Should we precise that it's in certain areas of research that you are really highly data-dependent? LM: maybe again give details about this in the introduction}, tens to
   hundreds of jobs dedicated to the study of the same multi-GB input
   file may be successively submitted. Computing each of this jobs
   first requires to load the input file, leading to a large data
