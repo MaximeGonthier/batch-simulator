@@ -38,6 +38,6 @@ else:
 	plt.title(scheduler + " CONSERVATIVE BF")
 
 plt.xlabel('Sample')
-plt.ylabel('Stretch')
+plt.ylabel('Stretch\'s speed-up')
 plt.savefig(filename)
 # ~ plt.show()

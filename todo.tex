@@ -83,12 +83,8 @@
 
 \section{Informations for the article}
 	\begin{enumerate}
-		\item HEFT is like fcfs with a score x1 x0 x0 x0
 		\item Use same X scale for some gantt charts when I want to compare them: to do that add a job of duration 0 at the maxtime of the heuristic you are showing
-		\item Faire plusieurs test et mettre une barre d'erreur (ce qui varie c'est la taille des fichiers d'entrées lors de la génération du workload). For this I did Generate\_workload\_from\_rackham\_for\_variance.sh to generate different workloads (10 is enough or I go up to 30 ? Might take a while if I do 30 times the same test. Or maybe just once to show the varaince is small ?) and then I try them all and show the variance.
-		\item Use same X scale for workloads stats when I want to compare them
 		\item cluster usage in real: https://www.uppmax.uu.se/resources/system-usage/rackham/
-		\item About files in the simulation: %\url{https://webmail.ens-lyon.fr/?_task=mail&_caps=pdf%3D1%2Cflash%3D0%2Ctif%3D0&_uid=5368&_mbox=INBOX&_action=show}
 	 \end{enumerate}
 
 \section{What's new since last meeting ?}
@@ -170,18 +166,28 @@
 		% Pour lundi
 		\item test avec V10000: même résultats globalement
 		\item calculer speedup avec valeurfcfs/valeur a comparer
-		\item best th seems to be 80, retest with it
+		\item best th seems to be 80, retested with it
+		\item courbe de meilleur cluster usage
+		\item scatter
+		\item plot pour comparer nombre de reutilisations de données
+		\item veut on montrer des choses de New way to plot statistics ?
 	\end{enumerate}
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item speed-up por speed up or speedup?
+		\item remarks on plots?
+		\item speed-up or speed up or speedup?
 		\item should we have a section on data pesistence, showing that it has a little impact here?
+		\item show some gantt charts ?
+		\item courbe de vs ? La même avec tous les schedulers ?
+		\item show yearly cluster usage ?
 	\end{enumerate}
 	
 \section{Todo}
 	\subsection{General}
 		\begin{enumerate}
+			\item attendre retour de mission
+			\item attendre agos escalade
 			\item correction RE216 15 janvier
 			\item Finir corriger algo
 			\item remboursment transports
@@ -194,15 +200,9 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item imprimer billets bassin des lumières
-			\item courbe de meilleur cluster usage
+			\item used node pour 08-16 de EFT-SCORE MIX
 			\item faire abstract avant le 25
 			\item tester avec plus de jours
-			\item refaire cluster usage en allant plus loin dans les jours d'après, en coupant a une certine time frame et en metant les courbes de queue au dessus (en faisant juste la somme) et en pointillé meme couleur que node used.
-			\item plot speedup en nuage de points avec les jours en abcsiscce
-			\item dans l'article mettre exemple de 1 ou 2 jours + cluster usage + pourcentgae all + nuage de points
-			\item montrer cluster usage fcfs et eft score mix
-			\item plot pour comparer nombre de reutilisations de données
 			
 			
 			

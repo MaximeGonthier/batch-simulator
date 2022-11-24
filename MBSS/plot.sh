@@ -46,3 +46,4 @@ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch ${CLUST
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_128 ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_256 ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_1024 ${CLUSTER_TP} 0 ${DATA_FILE}
+python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Number_of_data_reuse ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}

@@ -1,8 +1,8 @@
 #!/bin/bash
 start=`date +%s`
 
-if [ "$#" -ne 4 ]; then
-    echo "Usage is bash *.sh workload cluster algo1 algo2"
+if [ "$#" -ne 2 ]; then
+    echo "Usage is bash *.sh workload cluster"
     exit
 fi
 
@@ -15,20 +15,24 @@ CLUSTER_TP=${CLUSTER_TP::-4}
 echo ${WORKLOAD_TP}
 echo ${CLUSTER_TP}
 
-SCHEDULER=$3
+make print_distribution_queue_times -C C/
+
+SCHEDULER="Fcfs"
 echo "${SCHEDULER}"
-python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 0
-SCHEDULER=$4
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER 0 outputs/test.csv 2 80
+
+SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"
 echo "${SCHEDULER}"
-python3 -O src/main_multi_core.py $WORKLOAD $CLUSTER $SCHEDULER 0 0
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER 0 outputs/test.csv 2 80
 
 echo "Plotting results..."
-python3 src/plot_queue_times.py outputs/Stretch_times_$4.txt outputs/Stretch_times_$3.txt 1
-mv plot.pdf plot/Stretch_times_$3_$4_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
+#~ python3 src/plot_queue_times.py outputs/Stretch_times_FCFS.txt "outputs/Stretch_times_EFT-SCORE MIX.txt" stretch
+python3 src/plot_queue_times.py data/Stretch_times_FCFS_${WORKLOAD_TP}_${CLUSTER_TP}.txt  data/Stretch_times_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.txt stretch
+mv plot.pdf plot/Stretch_times_FCFS_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
 
 # Moving main csv data file
-mv outputs/Stretch_times_$4.txt data/Stretch_times_$4_${WORKLOAD_TP}_${CLUSTER_TP}.txt
-mv outputs/Stretch_times_$3.txt data/Stretch_times_$3_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+#~ mv outputs/Stretch_times_FCFS.txt data/Stretch_times_FCFS_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+#~ mv "outputs/Stretch_times_EFT-SCORE MIX.txt" data/Stretch_times_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 
 end=`date +%s` 
 runtime=$((end-start))

@@ -17,6 +17,12 @@ first_job_before_day_0 = int(sys.argv[6])
 first_job_day_0 = int(sys.argv[7])
 first_job_day_1 = int(sys.argv[8])
 first_job_day_2 = int(sys.argv[9])
+day = sys.argv[11]
+month = sys.argv[12]
+year = sys.argv[13]
+
+# ~ print(day + "-" + month + "-" + year)
+
 print(first_job_before_day_0, first_job_day_0, first_job_day_1, first_job_day_2)
 mode = int(sys.argv[10]) # 0 normal, 1 reduced
 
@@ -121,14 +127,13 @@ else:
 		ax1.plot(Y2, 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
 		ax1.plot(Y3, 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
 		ax1.plot(Y4, "r-", label='Used cores by evaluated jobs')
-		str_day_list = ['15/07/2022','16/07/2022','17/07/2022']
+		str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 	else: # mode reduced
 		ax1.plot(Y1[:84600*3], 'b-', label='Used cores by all jobs')
 		ax1.plot(Y2[:84600*3], 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
 		ax1.plot(Y3[:84600*3], 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
 		ax1.plot(Y4[:84600*3], "r-", label='Used cores by evaluated jobs')
-		str_day_list = ['01/27/2022','01/28/2022','01/29/2022']
-		# ~ str_day_list = ['15/07/2022','16/07/2022','17/07/2022']
+		str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 	
 	ax1.set_xticks([0, 86400, 86400*2])
 	ax1.set_xticklabels(str_day_list, rotation = 90)

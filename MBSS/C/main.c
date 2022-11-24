@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 	#endif
 	
 	printf("Workload: %s\n", input_job_file);
-	printf("Cluster: %s\n", input_node_file);
+	//~ printf("Cluster: %s\n", input_node_file);
 	printf("Scheduler: %s\n", scheduler);
 	if (constraint_on_sizes == 0)
 	{
@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
 		{
 			start_jobs(t, scheduled_job_list->head);
 		}
-		printf("Start jobs before day 0 done.\n");
+		//~ printf("Start jobs before day 0 done.\n");
 	}
 	
 	#ifdef PRINT

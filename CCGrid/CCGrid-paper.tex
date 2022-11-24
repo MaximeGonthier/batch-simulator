@@ -451,12 +451,20 @@ with highly data-dependent workflows.
 
 \section{Evaluations}\label{sec.evaluations}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_bigger_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of July 16}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 16 - Not saturated}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 16 - Not saturated}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of july 13}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 16}\end{figure}
+
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 13 - Temporarily saturated}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 13 - Temporarily saturated}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 13}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage - Workload of August 16}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 13}\end{figure}
+
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of August 16 - Saturated}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of August 16 - Saturated}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of August 16}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of August 16}\end{figure}
 
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_All_workloads_mean_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch speed-up compared to FCFS - All workloads - Without backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_All_workloads_mediane_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Median of the stretch speed-up compared to FCFS - All workloads - Without backfilling}\end{figure}
@@ -472,6 +480,10 @@ with highly data-dependent workflows.
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_SCORE-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of SCORE compared to FCFS on all workloads with backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_EFT-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
+
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times_FCFS_EFT-SCORE-MIX_2022-07-13->2022-07-13_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of July 13}\end{figure}
+
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../Images/yearly_cluster_usage.png}\caption{Yearly Rackham's occupation}\end{figure}
 
 \section{Conclusion}\label{sec.conclusion}
 

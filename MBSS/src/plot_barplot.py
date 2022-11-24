@@ -83,6 +83,9 @@ if (percentages_mode == 0):
 	elif (comparaison == "Mean_Stretch_With_a_Minimum_1024"):
 		Y_index = 24
 		plot_title = "Mean Bounded Stretch 1024 jobs"
+	elif (comparaison == "Number_of_data_reuse"):
+		Y_index = 25
+		plot_title = "Number of data re-use"
 	else:
 		print("Wrong comparison")
 		exit(1)
@@ -102,6 +105,10 @@ else:
 	elif (comparaison == "Mean_Stretch_With_a_Minimum"):
 		Y_index = 5
 		plot_title = "Mean Bounded Stretch"
+	elif (comparaison == "Number_of_data_reuse"):
+		# ~ Y_index = 5
+		# ~ plot_title = "Mean Bounded Stretch"
+		exit(1)
 	else:
 		print("Wrong comparison")
 		exit(1)

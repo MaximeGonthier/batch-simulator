@@ -69,14 +69,14 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compa
 
 Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le deuxieme resume dans les resultats.
 
-06-08 - T=6553737 - 1412264
+06-08 - T=6553737 - a relancer à 19h avec oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-11-24 19:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-06-08-\>2022-06-08_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 9 6553737"
 06-11 - T=6672934 - 1412407
 08-16 - T=1 - 1412414
-03-23 - T=1 - 1412437
+03-23 - T=2026289 - a relancer à 19h avec oarsub -p nova -l core=16,walltime=14:00:00 -r '2022-11-24 19:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-23-\>2022-03-23_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 6 2026289"
 03-25 - T=2088450 - 1412455 lancé à 19h
 03-27 - T=1 - 1412457 lancé à 19h
 03-28 - T=2351568 - pas encore lancé il faut resume a 3 les algos
-03-31 - T=1 - 1412530
+03-31 - T=1676350 - a ré essayé avec oarsub -p nova -l core=16,walltime=03:25:00 -r '2022-11-24 15:30:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-03-31-\>2022-03-31_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 8 1679999"
 04-21 - T=4204612 - pas encore lancé il faut resume a 3 les algos
 04-22 - T=4213316 - pas encore lancé il faut resume a 3 les algos
 04-23 - T=4452249 - pas encore lancé il faut resume a 3 les algos

@@ -14,6 +14,13 @@ WORKLOAD_TP=${WORKLOAD:27}
 CLUSTER=$2
 CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
+
+DAY=${WORKLOAD:35:2}
+MONTH=${WORKLOAD:32:2}
+YEAR=${WORKLOAD:27:4}
+echo "Day" ${DAY}
+echo "Month" ${MONTH}
+echo "Year" ${YEAR}
 SCHEDULER=$3
 DATE=${WORKLOAD:27:30}
 CONTRAINTES_TAILLES=0
@@ -22,8 +29,8 @@ make print_cluster_usage -C C/
 ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv 0 80
 
 read V1 V2 V3 V4 < outputs/Start_end_evaluated_slice.txt
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 0
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 0 ${DAY} ${MONTH} ${YEAR}
+python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR}
 
 end=`date +%s` 
 runtime=$((end-start))
