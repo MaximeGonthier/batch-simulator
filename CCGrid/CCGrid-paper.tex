@@ -102,21 +102,23 @@
   transfer overhead. Users could manually group together some of these
   jobs to reduce data transfers, but this would result in a much
   larger job, more difficult to schedule by the resource manager, and
-  thus to a larger delay. We study how to design a \textbf{data-aware
+  thus in a larger delay as well. We study how to design a \textit{data-aware
     job scheduler} that is able to keep large input files on 
-  computing nodes, provided it does not impact the storage need of
-  other jobs, and can use previously loaded files to \textbf{limit
+  computing nodes, provided it does not impact the storage needs of
+  other jobs, and can use previously loaded files to \textit{limit
     data transfers in order to reduce waiting times of jobs}.
-    \todo[inline]{Max: The abstract is already in bold, we might want to use textit instead of textbf}
+    %\todo[inline]{Max: The abstract is already in bold, we might want to use textit instead of textbf}
 
   We present three schedulers capable of distributing the load between
   computing nodes as well as being aware of what the storage of each
   node contains in order to re-use as much as possible an input file
   already loaded in the storage of some node.
-  \todo[inline]{Max: Should we talk about our competitors FCFS and EFT with and without backfilling?}
+  \todo[inline]{Max: Should we talk about our competitors FCFS and EFT
+  with and without backfilling? Sam: we can say that we compare with
+  schedulers currently used by job schedulers}
   
   We report simulations performed using real cluster usage traces. The
-  results show that keeping data in local storages between successive
+  results show that keeping data in local storage between successive
   jobs and using data locality information to schedule jobs allows to
   reduce job waiting time and to largely decrease the amount of data
   transfers.
@@ -125,7 +127,19 @@
 \todo[inline]{LM: I changed memory into storage: is it correct ?}
 
 \begin{IEEEkeywords}
-Batch scheduling, Jobs sharing inputs, Real workload, Data-aware, Job scheduling, Communication-aware, Batch systems\todo[inline]{Max: I've added a lot of keywords, we should only choose a few of those I think?}
+Batch scheduling,
+Jobs sharing inputs,
+Real workload,
+Data-aware,
+Job scheduling,
+Communication-aware,
+Batch systems
+\todo[inline]{Max: I've added a lot of keywords, we should only choose
+a few of those I think? Sam: Real workload is probably not useful. Batch
+systems seems duplicate with Batch scheduling?  Communication-aware does
+not really seem appropriate (we don't look at the communications that
+happen during execution), rather something like job input aware or more
+idiomatic equivalent.}
 \end{IEEEkeywords}
 
 \section{Introduction}\label{sec.introduction}
