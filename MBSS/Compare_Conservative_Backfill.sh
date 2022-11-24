@@ -60,7 +60,7 @@ done
 
 echo "Final results are:"
 cat ${OUTPUT_FILE}
-mv ${OUTPUT_FILE} data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
+cp ${OUTPUT_FILE} data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 
 
 end=`date +%s` 

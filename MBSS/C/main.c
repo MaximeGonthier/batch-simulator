@@ -826,6 +826,7 @@ int main(int argc, char *argv[])
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	while (finished_jobs != total_number_jobs)
+	//~ while (finished_jobs <= 50000)
 	#else
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
 	#endif
