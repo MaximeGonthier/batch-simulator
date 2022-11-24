@@ -812,7 +812,7 @@ int main(int argc, char *argv[])
 	if (need_to_resume_state == true)
 	{
 		need_to_resume_state = false;
-		resume_state(&t, &old_finished_jobs, &next_submit_time);
+		resume_state(&t, &old_finished_jobs, &next_submit_time, input_job_file);
 		
 		printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
 	}
@@ -847,8 +847,9 @@ int main(int argc, char *argv[])
 			exit(1);
 			#endif
 			
+			//~ printf("%s\n", input_job_file[10:12]); exit(1);
 			printf("Save state at time %d >= %d (time_to_save)\n", t, time_to_save);
-			save_state(t, old_finished_jobs, next_submit_time);
+			save_state(t, old_finished_jobs, next_submit_time, input_job_file);
 			exit(1);
 		}
 				

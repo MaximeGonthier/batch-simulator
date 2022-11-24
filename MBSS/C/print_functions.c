@@ -839,11 +839,16 @@ void print_holes_specific_node(struct Node* n)
 	}
 }
 
-void save_state(int t, int old_finished_jobs, int next_submit_time)
+void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_job_file)
 {
 	reset_cores(node_list, t);
 	
-	FILE *f = fopen("outputs/saved_state.txt", "w");
+	char* to_open = malloc(37*sizeof(char));
+	strcpy(to_open, "outputs/saved_state_");
+	strcat(to_open, (char *)input_job_file + strlen(input_job_file) - 17);
+	printf("File to save: %s\n", to_open);
+	FILE *f = fopen(to_open, "w");
+	free(to_open);
 	int i = 0;
 	int j = 0;
 	
@@ -1010,7 +1015,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time)
 	fclose(f);
 }
 
-void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
+void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* input_job_file)
 {
 	job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	job_list->head = NULL;
@@ -1030,7 +1035,13 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time)
 	
 	printf("Reading resumed state...\n");
 	
-	FILE *f = fopen("outputs/saved_state.txt", "r");
+	char* to_open = malloc(37*sizeof(char));
+	strcpy(to_open, "outputs/saved_state_");
+	strcat(to_open, (char *)input_job_file + strlen(input_job_file) - 17);
+	printf("File to resume: %s\n", to_open);
+	FILE *f = fopen(to_open, "r");
+	free(to_open);
+	
 	int i = 0;
 	//~ int j = 0;
 	char str[100];
