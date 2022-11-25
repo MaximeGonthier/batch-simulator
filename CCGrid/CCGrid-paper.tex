@@ -11,6 +11,7 @@
 
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath, amssymb, amsfonts, colortbl, xspace, todonotes, paralist, multirow, hyperref, pgfplots}
+\pgfplotsset{compat=newest}
 \hypersetup{
    colorlinks=false,
    pdfborder={0 0 0},
@@ -353,10 +354,8 @@ The FCFS strategy coupled with conservative backfilling is implemented as follow
 \end{algorithm}
 \todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
 
-\pgfplotsset{compat=newest}
-\begin{tikzpicture}
-\begin{axis}[
-  font=\footnotesize,
+\begin{tikzpicture}\begin{axis}
+[ font=\footnotesize,
   ytick style={draw=none},
   xtick style={draw=none},
   unit vector ratio*=1 1 1,
@@ -375,41 +374,11 @@ The FCFS strategy coupled with conservative backfilling is implemented as follow
   xtick={1,...,6},
   extra y ticks={1,2,3,4,5,6},
   extra x ticks={1,2,3,4,5,6},
-  extra y tick style={yticklabel={$P_{\pgfmathprintnumber{\tick}}$}}
-  ] 
+  extra y tick style={yticklabel={$P_{\pgfmathprintnumber{\tick}}$}}] 
 \addplot[fill=orange] coordinates {(0,0) (0,3) (3,3) (3,0)} node at (current path bounding box.center) {T1}; 
 \addplot[fill=red!20] coordinates {(3,0) (3,6) (4,6) (4,0)} node at (current path bounding box.center) {T2}; 
 \addplot[fill=gray] coordinates {(4,0) (4,2) (6,2) (6,0)} node at (current path bounding box.center) {T3};  
-\end{axis}
-\end{tikzpicture}
-\begin{tikzpicture}
-\begin{axis}[
-  font=\footnotesize,
-  ytick style={draw=none},
-  xtick style={draw=none},
-  unit vector ratio*=1 1 1,
-  axis lines = middle,
-  enlarge x limits = {value=.1,upper},
-  enlarge y limits = {value=.05,upper},
-  ylabel={cores},
-  xlabel={time},
-  ylabel near ticks,
-  xlabel near ticks,
-  const plot,
-  stack plots=false,
-  area style,
-  ytick={1,...,6},
-  yticklabels={},  
-  xtick={1,...,6},
-  extra y ticks={1,2,3,4,5,6},
-  extra x ticks={1,2,3,4,5,6},
-  extra y tick style={yticklabel={$P_{\pgfmathprintnumber{\tick}}$}}
-  ] 
-\addplot[fill=orange] coordinates {(0,0) (0,3) (3,3) (3,0)} node at (current path bounding box.center) {T1}; 
-\addplot[fill=red!20] coordinates {(3,0) (3,6) (4,6) (4,0)} node at (current path bounding box.center) {T2}; 
-\addplot[fill=gray] coordinates {(4,0) (4,2) (6,2) (6,0)} node at (current path bounding box.center) {T3};  
-\end{axis}
-\end{tikzpicture}
+\end{axis}\end{tikzpicture}
 
 Under our model, a fair baseline would be a scheduler capable
 of reducing file transfers while keeping the First-Come-First-Serve
@@ -418,15 +387,27 @@ It's an enhanced version of FCFS which chooses to schedule a job
 on the node with the earliest available finish time, thus considering
 the time to load the file, and consequently choosing nodes where a file will
 be re-used. 
+\todo[inline]{Max: Say that EFT with bf consider completion time as well.}
 
-\begin{algorithm}[htbp]
-	\caption{Earliest Finish Time (EFT)}\label{algo.eft}
-	\begin{algorithmic}[1]
-		\For{$J_i \in \jobset$}
-			\State Schedule $J_i$ on the node with the earliest completion time.
-		\EndFor
-	\end{algorithmic}
-\end{algorithm}
+%~ \begin{algorithm}[htbp]
+	%~ \caption{Earliest-Finish-Time with conservative backfilling (EFT-BF)}\label{algo.fcfsbf}
+	%~ \begin{algorithmic}[1]
+		%~ \State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
+		%~ \State Find $\Node{k}$, such that, $completion\_time_k$, the time at which $\core(J_i)$ cores are available on $\Node{k}$ is minimal
+		%~ \If{$t_k = current\_time$}
+			%~ \State Return $J_i$ scheduled on $\Node{k}$ at time $current\_time$
+		%~ \Else
+			%~ \ForEach{$\Node{l} \in \nodeset$}
+				%~ \State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available
+				%~ \If{$current\_time + \walltime(J_i) \leq shadow_l$}
+					%~ \State Return $J_i$ scheduled on $\Node{l}$ at time $current\_time$
+				%~ \EndIf
+			%~ \EndFor
+			%~ \State Return $J_i$ scheduled on $\Node{k}$ at time $t_k$
+		%~ \EndIf
+	%~ \end{algorithmic}
+%~ \end{algorithm}
+
 
 Coupled with it, we add the conservative backfilling strategy mentioned earlier:
 
