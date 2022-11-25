@@ -92,7 +92,7 @@
 
 %~ Abstract by Loris:
   Clusters and supercomputers make use of workload schedulers such as
-  SLURM \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?LM: I think it's fine in the abstract, we give a reference below. Max: Okay.} or OAR to allocate computing jobs onto nodes. These schedulers
+  the Slurm Workload Manager \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?LM: I think it's fine in the abstract, we give a reference below. Max: Okay. Carl: I believe the SLURM project itself is claiming it's not an acronym for that anymore. The proper name is the "Slurm Workload Manager".} or OAR to allocate computing jobs onto nodes. These schedulers
   usually aim at a good trade-off between increasing resource
   utilization and user satisfaction (decreasing job waiting
   time). However, these schedulers are typically unaware of jobs
@@ -100,20 +100,20 @@
   hundreds of jobs dedicated to the study of the same multi-GB input
   file may be successively submitted. Running each of these jobs
   first requires to load the input file, leading to a large data
-  transfer overhead. Users could manually group together some of these
-  jobs to reduce data transfers, but this would result in a much
-  larger job, more difficult to schedule by the resource manager, and would
+  transfer overhead. Users could manually group some of these
+  tasks into larger jobs to reduce data transfers, but this would result in less granular units that are
+  more difficult to schedule by the resource manager, and would
   thus result in a larger delay as well. We study how to design a \textit{data-aware
     job scheduler} that is able to keep large input files on the 
-  computing nodes, provided it does not impact the storage needs of
+  computing nodes, provided this does not impact the memory needs of
   other jobs, and can use previously loaded files to \textit{limit
     data transfers in order to reduce the waiting times of jobs}.
     %\todo[inline]{Max: The abstract is already in bold, we might want to use textit instead of textbf}
 
   We present three schedulers capable of distributing the load between
-  the computing nodes as well as being aware of what the storage of each
+  the computing nodes as well as being aware of what the memory of each
   node contains in order to re-use an input file
-  already loaded in the storage of some node as many times as possible.
+  already loaded in the memory of some node as many times as possible.
   \todo[inline]{Max: Should we talk about our competitors FCFS and EFT
   with and without backfilling? Sam: we can say that we compare with
   schedulers currently used by job schedulers. Max: Okay, I added a sentence.}
@@ -121,13 +121,13 @@
   
   We report simulations performed using real cluster usage traces. 
   Our approach is compared to currently used schedulers in batch systems.
-  The results show that keeping data in local storage between successive
-  jobs and using data locality information to schedule jobs allows to
-  reduce job waiting time and to largely decrease the amount of data
+  The results show that keeping data locally, in memory, between successive
+  jobs and using data locality information to schedule jobs allows a
+  reduction in job waiting time and a drastic decrease in the amount of data
   transfers.
 \end{abstract}
 
-\todo[inline]{LM: I changed memory into storage: is it correct ?}
+\todo[inline]{LM: I changed memory into storage: is it correct ? Carl: I changed back, the point is that these large files are kept in memory with heavy random accesses. There are of course cases where local scratch is sufficient for random accesses, but this not the scenario we've been focusing on. Changed it back.}
 
 \begin{IEEEkeywords}
 Batch scheduling,
@@ -152,9 +152,9 @@ idiomatic equivalent. Max: Okay I updated it.}
 
 \paragraph{Scheduling jobs on large clusters}
 
-To schedule jobs on batch systems, two systems are prominent: SLURM~\cite{SLURM} and OAR~\cite{oar}.
-SLURM is used on most HPC clusters. It's default strategy to schedule jobs is
-to prioritize jobs by their submission time, in other words a First-Come First-Serve strategy
+To schedule jobs on batch systems, two systems are prominent: the Slurm Workload Manager~\cite{SLURM} and OAR~\cite{oar}.
+Slurm is used on most HPC clusters. Its default strategy is to schedule jobs baed on priorities derived
+from submission time, in other words a First-Come First-Serve strategy
 (or FCFS)\footnote{{\scriptsize\url{https://slurm.schedmd.com/sched_config.html}}}.
 
 On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
@@ -165,21 +165,24 @@ On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
 %~ for execution~\cite{Maui_Scheduler}.
 %~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
 
-\paragraph{Improving SLURM and other batch systems' schedulers}
+\paragraph{Improving the schedulers of Slurm and other batch systems}
 
-To deal with communication-intensive jobs on SLURM, a solution can be to
-minimize network contention by allocating nodes on the least
-contended nodes and switches~\cite{minimize_network_contention}. 
+To deal with communication-intensive jobs within Slurm, a solution can be to
+minimize network contention by allocating nodes to even out node and switch contention
+~\cite{minimize_network_contention}. 
 In our model we are not studying the network topology and consider independant nodes.
+This is reasonable, since our main concern is the cross-section bandwidth to a shared storage solution.
+\todo[inline]{Carl: Motivating why switch topology of less relevance.}
 Moreover, this requires a tree-based network topologies, which is different from our modem.
 Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
+\todo[inline]{Carl: I find the two last two sentences a bit confusing. What are we really trying to say here?}
 
 Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
-are a system designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
+is a system designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
 It adds storage servers that export access to the disk.
 They use detailed knowledge of workload characteristics.
-However, the main idea is not data reuse but to
-facilitates the execution of I/O intensive batch
+However, the main idea is not data reuse, but to
+facilitate the execution of I/O intensive batch
 jobs by selecting appropriate storage policies
 in regards to I/O scoping (creating a custom environment for each job
 for data that will be used a lot by the job, thus not accessing the main disk too
@@ -207,7 +210,7 @@ processing order will naturally limits thrashing.
 
 \subsection{HDFS, a popular distributed file system - Draft, I need to double check my sources}
 HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that
-incorporate memory-aware scheduling. HDFS is particularly used for applications that have large data sets. 
+incorporate storage-aware scheduling. HDFS is particularly used for applications that have large data sets. 
 %~ "Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
 It migrates a computation closer to where the data is located rather than moving the data to where
 the application is running.
@@ -217,7 +220,7 @@ HDFS is made for commodity(?) hardware, where errors need to be minimized. Thus,
 to avoid breakdowns.
 In our use case, the scheduler will run on professional clusters and the main point is to load as 
 little data as possible. 
-Secondly, HDFS is mainly a storage system, with an historic on files locations.
+Secondly, HDFS is mainly a storage system, with an historic on files locations. \todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the notes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundance. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage.}
 It is not relevant in our use case. 
 Thirdly, the scheduling can have issues. A paper describe in detail some problems from MapReduce~\cite{issue_with_hdfs}, the
 programming language used in HFDS: the static configuration of the memory allocation, the one-task assigned buffers, the
