@@ -69,39 +69,24 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compa
 
 Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le deuxieme resume dans les resultats.
 
-06 08	T=6553737	OAR_JOB_ID=1412821
-06 11   T=6672934   OAR_JOB_ID=1412407
-08 16   T=1			OAR_JOB_ID=1412414
-03 23   T=2026289   OAR_JOB_ID=1412856
-03 25   T=2088450   OAR_JOB_ID=1412819
-03 27   T=1   		OAR_JOB_ID=1412820
-03 28   T=2351568   OAR_JOB_ID=1412744
-03 31   T=1676350   OAR_JOB_ID=1412730
-04 21   T=4204612   OAR_JOB_ID=1412740
-04 22   T=4213316   OAR_JOB_ID=1412738
-04 23   T=4452249   OAR_JOB_ID=1412737
-04 25   T=4548822   OAR_JOB_ID=1412857
-01 02   T=1   		OAR_JOB_ID=1412733
-01 03   T=3117409   OAR_JOB_ID=1412789
+job sur lyon:
+06 11   T=6672934   OAR_JOB_ID=1412986 ce soir
+03 27   T=1   		OAR_JOB_ID=1412989
+04 21   T=4204612   OAR_JOB_ID=1412990
+04 23   T=4452249   OAR_JOB_ID=1412992 ce soir
 
-09 07	T=1			OAR_JOB_ID=1412818
-09 08	T=1			OAR_JOB_ID=1412817
-09 09	T=1			OAR_JOB_ID=1412816
-09 10	T=1			OAR_JOB_ID=1412814
-09 11	T=1			OAR_JOB_ID=1412813
-09 12	T=1			OAR_JOB_ID=1412810
-
-A plot: 09-10
-A tester en local 04-24
+A tester en local 04-24 et 04-25
 Reprendre en local 09-13 en commancant à 7 et avec un save a 8364291
 A finir et plot: voir document temp_results
 
 job sur grenoble:
-2169625                   mgonthier      2022-11-24 21:03:10 R default   
-2169626                   mgonthier      2022-11-24 21:04:46 R default   
-2169627                   mgonthier      2022-11-24 21:04:56 R default   
-2169628                   mgonthier      2022-11-24 21:05:06 W default   
-2169629                   mgonthier      2022-11-24 21:05:19 W default   
+09 14	T=1			OAR_JOB_ID=2169679
+09 15	T=1			OAR_JOB_ID=2169680
+09 16	T=1			OAR_JOB_ID=2169681
+09 17	T=1			OAR_JOB_ID=2169682
+09 18	T=1			OAR_JOB_ID=2169683
+04 24	T=1			OAR_JOB_ID=2169684
+
 
 walltime=10:40:00
 2022-11-23 22:11:00
