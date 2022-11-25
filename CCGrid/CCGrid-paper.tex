@@ -28,6 +28,7 @@
 \newcommand{\Node}[1]{\ensuremath{\mathrm{Node}_{#1}}\xspace}
 \newcommand{\flow}[1]{\ensuremath{\mathit{flow}_{#1}}\xspace}
 \newcommand{\file}{\ensuremath{\mathit{File}}\xspace}
+\newcommand{\storage}{\ensuremath{\mathit{Storage}}\xspace}
 \newcommand{\memory}{\ensuremath{\mathit{Mem}}\xspace}
 \newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
@@ -231,29 +232,34 @@ the inputs are not the same. So HDFS would be less efficient.
 
 \section{Framework - Draft}\label{sec.framework}
 
-We consider the problem of scheduling a set of independent jobs $\jobset = {J_1, J_2, ..., J_k}$ on
-a set of independent nodes $\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
-
-Each node is equipped with $m$ cores noted: $\Node{1}(C_1, C_2, ..., C_m)$.
+We consider the problem of scheduling a set of independent jobs,
+denoted $\jobset = {J_1, J_2, ..., J_k}$ on a set of independent nodes:
+$\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
+These nodes are equipped with $m$ cores noted: $\Node{1}(c_1, c_2, ..., c_m)$.
 the memory of a node is set to $M\,GB$.
 
+Each job is using an input file noted $\file(J_i)$ and
+stored in the main shared file system.
+During the processing of a job $J_i$ on $\Node{k}$,
+$\file(J_i)$ must be in the memory of $\Node{k}$. 
 We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files.
 Each file has a size in GB noted $\memory(F_i)$.
 The size of a file is proportional to the number of cores requested by the job using the file.
 This size is thus a multiple of $\frac{M}{m}$.
 
-Each job is equipped with the folowing attributes:
+Each job is equipped with the following attributes:
 \begin{itemize}
-	\item A number of required cores $\core(J_i)$ such as $1 \leq \core(J_i) \leq m$.
+	\item Resource requirement: $\core(J_i)$ such that $1 \leq \core(J_i) \leq m$.
 	\item An input file $\file(J_i) \in \fileset$.
-	\item A submission time $\submissiontime(J_i)$.
-	\item A walltime $\walltime(J_i)$ corresponding to the maximum time during which $J_i$ can run on a node.
-	\item The real execution time of the job named $\duration(J_i)$. This attribute is not know by the scheduer. If $\duration(J_i) \l \walltime(J_i)$, then the job will terminate before the allocated time. Else the job will be terminated before it's completion at time $\start(J_i) + \walltime(J_i)$.
+	\item A submission date $\submissiontime(J_i)$.
+	\item A requested running time (or walltime) noted $\walltime(J_i)$ and corresponding to
+	the maximum time during which $J_i$ can run on a node.
+	\item An actual running time named $\duration(J_i)$. This attribute is not known by
+	the scheduler. If $\duration(J_i) \l \walltime(J_i)$, then the job will terminate at
+	time $\start(J_i) + \duration(J_i)$. 
+	Else the job will be terminated at time $\start(J_i) + \walltime(J_i)$.
 \end{itemize}
 
-Initially, all input files are stored in the main shared file system.
-During the processing of a job $J_i$ on $\Node{k}$,
-$\file(J_i)$ must be in the memory of $\Node{k}$. 
 We do not consider the data output of jobs.
 Each of the $m$ jobs must be processed on some of the $K$ nodes. 
 We consider that all jobs are single nodes.
@@ -274,22 +280,27 @@ Otherwise we consider that memory operations will cause the files to be evicted.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
-We denote by $\sigma(k,i)$ the $i^\text{th}$ job
-processed on $\Node{k}$ and by $\evict(k,i)$ the set of file to
-be evicted from the memory of $\Node{k}$ before the processing
-of this $i^\text{th}$ job ($\evict(k,i)$ can be empty if there is enough space to fit the new files).
-
+We denote by $\storage(\Node{k}, t)$, the set of files loaded on $\Node{k}$
+at time $t$. 
+We denote by $\sigma(\Node{k}, \mathit{nb}_k)$ the set of $\mathit{nb}_k$ jobs
+scheduled on $\Node{k}$, each equipped with a $\start(J_i)$ and an
+input file $\file(J_i)$.
+$\sigma(\Node{k}, i)$ corresponds to the $i^\text{th}$ job on this schedule.
 On $\Node{k}$, the schedule is made of a
-succession of $\mathit{nb}_k$ (the number of jobs allocated) steps, each step being composed of the
+succession of $\mathit{nb}_k$
+steps, each step being composed of the
 following stages (in this order):
 \begin{enumerate}
-\item The input file in $\file(J_{\sigma(k,i)})$ that is not yet in memory is loaded in the memory of $\Node{k}$
-\item Job $J_{\sigma(k,i)}$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
+	\item If $\start(\sigma(\Node{k}, i)) = t$ do:
+	\begin{enumerate}
+		\item If the input file $\file(\sigma(\Node{k}, i))$ is not yet in memory, it is 
+		loaded in the memory of $\Node{k}$ with a duration of $\frac{\memory(\file(\sigma(\Node{k}, i)))}{\bandwidth}$.
+		\item Job $\sigma(\Node{k}, i)$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
+	\end{enumerate}
 \end{enumerate}
 It is important to note that the file transfers are done before the computation and can not be overlapped.
 
 We are in a non-preemptive case, meaning that a job cannot be stopped and resumed.
-\todo[inline]{Max: I'm not sure where this sentence should go.}
 
 \section{Schedulers - Draft}\label{sec.schedulers}
 
@@ -430,24 +441,47 @@ on the node with the lowest score.
 \end{algorithmic}
 \end{algorithm}
 
-\section{Working with a real workload and cluster\todo[inline]{Max: Find a better name}}\label{sec.working}
+\section{Working with a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
-that are non-trivial to replicate in a fully artificial simulted job pattern. We believe that this is especially
+that are non-trivial to replicate in a fully artificial simulated job pattern. We believe that this is especially
 true for data-dependent patterns, where a project might launch a burst of jobs using the same file just a few thousand
 core hours in length, then be quiet for a long time processing the results, and then launch another such burst.
 
 On the other hand, it would be disruptive to expose a real user community to a wide variety of experimental scheduling strategies.
 
 For this reason, we used logs of historical submitted jobs, in terms of their exact submission time, size, stated runtime, and actual runtime.
-Since explicit data dependencies are not encoded in Slurm job specifications, we created an artificial pattern for this. \todo[inline]{Carl: Max, please elaborate}
+Since explicit data dependencies are not encoded in SLURM job specifications, we created an artificial pattern for this. 
+\todo[inline]{Carl: Max, please elaborate. Max: Okay I added a paragraph.}
+We first consider that each job is carrying an input file.
+Let's consider two jobs from the logs of historical submitted jobs: $J_i$ and $J_j$.
+They will be attributed a common input file if they match all the following requirements:
+\begin{enumerate}
+	\item $\core(J_i) = \core(J_j)$ i.e they are requiring the same amount of cores.
+	\item $J_i$ and $J_j$ were submitted by the same user.
+	\item $J_i$ and $J_j$ were submitted in a 800 seconds timeframe.
+\end{enumerate}
+Otherwise we consider that $J_i$ and $J_j$ are using distinct input files.
 
 \todo[inline]{Elisabeth: I think we should say Rackham so that readers can checkout the hardware, but perhaps it should be fully blind as a starting point.}
-The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 512GB nodes.
-The utilization levels are typically high (>90\%), but
+The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 512GB nodes. \todo[inline]{Max: I thought it was 1024 GB nodes for the biggest size?}
+
+\todo[inline]{Max: I added a paragraph on why all nodes are the same size in our case:}
+Having $L$ different nodes sizes raises a new constraint. The model would have
+$L$ subsets of nodes, each possibly containing a different number of nodes.
+An input file can be too large to be computed on one or multiple of those subsets.
+Thus, in addition to the scheduling problem, a load balancing problem arises.
+Indeed, the scheduler need to be able to manage each subset of nodes as an independant 
+resource that need to avoid starvation while also not being saturated in case of a large
+batch of jobs that could be submitted at once and that could only be computed on this node's size.
+Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
+128 GB and the size of an input file is a multiple of 6.4.
+In other words, for each $\file(i) \in \fileset$, $\memory(\file(i)) = 6.4 \times n$ with 
+$1 \leq n \leq 20$.
+
+The utilization levels are typically high ($>90\%$), but
 not fully consistently so. The vast majority of jobs on this resources are single node jobs, even sometimes single core jobs. Run times
 could extent to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
-but rather it is an empirical observation of an actual user community including, but not exlusively consisting of, many subfields of the life sciences
-with highly data-dependent workflows.
+but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
 \section{Evaluations}\label{sec.evaluations}
 
@@ -462,7 +496,7 @@ with highly data-dependent workflows.
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 13}\end{figure}
 
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of August 16 - Saturated}\end{figure}
-%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of August 16 - Saturated}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of August 16 - Saturated}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of August 16}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of August 16}\end{figure}
 
