@@ -488,10 +488,10 @@ but rather it is an empirical observation of an actual user community including,
 
 \section{Evaluations}\label{sec.evaluations}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 16 - Not saturated}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 16 - Not saturated\todo[inline]{Elisabeth: I guess you will explain the graph somewhere, but right now, evaluated is ambiguous for me. When I read it I think finished jobs, but I assume it means jobs that will be in the schedule(?) Why are the two dashed ones flatlined? I assume it is becasue the queue is ``wider'' than all cores(?) Nice that the window is more visible. }}\end{figure}
 \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 16 - Not saturated}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 16}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16 \todo[inline]{Elisabeth: How many bars will there be in the end? All of these or less? The names are so long. Could there perhaps be a table that explains the difference between the schedulers and a short acronym for each? This is more a matter of taste.}}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 16\todo[inline]{Elisabeth: Could there also be a second part of the bar showing number of jobs not reusing data? Now I think we can't know how large the fraction is.}}\end{figure}
 
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 13 - Temporarily saturated}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 13 - Temporarily saturated}\end{figure}
@@ -508,7 +508,7 @@ but rather it is an empirical observation of an actual user community including,
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_BF_All_workloads_mean_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch speed-up compared to FCFS - All workloads - With backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_BF_All_workloads_mediane_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Median of the stretch speed-up compared to FCFS - All workloads - With backfilling}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT.pdf}\caption{Stretch speed-up of EFT compared to FCFS on all workloads without backfilling}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT.pdf}\caption{Stretch speed-up of EFT compared to FCFS on all workloads without backfilling\todo[inline]{I like these plots, but what is sample?}}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_SCORE.pdf}\caption{Stretch speed-up of SCORE compared to FCFS on all workloads without backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_OPPORTUNISTIC-SCORE-MIX.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads without backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads without backfilling}\end{figure}
@@ -518,9 +518,9 @@ but rather it is an empirical observation of an actual user community including,
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_EFT-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times_FCFS_EFT-SCORE-MIX_2022-07-13->2022-07-13_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of July 13}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times_FCFS_EFT-SCORE-MIX_2022-07-13->2022-07-13_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of July 13\todo[inline]{Elisabeth: Also a nice plot. Showing that only when the file loading time is a substantial part of the overall job time is there a large speedup?}}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../Images/yearly_cluster_usage.png}\caption{Yearly Rackham's occupation}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../Images/yearly_cluster_usage.png}\caption{Rackham's\todo[inline]{``The cluster's''} occupation over one year}\end{figure}
 
 \section{Conclusion}\label{sec.conclusion}
 
