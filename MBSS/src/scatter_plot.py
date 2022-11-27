@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import sys
 
+nb_sample = 36
+
 data = pd.read_csv(sys.argv[1])
 df = pd.DataFrame(data)
 if sys.argv[2] == "EFT" or sys.argv[2] == "EFT-CONSERVATIVE-BF":
@@ -20,7 +22,11 @@ else:
 	print("Error name of scheduler when calling scatter_plot.py")
 	exit
 
-x = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+x = [0] * nb_sample
+
+for i in range (1, nb_sample + 1):
+	x[i - 1] = i
+
 # ~ size = [100,500,100,500]
 y = sorted(list(df.iloc[:, y_index]))
 print(y)

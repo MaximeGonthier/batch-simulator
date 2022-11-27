@@ -71,8 +71,6 @@ Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le
 
 job sur lyon en standby, pas sûr que elles se lancent:
 06 11   T=6672934   OAR_JOB_ID=1412986
-03 27   T=1   		OAR_JOB_ID=1413485
-04 21   T=4204612   OAR_JOB_ID=1413471
 04 23   T=4452249   OAR_JOB_ID=1412992
 
 A tester en local 04-24 et 04-25
@@ -80,11 +78,12 @@ Reprendre en local 09-13 en commancant à 10 et avec un save a 8364291
 A finir et plot: voir document temp_results
 
 job sur grenoble:
-09 14	T=1			OAR_JOB_ID=2169779
-09 15	T=1			OAR_JOB_ID=2169780
-09 16	T=1			OAR_JOB_ID=2169782
-09 17	T=1			OAR_JOB_ID=2169788	
-04 24	T=1			OAR_JOB_ID=2169786
+09 14	T=8474126	OAR_JOB_ID=2169872
+09 15	T=8564460		OAR_JOB_ID=2169873
+09 16	T=8659055		OAR_JOB_ID=2169874
+04 24	T=4464098	OAR_JOB_ID=2169881
+08 10	T=11948024		OAR_JOB_ID=2169882
+08 12	T=1			OAR_JOB_ID=2169796
 
 
 walltime=10:40:00
