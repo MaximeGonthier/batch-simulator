@@ -39,6 +39,7 @@ extern int nb_job_to_schedule; /* Jobs ready but not running */
 extern int nb_cores_to_schedule; /* Cores ready but not running */
 #ifdef PRINT_CLUSTER_USAGE
 extern int running_nodes_workload_1;
+//~ extern int nodes_loading_a_file;
 extern int mixed_mode;
 #endif
 extern int total_queue_time;
@@ -166,6 +167,9 @@ struct Node {
     #ifdef PRINT_CLUSTER_USAGE
     int nb_jobs_workload_1;
     #endif
+    
+    int end_of_file_load;
+    //~ #endif
 };
 
 struct Core_in_a_hole_List {
@@ -292,6 +296,7 @@ void swap(long long* xp, long long* yp);
 void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t);
 void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t, int mixed_strategy, int* temp_running_nodes);
 void get_node_size_to_choose_from(int index, int* first_node_size_to_choose_from, int* last_node_size_to_choose_from);
+int get_nb_nodes_loading_a_file(struct Node_List** head_node, int t);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);

@@ -46,6 +46,7 @@ int running_nodes;
 #ifdef PRINT_CLUSTER_USAGE
 int running_nodes_workload_1;
 int mixed_mode;
+//~ int nodes_loading_a_file;
 #endif
 int total_queue_time;
 int first_subtime_day_0;
@@ -146,7 +147,11 @@ int main(int argc, char *argv[])
 	#ifdef PRINT_CLUSTER_USAGE
 	running_nodes_workload_1 = 0;
 	mixed_mode = 0;
+	//~ nodes_loading_a_file = 0;
+	int nodes_loading_a_file = 0;
 	#endif
+	
+	
 	//~ nb_job_to_evaluate_finished = 0;
 	nb_job_to_evaluate_started = 0;
 	total_queue_time = 0;
@@ -319,7 +324,7 @@ int main(int argc, char *argv[])
 		perror("fopen in main");
         exit(EXIT_FAILURE);
 	}
-	fprintf(f_stats, "Time,Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue\n");
+	fprintf(f_stats, "Time,Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue, Nodes loading a file\n");
 	//~ free(title);
 	int nb_jobs_in_queue = 0;
 	int nb_cores_in_queue = 0;
@@ -833,7 +838,7 @@ int main(int argc, char *argv[])
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	while (finished_jobs != total_number_jobs)
-	//~ while (finished_jobs <= 50000)
+	//~ while (nb_job_to_evaluate != nb_job_to_evaluate_started && finished_jobs != )
 	#else
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
 	#endif
@@ -1036,17 +1041,8 @@ int main(int argc, char *argv[])
 				
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
-		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + 486*20, nb_cores_from_workload_1_in_queue + 486*20);
-		
-		// half a day after and before day 1
-		//~ printf("%d, %d, %d\n", t, first_subtime_day_0 + 86400/2, time_all_job_workload_1_started + 86400/2);
-		//~ if (t >= first_subtime_day_0 + 86400/2 && t <= time_all_job_workload_1_started + 86400/2)
-		//~ {
-			//~ printf("Printing %d, %d, %d\n", t, first_subtime_day_0 + 86400/2, time_all_job_workload_1_started + 86400/2);
-			//~ fprintf(f_reduced_stats, "%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + running_nodes*20, nb_cores_from_workload_1_in_queue + running_nodes*20);
-		//~ }
-		
-		//~ printf("%d,%d,%d,%d\n", running_nodes, nb_jobs_in_queue, mixed_mode, busy_cluster);
+		nodes_loading_a_file = get_nb_nodes_loading_a_file(node_list, t);
+		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + 486*20, nb_cores_from_workload_1_in_queue + 486*20, nodes_loading_a_file*20);
 		#endif
 				
 		if (start_times->head != NULL && t > start_times->head->time)

@@ -2183,6 +2183,11 @@ void start_jobs(int t, struct Job* head)
 				}
 				j->node_used->nb_jobs_workload_1 += 1;
 			}
+			
+			if (overhead_of_load > 0 && j->node_used->end_of_file_load < t + overhead_of_load)
+			{
+				j->node_used->end_of_file_load = t + overhead_of_load;
+			}
 			#endif
 			
 			j->node_used->n_available_cores -= j->cores;
@@ -3374,7 +3379,28 @@ void get_node_size_to_choose_from(int index, int* first_node_size_to_choose_from
 		*last_node_size_to_choose_from = index;
 	}
 }
-		
+
+int get_nb_nodes_loading_a_file(struct Node_List** head_node, int t)
+{
+	int i = 0;
+	int nodes_loading_a_file = 0;
+	
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		while (n != NULL)
+		{
+			if (n->end_of_file_load > t)
+			{
+				nodes_loading_a_file += 1;
+			}
+			n = n->next;
+		}
+	}
+	
+	return nodes_loading_a_file;
+}
+
 /** Pas utile car je peux pas savoir en fait, si les cores qui sont utilisées c'est les 20 19 18, bah en prenant 1 2 3 je bloque autre chose, donc autant ne rien faire. **/
 //~ /* Update cores available times and fill the cores used in the job. Uses the lowest index cores possible. */
 //~ int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t)

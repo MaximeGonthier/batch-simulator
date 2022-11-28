@@ -97,6 +97,7 @@ void read_cluster(char* input_node_file)
 		
 		#ifdef PRINT_CLUSTER_USAGE
 		new->nb_jobs_workload_1 = 0;
+		new->end_of_file_load = 0;
 		#endif
 
 		new->next = NULL;
