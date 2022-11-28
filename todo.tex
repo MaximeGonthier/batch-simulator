@@ -180,8 +180,10 @@
 \section{Questions for next meeting}
 	\begin{enumerate}
 		\item Should we add the deviation on the scatter ? Because I don't have this data I would have to re run all workloads. Maybe I can do it for 1 or 2 strategys.
+		\item cluster usage plot: I do *20 to have number of cores but then we have weird situations wer it does not touch the black line but you still have jobs in quuee because they doesn't fit. If we explain it it's ok ?
 		\item speed-up or speed up or speedup?
 		\item should we have a section on data pesistence, showing that it has a little impact here?
+		\item For redability i removed the day giving extreme value to score from all 4 heursitics; Is it really what we want ? Or only remove it for score ?
 	\end{enumerate}
 	
 \section{Todo}
@@ -191,7 +193,6 @@
 			\item attendre retour de mission
 			\item attendre agos escalade
 			\item correction RE216 15 janvier
-			\item Finir corriger algo
 			\item remboursment transports
 			\item Répondre a Bora hMETIS
 			\item Imprimer poster demander à Denis
@@ -202,9 +203,14 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
-			\item souettre abstract
+			\item boxplot de fig13
+			\item ecdf: Fonction de répartition empirique a plot sur all workloads de fig13 et les autres
+			\item cluster usage, mettre axe x different pour les pointillé en partant de 0
+			\item cluster usage, essayer en mettant les vrai valeurs du nb de coeurs
+			\item cluster usage pareil pour nb de cores en load
+			\item a loris je met CNRS-Lyon Et sam UB-Inria
+			\item soumettre abstract
 			\item faire abstract avant le 25
-			\item ajouter With the number of cores for jobs in the queue, this would then be if all the jobs where running in parallel? But, is the red solid a part of the blue solid or do they add up to the total system size? The solid blue lines shows the number of cores occupied by running jobs and the dashed blue line shows the additional number of cores that would be needed to run all the jobs in the queue at a given time. The red lines show the jobs in both categories that have their submission time within our evaluation window. a l'explication de la courbe cluster usage.
 			
 			
 			

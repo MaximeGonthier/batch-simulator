@@ -42,6 +42,9 @@ mv outputs/Stats_$SCHEDULER.csv data/Stats_${SCHEDULER}_${MONTH}-${DAY}.csv
 # 07-16
 #~ python3 src/plot_stats_one_execution.py data/Stats_${SCHEDULER}_07-16.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR}
 
+# 07-13
+#~ python3 src/plot_stats_one_execution.py data/Stats_${SCHEDULER}_07-13.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR}
+
 
 end=`date +%s` 
 runtime=$((end-start))
