@@ -215,7 +215,7 @@ PROPORTION="V10000"
 
 # ECDF
 python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
-#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # Best TH
 #~ PROPORTION="V10000"
