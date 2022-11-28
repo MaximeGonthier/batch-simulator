@@ -177,7 +177,7 @@ PROPORTION="V10000"
 #~ for ((i=1; i<=16; i++))
 #~ do 
 	#~ if [ $((i)) == 1 ]; then DATE="2022-03-25->2022-03-25"
-	#~ elif [ $((i)) == 2 ]; then DATE="2022--->2022--"
+	#~ elif [ $((i)) == 2 ]; then DATE="2022-06-11->2022-06-11"
 	#~ elif [ $((i)) == 2 ]; then DATE="2022--->2022--"
 	#~ fi
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0
@@ -210,8 +210,12 @@ PROPORTION="V10000"
 #~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-SCORE-MIX-CONSERVATIVE-BF
 
 # Box plots
-python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
+#~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
 #~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+
+# ECDF
+python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
+#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # Best TH
 #~ PROPORTION="V10000"

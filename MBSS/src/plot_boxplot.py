@@ -52,10 +52,10 @@ columns = [eft, score, opportunistic, eft_score]
 
 fig, ax = plt.subplots()
 # ~ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[0,100])
-box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True)
+box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=1.5)
 plt.xticks([1, 2, 3, 4], ["EFT", "SCORE", "OPPORTUNISTIC-SCORE MIX", "EFT-SCORE MIX"], rotation=8)
 plt.axhline(y = 1, color = 'black', linestyle = "dotted")
-ax.set_ylim(0, 4)
+ax.set_ylim(0, 2.5)
 colors = ["red", 'green', 'blue', 'lightblue']
 for patch, color in zip(box['boxes'], colors):
     patch.set_facecolor(color)
@@ -66,5 +66,5 @@ else:
 	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf"
 
 # ~ plt.xlabel('Sample days sorted by increasing stretch')
-# ~ plt.ylabel('Stretch\'s speed-up')
+plt.ylabel('Stretch\'s speed-up')
 plt.savefig(filename)
