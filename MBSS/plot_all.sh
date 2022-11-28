@@ -165,14 +165,26 @@ PROPORTION="V10000"
 	#~ elif [ $((i)) == 14 ]; then DATE="2022-08-24->2022-08-24"
 	#~ elif [ $((i)) == 15 ]; then DATE="2022-08-25->2022-08-25"
 	#~ elif [ $((i)) == 16 ]; then DATE="2022-08-26->2022-08-26"	
-	#~ # 03-25 a fiir deja dans data/
-	#~ # 03-27 a finir eja dans daya/
 	#~ fi
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0
 	#~ python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 1
 #~ done
+
+# Fourth batch
+echo "Fourth batch"
+for ((i=1; i<=16; i++))
+do 
+	if [ $((i)) == 1 ]; then DATE="2022-03-25->2022-03-25"
+	elif [ $((i)) == 2 ]; then DATE="2022--->2022--"
+	elif [ $((i)) == 2 ]; then DATE="2022--->2022--"
+	fi
+	bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0
+	python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
+	bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
+	bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 1
+done
 
 # NEW 36
 # All sans bf
@@ -186,15 +198,16 @@ PROPORTION="V10000"
 #~ python3 src/compute_percentages_all_workloads.py 36 1 mediane data/Percentages_to_fcfs_bf_2022-01-17-\>2022-01-17_V10000 data/Percentages_to_fcfs_bf_2022-01-21-\>2022-01-21_V10000 data/Percentages_to_fcfs_bf_2022-02-01-\>2022-02-01_V10000 data/Percentages_to_fcfs_bf_2022-02-02-\>2022-02-03_V10000 data/Percentages_to_fcfs_bf_2022-03-15-\>2022-03-16_V10000 data/Percentages_to_fcfs_bf_2022-04-07-\>2022-04-09_V10000 data/Percentages_to_fcfs_bf_2022-04-19-\>2022-04-19_V10000 data/Percentages_to_fcfs_bf_2022-08-16-\>2022-08-16_V10000 data/Percentages_to_fcfs_bf_2022-01-28-\>2022-01-28_V10000 data/Percentages_to_fcfs_bf_2022-05-06-\>2022-05-06_V10000 data/Percentages_to_fcfs_bf_2022-07-13-\>2022-07-13_V10000 data/Percentages_to_fcfs_bf_2022-07-16-\>2022-07-16_V10000 data/Percentages_to_fcfs_bf_2022-07-17-\>2022-07-17_V10000 data/Percentages_to_fcfs_bf_2022-07-18-\>2022-07-18_V10000 data/Percentages_to_fcfs_bf_2022-07-14-\>2022-07-14_V10000 data/Percentages_to_fcfs_bf_2022-03-12-\>2022-03-12_V10000 data/Percentages_to_fcfs_bf_2022-03-13-\>2022-03-13_V10000 data/Percentages_to_fcfs_bf_2022-03-14-\>2022-03-14_V10000 data/Percentages_to_fcfs_bf_2022-03-26-\>2022-03-26_V10000 data/Percentages_to_fcfs_bf_2022-03-30-\>2022-03-30_V10000 data/Percentages_to_fcfs_bf_2022-06-08-\>2022-06-08_V10000 data/Percentages_to_fcfs_bf_2022-09-12-\>2022-09-12_V10000 data/Percentages_to_fcfs_bf_2022-09-13-\>2022-09-13_V10000 data/Percentages_to_fcfs_bf_2022-04-21-\>2022-04-21_V10000 data/Percentages_to_fcfs_bf_2022-09-07-\>2022-09-07_V10000 data/Percentages_to_fcfs_bf_2022-09-10-\>2022-09-10_V10000 data/Percentages_to_fcfs_bf_2022-09-09-\>2022-09-09_V10000 data/Percentages_to_fcfs_bf_2022-09-11-\>2022-09-11_V10000 data/Percentages_to_fcfs_bf_2022-09-14-\>2022-09-14_V10000 data/Percentages_to_fcfs_bf_2022-09-17-\>2022-09-17_V10000 data/Percentages_to_fcfs_bf_2022-09-18-\>2022-09-18_V10000 data/Percentages_to_fcfs_bf_2022-08-13-\>2022-08-13_V10000 data/Percentages_to_fcfs_bf_2022-08-14-\>2022-08-14_V10000 data/Percentages_to_fcfs_bf_2022-08-24-\>2022-08-24_V10000 data/Percentages_to_fcfs_bf_2022-08-25-\>2022-08-25_V10000 data/Percentages_to_fcfs_bf_2022-08-26-\>2022-08-26_V10000
 #~ bash plot.sh inputs/workloads/converted/All_workloads_mediane inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_all_workloads_mediane Percentage_FCFS_BF 2
 
-#~ # Scatter plot
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv SCORE
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv OPPORTUNISTIC-SCORE-MIX
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT-SCORE-MIX
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-CONSERVATIVE-BF
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv SCORE-CONSERVATIVE-BF
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF
-python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-SCORE-MIX-CONSERVATIVE-BF
+# Scatter plot
+#~ echo "Scatter..."
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv SCORE
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv OPPORTUNISTIC-SCORE-MIX
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT-SCORE-MIX
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-CONSERVATIVE-BF
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv SCORE-CONSERVATIVE-BF
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF
+#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-SCORE-MIX-CONSERVATIVE-BF
 
 # Best TH
 #~ PROPORTION="V10000"

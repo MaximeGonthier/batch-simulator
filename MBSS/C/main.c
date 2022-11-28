@@ -100,6 +100,13 @@ int main(int argc, char *argv[])
 			time_to_save = atoi(argv[9]);
 			printf("Time to save is %d.\n", time_to_save);
 		}
+		else if (strcmp(argv[8], "save_and_resume") == 0)
+		{
+			need_to_resume_state = true;
+			need_to_save_state = true;
+			time_to_save = atoi(argv[9]);
+			printf("Time to save_and_resume is %d.\n", time_to_save);
+		}
 		else if (strcmp(argv[8], "resume") == 0)
 		{
 			need_to_resume_state = true;
