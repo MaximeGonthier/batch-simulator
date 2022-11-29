@@ -44,6 +44,7 @@ struct To_Print_List* jobs_to_print_list;
 int running_cores;
 int running_nodes;
 #ifdef PRINT_CLUSTER_USAGE
+int running_cores_from_workload_1;
 int running_nodes_workload_1;
 int mixed_mode;
 //~ int nodes_loading_a_file;
@@ -149,6 +150,8 @@ int main(int argc, char *argv[])
 	mixed_mode = 0;
 	//~ nodes_loading_a_file = 0;
 	int nodes_loading_a_file = 0;
+	int cores_loading_a_file = 0;
+	//~ int running_cores_from_workload_1 = 0;
 	#endif
 	
 	
@@ -324,7 +327,7 @@ int main(int argc, char *argv[])
 		perror("fopen in main");
         exit(EXIT_FAILURE);
 	}
-	fprintf(f_stats, "Time,Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue, Nodes loading a file\n");
+	fprintf(f_stats, "Time,Used cores,Used nodes,Scheduled jobs,Used nodes workload 1,Cores required in queue,Cores required from evaluated jobs in queue, Nodes loading a file, Used cores from workload 1, Cores loading a file\n");
 	//~ free(title);
 	int nb_jobs_in_queue = 0;
 	int nb_cores_in_queue = 0;
@@ -1038,11 +1041,18 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
+		
+		//~ if (running_cores_from_workload_1 != 0) {
+		//~ printf("%d.\n", running_cores_from_workload_1); }
 				
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
-		nodes_loading_a_file = get_nb_nodes_loading_a_file(node_list, t);
-		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + 486*20, nb_cores_from_workload_1_in_queue + 486*20, nodes_loading_a_file*20);
+		
+		//~ printf("%d.\n", running_cores_from_workload_1);
+		
+		get_nb_nodes_and_cores_loading_a_file(node_list, t, &nodes_loading_a_file, &cores_loading_a_file);
+		
+		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + 486*20, nb_cores_from_workload_1_in_queue + 486*20, nodes_loading_a_file*20, running_cores_from_workload_1, cores_loading_a_file);		
 		#endif
 				
 		if (start_times->head != NULL && t > start_times->head->time)

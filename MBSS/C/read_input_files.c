@@ -80,6 +80,10 @@ void read_cluster(char* input_node_file)
 			new->cores[i]->available_time = 0;
 			new->cores[i]->running_job = false;
 			new->cores[i]->running_job_end = -1;
+			
+			#ifdef PRINT_CLUSTER_USAGE
+			new->end_of_file_load = 0; /* Used to then get the total number of cores running a load */
+			#endif
 		}
 		
 		/* For conservative bf */

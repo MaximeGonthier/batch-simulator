@@ -70,18 +70,17 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compa
 Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le deuxieme resume dans les resultats.
 
 job sur lyon:
-04 23   T=4452249   OAR_JOB_ID=1418000
+04 23   T=4452249   OAR_JOB_ID=1420170
 
 A tester en local 04-24 et 04-25
 A finir et plot: voir document temp_results
 
 job sur grenoble:
-09 15	T=8564460	OAR_JOB_ID=2169967
-09 16	T=8659055	OAR_JOB_ID=2169968
-08 10	T=11948024	OAR_JOB_ID=2169984
-08 12	T=1			OAR_JOB_ID=2169985
-save de 03-27	T=2269184	OAR_JOB_ID=2169981 déjà dans data/
-01-02	T=1			OAR_JOB_ID=2169986
+09 15	T=8564460	OAR_JOB_ID=2169967 a besoin de plus de 14h mais pourra finir a relancer vendredi
+09 16	T=8659055	OAR_JOB_ID=2169968 a besoin de plus de 14h mais pourra finir a relancer vendredi
+08 12	T=1			OAR_JOB_ID=2170014
+save de 03-27	T=2269184	OAR_JOB_ID=2170015 déjà dans data/
+01-02	T=1			OAR_JOB_ID=2170016
 
 walltime=10:40:00
 2022-11-23 22:11:00

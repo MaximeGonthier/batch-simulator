@@ -199,23 +199,23 @@ PROPORTION="V10000"
 #~ bash plot.sh inputs/workloads/converted/All_workloads_mediane inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_all_workloads_mediane Percentage_FCFS_BF 2
 
 # Scatter plot
-#~ echo "Scatter..."
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv SCORE
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv OPPORTUNISTIC-SCORE-MIX
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT-SCORE-MIX
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-CONSERVATIVE-BF
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv SCORE-CONSERVATIVE-BF
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF
-#~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-SCORE-MIX-CONSERVATIVE-BF
+echo "Scatter..."
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv SCORE
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv OPPORTUNISTIC-SCORE-MIX
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads.csv EFT-SCORE-MIX
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-CONSERVATIVE-BF
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv SCORE-CONSERVATIVE-BF
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF
+python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-SCORE-MIX-CONSERVATIVE-BF
 
 # Box plots
 #~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
 #~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # ECDF
-python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
-python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
+#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # Best TH
 #~ PROPORTION="V10000"

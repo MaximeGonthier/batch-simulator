@@ -19,20 +19,20 @@ make print_distribution_queue_times -C C/
 
 SCHEDULER="Fcfs"
 echo "${SCHEDULER}"
-#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER 0 outputs/test.csv 2 80
+./C/main $WORKLOAD $CLUSTER $SCHEDULER 0 outputs/test.csv 0 80
 
 SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"
 echo "${SCHEDULER}"
-#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER 0 outputs/test.csv 2 80
+./C/main $WORKLOAD $CLUSTER $SCHEDULER 0 outputs/test.csv 0 80
 
 echo "Plotting results..."
-#~ python3 src/plot_queue_times.py outputs/Stretch_times_FCFS.txt "outputs/Stretch_times_EFT-SCORE MIX.txt" stretch
-python3 src/plot_queue_times.py data/Stretch_times_FCFS_${WORKLOAD_TP}_${CLUSTER_TP}.txt  data/Stretch_times_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.txt stretch
-mv plot.pdf plot/Stretch_times_FCFS_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
+python3 src/plot_queue_times.py outputs/Stretch_times_FCFS.txt "outputs/Stretch_times_EFT-SCORE MIX.txt" stretch
+#~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_${WORKLOAD_TP}_${CLUSTER_TP}.txt  data/Stretch_times_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.txt stretch
+#~ mv plot.pdf plot/Stretch_times_FCFS_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.pdf
 
 # Moving main csv data file
-#~ mv outputs/Stretch_times_FCFS.txt data/Stretch_times_FCFS_${WORKLOAD_TP}_${CLUSTER_TP}.txt
-#~ mv "outputs/Stretch_times_EFT-SCORE MIX.txt" data/Stretch_times_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+mv outputs/Stretch_times_FCFS.txt data/Stretch_times_FCFS_${WORKLOAD_TP}_${CLUSTER_TP}.txt
+mv "outputs/Stretch_times_EFT-SCORE MIX.txt" data/Stretch_times_EFT-SCORE-MIX_${WORKLOAD_TP}_${CLUSTER_TP}.txt
 
 end=`date +%s` 
 runtime=$((end-start))

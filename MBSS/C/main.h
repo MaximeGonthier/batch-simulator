@@ -41,6 +41,7 @@ extern int nb_cores_to_schedule; /* Cores ready but not running */
 extern int running_nodes_workload_1;
 //~ extern int nodes_loading_a_file;
 extern int mixed_mode;
+extern int running_cores_from_workload_1;
 #endif
 extern int total_queue_time;
 extern int first_subtime_day_0;
@@ -207,6 +208,10 @@ struct Core {
     int available_time;
     bool running_job;
     int running_job_end;
+    
+    #ifdef PRINT_CLUSTER_USAGE
+    int end_of_file_load; /* Used to then get the total number of cores running a load */
+    #endif
 };
 
 struct To_Print_List {
@@ -296,7 +301,7 @@ void swap(long long* xp, long long* yp);
 void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t);
 void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t, int mixed_strategy, int* temp_running_nodes);
 void get_node_size_to_choose_from(int index, int* first_node_size_to_choose_from, int* last_node_size_to_choose_from);
-int get_nb_nodes_loading_a_file(struct Node_List** head_node, int t);
+void get_nb_nodes_and_cores_loading_a_file(struct Node_List** head_node, int t, int* nodes_loading_a_file, int* cores_loading_a_file);
 
 /* From linked_list_functions.c */
 void insert_head_job_list(struct Job_List* liste, struct Job* j);

@@ -37,8 +37,8 @@ print("y: ", y)
 plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth = 4)
 
 # scatter de base
-y = sorted(y)
-plt.scatter(x, y, s = 100, c = "blue")
+# ~ y = sorted(y)
+# ~ plt.scatter(x, y, s = 100, c = "blue")
 
 # scatter avec log scale
 # ~ y = sorted(y)
@@ -50,10 +50,11 @@ plt.scatter(x, y, s = 100, c = "blue")
 # ~ ax1.get_yaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
 
 # scatter avec couleurs sur 1
-# ~ num_colors = 2
-# ~ cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", ["green", "green"])
-# ~ cmap.set_under('red')
-# ~ plt.scatter(x, y, c=y, cmap=cmap, vmin=1)
+num_colors = 2
+cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", ["green", "green"])
+cmap.set_under('red')
+y = sorted(y)
+plt.scatter(x, y, c=y, cmap=cmap, vmin=1)
 
 # barplot de différntes stratégies en 1 seul plot
 # ~ y_eft = list(df.iloc[:, y_index_eft])
