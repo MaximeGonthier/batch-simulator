@@ -178,7 +178,7 @@ PROPORTION="V10000"
 #~ do 
 	#~ if [ $((i)) == 1 ]; then DATE="2022-03-25->2022-03-25"
 	#~ elif [ $((i)) == 2 ]; then DATE="2022-06-11->2022-06-11"
-	#~ elif [ $((i)) == 2 ]; then DATE="2022--->2022--"
+	#~ elif [ $((i)) == 2 ]; then DATE="2022-03-27->2022-03-27"
 	#~ fi
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0
 	#~ python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
