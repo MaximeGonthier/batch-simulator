@@ -1,6 +1,6 @@
 % 10 pages, excluding references
-% Abstract 25/11
-% Paper 02/12
+% Abstract 05/12
+% Paper 12/12
 % CCGrid will be following a double-blind review process
 % IEEE two-column conference proceedings template
 
@@ -55,43 +55,7 @@
 \maketitle
 
 
-\begin{abstract}
-
-%~ Abstract by Maxime:
-%~ Schedulers proposed by resource manager like SLURM
-%~ (Simple Linux Utility for Resource Management) or OAR are
-%~ efficient enough for a classical use of a cluster. 
-%~ Certain areas of research are highly data-dependent, and thus
-%~ requires large input files to be loaded ahead of the computation.
-%~ In these cases, users may submits tens to hundreds of jobs using the
-%~ same multi-GB input file.
-%~ The sum of these large communications, adds significant queue times for
-%~ all subsequent jobs. A solution to reduce the effects from I/O reads would be to 
-%~ force users to manually group together input files into a single job. 
-%~ However, to offer more flexibility to the users and avoid creating jobs
-%~ monopolizing a large number of nodes for a very long time, we would like to
-%~ let users submit jobs the way they want and schedule efficiently those jobs
-%~ on our nodes. 
-
-%~ The workers have a way to store files (with a limit on the memory size).
-%~ Thus, a way to minimize data transfers is to schedule jobs using identical files
-%~ on the same set of nodes. In this work we address the problem of
-%~ \textit{distributing jobs sharing large input files on a cluster.}
-%~ We present three schedulers that \textit{take into consideration data locality
-%~ to minimize data transfers and thus reduce the mean waiting time of a job}.
-
-%~ These new approaches are evaluated using real cluster's history
-%~ allowing us to replicate the behavior of real users.
-%~ We compare our heuristics to the First-Come-First-Serve heuristic
-%~ coupled with a conservative backfilling strategy, as well as a communication-aware strategy
-%~ called Earliest-Finish-Time. We show that overall, our algorithms achieve
-%~ a significant speed-up, mainly under job-intensive periods.
-
-%~ In addition we study a few different typical usage of a cluster. 
-%~ and show that our strategy can be tuned regarding different user
-%~ behavior on different clusters.
-
-%~ Abstract by Loris:
+\begin{abstract}	
   Clusters and supercomputers make use of workload schedulers such as
   the Slurm Workload Manager \todo[inline]{Max: Should we explicit the "Simple Linux Utility for Resource Management"?LM: I think it's fine in the abstract, we give a reference below. Max: Okay. Carl: I believe the SLURM project itself is claiming it's not an acronym for that anymore. The proper name is the "Slurm Workload Manager".} or OAR to allocate computing jobs onto nodes. These schedulers
   usually aim at a good trade-off between increasing resource
@@ -131,12 +95,13 @@
 \todo[inline]{LM: I changed memory into storage: is it correct ? Carl: I changed back, the point is that these large files are kept in memory with heavy random accesses. There are of course cases where local scratch is sufficient for random accesses, but this not the scenario we've been focusing on. Changed it back.}
 
 \begin{IEEEkeywords}
-Batch scheduling,
-Jobs sharing inputs,
+%~ Batch scheduling,
+Job input sharing,
 %~ Real workload,
 Data-aware,
 Job scheduling,
-Job-input-aware
+High Performance Data Analytics
+%~ Job-input-aware
 %~ Communication-aware,
 %~ Batch systems
 \todo[inline]{Max: I've added a lot of keywords, we should only choose
@@ -149,9 +114,11 @@ idiomatic equivalent. Max: Okay I updated it.}
 
 \section{Introduction}\label{sec.introduction}
 
+\todo[inline]{Details on: data intensive applications, baselines}
+
 \section{Related Work - Draft}\label{sec.related_work}
 
-\paragraph{Scheduling jobs on large clusters}
+\subsection{Scheduling jobs on large clusters}
 
 To schedule jobs on batch systems, two systems are prominent: the Slurm Workload Manager~\cite{SLURM} and OAR~\cite{oar}.
 Slurm is used on most HPC clusters. Its default strategy is to schedule jobs baed on priorities derived
@@ -166,7 +133,7 @@ On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
 %~ for execution~\cite{Maui_Scheduler}.
 %~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
 
-\paragraph{Improving the schedulers of Slurm and other batch systems}
+\subsection{Improving the schedulers of Slurm and other batch systems}
 
 To deal with communication-intensive jobs within Slurm, a solution can be to
 minimize network contention by allocating nodes to even out node and switch contention
@@ -174,9 +141,13 @@ minimize network contention by allocating nodes to even out node and switch cont
 In our model we are not studying the network topology and consider independant nodes.
 This is reasonable, since our main concern is the cross-section bandwidth to a shared storage solution.
 \todo[inline]{Carl: Motivating why switch topology of less relevance.}
-Moreover, this requires a tree-based network topologies, which is different from our modem.
-Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
-\todo[inline]{Carl: I find the two last two sentences a bit confusing. What are we really trying to say here?}
+%~ Moreover, this requires a tree-based network topologies, which is different from our model.
+%~ Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
+\todo[inline]{Carl: I find the two last two sentences a bit confusing. What are we really trying to say here?
+Max: I was trying to say that they use the network topology to make a decision and we don't. 
+It was just another way to phrase what you wrote so I removed it. Also, their strategy 
+is developed for a tree-based network topology, so it might not work on other topology like a ring or a star?
+So, we might want to say that our approach is more generic in regards to the network topology?}
 
 Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
 is a system designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
@@ -209,27 +180,25 @@ are focusing on a better utilization of idling memory together with
 thrashing limitation. Our focus will be to control data loads and eviction so the
 processing order will naturally limits thrashing.
 
-\subsection{HDFS, a popular distributed file system - Draft, I need to double check my sources}
+\subsection{HDFS, a popular distributed file system}
 HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that
-incorporate storage-aware scheduling. HDFS is particularly used for applications that have large data sets. 
-%~ "Moving Computation is Cheaper than Moving Data" is an important idea for HDFS.
-It migrates a computation closer to where the data is located rather than moving the data to where
-the application is running.
-%~ Here are our main differences with HDFS. Firstly, HDFS is made for commodity hardware, prone
-%~ to more errors and breakdown, so to minimize the risk of failure, data are redundant on the nodes.
-HDFS is made for commodity(?) hardware, where errors need to be minimized. Thus, data are redundant
-to avoid breakdowns.
-In our use case, the scheduler will run on professional clusters and the main point is to load as 
-little data as possible. 
-Secondly, HDFS is mainly a storage system, with an historic on files locations. \todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the notes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundance. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage.}
-It is not relevant in our use case. 
-Thirdly, the scheduling can have issues. A paper describe in detail some problems from MapReduce~\cite{issue_with_hdfs}, the
-programming language used in HFDS: the static configuration of the memory allocation, the one-task assigned buffers, the
-lake of concurrent task running strategy and the I/O negative impact in memory during the shuffling phase.
-To resolve these issues, Mammoth~\cite{Mammoth} was created. It optimize memory usage on a node depending on the hardware configuration.
-Our approach is different because we are not dealing with MapReduce or memory allocation.
-Our approach is upstream. We can only allocate jobs to nodes. Moreover, we would like to maintain
-%~ equity among users  while optimizing I/O.
+incorporate storage-aware scheduling. It is particularly used to store large
+volume of data on a large number of systems. It's abstraction facilitates access to data
+under such conditions. Moreover, HDFS migrates a computation closer to where the data is
+located rather than moving the data to where the application is running in order to reduce communications.
+
+HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
+\todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the nodes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundancy. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage. Max: Ok, I re-wrote this section accordingly.}
+In our scenario, we copy the data from an already redundant system (an online database for example) and store it locally on the node in an ephemeral way. Thus, in the event of a crash, we do not manage the data which is already redundant, it simply results in an aborted job.
+
+Secondly, the scheduling can cause issues. A paper describe in detail some problems from
+MapReduce~\cite{issue_with_hdfs}, the programming model used in HDFS.
+%~ it ignores the heterogeneous consumption of resource of the different
+%~ phases the task go through.
+%~ To resolve these issues, Mammoth~\cite{Mammoth} was created. 
+%~ It optimize memory usage on a node depending on the hardware configuration.
+%~ Our approach is different because we are not dealing with MapReduce or memory allocation.
+By not using a distributed file system, we avoid altogether these problems. 
 In addition, HDFS is particularly efficient when the input data used are identical over time.
 In our case, one user will submit a lot of different jobs using the same data, but between users,
 the inputs are not the same. So HDFS would be less efficient.
@@ -312,8 +281,8 @@ It is important to note that the file transfers are done before the computation 
 
 We are in a non-preemptive case, meaning that a job cannot be stopped and resumed.
 
-\todo[inline]{Max: Say that we are online.}
-\todo[inline]{Max: Say that in our case the backfilling is only inside a node and between multiple nodes?}
+\todo[inline]{Max: Say that we are online, we have no way to know the number or length of future jobs.}
+\todo[inline]{Max: Say that in our case the backfilling is only inside a node and not between multiple nodes.}
 \todo[inline]{Max: Say that the schedule is re-done each time a core is liberated?}
 
 \section{Schedulers - Draft}\label{sec.schedulers}
@@ -339,9 +308,10 @@ a simple paradigm: "a job can only be backfilled if it does not
 delay a job of higher prioriy".
 \todo[inline]{Max: I've putted citation for conservative backfilling in this section 
 but maybe it should go in the related works ?}
+
 The FCFS strategy coupled with conservative backfilling is implemented as follows:
 \begin{algorithm}[htbp]
-	\caption{First-Come-First-Serve with conservative backfilling (FCFS-BF)}\label{algo.fcfsbf}
+	\caption{First-Come-First-Serve with conservative backfilling (FCFS-BF) (Draft)}\label{algo.fcfsbf}
 	\begin{algorithmic}[1]
 		\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
 		\State Find $\Node{k}$, such that, $t_k$, the time at which $\core(J_i)$ cores are available on $\Node{k}$ is minimal
@@ -358,8 +328,8 @@ The FCFS strategy coupled with conservative backfilling is implemented as follow
 		\EndIf
 	\end{algorithmic}
 \end{algorithm}
-\todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
 
+\todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
 \begin{tikzpicture}\begin{axis}
 [ font=\footnotesize,
   ytick style={draw=none},
@@ -395,24 +365,38 @@ the time to load the file, and consequently choosing nodes where a file will
 be re-used. 
 \todo[inline]{Max: Say that EFT with bf consider completion time as well.}
 
-%~ \begin{algorithm}[htbp]
-	%~ \caption{Earliest-Finish-Time with conservative backfilling (EFT-BF)}\label{algo.fcfsbf}
-	%~ \begin{algorithmic}[1]
-		%~ \State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
-		%~ \State Find $\Node{k}$, such that, $completion\_time_k$, the time at which $\core(J_i)$ cores are available on $\Node{k}$ is minimal
-		%~ \If{$t_k = current\_time$}
-			%~ \State Return $J_i$ scheduled on $\Node{k}$ at time $current\_time$
-		%~ \Else
-			%~ \ForEach{$\Node{l} \in \nodeset$}
-				%~ \State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available
-				%~ \If{$current\_time + \walltime(J_i) \leq shadow_l$}
-					%~ \State Return $J_i$ scheduled on $\Node{l}$ at time $current\_time$
-				%~ \EndIf
-			%~ \EndFor
-			%~ \State Return $J_i$ scheduled on $\Node{k}$ at time $t_k$
-		%~ \EndIf
-	%~ \end{algorithmic}
-%~ \end{algorithm}
+\begin{algorithm}[htbp]
+	\caption{Earliest-Finish-Time with conservative backfilling (EFT-BF) (Draft)}\label{algo.fcfsbf}
+	\begin{algorithmic}[1]
+		\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
+		\ForEach{$\Node{k} \in \nodeset$}
+			\State Find $t_k$, the time at which $\core(J_i)$ cores are available
+			\If {$\file(J_i) \in \file(\Node{k})$}
+				\State $transfer\_time_k \gets 0$
+			\Else
+				\State $transfer\_time_k \gets \frac{\memory(\file(J_i))}{\bandwidth}$ 
+			\EndIf \Comment{Comment représenter le fait d'attendre un chargement par une autre tâche, ce qui peut donner un temps d'attente inférieur au temps de chargement de la donnée?}
+		\EndFor
+		\State Find $\Node{best\_node} \in \nodeset$ such that $t_{best\_node} + transfer\_time_{best\_node} $ is minimal
+		\If{$t_ {best\_node}= current\_time$}
+			\State Return $J_i$ scheduled on $\Node{best\_node}$ at time $current\_time$
+		\Else
+			\ForEach{$\Node{l} \in \nodeset$}
+				\State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available
+				\If {$\file(J_i) \in \file(\Node{l})$}
+					\State $transfer\_time_l \gets 0$
+				\Else
+					\State $transfer\_time_l \gets \frac{\memory(\file(J_i))}{\bandwidth}$
+				\EndIf
+			\EndFor
+			\State Find $\Node{l} \in \nodeset$ such that $transfer\_time_{l} $ is minimal
+			\If{$current\_time + \walltime(J_i) \leq shadow_l$}
+				\State Return $J_i$ scheduled on $\Node{l}$ at time $current\_time$
+			\EndIf
+			\State Return $J_i$ scheduled on $\Node{best\_node}$ at time $t_{best\_node}$
+		\EndIf
+	\end{algorithmic}
+\end{algorithm}
 
 
 Coupled with it, we add the conservative backfilling strategy mentioned earlier:
@@ -436,92 +420,106 @@ reloading evicted files is computed for each node. The job is then scheduled
 on the node with the lowest score.
 
 \begin{algorithm}[htbp]\caption{SCORE (Draft)}\label{algo.score}\begin{algorithmic}[1]
-	\Statex For each job $J_i$ in the queue
+	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
 	\State $B\_multiplier \gets 500$
-	\State $C\_multiplier \gets 1$
 	\ForEach {$\Node{k} \in \nodeset$}
-		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
-		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$ \Comment{Or time waiting for the file to be loaded by another job.}
-		%~ \State $C \gets (\memory(\file(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-		\State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\State Find $t_k$, the time at which $\core(J_i)$ cores are available
+		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $t_k$ \Comment{Or time waiting for the file to be loaded by another job.}
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
+		\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets t_k + B\_multiplier \times B + C$
 	\EndFor
 	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
 \end{algorithmic}\end{algorithm}
 
 \begin{algorithm}[htbp]
 \caption{EFT-SCORE MIX (Draft)}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
 \begin{algorithmic}[1]
-\State $occupation\_threshold \gets 80$ 
-\State $occupation \gets$ the percentage of nodes running at least one job
-%~ \ForEach {$J_i \in \jobset$}
+	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$
+	\State $occupation\_threshold \gets 80$ 
+	\State $occupation \gets$ the percentage of nodes running at least one job at time $current\_time$
 	\If{$occupation < occupation\_threshold$}
 		\State $EFT(\jobset,\nodeset)$
 	\Else
 		\State $SCORE(\jobset,\nodeset)$
 	\EndIf
-%~ \EndFor
 \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[htbp]
 \caption{OPPORTUNISTIC-SCORE MIX (Draft)}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
 \begin{algorithmic}[1]
-\ForEach {$J_i \in \jobset$}
+	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$
 	\State $B\_multiplier \gets 500$
 	\State $C\_multiplier \gets 1$
 	\ForEach {$\Node{k} \in \nodeset$}
-		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
-		\If{$A = current~time$}
+		\State Find $t_k$, the time at which $\core(J_i)$ cores are available
+		\If{$t_k = current~time$}
 			\State $B\_multiplier \gets 1$
 			\State $C\_multiplier \gets 0$
 		\EndIf
-		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
-		%~ \State $C \gets (\memory(\file(\Node{k})~that~end~before~A) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $t_k$
 		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-		\State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets t_k + B\_multiplier \times B + C\_multiplier \times C$
 	\EndFor
-	\State Schedule $J_i$ on the node with the smallest score. Schedule on the node with the lowest index in case of a tie.
-	%~ \State Remove $J_i$ from $\jobset$
-\EndFor
+	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
 \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[htbp]
-\caption{SCORE CONSERVATIVE BF (Draft)}
-\hspace*{\algorithmicindent} \textbf{Input: Set of queued jobs $\jobset$. Set of nodes $\nodeset$.}
+\caption{Score with conservative backfilling (SCORE-BF) (Draft)}
 \begin{algorithmic}[1]
-\State $B\_multiplier \gets 500$
-\State $C\_multiplier \gets 1$
-\ForEach {$J_i \in \jobset$}
+	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
+	\State $B\_multiplier \gets 500$
 	\ForEach {$\Node{k} \in \nodeset$}
-		\State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
-		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
-		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-		\State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		\If {$\Node{k}$ has a hole and $j_i$ can use it}
-			\State $A \gets current~time$
-			\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
-			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-			\State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-			\State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		\EndIf
+		\State Find $t_k$, the time at which $\core(J_i)$ cores are available
+		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $t_k$ \Comment{Or time waiting for the file to be loaded by another job.}
+		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
+		\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		\State $score_{\Node{k}} \gets t_k + B\_multiplier \times B + C$
 	\EndFor
-	\State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
-	\If {$Backfill\_mode = 1$ OR $Backfill\_mode = 2$}
-		\State Minimize hole creation when affecting cores to $j_i$
-		\If {$Backfill\_mode = 1$}
-			\State Schedule $j_i$ on the cores with the biggest next start time
-		\Else
-			\State Schedule $j_i$ on the cores with the smallest next start time
-		\EndIf
-	\EndIf
-\EndFor
+	\ForEach{$\Node{l} \in \nodeset$}
+		\State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available
+			\If{$current\_time + \walltime(J_i) \leq shadow_l$}
+				\State $B \gets$ the time to load $\file(J_i)$ on $\Node{l}$ at time $current\_time$
+				\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $current\_time$ on $\Node{l}$
+				\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+				\If{$score_{\Node{l}} > current\_time + B\_multiplier \times B + C$}
+					\State $score_{\Node{l}} \gets current\_time + B\_multiplier \times B + C$
+				\EndIf
+			\EndIf
+	\EndFor
+	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.	
+	
+	%~ \State Job $J_i$ needs to be scheduled. Current time is $current\_time$
+	%~ \State $B\_multiplier \gets 500$
+	%~ \State $C\_multiplier \gets 1$
+%~ \ForEach {$J_i \in \jobset$}
+	%~ \ForEach {$\Node{k} \in \nodeset$}
+		%~ \State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
+		%~ \State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
+		%~ \State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+		%~ \State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+		%~ \State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		%~ \If {$\Node{k}$ has a hole and $j_i$ can use it}
+			%~ \State $A \gets current~time$
+			%~ \State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
+			%~ \State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
+			%~ \State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			%~ \State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
+		%~ \EndIf
+	%~ \EndFor
+	%~ \State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
+	%~ \If {$Backfill\_mode = 1$ OR $Backfill\_mode = 2$}
+		%~ \State Minimize hole creation when affecting cores to $j_i$
+		%~ \If {$Backfill\_mode = 1$}
+			%~ \State Schedule $j_i$ on the cores with the biggest next start time
+		%~ \Else
+			%~ \State Schedule $j_i$ on the cores with the smallest next start time
+		%~ \EndIf
+	%~ \EndIf
+%~ \EndFor
 \end{algorithmic}
 \end{algorithm}
 
@@ -569,39 +567,60 @@ but rather it is an empirical observation of an actual user community including,
 
 \section{Evaluations}\label{sec.evaluations}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 16 - Not saturated\todo[inline]{Elisabeth: I guess you will explain the graph somewhere, but right now, evaluated is ambiguous for me. When I read it I think finished jobs, but I assume it means jobs that will be in the schedule(?) Why are the two dashed ones flatlined? I assume it is becasue the queue is ``wider'' than all cores(?) Nice that the window is more visible. }}\end{figure}
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 16 - Not saturated}\end{figure}
+Figure~\ref{07_13_cluster_usage} shows us a visual representation of 
+our cluster's usage over time. The solid black dotted line is the total
+number of cores available.
+\todo[inline]{Max: Change the label once we know which one is the first shown figure of this type}
+The solid blue line shows the number of cores occupied by running jobs.
+The dashed blue line shows the additional number of cores that would be needed
+to run all the jobs in the queue at a given time (this would thus be the number
+of used cores if all the jobs where running in parallel).
+The red lines show the jobs in both categories that have their submission
+time within our evaluation window, in other words they are sub-parts of the blue line
+that we evaluate.
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Cluster's usage with FCFS - Workload of July 16 - Not saturated\todo[inline]{Elisabeth: I guess you will explain the graph somewhere, but right now, evaluated is ambiguous for me. When I read it I think finished jobs, but I assume it means jobs that will be in the schedule(?) Why are the two dashed ones flatlined? I assume it is becasue the queue is ``wider'' than all cores(?) Nice that the window is more visible. }}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 16 - Not saturated}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16 \todo[inline]{Elisabeth: How many bars will there be in the end? All of these or less? The names are so long. Could there perhaps be a table that explains the difference between the schedulers and a short acronym for each? This is more a matter of taste.}}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 16\todo[inline]{Elisabeth: Could there also be a second part of the bar showing number of jobs not reusing data? Now I think we can't know how large the fraction is.}}\end{figure}
+\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data - Workload of July 16\todo[inline]{Elisabeth: Could there also be a second part of the bar showing number of jobs not reusing data? Now I think we can't know how large the fraction is.}}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 13 - Temporarily saturated}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 13 - Temporarily saturated}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 13}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 13}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of July 13 - Temporarily saturated}\label{07_13_cluster_usage}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-07-13->2022-07-13_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 13 - Temporarily saturated}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 13}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-13->2022-07-13_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of July 13}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of August 16 - Saturated}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of August 16 - Saturated}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of August 16}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of August 16}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with FCFS - Workload of August 16 - Saturated}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of August 16 - Saturated}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of August 16}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of jobs re-using a data - Workload of August 16}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_All_workloads_mean_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch speed-up compared to FCFS - All workloads - Without backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_All_workloads_mediane_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Median of the stretch speed-up compared to FCFS - All workloads - Without backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_BF_All_workloads_mean_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch speed-up compared to FCFS - All workloads - With backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_BF_All_workloads_mediane_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Median of the stretch speed-up compared to FCFS - All workloads - With backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_All_workloads_mean_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch speed-up compared to FCFS - All workloads - Without backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_All_workloads_mediane_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Median of the stretch speed-up compared to FCFS - All workloads - Without backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_BF_All_workloads_mean_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch speed-up compared to FCFS - All workloads - With backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_Percentage_FCFS_BF_All_workloads_mediane_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Median of the stretch speed-up compared to FCFS - All workloads - With backfilling}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT.pdf}\caption{Stretch speed-up of EFT compared to FCFS on all workloads without backfilling\todo[inline]{I like these plots, but what is sample?}}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_SCORE.pdf}\caption{Stretch speed-up of SCORE compared to FCFS on all workloads without backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_OPPORTUNISTIC-SCORE-MIX.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads without backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads without backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT.pdf}\caption{Stretch speed-up of EFT compared to FCFS on all workloads without backfilling\todo[inline]{I like these plots, but what is sample?}}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_SCORE.pdf}\caption{Stretch speed-up of SCORE compared to FCFS on all workloads without backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_OPPORTUNISTIC-SCORE-MIX.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads without backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads without backfilling}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_EFT-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of EFT compared to FCFS on all workloads with backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_SCORE-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of SCORE compared to FCFS on all workloads with backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_EFT-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_EFT-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of EFT compared to FCFS on all workloads with backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_SCORE-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of SCORE compared to FCFS on all workloads with backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_OPPORTUNISTIC-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of OPPORTUNISTIC-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_bf_EFT-SCORE-MIX-CONSERVATIVE-BF.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS on all workloads with backfilling}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times_FCFS_EFT-SCORE-MIX_2022-07-13->2022-07-13_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of July 13\todo[inline]{Elisabeth: Also a nice plot. Showing that only when the file loading time is a substantial part of the overall job time is there a large speedup?}}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times_FCFS_EFT-SCORE-MIX_2022-07-13->2022-07-13_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of July 13\todo[inline]{Elisabeth: Also a nice plot. Showing that only when the file loading time is a substantial part of the overall job time is there a large speedup?}}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../Images/yearly_cluster_usage.png}\caption{Rackham's\todo[inline]{``The cluster's''} occupation over one year}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX_v1.pdf}\caption{Different color if inferior to 1}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX_v3.pdf}\caption{With a log scale.}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX_v2.pdf}\caption{I took the sorted stretches from EFT-SCORE MIX and applied the same order to other schedulers. Barplot instead of points. Added a maximum on the y axis.}\end{figure}
+
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_full.pdf}\caption{Boxplots full}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Boxplots with a max on Y. The whiskers are 25th percentile - 1.5*IQR and 75th percentile + 1.5*IQR with IQR the Interquartile range.}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Boxplots with a max on Y with backfilling}\end{figure}
+
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{ECDF}\end{figure}
+%~ \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf}\caption{ECDF with backfilling}\end{figure}
 
 \section{Conclusion}\label{sec.conclusion}
 

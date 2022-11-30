@@ -1,0 +1,103 @@
+\documentclass[conference,10pt]{IEEEtran}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts, colortbl, xspace, todonotes, paralist, multirow, hyperref, pgfplots}
+\pgfplotsset{compat=newest}
+\hypersetup{
+   colorlinks=false,
+   pdfborder={0 0 0},
+}
+\usepackage[english]{babel}
+\usepackage{graphicx, color, amssymb, url, xcolor, tikz, pgf, float, subcaption, algorithm,  tabularx}
+\usepackage[noend]{algpseudocode}
+\usetikzlibrary{trees, shapes, calc, external, fit, arrows, decorations, decorations.pathreplacing, patterns, automata, positioning, arrows.meta, intersections}
+
+% Custom commands
+\algnewcommand\algorithmicforeach{\textbf{for each}}
+\algdef{S}[FOR]{ForEach}[1]{\algorithmicforeach\ #1\ \algorithmicdo}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\Node}[1]{\ensuremath{\mathrm{Node}_{#1}}\xspace}
+\newcommand{\flow}[1]{\ensuremath{\mathit{flow}_{#1}}\xspace}
+\newcommand{\file}{\ensuremath{\mathit{File}}\xspace}
+\newcommand{\storage}{\ensuremath{\mathit{Storage}}\xspace}
+\newcommand{\memory}{\ensuremath{\mathit{Mem}}\xspace}
+\newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
+\newcommand{\duration}{\mathit{Duration}\xspace}
+\newcommand{\bandwidth}{\mathit{BW}\xspace}
+\newcommand{\core}{\mathit{Cores}\xspace}
+\newcommand{\submissiontime}{\mathit{Subtime}\xspace}
+\newcommand{\walltime}{\mathit{Walltime}\xspace}
+\newcommand{\completiontime}{\mathit{Completiontime}\xspace}
+\newcommand{\start}{\mathit{Starttime}\xspace}
+\newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
+\newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
+\newcommand{\nodeset}{\ensuremath{\mathbb{N}}\xspace}
+\newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
+\newcommand{\nbloads}{\ensuremath{\mathit{\mathit{Loads}}}\xspace}
+\newcommand{\live}{\ensuremath{L}\xspace}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\begin{document}
+
+%~ \title{Locality-aware batch scheduling on I/O intensive workloads}
+
+%~ \maketitle
+\begin{abstract}
+
+  Clusters and supercomputers make use of workload schedulers such as
+  the Slurm Workload Manager 
+  or OAR to allocate computing jobs onto nodes. These schedulers
+  usually aim at a good trade-off between increasing resource
+  utilization and user satisfaction (decreasing job waiting
+  time). However, these schedulers are typically unaware of jobs
+  sharing large input files: in data-intensive scenarios,
+  tens to
+  hundreds of jobs dedicated to the study of the same multi-GB input
+  file may be successively submitted. Running each of these jobs
+  first requires to load the input file, leading to a large data
+  transfer overhead. Users could manually group some of these
+  tasks into larger jobs to reduce data transfers, but this would result in less granular units that are
+  more difficult to schedule by the resource manager, and would
+  thus result in a larger delay as well. We study how to design a data-aware
+    job scheduler that is able to keep large input files on the 
+  computing nodes, provided this does not impact the memory needs of
+  other jobs, and can use previously loaded files to limit
+    data transfers in order to reduce the waiting times of jobs.
+
+  We present three schedulers capable of distributing the load between
+  the computing nodes as well as being aware of what the memory of each
+  node contains in order to re-use an input file
+  already loaded in the memory of some node as many times as possible.
+  
+  We report simulations performed using real cluster usage traces. 
+  Our approach is compared to currently used schedulers in batch systems.
+  The results show that keeping data locally, in memory, between successive
+  jobs and using data locality information to schedule jobs allows a
+  reduction in job waiting time and a drastic decrease in the amount of data
+  transfers.
+\end{abstract}
+
+\begin{IEEEkeywords}
+%~ Batch scheduling,
+Job input sharing,
+%~ Real workload,
+Data-aware,
+Job scheduling,
+High Performance Data Analytics
+%~ Job-input-aware
+%~ Communication-aware,
+%~ Batch systems
+%~ \todo[inline]{Max: I've added a lot of keywords, we should only choose
+%~ a few of those I think? Sam: Real workload is probably not useful. Batch
+%~ systems seems duplicate with Batch scheduling?  Communication-aware does
+%~ not really seem appropriate (we don't look at the communications that
+%~ happen during execution), rather something like job input aware or more
+%~ idiomatic equivalent. Max: Okay I updated it.}
+\end{IEEEkeywords}
+
+\end{document}

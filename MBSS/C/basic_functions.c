@@ -2182,7 +2182,22 @@ void start_jobs(int t, struct Job* head)
 					running_nodes_workload_1 += 1;
 				}
 				j->node_used->nb_jobs_workload_1 += 1;
+				running_cores_from_workload_1 += j->cores;
 			}
+			
+			if (overhead_of_load > 0 && j->node_used->end_of_file_load < t + overhead_of_load)
+			{
+				j->node_used->end_of_file_load = t + overhead_of_load;
+			}
+			
+			for (i = 0; i < j->cores; i++)
+			{
+				if (overhead_of_load > 0 && j->node_used->cores[j->cores_used[i]]->end_of_file_load < t + overhead_of_load)
+				{
+					j->node_used->cores[j->cores_used[i]]->end_of_file_load = t + overhead_of_load;
+				}
+			}		
+			
 			#endif
 			
 			j->node_used->n_available_cores -= j->cores;
@@ -2334,7 +2349,9 @@ void end_jobs(struct Job* job_list_head, int t)
 					running_nodes_workload_1 -= 1;
 				}
 				j->node_used->nb_jobs_workload_1 -= 1;
+							running_cores_from_workload_1 -= j->cores;
 			}
+			
 			#endif
 			/** End of defining cluster usage **/
 									
@@ -3374,7 +3391,40 @@ void get_node_size_to_choose_from(int index, int* first_node_size_to_choose_from
 		*last_node_size_to_choose_from = index;
 	}
 }
-		
+
+void get_nb_nodes_and_cores_loading_a_file(struct Node_List** head_node, int t, int* nodes_loading_a_file, int* cores_loading_a_file)
+{
+	#ifdef PRINT_CLUSTER_USAGE
+	int i = 0;
+	int j = 0;
+	*nodes_loading_a_file = 0;
+	*cores_loading_a_file = 0;
+	
+	for (i = 0; i < 3; i++)
+	{
+		struct Node* n = head_node[i]->head;
+		while (n != NULL)
+		{
+			if (n->end_of_file_load > t)
+			{
+				*nodes_loading_a_file += 1;
+			}
+			
+			for (j = 0; j < 20; j++)
+			{
+				//~ printf("%d > %d ? \n", n->cores[j]->end_of_file_load, t);
+				if (n->cores[j]->end_of_file_load > t)
+				{
+					*cores_loading_a_file += 1;
+				}
+			}
+			
+			n = n->next;
+		}
+	}
+	#endif
+}
+
 /** Pas utile car je peux pas savoir en fait, si les cores qui sont utilisées c'est les 20 19 18, bah en prenant 1 2 3 je bloque autre chose, donc autant ne rien faire. **/
 //~ /* Update cores available times and fill the cores used in the job. Uses the lowest index cores possible. */
 //~ int fill_cores_in_job_and_update_available_times(struct Job* job, struct Node* n, int nb_non_available_cores, int EAT, int t)

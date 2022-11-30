@@ -102,4 +102,4 @@ elif sys.argv[3] == "flow":
 else:
 	print("Error type")
 	exit(1)
-plt.savefig("plot.pdf")
+plt.savefig("plot/VS.pdf")
