@@ -237,19 +237,25 @@ the inputs are not the same. So HDFS would be less efficient.
 \section{Framework - Draft}\label{sec.framework}
 
 We consider the problem of scheduling a set of independent jobs,
-denoted $\jobset = {J_1, J_2, ..., J_k}$ on a set of independent nodes:
+denoted $\jobset = {J_1, J_2, ..., J_k}$ on a set of nodes:
 $\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
-These nodes are equipped with $m$ cores noted: $\Node{1}(c_1, c_2, ..., c_m)$.
-the memory of a node is set to $M\,GB$.
+Each of these nodes is equipped with $m$ cores noted: $\Node{1}(c_1,
+c_2, ..., c_m)$ sharing a memory of $M\,GB$.
 
-Each job is using an input file noted $\file(J_i)$ and
-stored in the main shared file system.
-During the processing of a job $J_i$ on $\Node{k}$,
-$\file(J_i)$ must be in the memory of $\Node{k}$. 
-We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files.
-Each file has a size in GB noted $\memory(F_i)$.
+Each job depends on input file noted $\file(J_i)$,
+which is initially stored in the main shared file system.
+During the processing of a job $J_i$ on $\Node{k}$, file
+$\file(J_i)$ must be in the memory of $\Node{k}$. If this is not the
+case before the start of the computation of  job $J_i$, then file
+$\file(J_i)$ is loaded into the memory.
+
+We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files,
+whose size is denoted by  $\memory(F_i)$.
+
 The size of a file is proportional to the number of cores requested by the job using the file.
+\todo[inline]{LM: what is the justification for  this sentence?}
 This size is thus a multiple of $\frac{M}{m}$.
+
 
 Each job is equipped with the following attributes:
 \begin{itemize}
