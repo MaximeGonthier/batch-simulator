@@ -117,20 +117,23 @@ df = pd.DataFrame(data)
 
 X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
-# ~ Y_percentage = list(df.iloc[:, Y_index])
-# ~ ((v1-v2)/(-v2))*100 avec v2 valeur de fcfs
-  
-# Plot the data using bar() method
+
+if (comparaison == "Number_of_data_reuse"):
+	plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
+	# ~ plt.axhline(y = int(sys.argv[7]))
+	# ~ plt.bar(X, int(sys.argv[7]), color="white")
 plt.bar(X, Y, color=["red", "green", "darkblue", "lightblue", "magenta", "yellow", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
-# ~ plt.bar(X, Y)
-# ~ plt.bar(X, Y)
+
+# ~ if (comparaison == "Number_of_data_reuse"):
+	# ~ plt.bar(X, int(sys.argv[7]), color="orange")
+
 plt.xticks(rotation=90)
 plt.title(plot_title)
 plt.xlabel("Scheduler")
-# ~ if (comparaison == "Nb_Upgraded_Jobs"):
-	# ~ plt.ylabel("Number of upgraded jobs")
 	
 if (percentages_mode == 0):
+	print("Print", plot_title)
+	print(Y)
 	if (comparaison == "Nb_Upgraded_Jobs"):
 		plt.ylabel("Number of upgraded jobs")
 	elif (comparaison == "Mean_Stretch"):
@@ -138,14 +141,17 @@ if (percentages_mode == 0):
 	else:
 		plt.ylabel("Seconds")
 elif (percentages_mode == 1):
+	print("Print speedup compared to FCFS")
+	print(Y)
 	plt.ylabel("Speedup compared to FCFS")
 	plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 elif (percentages_mode == 2):
+	print("Print speedup compared to FCFS BF")
+	print(Y)
 	plt.ylabel("Speedup compared to FCFS with BF")
 	plt.axhline(y = 1, color = 'black', linestyle = "dotted")
   
 # Show the plot
-# ~ plt.show()
 if (skip_row == 1):
 	filename = "plot/" + title + "_skip_maximum_use.pdf"
 else:	

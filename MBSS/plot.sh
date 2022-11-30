@@ -1,8 +1,8 @@
 #!/bin/bash
 # bash plot.sh workload cluster data_file
 
-if [ "$#" -ne 5 ]; then
-    echo "Usage is bash plot.sh workload cluster data_file model percentage_mode(0 or 1)"
+if [ "$#" -le 4 ]; then
+    echo "Usage is bash plot.sh workload cluster data_file model percentage_mode(0 or 1) nbjobsworkload1(optional)"
     exit
 fi
 
@@ -23,6 +23,8 @@ echo "Workload: ${WORKLOAD_TP} | Model: ${MODEL} | Percentage mode: ${PERCENTAGE
 	#~ PERCENTAGE_MODE=1
 #~ else
 #~ fi
+
+#~ python3 src/get_nb_evaluated_jobs.py ${WORKLOAD}
 
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Maximum_queue_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_queue_time ${CLUSTER_TP} 0 ${DATA_FILE}
@@ -46,4 +48,6 @@ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch ${CLUST
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_128 ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_256 ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_1024 ${CLUSTER_TP} 0 ${DATA_FILE}
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Number_of_data_reuse ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+if [ ${MODEL} == "FCFS_Score_Backfill" ]; then
+	python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Number_of_data_reuse ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE} $6
+fi
