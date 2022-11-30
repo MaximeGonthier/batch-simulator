@@ -220,7 +220,7 @@ the inputs are not the same. So HDFS would be less efficient.
 We consider the problem of scheduling a set of independent jobs,
 denoted $\jobset = {J_1, J_2, ..., J_k}$ on a set of independent nodes:
 $\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
-These nodes are equipped with $m$ cores noted: $\Node{1}(c_1, c_2, ..., c_m)$.
+These nodes are equipped with $m$ cores noted: $c_1, c_2, ..., c_m$.
 the memory of a node is set to $M\,GB$.
 
 Each job is using an input file noted $\file(J_i)$ and
@@ -317,32 +317,18 @@ but maybe it should go in the related works ?}
 
 \todo[inline]{Parler des cores dans le framework}
 
-The FCFS strategy coupled with conservative backfilling is implemented as follows:
-
-%~ For each job j in the quuee
-	%~ sortd cores ?
-	%~ find smallest time t such that core cores are available during t + walltime on some (C_i-1,Ci-tailledecore ) of node Nk
-	%~ marquer l'occupation des coeurs choisis
-	%~ schedule job on Nk at time t
-	
-	
-
+The FCFS strategy coupled with conservative backfilling is implemented as follows:	
 \begin{algorithm}[htbp]
-	\caption{First-Come-First-Serve with conservative backfilling (FCFS-BF) (Draft)}\label{algo.fcfsbf}
-	\begin{algorithmic}[1]
-		\State Job $J_i$ needs to be scheduled. Current time is $current\_time$. % Mettre un for each et dire que c'est une queue FIFO
-		\State Find $\Node{k}$, such that, $t_k$, the time at which $\core(J_i)$ cores are available on $\Node{k}$ is minimal
-		\If{$t_k = current\_time$}
-			\State Return $J_i$ scheduled on $\Node{k}$ at time $current\_time$
-		\Else
-			\ForEach{$\Node{l} \in \nodeset$}
-				\State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available % Trouver le plus petit temps t tel que core cores sont disponible entre t et t + walltime
-				\If{$current\_time + \walltime(J_i) \leq shadow_l$}
-					\State Return $J_i$ scheduled on $\Node{l}$ at time $current\_time$
-				\EndIf
-			\EndFor
-			\State Return $J_i$ scheduled on $\Node{k}$ at time $t_k$
-		\EndIf
+\caption{First-Come-First-Serve with conservative backfilling (FCFS-BF)}\label{algo.fcfsbf}
+\begin{algorithmic}[1]
+	\ForEach{$J_i \in$ the job's queue} \Comment{The job's queue is sorted by submission times}
+		\ForEach{$\Node{k} \in \nodeset$}
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+		\EndFor
+		\State Schedule $J_i$ on the node with the smallest $t_k$
+		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
+		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time \Comment{With a sorted list of cores, writing line 3 is easier}
+	\EndFor
 	\end{algorithmic}
 \end{algorithm}
 
@@ -381,51 +367,22 @@ on the node with the earliest available finish time, thus considering
 the time to load the file, and consequently choosing nodes where a file will
 be re-used. 
 \todo[inline]{Max: Say that EFT with bf consider completion time as well.}
-
-%~ For each job in queue
-	%~ For each node in Nodeset
-		%~ compter le EAT comme pour fcfs
-		%~ compute transfer_k corresponding to the time at which F(J) is available mettre un comment sur le calcul (il peut etre deja la ou en partie) (pour calculer la durre ce sera transfer - tk)
-		%~ choose node with smallest transfer_k (or tk')
+\todo[inline]{Max: The large comment I added in Algo2 should maybe be in a text before with a smaller comment with a reference to the text?}
 		
-		
-		
-
 \begin{algorithm}[htbp]
-	\caption{Earliest-Finish-Time with conservative backfilling (EFT-BF) (Draft)}\label{algo.fcfsbf}
-	\begin{algorithmic}[1]
-		\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
+\caption{Earliest-Finish-Time with conservative backfilling (EFT-BF)}\label{algo.fcfsbf}
+\begin{algorithmic}[1]
+	\ForEach{$J_i \in$ the job's queue}
 		\ForEach{$\Node{k} \in \nodeset$}
-			\State Find $t_k$, the time at which $\core(J_i)$ cores are available
-			\If {$\file(J_i) \in \file(\Node{k})$}
-				\State $transfer\_time_k \gets 0$
-			\Else
-				\State $transfer\_time_k \gets \frac{\memory(\file(J_i))}{\bandwidth}$ 
-			\EndIf \Comment{Comment représenter le fait d'attendre un chargement par une autre tâche, ce qui peut donner un temps d'attente inférieur au temps de chargement de la donnée?}
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$ \Comment{There are 3 scenarios. 1: the file is already in memory ($t_k' = t_k$), 2: the file is absent ($t_k' = t_k + \frac{\memory(\file(J_i))}{\bandwidth}$), 3: the file is partially loaded by another job $J_i'$ started before time $t_k$ ($t_k' = t_k + \frac{\memory(\file(J_i))}{\bandwidth} - \bandwidth \times (t_k - \start(J_i'))$)}
 		\EndFor
-		\State Find $\Node{best\_node} \in \nodeset$ such that $t_{best\_node} + transfer\_time_{best\_node} $ is minimal
-		\If{$t_ {best\_node}= current\_time$}
-			\State Return $J_i$ scheduled on $\Node{best\_node}$ at time $current\_time$
-		\Else
-			\ForEach{$\Node{l} \in \nodeset$}
-				\State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available
-				\If {$\file(J_i) \in \file(\Node{l})$}
-					\State $transfer\_time_l \gets 0$
-				\Else
-					\State $transfer\_time_l \gets \frac{\memory(\file(J_i))}{\bandwidth}$
-				\EndIf
-			\EndFor
-			\State Find $\Node{l} \in \nodeset$ such that $transfer\_time_{l} $ is minimal
-			\If{$current\_time + \walltime(J_i) \leq shadow_l$}
-				\State Return $J_i$ scheduled on $\Node{l}$ at time $current\_time$
-			\EndIf
-			\State Return $J_i$ scheduled on $\Node{best\_node}$ at time $t_{best\_node}$
-		\EndIf
-	\end{algorithmic}
+		\State Schedule $J_i$ on the node with the smallest $t_k'$
+		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
+		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
+	\EndFor
+\end{algorithmic}
 \end{algorithm}
-
-
-Coupled with it, we add the conservative backfilling strategy mentioned earlier:
 
 \subsection{A locality-focused algorithm: SCORE\todo{Max: Or another name}}
 
@@ -445,107 +402,63 @@ time, the time to load or wait for the files to be available and the cost of
 reloading evicted files is computed for each node. The job is then scheduled
 on the node with the lowest score.
 
-\begin{algorithm}[htbp]\caption{SCORE (Draft)}\label{algo.score}\begin{algorithmic}[1]
-	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
-	\State $B\_multiplier \gets 500$
-	\ForEach {$\Node{k} \in \nodeset$}
-		\State Find $t_k$, the time at which $\core(J_i)$ cores are available
-		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $t_k$ \Comment{Or time waiting for the file to be loaded by another job.}
-		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-		\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets t_k + B\_multiplier \times B + C$
-	\EndFor
-	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
-\end{algorithmic}\end{algorithm}
+% The load duration is t_k' - t_k
 
 \begin{algorithm}[htbp]
-\caption{EFT-SCORE MIX (Draft)}
+\caption{SCORE with conservative backfilling (SCORE-BF)}\label{algo.score}
 \begin{algorithmic}[1]
-	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$
-	\State $occupation\_threshold \gets 80$ 
-	\State $occupation \gets$ the percentage of nodes running at least one job at time $current\_time$
-	\If{$occupation < occupation\_threshold$}
-		\State $EFT(\jobset,\nodeset)$
-	\Else
-		\State $SCORE(\jobset,\nodeset)$
-	\EndIf
+	\ForEach{$J_i \in$ the job's queue}
+		\ForEach{$\Node{k} \in \nodeset$}
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
+			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
+			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
+			\State $Eviction\_penalty \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $score_{\Node{k}} \gets t_k + 500 \times Load\_overhead + Eviction\_penalty$
+		\EndFor
+		\State Schedule $J_i$ on the node with the smallest $score_{\Node{k}}$, tiebreak with lowest node's id
+		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
+		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
+	\EndFor
 \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[htbp]
-\caption{OPPORTUNISTIC-SCORE MIX (Draft)}
+\caption{EFT-SCORE MIX with conservative backfilling (EFT-SCORE-MIX-BF)}
 \begin{algorithmic}[1]
-	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$
-	\State $B\_multiplier \gets 500$
-	\State $C\_multiplier \gets 1$
-	\ForEach {$\Node{k} \in \nodeset$}
-		\State Find $t_k$, the time at which $\core(J_i)$ cores are available
-		\If{$t_k = current~time$}
-			\State $B\_multiplier \gets 1$
-			\State $C\_multiplier \gets 0$
+	\Statex Current time is $t$
+	\ForEach{$J_i \in$ the job's queue}
+		\State $occupation \gets$ the percentage of nodes running at least one job at time $t$
+		\If{$occupation < 80$}
+			\State $EFT(\jobset,\nodeset)$
+		\Else
+			\State $SCORE(\jobset,\nodeset)$
 		\EndIf
-		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $t_k$
-		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-		\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets t_k + B\_multiplier \times B + C\_multiplier \times C$
 	\EndFor
-	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.
 \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}[htbp]
-\caption{Score with conservative backfilling (SCORE-BF) (Draft)}
+\caption{OPPORTUNISTIC-SCORE MIX with conservative backfilling (OPPORTUNISTIC-SCORE-MIX-BF)}
 \begin{algorithmic}[1]
-	\State Job $J_i$ needs to be scheduled. Current time is $current\_time$.
-	\State $B\_multiplier \gets 500$
-	\ForEach {$\Node{k} \in \nodeset$}
-		\State Find $t_k$, the time at which $\core(J_i)$ cores are available
-		\State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $t_k$ \Comment{Or time waiting for the file to be loaded by another job.}
-		\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-		\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		\State $score_{\Node{k}} \gets t_k + B\_multiplier \times B + C$
-	\EndFor
-	\ForEach{$\Node{l} \in \nodeset$}
-		\State Find $shadow_l$, the time at which less than $\core(J_i)$ cores will be available
-			\If{$current\_time + \walltime(J_i) \leq shadow_l$}
-				\State $B \gets$ the time to load $\file(J_i)$ on $\Node{l}$ at time $current\_time$
-				\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $current\_time$ on $\Node{l}$
-				\State $C \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-				\If{$score_{\Node{l}} > current\_time + B\_multiplier \times B + C$}
-					\State $score_{\Node{l}} \gets current\_time + B\_multiplier \times B + C$
-				\EndIf
+	\Statex Current time is $t$
+	\ForEach{$J_i \in$ the job's queue}
+		\ForEach{$\Node{k} \in \nodeset$}
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
+			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
+			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
+			\State $Eviction\_penalty \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\If{$t_k = t$}
+				\State $score_{\Node{k}} \gets t_k + Load\_overhead$
+			\Else
+				\State $score_{\Node{k}} \gets t_k + 500 \times Load\_overhead + Eviction\_penalty$
 			\EndIf
+		\EndFor
+		\State Schedule $J_i$ on the node with the smallest $score_{\Node{k}}$, tiebreak with lowest node's id
+		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
+		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
 	\EndFor
-	\State Schedule $J_i$ on the node with the smallest score. Tiebreak with lowest node's id.	
-	
-	%~ \State Job $J_i$ needs to be scheduled. Current time is $current\_time$
-	%~ \State $B\_multiplier \gets 500$
-	%~ \State $C\_multiplier \gets 1$
-%~ \ForEach {$J_i \in \jobset$}
-	%~ \ForEach {$\Node{k} \in \nodeset$}
-		%~ \State $A \gets$ the earliest available time to compute $J_i$ on $\Node{k}$
-		%~ \State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
-		%~ \State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-		%~ \State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-		%~ \State $score_{\Node{k}} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		%~ \If {$\Node{k}$ has a hole and $j_i$ can use it}
-			%~ \State $A \gets current~time$
-			%~ \State $B \gets$ the time to load $\file(J_i)$ on $\Node{k}$ at time $A$
-			%~ \State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $A$ on $\Node{k}$
-			%~ \State $C \gets (\file(\mathit{sub\_J}) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-			%~ \State $score_{\mathit{Cores\_Hole}(\Node{k})} \gets A + B\_multiplier \times B + C\_multiplier \times C$
-		%~ \EndIf
-	%~ \EndFor
-	%~ \State Schedule $J_i$ on the node or hole with the best score. Schedule on the node with the lowest index in case of a tie.
-	%~ \If {$Backfill\_mode = 1$ OR $Backfill\_mode = 2$}
-		%~ \State Minimize hole creation when affecting cores to $j_i$
-		%~ \If {$Backfill\_mode = 1$}
-			%~ \State Schedule $j_i$ on the cores with the biggest next start time
-		%~ \Else
-			%~ \State Schedule $j_i$ on the cores with the smallest next start time
-		%~ \EndIf
-	%~ \EndIf
-%~ \EndFor
 \end{algorithmic}
 \end{algorithm}
 
