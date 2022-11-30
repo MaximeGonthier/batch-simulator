@@ -100,8 +100,8 @@ call="${call}${month2}-${day2} collection"
 
 lastday=${day2}
 lastmonth=${month2}
-#~ for ((i=0; i<$((14-3)); i++))
-for ((i=0; i<$((14-8)); i++))
+for ((i=0; i<$((14-3)); i++))
+#~ for ((i=0; i<$((14-8)); i++))
 do
 	if [ ${lastmonth} = "04" ] || [ ${lastmonth} = "06" ] || [ ${lastmonth} = "09" ] || [ ${lastmonth} = "11" ]; then
 		if [ ${lastday} = "30" ]; then
