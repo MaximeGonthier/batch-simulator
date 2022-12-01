@@ -613,19 +613,27 @@ The stretch of a job is the flow of the job divided
 by the flow the job would have gotten if it was scheduled on an empty cluster.
 They are denoted respectively $Flow(J_i)$ and $Empty\_flow(J_i)$:
 
-$$
-Flow(J_i) = end\_time(J_i) - \submissiontime(J_i)
-$$
-$$
-Flow(J_i) = (\start(J_i) + min(\duration(J_i) + t_k' - t_k, \walltime(J_i)) - \submissiontime(J_i))
-$$
-$$
-	Empty\_flow(J_i) = min(\duration(J_i) + \frac{\memory(\file(J_i))}{\bandwidth}, \walltime(J_i))
-$$
+\begin{equation}
+\begin{split}
+Flow(J_i) & = end\_time(J_i) - \submissiontime(J_i) \\
+& = (\start(J_i) + min(\duration(J_i) + t_k' - t_k, \\
+& \walltime(J_i)) - \submissiontime(J_i))
+\end{split}
+\end{equation}
+
+\begin{equation}
+\begin{split}
+Empty\_flow(J_i) = min(\duration(J_i) \\
+& + \frac{\memory(\file(J_i))}{\bandwidth}, \\
+&\walltime(J_i))
+\end{split}
+\end{equation}
+
 The stretch of one job is computed as follows:
-$$
-	Stretch_{J_i} = \frac{Flow(J_i)}{Empty\_flow(J_i)}
-$$
+\begin{equation}
+Stretch_{J_i} = \frac{Flow(J_i)}{Empty\_flow(J_i)}
+\end{equation}
+
 \todo[inline]{Max: Is it okay here to use the $t_k' - t_k$ notation used in the pseudocodes to get the duration of the load that was required?}
 We also evaluate the total amount of time spent waiting for a file to be available.
 
