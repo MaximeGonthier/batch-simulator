@@ -354,7 +354,7 @@ but maybe it should go in the related works ?}
 \todo[inline]{Parler des cores dans le framework}
 
 The FCFS strategy coupled with conservative backfilling is implemented as follows:	
-\begin{algorithm}[htbp]
+\begin{algorithm*}[htb]%\small
 \caption{First-Come-First-Serve with conservative backfilling (FCFS-BF)}\label{algo.fcfsbf}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the job's queue} \Comment{The job's queue is sorted by submission times}
@@ -366,7 +366,7 @@ The FCFS strategy coupled with conservative backfilling is implemented as follow
 		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time \Comment{With a sorted list of cores, writing line 3 is easier}
 	\EndFor
 	\end{algorithmic}
-\end{algorithm}
+\end{algorithm*}
 
 \todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
 \begin{tikzpicture}\begin{axis}
@@ -405,7 +405,7 @@ be re-used.
 \todo[inline]{Max: Say that EFT with bf consider completion time as well.}
 \todo[inline]{Max: The large comment I added in Algo2 should maybe be in a text before with a smaller comment with a reference to the text?}
 		
-\begin{algorithm}[htbp]
+\begin{algorithm*}[htb]%\small
 \caption{Earliest-Finish-Time with conservative backfilling (EFT-BF)}\label{algo.fcfsbf}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the job's queue}
@@ -418,7 +418,7 @@ be re-used.
 		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
 	\EndFor
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm*}
 
 \subsection{A locality-focused algorithm: SCORE\todo{Max: Or another name}}
 
@@ -440,7 +440,7 @@ on the node with the lowest score.
 
 % The load duration is t_k' - t_k
 
-\begin{algorithm}[htbp]
+\begin{algorithm*}[htb]%\small
 \caption{SCORE with conservative backfilling (SCORE-BF)}\label{algo.score}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the job's queue}
@@ -457,9 +457,9 @@ on the node with the lowest score.
 		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
 	\EndFor
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm*}
 
-\begin{algorithm}[htbp]
+\begin{algorithm*}[htb]%\small
 \caption{EFT-SCORE MIX with conservative backfilling (EFT-SCORE-MIX-BF)}
 \begin{algorithmic}[1]
 	\Statex Current time is $t$
@@ -472,9 +472,9 @@ on the node with the lowest score.
 		\EndIf
 	\EndFor
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm*}
 
-\begin{algorithm}[htbp]
+\begin{algorithm*}[htb]%\small
 \caption{OPPORTUNISTIC-SCORE MIX with conservative backfilling (OPPORTUNISTIC-SCORE-MIX-BF)}
 \begin{algorithmic}[1]
 	\Statex Current time is $t$
@@ -496,7 +496,7 @@ on the node with the lowest score.
 		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
 	\EndFor
 \end{algorithmic}
-\end{algorithm}
+\end{algorithm*}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
@@ -590,7 +590,7 @@ The way we collect jobs from the log's history is represented in Figure~\ref{fig
     %~ \draw (4*\x,2*\y) node[right]{\it \small data in memory};
     \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (0*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs started\\from logs} (1.2*1*\x-0.03, 1);
     \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt,mirror}] (1.2*4*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*1*\x-0.03, 2.4);
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Days used to collect all the jobs submitted before \textit{Day 2}} (1.2*12*\x-0.03, 1);
+    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Days used to collect all the jobs submitted before \textit{Day 3}} (1.2*12*\x-0.03, 1);
     \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*2*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\jobs} (1.2*3*\x-0.03, 1);
   \end{tikzpicture}
 }
@@ -718,7 +718,7 @@ that we evaluate.
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}\end{figure}
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}\end{figure}
-%~ \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with EFT-SCORE MIX.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with EFT-SCORE MIX.}\end{figure}
 
 \todo[inline]{Max: -Compute the number of small jobs of this workload and compare it with the average ?}
 

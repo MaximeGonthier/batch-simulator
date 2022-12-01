@@ -28,26 +28,23 @@ SCHEDULER=$3
 DATE=${WORKLOAD:27:30}
 CONTRAINTES_TAILLES=0
 
-make print_cluster_usage -C C/
-./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv 0 80
+#~ make print_cluster_usage -C C/
+#~ ./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES outputs/test.csv 0 80
 
 read V1 V2 V3 V4 < outputs/Start_end_evaluated_slice.txt
 # Full
 #~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 0 ${DAY} ${MONTH} ${YEAR} node_by_node
 # Reduced
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} node_by_node
+#~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} node_by_node
 # Reduced and with exact cores
-python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} core_by_core
+#~ python3 src/plot_stats_one_execution.py outputs/Stats_$SCHEDULER.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} core_by_core
 
-mv outputs/Stats_$SCHEDULER.csv data/Stats_${SCHEDULER}_${MONTH}-${DAY}.csv
+#~ mv outputs/Stats_$SCHEDULER.csv data/Stats_${SCHEDULER}_${MONTH}-${DAY}.csv
 
-# 07-16 - low
-#~ python3 src/plot_stats_one_execution.py data/Stats_${SCHEDULER}_07-16.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} node_by_node
-
-# 07-13 - medium
-#~ python3 src/plot_stats_one_execution.py data/Stats_${SCHEDULER}_07-13.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} node_by_node
-
-# 08-16 - high
+#~ DATE="07-16"
+#~ python3 src/plot_stats_one_execution.py data/Stats_${SCHEDULER}_${DATE}.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} core_by_core
+#~ DATE="08-16"
+#~ python3 src/plot_stats_one_execution.py data/Stats_${SCHEDULER}_${DATE}.csv Used_nodes ${WORKLOAD_TP} ${CLUSTER_TP} ${SCHEDULER} $V1 $V2 $V3 $V4 1 ${DAY} ${MONTH} ${YEAR} core_by_core
 
 end=`date +%s` 
 runtime=$((end-start))

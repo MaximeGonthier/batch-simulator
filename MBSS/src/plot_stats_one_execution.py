@@ -25,7 +25,7 @@ print("Opening", sys.argv[1], "precision mode is", precision_mode)
 
 # ~ print(day + "-" + month + "-" + year)
 
-print(first_job_before_day_0, first_job_day_0, first_job_day_1, first_job_day_2)
+# ~ print(first_job_before_day_0, first_job_day_0, first_job_day_1, first_job_day_2)
 mode = int(sys.argv[10]) # 0 normal, 1 reduced
 
 if (mode == 0):
@@ -102,7 +102,8 @@ else:
 	nodes_loading_a_file = list(df.iloc[:, 7])
 	used_cores_evaluated_jobs = list(df.iloc[:, 8])
 	cores_loading_a_file = list(df.iloc[:, 9])
-	fig, ax1 = plt.subplots()
+	fig, axs = plt.subplots(2, 1, sharex=True)
+	fig.subplots_adjust(hspace=0)
 	
 	for i in range (0, len(used_cores)):
 		if used_cores[i] == 0:
@@ -125,53 +126,63 @@ else:
 	for i in range (0, len(cores_in_queue)):
 		if cores_in_queue[i] == 486*20:
 			cores_in_queue[i] = float('nan')
+		else:
+			cores_in_queue[i] -= 9720
 	for i in range (0, len(cores_in_queue_evaluated_jobs)):
 		if cores_in_queue_evaluated_jobs[i] == 486*20:
 			cores_in_queue_evaluated_jobs[i] = float('nan')
+		else:
+			cores_in_queue_evaluated_jobs[i] -= 9720
 
 	if (precision_mode == "node_by_node"):
 		if (mode == 0): # mode full
-			ax1.plot(used_nodes, 'b-', label='Used cores by all jobs')
-			ax1.plot(cores_in_queue, 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
-			ax1.plot(cores_in_queue_evaluated_jobs, 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
-			ax1.plot(used_nodes_evaluated_jobs, "r-", label='Used cores by evaluated jobs')
-			ax1.plot(nodes_loading_a_file, "gray", label='Used cores waiting for a load')
+			axs[1].plot(used_nodes, 'b-', label='All jobs')
+			axs[0].plot(cores_in_queue, 'b-', label='All jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue_evaluated_jobs, 'r-', label='Evaluated jobs', linestyle = "dashed")
+			axs[1].plot(used_nodes_evaluated_jobs, "r-", label='Evaluated jobs')
+			axs[1].plot(nodes_loading_a_file, "gray", label='Waiting for a file')
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 		else: # mode reduced
-			ax1.plot(used_nodes[:84600*3], 'b-', label='Used cores by all jobs')
-			ax1.plot(cores_in_queue[:84600*3], 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
-			ax1.plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
-			ax1.plot(used_nodes_evaluated_jobs[:84600*3], "r-", label='Used cores by evaluated jobs')
-			ax1.plot(nodes_loading_a_file[:84600*3], "gray", label='Used cores waiting for a load')
+			axs[1].plot(used_nodes[:84600*3], 'b-', label='All jobs')
+			axs[0].plot(cores_in_queue[:84600*3], 'b-', label='All jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Evaluated jobs', linestyle = "dashed")
+			axs[1].plot(used_nodes_evaluated_jobs[:84600*3], "r-", label='Evaluated jobs')
+			axs[1].plot(nodes_loading_a_file[:84600*3], "gray", label='Waiting for a file')
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 	elif (precision_mode == "core_by_core"):
 		if (mode == 0): # mode full
-			ax1.plot(used_cores, 'b-', label='Used cores by all jobs')
-			ax1.plot(cores_in_queue, 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
-			ax1.plot(cores_in_queue_evaluated_jobs, 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
-			ax1.plot(used_cores_evaluated_jobs, "r-", label='Used cores by evaluated jobs')
-			ax1.plot(cores_loading_a_file, "gray", label='Used cores waiting for a load')
+			axs[1].plot(used_cores, 'b-', label='All jobs')
+			axs[0].plot(cores_in_queue, 'b-', label='All jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue_evaluated_jobs, 'r-', label='Evaluated jobs', linestyle = "dashed")
+			axs[1].plot(used_cores_evaluated_jobs, "r-", label='Evaluated jobs')
+			axs[1].plot(cores_loading_a_file, "gray", label='Waiting for a file')
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 		else: # mode reduced
-			ax1.plot(used_cores[:84600*3], 'b-', label='Used cores by all jobs')
-			ax1.plot(cores_in_queue[:84600*3], 'b-', label='Cores in queue from all jobs jobs', linestyle = "dashed")
-			ax1.plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Cores in queue from evaluated jobs', linestyle = "dashed")
-			ax1.plot(used_cores_evaluated_jobs[:84600*3], "r-", label='Used cores by evaluated jobs')
-			ax1.plot(cores_loading_a_file[:84600*3], "gray", label='Used cores waiting for a load')
+			axs[1].plot(used_cores[:84600*3], 'b-', label='All jobs')
+			axs[0].plot(cores_in_queue[:84600*3], 'b-', label='All jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Evaluated jobs', linestyle = "dashed")
+			axs[1].plot(used_cores_evaluated_jobs[:84600*3], "r-", label='Evaluated jobs')
+			axs[1].plot(cores_loading_a_file[:84600*3], "gray", label='Waiting for a file')
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 	else:
 		print("Wrong precision mode.")
 		exit
 		
-	ax1.set_xticks([0, 86400, 86400*2])
-	ax1.set_xticklabels(str_day_list, rotation = 90)
+	axs[0].set_xticks([0, 86400, 86400*2])
+	axs[0].set_xticklabels(str_day_list, rotation = 90)
 	plt.axvline(x = 86400, color = 'orange', linestyle = "dotted")
 	plt.axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
 		
 	plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
-	ax1.set_xlabel('Time in seconds')
-	ax1.set_ylabel(Y_label, color='b')
-	plt.legend()
+	# ~ axs[0].set_xlabel('Time in seconds')
+	axs[0].set_ylabel("In queue")
+	axs[1].set_ylabel("Running")
+	# ~ axs[1] = axs[0].twiny()  #
+	# ~ axs[1].set_ylabel("Number of cores used")
+	fig.text(-0.03, 0.5, 'Number of cores', va='center', rotation='vertical')
+	axs[0].legend(loc="upper left")
+	axs[1].legend(loc="upper left")
+	# ~ axs[1] = axs[0].twiny()  #
 	
 filename = "plot/Cluster_usage/" + title + "_" + precision_mode + ".pdf"
 
