@@ -56,7 +56,7 @@ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis
 plt.xticks([1, 2, 3, 4], ["EFT", "SCORE", "OPPORTUNISTIC-SCORE MIX", "EFT-SCORE MIX"], rotation=8)
 plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 ax.set_ylim(0, 2.5)
-colors = ["red", 'green', 'blue', 'lightblue']
+colors = ["#E50000","#00bfff","#ff9b15","#91a3b0"])
 for patch, color in zip(box['boxes'], colors):
     patch.set_facecolor(color)
     

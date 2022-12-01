@@ -543,10 +543,9 @@ but rather it is an empirical observation of an actual user community including,
 \section{Performance evaluation and analysis}\label{sec.evaluations}
 
 We present below the results of experimental evaluations conducted 
-on X\todo[inline]{Max: To update once all experiments are complete} days
-from a real workload history.
+on X\todo{Max: Update} days extracted from a real workload history.
 
-\subsection{Settings\todo[inline]{Maybe this section should be merged with the one above?}}
+\subsection{Settings\todo[inline]{Max: Maybe this section should be merged with the one above?}}
 
 \todo[inline]{put this somewhere/explain:
 We consider that these jobs are dedicated to processing their input
@@ -554,7 +553,7 @@ file. Hence, the larger the input file, the more cores the job
 requests, such that the file occupies a fraction of the memory
 proportional to the number of cores allocated to the job. A job with
 $k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
-that file sizes are multiple of $M/m$.  }
+that file sizes are multiple of $M/m$. Max: I think it should go in section 5.}
 
 All strategies as well as the two baselines have been implemented on
 a simulator that we developed. Each application scenario is a day on the log's history of
@@ -640,9 +639,8 @@ Flow(J_i) & = end\_time(J_i) - \submissiontime(J_i) \\
 
 \begin{equation}
 \begin{split}
-Empty\_flow(J_i) = min(\duration(J_i) \\
-& + \frac{\memory(\file(J_i))}{\bandwidth}, \\
-&\walltime(J_i))
+Empty\_flow(J_i) & = min(\duration(J_i) \\
+& + \frac{\memory(\file(J_i))}{\bandwidth}, \walltime(J_i))
 \end{split}
 \end{equation}
 
@@ -652,10 +650,27 @@ Stretch_{J_i} = \frac{Flow(J_i)}{Empty\_flow(J_i)}
 \end{equation}
 
 \todo[inline]{Max: Is it okay here to use the $t_k' - t_k$ notation used in the pseudocodes to get the duration of the load that was required?}
+\todo[inline]{Max: Do we need a table to recap the acronyms and strategies or reading the section scheduler is sufficient to know the acronyms?}
+\todo[inline]{Max: When I show performance of a particular workload should I show both BF and non BF or only one of those? Do I show one and talk about the other one?}
+\todo[inline]{Max: Should I add -BF in the acronyms of BF? Here I instead put dashed lines in the barplot.}
 We also evaluate the total amount of time spent waiting for a file to be available.
 
-\subsection{Results on an under-used cluster}
+\subsection{An underutilized cluster, SCORE issues and the appeal of EFT-SCORE MIX}
 
+\subsubsection{Results}
+
+\begin{figure}[tb]\centering\includegraphics[scale=0.4]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.4]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.4]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\end{figure}
+
+\todo[inline]{Max: -Quick talk on results}
+
+\subsubsection{Understanding SCORE's poor performance}
+
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with SCORE.}\end{figure}
+
+\todo[inline]{Max: -Explain figure of cluster's usage.}
 Figure~\ref{07_16_cluster_usage} shows us a visual representation of 
 our cluster's usage over time. The solid black dotted line is the total
 number of cores available.
@@ -668,24 +683,22 @@ The red lines show the jobs in both categories that have their submission
 time within our evaluation window, in other words they are sub-parts of the blue line
 that we evaluate.
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.\todo[inline]{Elisabeth: I guess you will explain the graph somewhere, but right now, evaluated is ambiguous for me. When I read it I think finished jobs, but I assume it means jobs that will be in the schedule(?) Why are the two dashed ones flatlined? I assume it is becasue the queue is ``wider'' than all cores(?) Nice that the window is more visible. }}\end{figure}
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of July 16 - Not saturated}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of July 16 \todo[inline]{Elisabeth: How many bars will there be in the end? All of these or less? The names are so long. Could there perhaps be a table that explains the difference between the schedulers and a short acronym for each? This is more a matter of taste.}}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data - Workload of July 16\todo[inline]{Elisabeth: Could there also be a second part of the bar showing number of jobs not reusing data? Now I think we can't know how large the fraction is. Max: Okay I did it here in gray. I count a data re-use even when you have to wait for the full duration of the load to use the file}}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Time waiting for a load Workload of July 16}\end{figure}
+\todo[inline]{Max: -Explain that on underused cluster SCORE uses less nodes and everyone else just does FCFS, EFT has small benefit but almost not noticeable.}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August the 16th with FCFS.}\end{figure}
-%~ \begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Cluster's usage with EFT-SCORE MIX - Workload of August 16 - Not saturated.}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Mean stretch on all jobs - Workload of August 16.}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data - Workload of August 16.}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Time waiting for a load Workload of August 16}\end{figure}
+\subsubsection{The appeal of EFT-SCORE MIX}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_EFT-SCORE-MIX_2022-07-13->2022-07-13_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of July 13\todo[inline]{Elisabeth: Also a nice plot. Showing that only when the file loading time is a substantial part of the overall job time is there a large speedup? Max: Yes exactly.}}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_EFT-SCORE-MIX_2022-09-09->2022-09-09_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch speed-up of EFT-SCORE MIX compared to FCFS, job by job on the workload of 09/09.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with EFT-SCORE MIX.}\end{figure}
+\todo[inline]{Max: -Explain appeal of EFT-SCORE MIX: not falling in score's weakness. The cluster usage is almost the same as the one of FCFS}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX_v1.pdf}\caption{Different color if inferior to 1\todo[inline]{I like these plots, but what is sample?}}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX_v3.pdf}\caption{With a log scale.}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Scatter/scatter_mean_stretch_all_workloads_EFT-SCORE-MIX_v2.pdf}\caption{I took the sorted stretches from EFT-SCORE MIX and applied the same order to other schedulers. Barplot instead of points. Added a maximum on the y axis.}\end{figure}
+\subsection{An almost saturated cluster, the weaknesses of EFT-SCORE MIX}
+
+\subsection{A saturated cluster, the great benefits of SCORE and EFT-SCORE MIX}
+
+\subsection{A cluster saturated with small jobs, the best case scenario for SCORE and EFT-SCORE MIX}
+
+\subsection{Final results on X different evaluated workloads}
+
+\todo[inline]{Max: Say that we logically gain more on FCFS than FCFS BF, thus the results are like that. 01-28 is a good example to talk about it and show on the same plot with and without backfilling.}
 
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_full.pdf}\caption{Boxplots full}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Boxplots with a max on Y. The whiskers are 25th percentile - 1.5*IQR and 75th percentile + 1.5*IQR with IQR the Interquartile range.}\end{figure}

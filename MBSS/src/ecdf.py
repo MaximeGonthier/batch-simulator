@@ -20,7 +20,7 @@ eft_score = list(df.iloc[:, 3])
 min_ecdf = min(eft + score + opportunistic + eft_score)
 # ~ max_ecdf = max(eft + score + opportunistic + eft_score)
 max_ecdf = 2.5
-
+# ~ color=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"])
 x = np.linspace(min_ecdf, max_ecdf)
 
 print("min:", min_ecdf, "max:", max_ecdf)
@@ -33,15 +33,18 @@ plt.step(x, y, label = "EFT")
 
 ecdf = ECDF(score)
 y = ecdf(x)
-plt.step(x, y, label = "SCORE")
+# ~ plt.step(x, y, label = "SCORE")
+plt.step(x, y, label = "LEA")
 
 ecdf = ECDF(opportunistic)
 y = ecdf(x)
-plt.step(x, y, label = "OPPORTUNISTIC-SCORE MIX")
+# ~ plt.step(x, y, label = "OPPORTUNISTIC-SCORE MIX")
+plt.step(x, y, label = "LEO")
 
 ecdf = ECDF(eft_score)
 y = ecdf(x)
-plt.step(x, y, label = "EFT-SCORE MIX")
+# ~ plt.step(x, y, label = "EFT-SCORE MIX")
+plt.step(x, y, label = "LEM")
 
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	filename = "plot/ECDF/ecdf_mean_stretch_all_workloads.pdf"

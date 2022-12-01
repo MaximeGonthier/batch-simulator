@@ -16,7 +16,7 @@ percentages_mode = int(sys.argv[6])
 
 title = workload + "_" + comparaison + "_" + cluster
 
-if (percentages_mode == 0):	
+if (percentages_mode == 0 or percentages_mode == 3):	
 	if (comparaison == "Maximum_queue_time"):
 		Y_index = 2
 		plot_title = "Maximum Queue Time"
@@ -118,20 +118,46 @@ df = pd.DataFrame(data)
 X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
 
-if (comparaison == "Number_of_data_reuse"):
-	plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
-	# ~ plt.axhline(y = int(sys.argv[7]))
-	# ~ plt.bar(X, int(sys.argv[7]), color="white")
-plt.bar(X, Y, color=["red", "green", "darkblue", "lightblue", "magenta", "yellow", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
+# Pour renommer les algos
+X[0] = "FCFS"
+X[1] = "FCFS"
+X[2] = "EFT"
+X[3] = "EFT"
+X[4] = "LEA"
+X[5] = "LEA"
+X[6] = "LEO"
+X[7] = "LEO"
+X[8] = "LEM"
+X[9] = "LEM"
 
+# Pour afficher toutes les strats
+# ~ plt.bar(X, Y[0, 2, 4], color=["red", "green", "darkblue", "lightblue", "magenta", "yellow", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
 # ~ if (comparaison == "Number_of_data_reuse"):
-	# ~ plt.bar(X, int(sys.argv[7]), color="orange")
+	# ~ plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
+	
+# Pour diviser en 2 BF/NON BF
+if (percentages_mode == 0): # Non BF
+	Y_non_bf = [Y[2*i] for i in range(len(Y)//2)]
+	X_non_bf = [X[2*i] for i in range(len(X)//2)]
+	if (comparaison == "Number_of_data_reuse"):
+		plt.bar(X_non_bf, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
+	plt.bar(X_non_bf, Y_non_bf, color=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"])
+elif (percentages_mode == 3): # BF
+	Y_bf = [Y[2*i+1] for i in range(len(Y)//2)]
+	X_bf = [X[2*i+1] for i in range(len(X)//2)]
+	if (comparaison == "Number_of_data_reuse"):
+		plt.bar(X_bf, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
+	plt.bar(X_bf, Y_bf, color=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"], hatch="/", edgecolor="white")
+else:
+	plt.bar(X, Y, color=["#E50000","#00bfff","#ff9b15","#91a3b0"])
 
-plt.xticks(rotation=90)
-plt.title(plot_title)
+
+
+# ~ plt.xticks(rotation=90)
+# ~ plt.title(plot_title)
 plt.xlabel("Scheduler")
 	
-if (percentages_mode == 0):
+if (percentages_mode == 0 or percentages_mode == 3):
 	print("Print", plot_title)
 	print(Y)
 	if (comparaison == "Nb_Upgraded_Jobs"):
@@ -157,6 +183,9 @@ elif (percentages_mode == 2):
 if (skip_row == 1):
 	filename = "plot/" + title + "_skip_maximum_use.pdf"
 else:	
-	filename = "plot/" + title + ".pdf"
-# ~ plt.figure.savefig(filename)
+	if (percentages_mode == 3):
+		filename = "plot/BF_" + title + ".pdf"
+	else:
+		filename = "plot/" + title + ".pdf"
 plt.savefig(filename, bbox_inches='tight')
+

@@ -36,8 +36,6 @@ echo "Workload: ${WORKLOAD_TP} | Model: ${MODEL} | Percentage mode: ${PERCENTAGE
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Makespan ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Core_time_used ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Waiting_for_a_load_time ${CLUSTER_TP} 0 ${DATA_FILE}
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
-python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Max_Stretch ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Max_Stretch_With_a_Minimum ${CLUSTER_TP} 0 ${DATA_FILE}
@@ -48,6 +46,9 @@ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch ${CLUST
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_128 ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_256 ${CLUSTER_TP} 0 ${DATA_FILE}
 #~ python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch_With_a_Minimum_1024 ${CLUSTER_TP} 0 ${DATA_FILE}
-if [ ${MODEL} == "FCFS_Score_Backfill" ]; then
+
+python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Mean_Stretch ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Total_waiting_for_a_load_time_and_transfer_time ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE}
+if [[ ${MODEL} == "FCFS_Score_Backfill" && "$#" == 6 ]]; then
 	python3 src/plot_barplot.py Results_${MODEL}_${WORKLOAD_TP} Number_of_data_reuse ${CLUSTER_TP} 0 ${DATA_FILE} ${PERCENTAGE_MODE} $6
 fi
