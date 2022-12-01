@@ -626,7 +626,7 @@ int main(int argc, char *argv[])
 	//~ busy_cluster_threshold = 100;
 	busy_cluster_threshold = atoi(argv[7]);
 	printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
-		
+		//~ printf("&\n");
 	int division_by_planned_area = 0;
 	
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
@@ -846,6 +846,7 @@ int main(int argc, char *argv[])
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
 	#endif
 	{
+		//~ printf("t=%d\n", t);
 		//~ #ifdef PRINT_CLUSTER_USAGE
 		//~ if (nb_job_to_evaluate == nb_job_to_evaluate_started && time_all_job_workload_1_started == -1)
 		//~ {

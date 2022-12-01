@@ -1818,6 +1818,7 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 	{
 		if (data_unique_id == d->unique_id) /* It is already on node */
 		{
+			//~ printf("la1\n"); fflush(stdout);
 			#ifdef DATA_PERSISTENCE
 			//~ if (d->nb_task_using_it > 0 || d->end_time == t) /* And is still valid! */
 			//~ {
@@ -1897,6 +1898,7 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 		}
 		d = d->next;
 	}
+	//~ printf("la\n");
 	if (data_is_on_node == false) /* Need to load it */
 	{
 		#ifdef PRINT
