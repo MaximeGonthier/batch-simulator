@@ -30,15 +30,19 @@
 \newcommand{\flow}[1]{\ensuremath{\mathit{flow}_{#1}}\xspace}
 \newcommand{\file}{\ensuremath{\mathit{File}}\xspace}
 \newcommand{\storage}{\ensuremath{\mathit{Storage}}\xspace}
+\newcommand{\size}{\ensuremath{\mathit{Size}}\xspace}
 \newcommand{\memory}{\ensuremath{\mathit{Mem}}\xspace}
 \newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
 \newcommand{\bandwidth}{\mathit{BW}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
-\newcommand{\submissiontime}{\mathit{Subtime}\xspace}
-\newcommand{\walltime}{\mathit{Walltime}\xspace}
-\newcommand{\completiontime}{\mathit{Completiontime}\xspace}
-\newcommand{\start}{\mathit{Starttime}\xspace}
+\newcommand{\submissiontime}{\mathit{SubTime}\xspace}
+\newcommand{\walltime}{\mathit{WallTime}\xspace}
+\newcommand{\completiontime}{\mathit{CompletionTime}\xspace}
+\newcommand{\start}{\mathit{StartTime}\xspace}
+\newcommand{\allocatednode}{\ensuremath\mathit{sigma}\xspace}
+\newcommand{\allocatedcores}{\ensuremath\mathit{gamma}\xspace}
+
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
 \newcommand{\nodeset}{\ensuremath{\mathbb{N}}\xspace}
@@ -230,95 +234,114 @@ the inputs are not the same. So HDFS would be less efficient.
 
 \section{Framework - Draft}\label{sec.framework}
 
-We consider the problem of scheduling a set of independent jobs,
-denoted $\jobset = {J_1, J_2, ..., J_k}$ on a set of nodes:
-$\nodeset = {\Node{1}, \Node{2}, ..., \Node{l}}$.
-%%%%LM: to be merged later:
-% Each of these nodes is equipped with $m$ cores noted: $\Node{1}(c_1,
-% c_2, ..., c_m)$ sharing a memory of $M\,GB$.
-% Each job depends on input file noted $\file(J_i)$,
-% which is initially stored in the main shared file system.
-% During the processing of a job $J_i$ on $\Node{k}$, file
-% $\file(J_i)$ must be in the memory of $\Node{k}$. If this is not the
-% case before the start of the computation of  job $J_i$, then file
-% $\file(J_i)$ is loaded into the memory.
-% We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files,
-% whose size is denoted by  $\memory(F_i)$.
-These nodes are equipped with $m$ cores noted: $c_1, c_2, ..., c_m$.
-the memory of a node is set to $M\,GB$.
+We consider the problem of scheduling a set of $N$ independent jobs,
+denoted $\jobset = {J_1, J_2, \ldots, J_N}$ on a set of $P$ nodes:
+$\nodeset = \{\Node{1}, \Node{2}, \ldots, \Node{P}\}$.
+%% LM: to be merged later:
+Each node $N_i$ is equipped with $m$ cores noted:
+$c^i_1,\ldots,c^i_m$ sharing a memory of size $M$.
 
-Each job is using an input file noted $\file(J_i)$ and
-stored in the main shared file system.
-During the processing of a job $J_i$ on $\Node{k}$,
-$\file(J_i)$ must be in the memory of $\Node{k}$. 
-We denote by $\fileset = F_1, F_2, ..., F_n$ the set of input files.
-Each file has a size in GB noted $\memory(F_i)$.
->>>>>>> 83eaaeedf32df0cd362dcbaf99a393fa66714cd7
-The size of a file is proportional to the number of cores requested by the job using the file.
-\todo[inline]{LM: what is the justification for  this sentence?}
-This size is thus a multiple of $\frac{M}{m}$.
+Each job depends on an input file noted $\file(J_i)$, which is
+initially stored in the main shared file system.  During the
+processing of a job $J_i$ on $\Node{k}$, file $\file(J_i)$ must be in
+the memory of $\Node{k}$. If this is not the case before starting
+computation of job $J_i$, then file $\file(J_i)$ is loaded into the
+memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_n\}$ the set
+of discting input files, whose size is denoted by $\size(F_i)$.
+
+\todo[inline]{LM:do we have jobs without input files?}
+
+We consider that these jobs are dedicated to processing their input
+file and that all jobs run on a single node, but on different number
+of cores. Hence, the larger the input file, the more cores the job
+requests, such that the file occupies a fraction of the memory
+proportional to the number of cores allocated to the job. A job with
+$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
+that file sizes are multiple of $M/m$.  \todo[inline]{LM: I wonder if
+  this constraint should be here or in the experimental setting? I
+  think that the proposed algorithms are general enough to handle
+  cases where jobs have any size.}
 
 
-Each job is equipped with the following attributes:
+Each job $J_i$ has the following attributes:
 \begin{itemize}
-	\item Resource requirement: $\core(J_i)$ such that $1 \leq \core(J_i) \leq m$.
-	\item An input file $\file(J_i) \in \fileset$.
-	\item A submission date $\submissiontime(J_i)$.
-	\item A requested running time (or walltime) noted $\walltime(J_i)$ and corresponding to
-	the maximum time during which $J_i$ can run on a node.
-	\item An actual running time named $\duration(J_i)$. This attribute is not known by
-	the scheduler. If $\duration(J_i) \l \walltime(J_i)$, then the job will terminate at
-	time $\start(J_i) + \duration(J_i)$. 
-	Else the job will be terminated at time $\start(J_i) + \walltime(J_i)$.
+\item Resource requirement: job $J_i$ requests $\core(J_i)$  cores, such that $1 \leq \core(J_i) \leq m$;
+\item Input file: $\file(J_i) \in \fileset$;
+\item Submission date: $\submissiontime(J_i)$.
+\item Requested running time (or walltime): $\walltime(J_i)$: if not
+  finished after this duration, job $J_i$ is killed by the scheduler;
+\item Actual running time: $\duration(J_i)$ (unknown to  the scheduler).
 \end{itemize}
 
 We do not consider the data output of jobs.
-Each of the $m$ jobs must be processed on some of the $K$ nodes. 
-We consider that all jobs are single nodes.
 
-The file sharing system initially contains all of $\fileset$.
-Each node is connected to the file sharing system with a limited bandwidth.
-Each node has the same bandwidth noted $\bandwidth$.
-The bounded bandwidth as well as the sizes of the files are the reasons why
-we aim at restricting the amount of data movement.
+Each of the $N$ jobs must be processed on some of the $P$ nodes.  As
+stated earlier, the shared file system initially contains all of files
+of $\fileset$.  Each node is connected to the file system with a link
+of limited bandwidth, denoted by $\bandwidth$.  The limited bandwidth
+as well as the large sizes of the files are the reasons why we aim at
+restricting the amount of data movement.
 
-The memory of a node is used only by physical writing of files and denoted by $\memory(\Node{i})$.
-A file can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
+We consider that the memory of a node, denoted by $\memory(\Node{i})$,
+is only used by the jobs' input files, since all other data are
+negligible in front of the input files.
+A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{enumerate}
-Otherwise we consider that memory operations will cause the files to be evicted.
+Otherwise we consider that memory operations will cause the files to
+be evicted.  \todo[inline]{LM: I thought we removed this constraint,
+  and replaced it by a weaker one: a file may be evicted if some
+  memory is required by another job between $J_i$ and $J_j$. Correct?
+  Do we implement this for all strategies?}
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
 We denote by $\storage(\Node{k}, t)$, the set of files loaded on $\Node{k}$
-at time $t$. 
-We denote by $\sigma(\Node{k}, \mathit{nb}_k)$ the set of $\mathit{nb}_k$ jobs
-scheduled on $\Node{k}$, each equipped with a $\start(J_i)$ and an
-input file $\file(J_i)$.
-$\sigma(\Node{k}, i)$ corresponds to the $i^\text{th}$ job on this schedule.
-On $\Node{k}$, the schedule is made of a
-succession of $\mathit{nb}_k$
-steps, each step being composed of the
-following stages (in this order):
-\begin{enumerate}
-	\item If $\start(\sigma(\Node{k}, i)) = t$ do:
-	\begin{enumerate}
-		\item If the input file $\file(\sigma(\Node{k}, i))$ is not yet in memory, it is 
-		loaded in the memory of $\Node{k}$ with a duration of $\frac{\memory(\file(\sigma(\Node{k}, i)))}{\bandwidth}$.
-		\item Job $\sigma(\Node{k}, i)$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
-	\end{enumerate}
-\end{enumerate}
-It is important to note that the file transfers are done before the computation and can not be overlapped.
+at time $t$. The constraint on the limited size of the memory can be
+summarized by:
+$$
+\forall k,\forall t \quad \sum_{F_i\in \storage(\Node{k},t)} \size(F_i)\leq M.
+$$
 
-We are in a non-preemptive case, meaning that a job cannot be stopped and resumed.
+For each $J_i$, we denote by
+$\allocatedcores(J_i)$ the set of cores of the same node
+$\allocatednode(J_i)$ allocated to $J_i$ and by
+$\start(J_i)$ is starting time. If at this time, the input file of
+$J_i$ is already in the memory of $\allocatednode(J_i)$, then $J_i$
+can start its execution at time $\start(J_i)$. Otherwise, its input
+file is first loaded, and the execution starts at time 
+$\start+\size(\file(J_i))/\bandwidth$.
 
+\todo[inline]{LM: maybe we should add/formalize:\\
+  - computation of the execution starting time and completion time,
+  - constraints on the fact that a core cannot process two jobs simultaneously.}
+
+% We denote by $\sigma(\Node{k}, \mathit{nb}_k)$ the set of $\mathit{nb}_k$ jobs
+% scheduled on $\Node{k}$, each equipped with a $\start(J_i)$ and an
+% input file $\file(J_i)$.
+% $\sigma(\Node{k}, i)$ corresponds to the $i^\text{th}$ job on this schedule.
+% On $\Node{k}$, the schedule is made of a
+% succession of $\mathit{nb}_k$
+% steps, each step being composed of the
+% following stages (in this order):
+% \begin{enumerate}
+% 	\item If $\start(\sigma(\Node{k}, i)) = t$ do:
+% 	\begin{enumerate}
+% 		\item If the input file $\file(\sigma(\Node{k}, i))$ is not yet in memory, it is 
+% 		loaded in the memory of $\Node{k}$ with a duration of $\frac{\size(\file(\sigma(\Node{k}, i)))}{\bandwidth}$.
+% 		\item Job $\sigma(\Node{k}, i)$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
+% 	\end{enumerate}
+% \end{enumerate}
+It is important to note that the file transfer is done before the computation and cannot be overlapped.
+Jobs are non-preemptible: when started, a job is executed through its completion.
+
+
+\section{Schedulers - Draft}\label{sec.schedulers}
 \todo[inline]{Max: Say that we are online, we have no way to know the number or length of future jobs.}
 \todo[inline]{Max: Say that in our case the backfilling is only inside a node and not between multiple nodes.}
 \todo[inline]{Max: Say that the schedule is re-done each time a core is liberated?}
-
-\section{Schedulers - Draft}\label{sec.schedulers}
 
 In this section, we present the various schedulers used to solve
 the partitioning problem presented above. 
@@ -402,7 +425,7 @@ be re-used.
 	\ForEach{$J_i \in$ the job's queue}
 		\ForEach{$\Node{k} \in \nodeset$}
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
-			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$ \Comment{There are 3 scenarios. 1: the file is already in memory ($t_k' = t_k$), 2: the file is absent ($t_k' = t_k + \frac{\memory(\file(J_i))}{\bandwidth}$), 3: the file is partially loaded by another job $J_i'$ started before time $t_k$ ($t_k' = t_k + \frac{\memory(\file(J_i))}{\bandwidth} - \bandwidth \times (t_k - \start(J_i'))$)}
+			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$ \Comment{There are 3 scenarios. 1: the file is already in memory ($t_k' = t_k$), 2: the file is absent ($t_k' = t_k + \frac{\size(\file(J_i))}{\bandwidth}$), 3: the file is partially loaded by another job $J_i'$ started before time $t_k$ ($t_k' = t_k + \frac{\size(\file(J_i))}{\bandwidth} - \bandwidth \times (t_k - \start(J_i'))$)}
 		\EndFor
 		\State Schedule $J_i$ on the node with the smallest $t_k'$
 		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
@@ -440,7 +463,7 @@ on the node with the lowest score.
 			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
 			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-			\State $Eviction\_penalty \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $Eviction\_penalty \gets (\size(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 			\State $score_{\Node{k}} \gets t_k + 500 \times Load\_overhead + Eviction\_penalty$
 		\EndFor
 		\State Schedule $J_i$ on the node with the smallest $score_{\Node{k}}$, tiebreak with lowest node's id
@@ -475,7 +498,7 @@ on the node with the lowest score.
 			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
 			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-			\State $Eviction\_penalty \gets (\memory(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
+			\State $Eviction\_penalty \gets (\size(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 			\If{$t_k = t$}
 				\State $score_{\Node{k}} \gets t_k + Load\_overhead$
 			\Else
@@ -523,7 +546,7 @@ resource that need to avoid starvation while also not being saturated in case of
 batch of jobs that could be submitted at once and that could only be computed on this node's size.
 Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
 128 GB and the size of an input file is a multiple of 6.4.
-In other words, for each $\file(i) \in \fileset$, $\memory(\file(i)) = 6.4 \times n$ with 
+In other words, for each $\file(i) \in \fileset$, $\size(\file(i)) = 6.4 \times n$ with 
 $1 \leq n \leq 20$.
 
 The utilization levels are typically high ($>90\%$), but
