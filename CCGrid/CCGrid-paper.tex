@@ -40,8 +40,8 @@
 \newcommand{\walltime}{\mathit{WallTime}\xspace}
 \newcommand{\completiontime}{\mathit{CompletionTime}\xspace}
 \newcommand{\start}{\mathit{StartTime}\xspace}
-\newcommand{\allocatednode}{\ensuremath\mathit{sigma}\xspace}
-\newcommand{\allocatedcores}{\ensuremath\mathit{gamma}\xspace}
+\newcommand{\allocatednode}{\ensuremath\mathit{\sigma}\xspace}
+\newcommand{\allocatedcores}{\ensuremath\mathit{\gamma}\xspace}
 
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
@@ -247,20 +247,9 @@ processing of a job $J_i$ on $\Node{k}$, file $\file(J_i)$ must be in
 the memory of $\Node{k}$. If this is not the case before starting
 computation of job $J_i$, then file $\file(J_i)$ is loaded into the
 memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_n\}$ the set
-of discting input files, whose size is denoted by $\size(F_i)$.
+of discting input files, whose size is denoted by $\size(F_i)$. Each
+job runs on a single node, but on different number of cores.
 
-\todo[inline]{LM:do we have jobs without input files?}
-
-We consider that these jobs are dedicated to processing their input
-file and that all jobs run on a single node, but on different number
-of cores. Hence, the larger the input file, the more cores the job
-requests, such that the file occupies a fraction of the memory
-proportional to the number of cores allocated to the job. A job with
-$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
-that file sizes are multiple of $M/m$.  \todo[inline]{LM: I wonder if
-  this constraint should be here or in the experimental setting? I
-  think that the proposed algorithms are general enough to handle
-  cases where jobs have any size.}
 
 
 Each job $J_i$ has the following attributes:
@@ -290,11 +279,8 @@ A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ 
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{enumerate}
-Otherwise we consider that memory operations will cause the files to
-be evicted.  \todo[inline]{LM: I thought we removed this constraint,
-  and replaced it by a weaker one: a file may be evicted if some
-  memory is required by another job between $J_i$ and $J_j$. Correct?
-  Do we implement this for all strategies?}
+Otherwise we consider that memory operations of jobs scheduled between
+$J_i$ and $J_j$ will cause the file to be evicted.
 
 We now define more formally the allocation of the jobs to the node and
 their schedule.
@@ -315,7 +301,7 @@ file is first loaded, and the execution starts at time
 $\start+\size(\file(J_i))/\bandwidth$.
 
 \todo[inline]{LM: maybe we should add/formalize:\\
-  - computation of the execution starting time and completion time,
+  - computation of the execution starting time and completion time,\\
   - constraints on the fact that a core cannot process two jobs simultaneously.}
 
 % We denote by $\sigma(\Node{k}, \mathit{nb}_k)$ the set of $\mathit{nb}_k$ jobs
@@ -562,6 +548,14 @@ from a real workload history.
 
 \subsection{Settings\todo[inline]{Maybe this section should be merged with the one above?}}
 
+\todo[inline]{put this somewhere/explain:
+We consider that these jobs are dedicated to processing their input
+file. Hence, the larger the input file, the more cores the job
+requests, such that the file occupies a fraction of the memory
+proportional to the number of cores allocated to the job. A job with
+$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
+that file sizes are multiple of $M/m$.  }
+
 All strategies as well as the two baselines have been implemented on
 a simulator that we developed. Each application scenario is a day on the log's history of
 the workload.
@@ -691,6 +685,8 @@ that we evaluate.
 
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{ECDF}\end{figure}
 \begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf}\caption{ECDF with backfilling}\end{figure}
+
+\todo[inline]{LM: should we say somewhere that we tested with stronger data persistence and it did not really helps?}
 
 \section{Conclusion}\label{sec.conclusion}
 
