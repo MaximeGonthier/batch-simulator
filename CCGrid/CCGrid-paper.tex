@@ -55,7 +55,7 @@
 \maketitle
 
 
-\begin{abstract}	
+\begin{abstract}
   Clusters make use of workload schedulers such as
   the Slurm Workload Manager to allocate computing jobs onto
   nodes. These schedulers usually aim at a good trade-off between
@@ -612,12 +612,15 @@ stretch from jobs of \textit{Day 1}.
 The stretch of a job is the flow of the job divided
 by the flow the job would have gotten if it was scheduled on an empty cluster.
 They are denoted respectively $Flow(J_i)$ and $Empty\_flow(J_i)$:
+
 $$
-	Flow(J_i) = end\_time(J_i) - \submissiontime(J_i)\\
-	Flow(J_i) = (\start(J_i) + min(\delay(J_i) + t_k' - t_k, \walltime(J_i)) - \submissiontime(J_i))
+Flow(J_i) = end\_time(J_i) - \submissiontime(J_i)
 $$
 $$
-	Empty\_flow(J_i) = min(\delay(J_i) + \frac{\memory(\file(J_i))}{\bandwidth}, \walltime(J_i))
+Flow(J_i) = (\start(J_i) + min(\duration(J_i) + t_k' - t_k, \walltime(J_i)) - \submissiontime(J_i))
+$$
+$$
+	Empty\_flow(J_i) = min(\duration(J_i) + \frac{\memory(\file(J_i))}{\bandwidth}, \walltime(J_i))
 $$
 The stretch of one job is computed as follows:
 $$
