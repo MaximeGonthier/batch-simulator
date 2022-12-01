@@ -138,6 +138,8 @@ if (percentages_mode == 0):
 		plt.ylabel("Number of upgraded jobs")
 	elif (comparaison == "Mean_Stretch"):
 		plt.ylabel("Difference ratio with a schedule on an empty cluster")
+	elif (comparaison == "Number_of_data_reuse"):
+		plt.ylabel("Number of jobs re-using a file")
 	else:
 		plt.ylabel("Seconds")
 elif (percentages_mode == 1):
