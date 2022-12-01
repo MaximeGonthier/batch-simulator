@@ -24,27 +24,29 @@ max_ecdf = 2.5
 x = np.linspace(min_ecdf, max_ecdf)
 
 print("min:", min_ecdf, "max:", max_ecdf)
-
+colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
 plt.axvline(x = 1, linestyle = "dotted", color = "black")
+
+if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
+	linestyle="solid"
+else:
+	linestyle="dashed"
 
 ecdf = ECDF(eft)
 y = ecdf(x)
-plt.step(x, y, label = "EFT")
+plt.step(x, y, label = "EFT", color = colors[0], linewidth=2, linestyle=linestyle)
 
 ecdf = ECDF(score)
 y = ecdf(x)
-# ~ plt.step(x, y, label = "SCORE")
-plt.step(x, y, label = "LEA")
+plt.step(x, y, label = "LEA", color = colors[1], linewidth=2, linestyle=linestyle)
 
 ecdf = ECDF(opportunistic)
 y = ecdf(x)
-# ~ plt.step(x, y, label = "OPPORTUNISTIC-SCORE MIX")
-plt.step(x, y, label = "LEO")
+plt.step(x, y, label = "LEO", color = colors[2], linewidth=2, linestyle=linestyle)
 
 ecdf = ECDF(eft_score)
 y = ecdf(x)
-# ~ plt.step(x, y, label = "EFT-SCORE MIX")
-plt.step(x, y, label = "LEM")
+plt.step(x, y, label = "LEM", color = colors[3], linewidth=2, linestyle=linestyle)
 
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	filename = "plot/ECDF/ecdf_mean_stretch_all_workloads.pdf"

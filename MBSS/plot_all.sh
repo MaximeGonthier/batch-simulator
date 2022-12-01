@@ -1,44 +1,21 @@
-#~ echo "No backfill, more strategies"
-#~ bash plot.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-01-17-\>2022-01-17_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-01-21-\>2022-01-21_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-01-21-\>2022-01-21_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-02-02-\>2022-02-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-02-02-\>2022-02-03_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-04-07-\>2022-04-09_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-04-07-\>2022-04-09_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-05-21-\>2022-05-22_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-05-21-\>2022-05-22_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-06-12-\>2022-06-13_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-06-12-\>2022-06-13_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-07-17-\>2022-07-18_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-07-17-\>2022-07-18_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-08-16-\>2022-08-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-08-16-\>2022-08-16_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-#~ bash plot.sh inputs/workloads/converted/2022-09-08-\>2022-09-08_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Adaptative_Multiplier_2022-09-08-\>2022-09-08_V10000_450_128_32_256_4_1024.csv FCFS_Score_Adaptative_Multiplier
-
-#~ echo "Easy bf"
-#~ DATE="2022-01-17->2022-01-17"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V10000_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
-
-#~ DATE="2022-01-21->2022-01-21"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V10000_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
-
-#~ DATE="2022-03-15->2022-03-16"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V10000_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
-
-#~ DATE="2022-05-21->2022-05-22"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V10000_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
-
-#~ DATE="2022-08-16->2022-08-16"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Easy_Backfill_${DATE}_V10000_450_128_32_256_4_1024.csv FCFS_Score_Easy_Backfill
-
-
-#~ echo "Data persistence"
-#~ DATE="2022-01-17->2022-01-17"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_Data_Persistence_${DATE}_V10000_450_128_32_256_4_1024.csv Data_Persistence
-
-#~ DATE="2022-01-21->2022-01-21"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_Data_Persistence_${DATE}_V10000_450_128_32_256_4_1024.csv Data_Persistence
-
-#~ DATE="2022-03-15->2022-03-16"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_Data_Persistence_${DATE}_V10000_450_128_32_256_4_1024.csv Data_Persistence
-
 PROPORTION="V10000"
 
-
+# Plot in paper:
+#~ for ((i=1; i<=5; i++))
+#~ do 
+	#~ if [ $((i)) == 1 ]; then DATE="2022-01-28->2022-01-28"; NJOBE=26481
+	#~ elif [ $((i)) == 2 ]; then DATE="2022-03-26->2022-03-26"; NJOBE=4721
+	#~ elif [ $((i)) == 3 ]; then DATE="2022-07-16->2022-07-16"; NJOBE=7434
+	#~ elif [ $((i)) == 4 ]; then DATE="2022-08-16->2022-08-16"; NJOBE=41306
+	#~ elif [ $((i)) == 5 ]; then DATE="2022-09-09->2022-09-09"; NJOBE=10201
+	#~ fi
+	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0 ${NJOBE}
+	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 3 ${NJOBE}
+	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 4 ${NJOBE}
+	#~ python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
+	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
+	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
+#~ done
 
 
 # First batch
@@ -53,7 +30,9 @@ PROPORTION="V10000"
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
 #~ DATE="2022-01-28->2022-01-28"
-#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0 26481
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 3 26481
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 4 26481
 #~ python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
@@ -98,9 +77,9 @@ PROPORTION="V10000"
 #~ python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
-DATE="2022-07-16->2022-07-16"
-bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0 7434
-bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 3 7434
+#~ DATE="2022-07-16->2022-07-16"
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0 7434
+#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 3 7434
 #~ python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv ${DATE}_${PROPORTION}
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
@@ -220,8 +199,8 @@ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/ra
 #~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # ECDF
-#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
-#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
+python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # Best TH
 #~ PROPORTION="V10000"

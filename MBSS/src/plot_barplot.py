@@ -16,7 +16,7 @@ percentages_mode = int(sys.argv[6])
 
 title = workload + "_" + comparaison + "_" + cluster
 
-if (percentages_mode == 0 or percentages_mode == 3):	
+if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):	
 	if (comparaison == "Maximum_queue_time"):
 		Y_index = 2
 		plot_title = "Maximum Queue Time"
@@ -119,18 +119,24 @@ X = list(df.iloc[:, 0])
 Y = list(df.iloc[:, Y_index])
 
 # Pour renommer les algos
-X[0] = "FCFS"
-X[1] = "FCFS"
-X[2] = "EFT"
-X[3] = "EFT"
-X[4] = "LEA"
-X[5] = "LEA"
-X[6] = "LEO"
-X[7] = "LEO"
-X[8] = "LEM"
-X[9] = "LEM"
-
-# Pour afficher toutes les strats
+if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
+	X[0] = "FCFS"
+	X[1] = "FCFS"
+	X[2] = "EFT"
+	X[3] = "EFT"
+	X[4] = "LEA"
+	X[5] = "LEA"
+	X[6] = "LEO"
+	X[7] = "LEO"
+	X[8] = "LEM"
+	X[9] = "LEM"
+else: # Cas pourcentage amélioration
+	X[0] = "EFT"
+	X[1] = "LEA"
+	X[2] = "LEO"
+	X[3] = "LEM"
+	
+# Pour afficher toutes les strats faire 4 en percentages_mode
 # ~ plt.bar(X, Y[0, 2, 4], color=["red", "green", "darkblue", "lightblue", "magenta", "yellow", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
 # ~ if (comparaison == "Number_of_data_reuse"):
 	# ~ plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
@@ -148,6 +154,14 @@ elif (percentages_mode == 3): # BF
 	if (comparaison == "Number_of_data_reuse"):
 		plt.bar(X_bf, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
 	plt.bar(X_bf, Y_bf, color=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"], hatch="/", edgecolor="white")
+elif (percentages_mode == 4): # BF and NON BF on same plot
+	if (comparaison == "Number_of_data_reuse"):
+		plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
+	hatches = ['','/','','/','','/','','/','','/']
+	colors=["#4c0000","#4c0000","#E50000","#E50000","#00bfff","#00bfff","#ff9b15","#ff9b15","#91a3b0","#91a3b0"]
+	print(hatches)
+	for i in range(len(X)):
+		plt.bar(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
 else:
 	plt.bar(X, Y, color=["#E50000","#00bfff","#ff9b15","#91a3b0"])
 
@@ -157,7 +171,7 @@ else:
 # ~ plt.title(plot_title)
 plt.xlabel("Scheduler")
 	
-if (percentages_mode == 0 or percentages_mode == 3):
+if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
 	print("Print", plot_title)
 	print(Y)
 	if (comparaison == "Nb_Upgraded_Jobs"):
@@ -185,6 +199,8 @@ if (skip_row == 1):
 else:	
 	if (percentages_mode == 3):
 		filename = "plot/BF_" + title + ".pdf"
+	elif (percentages_mode == 4):
+		filename = "plot/BF_AND_NON_BF_" + title + ".pdf"
 	else:
 		filename = "plot/" + title + ".pdf"
 plt.savefig(filename, bbox_inches='tight')

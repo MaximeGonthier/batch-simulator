@@ -659,22 +659,22 @@ We also evaluate the total amount of time spent waiting for a file to be availab
 
 \subsubsection{Results}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.4]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.4]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.4]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\end{figure}
 
 \todo[inline]{Max: -Quick talk on results}
 
 \subsubsection{Understanding SCORE's poor performance}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\end{figure}
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with SCORE.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with SCORE.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_SCORE_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of SCORE compared to FCFS on the workload of July the 16th.}\end{figure}
 
-\todo[inline]{Max: -Explain figure of cluster's usage.}
-Figure~\ref{07_16_cluster_usage} shows us a visual representation of 
+\todo[inline]{Max: -Explain how to read figure of cluster's usage.}
+Figure~\ref{07_16_cluster_usage_fcfs} shows us a visual representation of 
 our cluster's usage over time. The solid black dotted line is the total
 number of cores available.
-\todo[inline]{Max: Change the label once we know which one is the first shown figure of this type}
 The solid blue line shows the number of cores occupied by running jobs.
 The dashed blue line shows the additional number of cores that would be needed
 to run all the jobs in the queue at a given time (this would thus be the number
@@ -687,26 +687,54 @@ that we evaluate.
 
 \subsubsection{The appeal of EFT-SCORE MIX}
 
-\begin{figure}[H]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with EFT-SCORE MIX.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with EFT-SCORE MIX.}\end{figure}
 \todo[inline]{Max: -Explain appeal of EFT-SCORE MIX: not falling in score's weakness. The cluster usage is almost the same as the one of FCFS}
+
 
 \subsection{An almost saturated cluster, the weaknesses of EFT-SCORE MIX}
 
+\subsubsection{Results}
+
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}\end{figure}
+
+\subsubsection{The pathological scenario of EFT-SCORE MIX}
+
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with FCFS.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with EFT-SCORE MIX.}\end{figure}
+
+\todo[inline]{Max: -Explain that with the threshold it's not perfect in this case and we fall in the same issues as SCORE. We even see on the cluster's usage plot the queue of evaluated jobs not being scheduled.}
+
 \subsection{A saturated cluster, the great benefits of SCORE and EFT-SCORE MIX}
 
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March the 26th with FCFS.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_EFT-SCORE-MIX_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of EFT-SCORE MIX compared to FCFS on the workload of March the 26th.}\end{figure}
+
+\todo[inline]{Max: -Talk on results when saturated, maybe show a gantt chart}
+
 \subsection{A cluster saturated with small jobs, the best case scenario for SCORE and EFT-SCORE MIX}
+
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}\end{figure}
+%~ \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with EFT-SCORE MIX.}\end{figure}
+
+\todo[inline]{Max: -Compute the number of small jobs of this workload and compare it with the average ?}
 
 \subsection{Final results on X different evaluated workloads}
 
 \todo[inline]{Max: Say that we logically gain more on FCFS than FCFS BF, thus the results are like that. 01-28 is a good example to talk about it and show on the same plot with and without backfilling.}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on january 28.}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_full.pdf}\caption{Boxplots full}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Boxplots with a max on Y. The whiskers are 25th percentile - 1.5*IQR and 75th percentile + 1.5*IQR with IQR the Interquartile range.}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Boxplots with a max on Y with backfilling}\end{figure}
+\todo[inline]{Max: Is it ok if we only talk about the outliers of SCORE without showing them on the figure?}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Boxplots with a max on Y. The whiskers are 25th percentile - 1.5*IQR and 75th percentile + 1.5*IQR with IQR the Interquartile range.}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Boxplots with a max on Y with backfilling}\end{figure}
 
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{ECDF}\end{figure}
-\begin{figure}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf}\caption{ECDF with backfilling}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{ECDF}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf}\caption{ECDF with backfilling}\end{figure}
 
+\todo[inline]{Max: -Talk about jump in ECDF, large whiskers and outliers, mean and median}
 \todo[inline]{LM: should we say somewhere that we tested with stronger data persistence and it did not really helps?}
 
 \section{Conclusion}\label{sec.conclusion}

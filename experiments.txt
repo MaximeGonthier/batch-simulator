@@ -71,7 +71,8 @@ Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le
 
 job sur lyon:
 
-A tester en local 04-23, 04-24 et 04-25
+A tester en local 04-23, 04-24 et 04-25 et 
+./C/main inputs/workloads/converted/2022-03-31-\>2022-03-31_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 outputs/test.csv 0 80 save_and_resume 1780056
 A finir et plot: voir document temp_results
 
 job sur grenoble:
