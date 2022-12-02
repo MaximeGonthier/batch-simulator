@@ -50,10 +50,12 @@ plt.step(x, y, label = "LEM", color = colors[3], linewidth=2, linestyle=linestyl
 
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	filename = "plot/ECDF/ecdf_mean_stretch_all_workloads.pdf"
+	plt.xlabel('Stretch\'s speed-up from FCFS')
 else:
 	filename = "plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf"
+	plt.xlabel('Stretch\'s speed-up from FCFS-BF')
 
-plt.xlabel('Stretch\'s speed-up')
+# ~ plt.xlabel('Stretch\'s speed-up')
 plt.ylabel('Cumulative probability')
 plt.legend()
 

@@ -342,24 +342,17 @@ are opting for a mixed strategy between locality and earliest possible start tim
 
 A widely used and considered effective job's scheduler is 
 First-Come-First-Serve or FCFS.
-It's associated with a backfilling strategy known to increase
-a supercomputer ressources' use~\cite{maui}. 
-The most commonly used backfilling strategy, called conservative 
-backfilling~\cite{Characterization_of_Backfilling}~\cite{slurm_website_scheduling}~\cite{Introducing-New-Backfill-based} follows
-a simple paradigm: "a job can only be backfilled if it does not
-delay a job of higher prioriy".
-\todo[inline]{Max: I've putted citation for conservative backfilling in this section 
-but maybe it should go in the related works ?}
 
 \todo[inline]{Parler des cores dans le framework}
 
 The FCFS strategy coupled with conservative backfilling is implemented as follows:	
 \begin{algorithm*}[htb]%\small
-\caption{First-Come-First-Serve with conservative backfilling (FCFS-BF)}\label{algo.fcfsbf}
+\caption{First-Come-First-Serve (FCFS)}\label{algo.fcfs}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the job's queue} \Comment{The job's queue is sorted by submission times}
 		\ForEach{$\Node{k} \in \nodeset$}
-			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
+			% Version with backfilling: \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 		\EndFor
 		\State Schedule $J_i$ on the node with the smallest $t_k$
 		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
@@ -367,33 +360,6 @@ The FCFS strategy coupled with conservative backfilling is implemented as follow
 	\EndFor
 	\end{algorithmic}
 \end{algorithm*}
-
-\todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
-\begin{tikzpicture}\begin{axis}
-[ font=\footnotesize,
-  ytick style={draw=none},
-  xtick style={draw=none},
-  unit vector ratio*=1 1 1,
-  axis lines = middle,
-  enlarge x limits = {value=.1,upper},
-  enlarge y limits = {value=.05,upper},
-  ylabel={cores},
-  xlabel={time},
-  ylabel near ticks,
-  xlabel near ticks,
-  const plot,
-  stack plots=false,
-  area style,
-  ytick={1,...,6},
-  yticklabels={},  
-  xtick={1,...,6},
-  extra y ticks={1,2,3,4,5,6},
-  extra x ticks={1,2,3,4,5,6},
-  extra y tick style={yticklabel={$P_{\pgfmathprintnumber{\tick}}$}}] 
-\addplot[fill=orange] coordinates {(0,0) (0,3) (3,3) (3,0)} node at (current path bounding box.center) {T1}; 
-\addplot[fill=red!20] coordinates {(3,0) (3,6) (4,6) (4,0)} node at (current path bounding box.center) {T2}; 
-\addplot[fill=gray] coordinates {(4,0) (4,2) (6,2) (6,0)} node at (current path bounding box.center) {T3};  
-\end{axis}\end{tikzpicture}
 
 Under our model, a fair baseline would be a scheduler capable
 of reducing file transfers while keeping the First-Come-First-Serve
@@ -406,11 +372,12 @@ be re-used.
 \todo[inline]{Max: The large comment I added in Algo2 should maybe be in a text before with a smaller comment with a reference to the text?}
 		
 \begin{algorithm*}[htb]%\small
-\caption{Earliest-Finish-Time with conservative backfilling (EFT-BF)}\label{algo.fcfsbf}
+\caption{Earliest-Finish-Time (EFT)}\label{algo.eft}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the job's queue}
 		\ForEach{$\Node{k} \in \nodeset$}
-			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
+			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$ \Comment{There are 3 scenarios. 1: the file is already in memory ($t_k' = t_k$), 2: the file is absent ($t_k' = t_k + \frac{\size(\file(J_i))}{\bandwidth}$), 3: the file is partially loaded by another job $J_i'$ started before time $t_k$ ($t_k' = t_k + \frac{\size(\file(J_i))}{\bandwidth} - \bandwidth \times (t_k - \start(J_i'))$)}
 		\EndFor
 		\State Schedule $J_i$ on the node with the smallest $t_k'$
@@ -420,7 +387,7 @@ be re-used.
 \end{algorithmic}
 \end{algorithm*}
 
-\subsection{A locality-focused algorithm: SCORE\todo{Max: Or another name}}
+\subsection{A locality-focused algorithm: LEA}
 
 The previous strategies are focusing on starting as soon as possible (FCFS)
 of finishing as soon as possible a job (EFT).
@@ -428,12 +395,12 @@ Those are good methods to avoid starvation of a node and reduce queue times.
 However, they are ignoring the effect multiplying the number of copy of a file
 over multiple nodes. Indeed, selecting different nodes for jobs using a common
 file will increase file loads in order to minimize immediate queue times.
-Our strategy (called SCORE) aims at favoring locality in order to reduce
+Our strategy (called LEA) aims at favoring locality in order to reduce
 queue times in the long run by reusing the same files. 
 
-The main principle of our algorithm detailed in Algorithm~\ref{algo.score} 
+The main principle of our algorithm detailed in Algorithm~\ref{algo.lea} 
 is to find a balance between the earliest available time and data locality,
-with a tiebreak on data eviction. A score composed of the earliest available 
+with a tiebreak on data eviction. A score \todo[inline]{Max: Can we really call it a score when you have so few parameters?} composed of the earliest available 
 time, the time to load or wait for the files to be available and the cost of 
 reloading evicted files is computed for each node. The job is then scheduled
 on the node with the lowest score.
@@ -441,11 +408,12 @@ on the node with the lowest score.
 % The load duration is t_k' - t_k
 
 \begin{algorithm*}[htb]%\small
-\caption{SCORE with conservative backfilling (SCORE-BF)}\label{algo.score}
+\caption{Locality and Eviction Aware (LEA)}\label{algo.lea}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the job's queue}
 		\ForEach{$\Node{k} \in \nodeset$}
-			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
+			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
 			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
@@ -459,28 +427,16 @@ on the node with the lowest score.
 \end{algorithmic}
 \end{algorithm*}
 
-\begin{algorithm*}[htb]%\small
-\caption{EFT-SCORE MIX with conservative backfilling (EFT-SCORE-MIX-BF)}
-\begin{algorithmic}[1]
-	\Statex Current time is $t$
-	\ForEach{$J_i \in$ the job's queue}
-		\State $occupation \gets$ the percentage of nodes running at least one job at time $t$
-		\If{$occupation < 80$}
-			\State $EFT(\jobset,\nodeset)$
-		\Else
-			\State $SCORE(\jobset,\nodeset)$
-		\EndIf
-	\EndFor
-\end{algorithmic}
-\end{algorithm*}
+\subsection{LEO}
 
 \begin{algorithm*}[htb]%\small
-\caption{OPPORTUNISTIC-SCORE MIX with conservative backfilling (OPPORTUNISTIC-SCORE-MIX-BF)}
+\caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
 \begin{algorithmic}[1]
 	\Statex Current time is $t$
 	\ForEach{$J_i \in$ the job's queue}
 		\ForEach{$\Node{k} \in \nodeset$}
-			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
+			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
 			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
@@ -497,6 +453,75 @@ on the node with the lowest score.
 	\EndFor
 \end{algorithmic}
 \end{algorithm*}
+
+\subsection{LEM}
+
+\begin{algorithm*}[htb]%\small
+\caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
+\begin{algorithmic}[1]
+	\Statex Current time is $t$
+	\ForEach{$J_i \in$ the job's queue}
+		\State $occupation \gets$ the percentage of nodes running at least one job at time $t$
+		\If{$occupation < 80$}
+			\State $EFT(\jobset,\nodeset)$
+		\Else
+			\State $LEA(\jobset,\nodeset)$
+		\EndIf
+	\EndFor
+\end{algorithmic}
+\end{algorithm*}
+
+\subsection{Adding backfilling to all strategies}
+
+A backfilling strategy is known to increase
+a supercomputer resources' use~\cite{maui}. 
+The most commonly used backfilling strategy, called conservative 
+backfilling~\cite{Characterization_of_Backfilling}~\cite{slurm_website_scheduling}~\cite{Introducing-New-Backfill-based} follows
+a simple paradigm: "a job can only be backfilled if it does not
+delay a job of higher priority".
+\todo[inline]{Max: I've putted citation for conservative backfilling in this section but maybe it should go in the related works ?}
+We equipped each of our strategies with a variant using conservative backfilling and noted (-BF) on the figures.
+To add backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft}, \ref{algo.lea} and \ref{algo.leo} must modify the choice of the smallest time to use $\core(J_i)$ cores made on line 3 of each pseudo-code.
+The smallest time, $t_k$, must also be a time 
+that allows to compute the job for it's whole walltime
+without delaying an already scheduled job.
+Line 3 is thus replaced by:
+"Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$".
+
+\todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
+\begin{figure}[tb]
+\centering\scalebox{0.9}{
+\begin{tikzpicture}\begin{axis}
+[ font=\footnotesize,
+  ytick style={draw=none},
+  xtick style={draw=none},
+  unit vector ratio*=1 1 1,
+  axis lines = middle,
+  enlarge x limits = {value=.1,upper},
+  enlarge y limits = {value=.05,upper},
+  ylabel={Cores},
+  xlabel={Time},
+  ylabel near ticks,
+  xlabel near ticks,
+  const plot,
+  stack plots=false,
+  area style,
+  ytick={1,...,6},
+  yticklabels={},  
+  xtick={1,...,6},
+  extra y ticks={0,1,2,3,4,5,6},
+  extra x ticks={0,1,2,3,4,5,6},
+  extra y tick style={yticklabel={$C_{\pgfmathprintnumber{\tick}}$}}] 
+\addplot[fill=orange!20] coordinates {(0,0) (0,3) (3,3) (3,0)} node at (current path bounding box.center) {Job 1}; 
+\addplot[fill=red!20] coordinates {(3,0) (3,6) (4,6) (4,0)} node at (current path bounding box.center) {Job 2}; 
+\addplot[fill=blue!20] coordinates {(4,0) (4,2) (6,2) (6,0)} node at (current path bounding box.center) {Job 3};
+\addplot[fill=blue!20,opacity=0.5] coordinates {(0,3) (0,5) (2,5) (2,3)} node at (current path bounding box.center) {Job 3};
+\node (A) at (4, 2) {};
+\node (B) at (2, 4) {};
+\draw [->,-{Latex[round]},line width=1.5] (A) edge (B);
+\end{axis}\end{tikzpicture}}
+\caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled without delaying the start time of job 2.}
+\end{figure}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
@@ -527,7 +552,7 @@ Having $L$ different nodes sizes raises a new constraint. The model would have
 $L$ subsets of nodes, each possibly containing a different number of nodes.
 An input file can be too large to be computed on one or multiple of those subsets.
 Thus, in addition to the scheduling problem, a load balancing problem arises.
-Indeed, the scheduler need to be able to manage each subset of nodes as an independant 
+Indeed, the scheduler need to be able to manage each subset of nodes as an independent 
 resource that need to avoid starvation while also not being saturated in case of a large
 batch of jobs that could be submitted at once and that could only be computed on this node's size.
 Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
@@ -655,7 +680,7 @@ Stretch_{J_i} = \frac{Flow(J_i)}{Empty\_flow(J_i)}
 \todo[inline]{Max: Should I add -BF in the acronyms of BF? Here I instead put dashed lines in the barplot like on figure 20. Maybe I can do that each time I show the barplots?}
 We also evaluate the total amount of time spent waiting for a file to be available.
 
-\subsection{An underutilized cluster, SCORE issues and the appeal of EFT-SCORE MIX}
+\subsection{An underutilized cluster, LEA issues and the appeal of LEM}
 
 \subsubsection{Results}
 
@@ -673,7 +698,7 @@ the time it took to load the input file.
 FCFS and EFT, as well as LEM and LEO are close to 1.
 %~ It means that they 
 
-\subsubsection{Understanding SCORE's poor performance}
+\subsubsection{Understanding LEA's poor performance}
 
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with SCORE.}\end{figure}
@@ -693,40 +718,40 @@ that we evaluate.
 
 \todo[inline]{Max: -Explain that on underused cluster SCORE uses less nodes and everyone else just does FCFS, EFT has small benefit but almost not noticeable.}
 
-\subsubsection{The appeal of EFT-SCORE MIX}
+\subsubsection{The appeal of LEM}
 
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with EFT-SCORE MIX.}\end{figure}
-\todo[inline]{Max: -Explain appeal of EFT-SCORE MIX: not falling in score's weakness. The cluster usage is almost the same as the one of FCFS}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with LEM.}\end{figure}
+\todo[inline]{Max: -Explain appeal of LEM: not falling in score's weakness. The cluster usage is almost the same as the one of FCFS}
 
 
-\subsection{An almost saturated cluster, the weaknesses of EFT-SCORE MIX}
+\subsection{An almost saturated cluster, the weaknesses of LEM}
 
 \subsubsection{Results}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}\end{figure}
 
-\subsubsection{The pathological scenario of EFT-SCORE MIX}
+\subsubsection{The pathological scenario of LEM}
 
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with FCFS.}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with EFT-SCORE MIX.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with LEM.}\end{figure}
 
 \todo[inline]{Max: -Explain that with the threshold it's not perfect in this case and we fall in the same issues as SCORE. We even see on the cluster's usage plot the queue of evaluated jobs not being scheduled.}
 
-\subsection{A saturated cluster, the great benefits of SCORE and EFT-SCORE MIX}
+\subsection{A saturated cluster, the great benefits of SCORE and LEM}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\end{figure}
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March the 26th with FCFS.}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_EFT-SCORE-MIX_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of EFT-SCORE MIX compared to FCFS on the workload of March the 26th.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_EFT-SCORE-MIX_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March the 26th.}\end{figure}
 
 \todo[inline]{Max: -Talk on results when saturated, maybe show a gantt chart}
 
-\subsection{A cluster saturated with small jobs, the best case scenario for SCORE and EFT-SCORE MIX}
+\subsection{A cluster saturated with small jobs, the best case scenario for LEA and LEM}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}\end{figure}
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with EFT-SCORE MIX.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.}\end{figure}
 
 \todo[inline]{Max: -Compute the number of small jobs of this workload and compare it with the average ?}
 
@@ -735,7 +760,7 @@ that we evaluate.
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\end{figure}
 \begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's speed-up from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
 \begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's speed-up from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{ECDF}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's speed-up from FCFS on all evaluated workloads.}\end{figure}
 
 We can read on Figure~\ref{boxplot.all} a boxplot showing the aggregated
 results of mean stretch's speed-up compared to FCFS over all workloads.
