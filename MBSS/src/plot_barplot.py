@@ -169,7 +169,7 @@ else:
 
 # ~ plt.xticks(rotation=90)
 # ~ plt.title(plot_title)
-plt.xlabel("Scheduler")
+# ~ plt.xlabel("Scheduler")
 	
 if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
 	print("Print", plot_title)
@@ -177,7 +177,8 @@ if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
 	if (comparaison == "Nb_Upgraded_Jobs"):
 		plt.ylabel("Number of upgraded jobs")
 	elif (comparaison == "Mean_Stretch"):
-		plt.ylabel("Difference ratio with a schedule on an empty cluster")
+		plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
+		plt.ylabel("Mean stretch")
 	elif (comparaison == "Number_of_data_reuse"):
 		plt.ylabel("Number of jobs re-using a file")
 	else:

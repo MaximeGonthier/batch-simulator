@@ -665,8 +665,13 @@ We also evaluate the total amount of time spent waiting for a file to be availab
 
 \todo[inline]{Max: -Quick talk on results}
 Figure~\ref{stretch.07-16} shows us the mean stretch on all jobs.
-FCFS and EFT, as well as EFT-SCORE MIX and OPPORTUNISTIC are close to 1.
-It means that they 
+The horizontal black dotted line correspond to a stretch of 1.
+It corresponds to the stretch you would have gotten if all the jobs 
+were scheduled on an empty cluster.
+Thus, it means that the waiting time of a job was exactly
+the time it took to load the input file.
+FCFS and EFT, as well as LEM and LEO are close to 1.
+%~ It means that they 
 
 \subsubsection{Understanding SCORE's poor performance}
 
