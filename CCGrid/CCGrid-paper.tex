@@ -732,17 +732,23 @@ that we evaluate.
 
 \subsection{Final results on X different evaluated workloads}
 
-\todo[inline]{Max: Say that we logically gain more on FCFS than FCFS BF, thus the results are like that. 01-28 is a good example to talk about it and show on the same plot with and without backfilling.}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on january 28.}\end{figure}
-
-\todo[inline]{Max: Is it ok if we only talk about the outliers of SCORE without showing them on the figure?}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Boxplots with a max on Y. The whiskers are 25th percentile - 1.5*IQR and 75th percentile + 1.5*IQR with IQR the Interquartile range.}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Boxplots with a max on Y with backfilling}\end{figure}
-
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's speed-up from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's speed-up from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
 \begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{ECDF}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf}\caption{ECDF with backfilling}\end{figure}
 
-\todo[inline]{Max: -Talk about jump in ECDF, large whiskers and outliers, mean and median}
+We can read on Figure~\ref{boxplot.all} a boxplot showing the aggregated
+results of mean stretch's speed-up compared to FCFS over all workloads.
+50\% of the results are in the box.
+The whiskers delimit to the octiles, thus 75\% of the results are contained
+within the whiskers. It also means that between the lower side of the box and the maximum value,
+we find 75\% of the results (and similarly between the upper side of the box and the minimum value).
+
+
+Figure~\ref{boxplot.all_bf} shows the results but with the backfilling version of our schedulers and compared to FCFS-BF over all workloads.
+
+\todo[inline]{Max: -Talk about perfs, jump in ECDF, outliers, mean and median. ECDF and ECDF BF are similar. Say that we logically gain more on FCFS than FCFS BF, thus the results are like that. 01-28 is a good example to talk about it and show on the same plot with and without backfilling.}
+
 \todo[inline]{LM: should we say somewhere that we tested with stronger data persistence and it did not really helps?}
 
 \section{Conclusion}\label{sec.conclusion}

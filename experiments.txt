@@ -74,6 +74,7 @@ job sur lyon:
 A finir et plot: voir document temp_results
 
 job sur grenoble:
+03 31 en save OAR_JOB_ID=2170288
 09 15	T=8564460	OAR_JOB_ID=2169967 a besoin de plus de 14h mais pourra finir a relancer vendredi
 09 16	T=8659055	OAR_JOB_ID=2169968 a besoin de plus de 14h mais pourra finir a relancer vendredi
 08 12	T=1			OAR_JOB_ID=2170039 a besoin de plus de 14h mais pourra finir a relancer vendredi
