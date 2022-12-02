@@ -121,15 +121,15 @@ Y = list(df.iloc[:, Y_index])
 # Pour renommer les algos
 if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
 	X[0] = "FCFS"
-	X[1] = "FCFS"
+	X[1] = "FCFS-BF"
 	X[2] = "EFT"
-	X[3] = "EFT"
+	X[3] = "EFT-BF"
 	X[4] = "LEA"
-	X[5] = "LEA"
+	X[5] = "LEA-BF"
 	X[6] = "LEO"
-	X[7] = "LEO"
+	X[7] = "LEO-BF"
 	X[8] = "LEM"
-	X[9] = "LEM"
+	X[9] = "LEM-BF"
 else: # Cas pourcentage amélioration
 	X[0] = "EFT"
 	X[1] = "LEA"
@@ -140,7 +140,9 @@ else: # Cas pourcentage amélioration
 # ~ plt.bar(X, Y[0, 2, 4], color=["red", "green", "darkblue", "lightblue", "magenta", "yellow", "orange", "pink", "purple", "grey", "dodgerblue", "gold", "deeppink", "saddlebrown", "beige", "darkolivegreen", "black", "red", "red", "red", "orange", "orange", "orange", "orange", "orange"])
 # ~ if (comparaison == "Number_of_data_reuse"):
 	# ~ plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
-	
+
+plt.rcParams['hatch.linewidth'] = 5
+
 # Pour diviser en 2 BF/NON BF
 if (percentages_mode == 0): # Non BF
 	Y_non_bf = [Y[2*i] for i in range(len(Y)//2)]

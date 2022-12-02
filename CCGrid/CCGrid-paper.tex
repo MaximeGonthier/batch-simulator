@@ -701,8 +701,8 @@ FCFS and EFT, as well as LEM and LEO are close to 1.
 \subsubsection{Understanding LEA's poor performance}
 
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with SCORE.}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_SCORE_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of SCORE compared to FCFS on the workload of July the 16th.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with LEA.}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_SCORE_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEA compared to FCFS on the workload of July the 16th.}\end{figure}
 
 \todo[inline]{Max: -Explain how to read figure of cluster's usage.}
 Figure~\ref{07_16_cluster_usage_fcfs} shows us a visual representation of 
@@ -716,7 +716,7 @@ The red lines show the jobs in both categories that have their submission
 time within our evaluation window, in other words they are sub-parts of the blue line
 that we evaluate.
 
-\todo[inline]{Max: -Explain that on underused cluster SCORE uses less nodes and everyone else just does FCFS, EFT has small benefit but almost not noticeable.}
+\todo[inline]{Max: -Explain that on underused cluster LEA uses less nodes and everyone else just does FCFS, EFT has small benefit but almost not noticeable.}
 
 \subsubsection{The appeal of LEM}
 
@@ -736,9 +736,9 @@ that we evaluate.
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with FCFS.}\end{figure}
 \begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th with LEM.}\end{figure}
 
-\todo[inline]{Max: -Explain that with the threshold it's not perfect in this case and we fall in the same issues as SCORE. We even see on the cluster's usage plot the queue of evaluated jobs not being scheduled.}
+\todo[inline]{Max: -Explain that with the threshold it's not perfect in this case and we fall in the same issues as LEA. We even see on the cluster's usage plot the queue of evaluated jobs not being scheduled.}
 
-\subsection{A saturated cluster, the great benefits of SCORE and LEM}
+\subsection{A saturated cluster, the great benefits of LEA and LEM}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\end{figure}

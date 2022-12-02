@@ -29,11 +29,15 @@ for median in box['medians']:
 for mean in box['means']:
     mean.set_color('green')
     mean.set_linewidth(1.5)
-    
-plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"])
+
+if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
+	plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"])
+else:
+	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"])
+	
 plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 ax.set_ylim(0, 2.5)
-
+plt.rcParams['hatch.linewidth'] = 5
 for patch, color in zip(box['boxes'], colors):
     patch.set_facecolor(color)
     

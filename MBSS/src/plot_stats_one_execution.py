@@ -102,7 +102,12 @@ else:
 	nodes_loading_a_file = list(df.iloc[:, 7])
 	used_cores_evaluated_jobs = list(df.iloc[:, 8])
 	cores_loading_a_file = list(df.iloc[:, 9])
-	fig, axs = plt.subplots(2, 1, sharex=True)
+	
+	if (workload != "2022-08-16->2022-08-16_V10000"):
+		fig, axs = plt.subplots(2, 1, sharex=True)
+	else:
+		fig, axs = plt.subplots(2, 1, sharex=True, gridspec_kw={'height_ratios': [3, 1]})
+		
 	fig.subplots_adjust(hspace=0)
 	
 	for i in range (0, len(used_cores)):
@@ -159,30 +164,66 @@ else:
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 		else: # mode reduced
 			axs[1].plot(used_cores[:84600*3], 'b-', label='All jobs')
-			axs[0].plot(cores_in_queue[:84600*3], 'b-', label='All jobs', linestyle = "dashed")
-			axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Evaluated jobs', linestyle = "dashed")
+			# ~ axs[0].plot(cores_in_queue[:84600*3], 'b-', label='All jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue[:84600*3], 'b-', linestyle = "solid")
+			# ~ axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Evaluated jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', linestyle = "solid")
 			axs[1].plot(used_cores_evaluated_jobs[:84600*3], "r-", label='Evaluated jobs')
 			axs[1].plot(cores_loading_a_file[:84600*3], "gray", label='Waiting for a file')
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 	else:
 		print("Wrong precision mode.")
 		exit
-		
-	axs[0].set_xticks([0, 86400, 86400*2])
-	axs[0].set_xticklabels(str_day_list, rotation = 90)
-	plt.axvline(x = 86400, color = 'orange', linestyle = "dotted")
-	plt.axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
-		
-	plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
-	# ~ axs[0].set_xlabel('Time in seconds')
+	
 	axs[0].set_ylabel("In queue")
 	axs[1].set_ylabel("Running")
-	# ~ axs[1] = axs[0].twiny()  #
-	# ~ axs[1].set_ylabel("Number of cores used")
-	fig.text(-0.03, 0.5, 'Number of cores', va='center', rotation='vertical')
-	axs[0].legend(loc="upper left")
-	axs[1].legend(loc="upper left")
-	# ~ axs[1] = axs[0].twiny()  #
+	axs[0].set_xticks([0, 86400, 86400*2])
+	axs[0].set_xticklabels(str_day_list, rotation = 90)
+	axs[0].axvline(x = 86400, color = 'orange', linestyle = "dotted")
+	axs[0].axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
+	axs[1].axvline(x = 86400, color = 'orange', linestyle = "dotted")
+	axs[1].axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
+
+	if (workload != "2022-08-16->2022-08-16_V10000"):	
+		# ~ plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
+		# ~ axs[0].set_xlabel('Time in seconds')
+		
+		axs[0].set_yticks([2000, 4000, 6000, 8000, 10000])
+		axs[1].set_yticks([0, 2000, 4000, 6000, 8000])
+		axs[0].set_yticklabels(["2000", "4000", "6000", "8000", "10000"])
+		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"])
+		
+		fig.text(0.014, 0.47, '$\downarrow$10000')
+		fig.text(0.077, 0.5, '$\u2191$0')
+		
+		axs[0].set_ylim(0, 10000)
+		axs[1].set_ylim(0, 10000)
+		
+		fig.text(-0.03, 0.5, 'Number of requested cores', va='center', rotation='vertical')
+	else:
+		print("Cas particulier 08-16")
+			
+		# ~ plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
+		# ~ axs[0].set_xlabel('Time in seconds')
+		
+		axs[0].set_yticks([14000, 14000*2, 14000*3, 14000*4, 70000])
+		axs[1].set_yticks([0, 2000, 4000, 6000, 8000])
+		axs[0].set_yticklabels(["14000", "28000", "42000", "56000", "70000"])
+		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"])
+		
+		fig.text(0.014, 0.288, '$\downarrow$10000')
+		fig.text(0.077, 0.318, '$\u2191$0')
+		
+		axs[0].set_ylim(0, 70000)
+		axs[1].set_ylim(0, 10000)
+		
+		fig.text(-0.03, 0.5, 'Number of requested cores', va='center', rotation='vertical')
+
+
+	lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
+	lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
+	fig.legend(lines, labels, loc="upper left", bbox_to_anchor = (0.125, -0.12, 1, 1))
+	# ~ plt.legend(axs, labels, loc = 'lower center', bbox_to_anchor = (0, -0.1, 1, 1), bbox_transform = plt.gcf().transFigure)
 	
 filename = "plot/Cluster_usage/" + title + "_" + precision_mode + ".pdf"
 
