@@ -37,6 +37,7 @@
 \newcommand{\bandwidth}{\mathit{BW}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{SubTime}\xspace}
+\newcommand{\Endtime}{\mathit{EndTime}\xspace}
 \newcommand{\walltime}{\mathit{WallTime}\xspace}
 \newcommand{\completiontime}{\mathit{CompletionTime}\xspace}
 \newcommand{\start}{\mathit{StartTime}\xspace}
@@ -656,7 +657,7 @@ They are denoted respectively $Flow(J_i)$ and $Empty\_flow(J_i)$:
 
 \begin{equation}
 \begin{split}
-Flow(J_i) & = end\_time(J_i) - \submissiontime(J_i) \\
+Flow(J_i) & = \Endtime(J_i) - \submissiontime(J_i) \\
 & = (\start(J_i) + min(\duration(J_i) + t_k' - t_k, \\
 & \walltime(J_i)) - \submissiontime(J_i))
 \end{split}
@@ -683,20 +684,31 @@ We also evaluate the total amount of time spent waiting for a file to be availab
 \subsection{An underutilized cluster, LEA issues and the appeal of LEM}
 
 \subsubsection{Results}
+\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 
-\todo[inline]{Max: -Quick talk on results}
 Figure~\ref{stretch.07-16} shows us the mean stretch on all jobs.
 The horizontal black dotted line correspond to a stretch of 1.
-It corresponds to the stretch you would have gotten if all the jobs 
-were scheduled on an empty cluster.
+It's the stretch obtained if all the jobs 
+are scheduled on an empty cluster.
 Thus, it means that the waiting time of a job was exactly
 the time it took to load the input file.
-FCFS and EFT, as well as LEM and LEO are close to 1.
-%~ It means that they 
+
+FCFS, EFT, LEO and LEM have mean stretches close to 1.
+LEA is 20\% slower. 
+Figure~\ref{reuse.07-16} and Figure~\ref{load.07-16}
+both gives us similar information. The first one 
+shows the number of jobs that re-used a file.
+Meaning that the file load was either nul or 
+the job was scheduled with another job loading the same file
+at the same time. The gray background denote the total
+number of jobs that re-used or not a file.
+The second figure plot the total amount of time spent 
+waiting for a file to be ready before starting the computation.
+On both of these figures, LEA is the outlier.
 
 \subsubsection{Understanding LEA's poor performance}
 
