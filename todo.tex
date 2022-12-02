@@ -188,10 +188,12 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item new cluster usage, pas sur de l'axe Y, un axe Y a 80000 fais tout ecraseR. je peux mettre a 17000 et mettre en log que pour le 80000?
-		\item preciser BF dans le nom des algos sur les plots ou le hachage suffit ? En parler dans les sections tout le temps ?
-		\item speed-up or speed up or speedup?
-		\item fig 19 to compare BF-non bf
+		\item tracer un trait a 1 pour les barplot et l'expliquer (tas attendu exactement ton temps de chargements)
+		\item je montre d'abord les perf puis cluster usage, c'est ok ? Oui
+		\item new cluster usage, pas sur de l'axe Y, un axe Y a 80000 fais tout ecraseR. je peux mettre a 17000 et mettre en log que pour le 80000? Non on va fix a 10k sauf pour le cas particulier ou le haut ecrasera le bas. 10k sert de limite et enlever trait pointillé
+		\item preciser BF dans le nom des algos sur les plots ou le hachage suffit ? En parler dans les sections tout le temps ? haché a coté avec bf dans le nomquand je les montre
+		\item speed-up or speed up or speedup? speed-up
+		\item fig 20 to compare BF-non bf?
 		\item parler des temps de queue ? Des flow total ?
 	\end{enumerate}
 	
@@ -212,8 +214,28 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\ite ractoter calcul whisker boxplot, le 1/8eme, l'octile. Donc 3/4 dans les moustaches (mais aussi du bas de la boite a max)
+			\item modif ligne 3 de tous les algos et mentionner le changement pour BF a la fin en 1 pargraphe avec la ligne 3 modifié
+			\item parler dans le texte que on veut pas créer des trou
+			\item simplifier equation 1 et l'expliquerdans le tete au dessus (enelevr la partie 2 en fait avec t'k tk)
+			\item ecrire endtime commesubtime
+			\item eq 2 ettre juste duration + transfer
+			\item macro size pour mem maitneannt
+			\item empty flow le renommer en Reference_Flow
+			\item changer le gris de cores used by a file
+			\item trait plein partout pour les cluster usage
+			\item changer noms des algos
+			\item parler de FCFS et EFT comme l'état de l'art et des comparaisons.
+			\item enlever la fig24
+			\item fig1, pas montrr partie day3-10 mais l'expliquer dans le texte. Dire que ca permet de recuperer X\% des jobs
+			\item fig 1 mettre ... pour Day-1 et etaler l'acccolade et modifier le texte en disanst jobs schedled selon le log
+			\item pour nb de reuse, en parler plutot dans le texte.
+			\item fig 7 montrer à coté mix aussi
+			\item cluster usage: max a 10k et enlever noir pointllé et et faire ligne de 10k la séparation et speciale avec plus d'espace pour le haut pour august 16 (et donc ecraser). Axey: nb of requested cores. Bien fie a 10k le max
+			\item BF: le montrer sur cetraines figurs avec barre hacuré a coté mais pas dedans
+			\item fig 16 graudtaton de Y commancant a 1.
+			\item metrre section Day1 dans la section5. mais garder l'explication de strtech et flow
 			\item plot Fourth batch on boxplots and ecdf
-			\item mettre algo en full page
 			\item tester des gantts charts
 			\item regarder cas ou eft score mix s'en sort mal
 			

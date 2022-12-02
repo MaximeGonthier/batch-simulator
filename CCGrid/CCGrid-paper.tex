@@ -543,10 +543,10 @@ but rather it is an empirical observation of an actual user community including,
 \section{Performance evaluation and analysis}\label{sec.evaluations}
 
 We present below the results of experimental evaluations conducted 
-on X\todo{Max: Update} days extracted from a real workload history.
+on X\todo{Max: Update} days extracted from logs of historical submitted jobs.
 
-\subsection{Settings\todo[inline]{Max: Maybe this section should be merged with the one above?}}
-
+\subsection{Settings}
+\todo[inline]{Max: Maybe the settings subsection should be merged with the one above?}
 \todo[inline]{put this somewhere/explain:
 We consider that these jobs are dedicated to processing their input
 file. Hence, the larger the input file, the more cores the job
@@ -556,7 +556,8 @@ $k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
 that file sizes are multiple of $M/m$. Max: I think it should go in section 5.}
 
 All strategies as well as the two baselines have been implemented on
-a simulator that we developed. Each application scenario is a day on the log's history of
+a simulator that we developed\todo[inline]{Max: Do we need to say more here?}.
+Each application scenario is a day on the log's history of
 the workload.
 The way we collect jobs from the log's history is represented in Figure~\ref{fig.workload}.
 
@@ -587,14 +588,13 @@ The way we collect jobs from the log's history is represented in Figure~\ref{fig
     \draw[color=black, fill=blue] (1.2*10*\x+0.03, 0.7) rectangle (1.2*11*\x-0.03, -0.1) node[midway] {Day 9}; 
     \draw[color=black, fill=blue] (1.2*11*\x+0.03, 0.7) rectangle (1.2*12*\x-0.03, -0.1) node[midway] {Day 10}; 
     
-    %~ \draw (4*\x,2*\y) node[right]{\it \small data in memory};
     \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (0*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs started\\from logs} (1.2*1*\x-0.03, 1);
     \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt,mirror}] (1.2*4*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*1*\x-0.03, 2.4);
     \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Days used to collect all the jobs submitted before \textit{Day 3}} (1.2*12*\x-0.03, 1);
     \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*2*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\jobs} (1.2*3*\x-0.03, 1);
   \end{tikzpicture}
 }
-\caption{}\label{fig.workload}
+\caption{Methodology followed to extract information from the log's and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
 \label{fig.ex}
 \end{figure*}
 
@@ -609,13 +609,13 @@ In order to get all the jobs that were submitted on \textit{Day 1}, we need to
 look into the logs of days 1 to 10. Indeed, most jobs do not last for more than 10 days,
 thus we should cover the vast majority of jobs that were actually submitted on 
 \textit{Day 1}. 
-Jobs of \textit{Day 1} respectively preceded and succeeded with jobs from \textit{Day 0}
+Jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
 and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
 i.e. in the situation in which it was on the real cluster, with jobs submitted
 before and after.
 Jobs from \textit{Day -1} are jobs that were submitted before \textit{Day 0} and that are still running at the beggining of \textit{Day 0}.
-We use the information from the log's history to start this jobs on the nodes
-were they really were scheduled at the times at which they were started.
+We use the information from the log's history to start these jobs on the nodes
+were they really were scheduled and at the times at which they were started.
 This allows us to exactly replicate the state of the cluster on this day before starting
 to schedule jobs from \textit{Day 0}.
 To summarize, before \textit{Day 0}, jobs are placed on the cluster
@@ -652,18 +652,21 @@ Stretch_{J_i} = \frac{Flow(J_i)}{Empty\_flow(J_i)}
 \todo[inline]{Max: Is it okay here to use the $t_k' - t_k$ notation used in the pseudocodes to get the duration of the load that was required?}
 \todo[inline]{Max: Do we need a table to recap the acronyms and strategies or reading the section scheduler is sufficient to know the acronyms?}
 \todo[inline]{Max: When I show performance of a particular workload should I show both BF and non BF or only one of those? Do I show one and talk about the other one?}
-\todo[inline]{Max: Should I add -BF in the acronyms of BF? Here I instead put dashed lines in the barplot.}
+\todo[inline]{Max: Should I add -BF in the acronyms of BF? Here I instead put dashed lines in the barplot like on figure 20. Maybe I can do that each time I show the barplots?}
 We also evaluate the total amount of time spent waiting for a file to be available.
 
 \subsection{An underutilized cluster, SCORE issues and the appeal of EFT-SCORE MIX}
 
 \subsubsection{Results}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 
 \todo[inline]{Max: -Quick talk on results}
+Figure~\ref{stretch.07-16} shows us the mean stretch on all jobs.
+FCFS and EFT, as well as EFT-SCORE MIX and OPPORTUNISTIC are close to 1.
+It means that they 
 
 \subsubsection{Understanding SCORE's poor performance}
 

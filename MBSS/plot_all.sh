@@ -16,14 +16,14 @@ PROPORTION="V10000"
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_${DATE}_${PROPORTION} Percentage_FCFS 1
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
 #~ done
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 16 07 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_x500_x1_x0_x0_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_x500_x1_x0_x0 0 0 0 0 1 16 07 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 16 07 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_09-09.csv Used_nodes 2022-09-09-\>2022-09-09_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 09 09 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_09-09.csv Used_nodes 2022-09-09-\>2022-09-09_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 09 09 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_03-26.csv Used_nodes 2022-03-26-\>2022-03-26_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 26 03 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 26 03 2022 core_by_core
-python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 16 08 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 16 07 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_x500_x1_x0_x0_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_x500_x1_x0_x0 0 0 0 0 1 16 07 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 16 07 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_09-09.csv Used_nodes 2022-09-09-\>2022-09-09_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 09 09 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_09-09.csv Used_nodes 2022-09-09-\>2022-09-09_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 09 09 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_03-26.csv Used_nodes 2022-03-26-\>2022-03-26_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 26 03 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 26 03 2022 core_by_core
+#~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 16 08 2022 core_by_core
 
 
 # First batch
@@ -203,8 +203,8 @@ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strat
 #~ python3 src/scatter_plot.py outputs/scatter_mean_stretch_all_workloads_bf.csv EFT-SCORE-MIX-CONSERVATIVE-BF
 
 # Box plots
-#~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
-#~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # ECDF
 #~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
