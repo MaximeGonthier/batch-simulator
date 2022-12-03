@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import sys
 
-nb_sample = 36
+nb_sample = 41
 
 data = pd.read_csv(sys.argv[1])
 df = pd.DataFrame(data)
