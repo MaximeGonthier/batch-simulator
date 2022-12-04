@@ -23,18 +23,18 @@ sizes = []
 job_list_algo_reference = []
 job_list_algo_compare = []
 
-# ~ type_label = int(sys.argv[3])
-
 with open(sys.argv[1]) as f:
 	line = f.readline()
 	while line:
+		# ~ print(line)
 		r1, r2, r3, r4, r5= line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_reference.append(j)
 		line = f.readline()
 f.close()
 job_list_algo_reference.sort(key = operator.attrgetter("unique_id"))
-
+print("First subtime is", job_list_algo_reference[0].subtime)
+print("Last subtime is", job_list_algo_reference[len(job_list_algo_reference)-1].subtime)
 with open(sys.argv[2]) as f:
 	line = f.readline()
 	while line:
@@ -53,48 +53,72 @@ for i in range (0, len(job_list_algo_compare)):
 	elif  job_list_algo_reference[i].time == 0: 
 		percentage_difference = 0
 	else:
-		# ~ percentage_difference = 100 * ( abs(job_list_algo_reference[i].time - job_list_algo_compare[i].time) / ( (job_list_algo_reference[i].time + job_list_algo_compare[i].time) / 2 ) )
 		percentage_difference =job_list_algo_reference[i].time/job_list_algo_compare[i].time
 		
-	# ~ if job_list_algo_reference[i].time > job_list_algo_compare[i].time:
-		# ~ percentage_difference = percentage_difference*-1
 	
-	print("Job:", job_list_algo_reference[i].unique_id, "FCFS:", job_list_algo_reference[i].time, "Algo1:", job_list_algo_compare[i].time, "%:", percentage_difference, "Delay:", job_list_algo_reference[i].size)
+	# ~ print("Job:", job_list_algo_reference[i].unique_id, "FCFS:", job_list_algo_reference[i].time, "Algo1:", job_list_algo_compare[i].time, "%:", percentage_difference, "Delay:", job_list_algo_reference[i].size)
 	
 	job_list_algo_reference[i].time = percentage_difference
-	# ~ diff = job_list_algo_reference[i].time - job_list_algo_compare[i].time
-	# ~ job_list_algo_reference[i].time = (diff*100)/
-	
-	# ~ print("Job id:", job_list_algo_reference[i].unique_id, "% diff:", job_list_algo_reference[i].time)
 	
 for i in range (0, len(job_list_algo_compare)):
-	# ~ x.append(job_list_algo_reference[i].unique_id)
 	x.append(job_list_algo_reference[i].subtime)
 	y.append(job_list_algo_reference[i].time)
 	data_size.append(job_list_algo_reference[i].data_type)	
 	sizes.append(job_list_algo_reference[i].size/1000)	
+
+fig, ax = plt.subplots()
+
+workload = sys.argv[5]
+
+if (workload == "2022-03-26->2022-03-26_V10000"):
+	ax.set_yticks([1, 10, 20, 30, 40])
+	ax.set_yticklabels(["1", "10", "20", "30", "40"])
+elif (workload == "2022-07-16->2022-07-16_V10000"):
+	ax.set_yticks([0, 0.5, 1, 1.5, 2])
+	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2"])
+	ax.set_ylim(0,2)
+else:
+	print("not dealt with")
+	exit()
+
+ax.set_xticks([job_list_algo_reference[0].subtime, job_list_algo_reference[0].subtime + 21600, job_list_algo_reference[0].subtime + 21600*2, job_list_algo_reference[0].subtime + 21600*3, job_list_algo_reference[len(job_list_algo_reference)-1].subtime])
+ax.set_xticklabels(["00:00", "06:00", "12:00", "18:00", "00:00"])
+
+ax.axhline(y = 1, color = 'black', linestyle = '-', alpha=0.2)
+
+# Couleur en fonction de la stratégie
+algo = sys.argv[4]
+print("algo is:", algo)
+if (algo == "EFT"):
+	color_choosen = "#E50000"
+elif (algo == "LEA"):
+	color_choosen = "#00bfff"
+elif (algo == "LEO"):
+	color_choosen = "#ff9b15"
+elif (algo == "LEM"):
+	color_choosen = "#91a3b0"
+else:
+	print("error scheduler in plot queu  times")
+	exit()
 	
-plt.axhline(y = 1, color = 'black', linestyle = '-', alpha=0.2)
-# ~ plt.axhline(y = -200, color = 'black', linestyle = '-', alpha=0.2)
-# ~ plt.axhline(y = 2, color = 'black', linestyle = '-', alpha=0.2)
+# Couleur en fonction du type de donnée
+# ~ ax.scatter(x, y, c=data_size, s=sizes, alpha=0.3)
 
-# ~ plt.scatter(x, y, c=data_size, label=data_size, s=sizes, alpha=0.3)
-# ~ plt.scatter(x, y, c=data_size, label=sizes, s=sizes, alpha=0.3)
-plt.scatter(x, y, c=data_size, s=sizes, alpha=0.3)
+# Couleur en fonction de la stratégie
+ax.scatter(x, y, color=color_choosen, s=sizes, alpha=0.3)
 
-# ~ custom_lines = [Line2D([0], [0], color="darkblue", lw=4),
-                # ~ Line2D([0], [0], color="green", lw=4),
-                # ~ Line2D([0], [0], color="yellow", lw=4)]
-# ~ plt.legend(custom_lines, ['128', '256', '1024'])
-circles = [Line2D([0], [0], marker='o', color='black', label='20000 sec', markerfacecolor='black', markersize=20, alpha=0.3, linestyle="None"),
-Line2D([0], [0], marker='o', color='black', label='5000 sec', markerfacecolor='black', markersize=5, alpha=0.3, linestyle="None"),
-Line2D([0], [0], marker='o', color='black', label='1000 sec', markerfacecolor='black', markersize=1, alpha=0.3, linestyle="None")]
-plt.legend(handles=circles)
-# ~ plt.legend()
+circles = [Line2D([0], [0], marker='o', color=color_choosen, label='20000 sec', markerfacecolor='black', markersize=20, alpha=0.3, linestyle="None"),
+Line2D([0], [0], marker='o', color=color_choosen, label='5000 sec', markerfacecolor='black', markersize=5, alpha=0.3, linestyle="None"),
+Line2D([0], [0], marker='o', color=color_choosen, label='1000 sec', markerfacecolor='black', markersize=1, alpha=0.3, linestyle="None")]
+# ~ circles = [Line2D([0], [0], marker='o', color="black", label='20000 sec', markerfacecolor='black', markersize=20, alpha=0.3, linestyle="None"),
+# ~ Line2D([0], [0], marker='o', color="black", label='5000 sec', markerfacecolor='black', markersize=5, alpha=0.3, linestyle="None"),
+# ~ Line2D([0], [0], marker='o', color="black", label='1000 sec', markerfacecolor='black', markersize=1, alpha=0.3, linestyle="None")]
 
+
+plt.legend(handles=circles, loc='upper right')
 plt.xlabel("Submission times (sec)")
 if sys.argv[3] == "stretch":
-	plt.ylabel("Stretch speed-up from FCFS")
+	plt.ylabel("Stretch's speed-up from FCFS")
 elif sys.argv[3] == "queue":
 	plt.ylabel("% of queue time difference from FCFS")
 elif sys.argv[3] == "flow":
@@ -102,4 +126,5 @@ elif sys.argv[3] == "flow":
 else:
 	print("Error type")
 	exit(1)
-plt.savefig("plot/VS.pdf")
+
+plt.savefig("plot/Stretch_times/Stretch_times_FCFS_" + algo + "_" + workload + "_450_128_32_256_4_1024.pdf")
