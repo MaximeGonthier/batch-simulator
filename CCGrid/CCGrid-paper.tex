@@ -37,6 +37,7 @@
 \newcommand{\bandwidth}{\mathit{BW}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{SubTime}\xspace}
+\newcommand{\emptyflow}{\mathit{Reference\_Flow}\xspace}
 \newcommand{\Endtime}{\mathit{EndTime}\xspace}
 \newcommand{\walltime}{\mathit{WallTime}\xspace}
 \newcommand{\completiontime}{\mathit{CompletionTime}\xspace}
@@ -339,7 +340,7 @@ a score to choose the best node (section~\ref{subsec.score}) and others
 are opting for a mixed strategy between locality and earliest possible start time
 (sections~\ref{subsec.mixed} and~\ref{subsec.opportunistic}).
 
-\subsection{Our two baseline\todo[inline]{Max: Is there a "s" at baseline at plural?} schedulers: FCFS and EFT}\label{subsec.fcfs_eft}
+\subsection{Two scheduler from the state of the art: FCFS and EFT}\label{subsec.fcfs_eft}
 
 A widely used and considered effective job's scheduler is 
 First-Come-First-Serve or FCFS.
@@ -524,6 +525,12 @@ Line 3 is thus replaced by:
 \caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled without delaying the start time of job 2.}
 \end{figure}
 
+\todo[inline]{Max: Do we want to say: "When choosing the cores that will be used for a job among the available cores, 
+we choose the ones with the lowest index. This allow to optimize the cores utilization and reduce the risk of
+creating holes that need backfilling to be used.
+Additionaly, when backfilling, the available cores with the smallest next 
+start time are chosen in order to fill as much as possible the nodes."}
+
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
 that are non-trivial to replicate in a fully artificial simulated job pattern. We believe that this is especially
@@ -546,7 +553,7 @@ They will be attributed a common input file if they match all the following requ
 Otherwise we consider that $J_i$ and $J_j$ are using distinct input files.
 
 \todo[inline]{Elisabeth: I think we should say Rackham so that readers can checkout the hardware, but perhaps it should be fully blind as a starting point.}
-The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 512GB nodes. \todo[inline]{Max: I thought it was 1024 GB nodes for the biggest size?}
+The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 1024GB nodes.
 
 \todo[inline]{Max: I added a paragraph on why all nodes are the same size in our case:}
 Having $L$ different nodes sizes raises a new constraint. The model would have
@@ -566,27 +573,9 @@ not fully consistently so. The vast majority of jobs on this resources are singl
 could extent to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
 but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
-\section{Performance evaluation and analysis}\label{sec.evaluations}
-
-We present below the results of experimental evaluations conducted 
-on X\todo{Max: Update} days extracted from logs of historical submitted jobs.
-
-\subsection{Settings}
-\todo[inline]{Max: Maybe the settings subsection should be merged with the one above?}
-\todo[inline]{put this somewhere/explain:
-We consider that these jobs are dedicated to processing their input
-file. Hence, the larger the input file, the more cores the job
-requests, such that the file occupies a fraction of the memory
-proportional to the number of cores allocated to the job. A job with
-$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
-that file sizes are multiple of $M/m$. Max: I think it should go in section 5.}
-
-All strategies as well as the two baselines have been implemented on
-a simulator that we developed\todo[inline]{Max: Do we need to say more here?}.
-Each application scenario is a day on the log's history of
-the workload.
-The way we collect jobs from the log's history is represented in Figure~\ref{fig.workload}.
-
+\todo[inline]{Max: Add a paragraph or subsection for this part below?}
+Each application scenario is a day on the log's history of the workload.
+The way we collect and schedule jobs from the log's history is represented in Figure~\ref{fig.workload}.
 \begin{figure*}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
 \definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
@@ -601,29 +590,31 @@ The way we collect jobs from the log's history is represented in Figure~\ref{fig
 \centering\scalebox{1}{
 \begin{tikzpicture}[semithick, > = {Stealth[scale=1.25]}, shorten > = 1pt,]
     \def\x{1}\def\y{1}
-    \draw[color=black, fill=blue] (0*\x+0.03, 0.7) rectangle (1.2*1*\x-0.03, -0.1) node[midway] {Day -1}; 
-    \draw[color=black, fill=blue] (1.2*1*\x+0.03, 0.7) rectangle (1.2*2*\x-0.03, -0.1) node[midway] {Day 0}; 
-    \draw[color=black, fill=red] (1.2*2*\x+0.03, 0.7) rectangle (1.2*3*\x-0.03, -0.1) node[midway] {Day 1}; 
-    \draw[color=black, fill=blue] (1.2*3*\x+0.03, 0.7) rectangle (1.2*4*\x-0.03, -0.1) node[midway] {Day 2}; 
-    \draw[color=black, fill=blue] (1.2*4*\x+0.03, 0.7) rectangle (1.2*5*\x-0.03, -0.1) node[midway] {Day 3}; 
-    \draw[color=black, fill=blue] (1.2*5*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {Day 4}; 
-    \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {Day 5}; 
-    \draw[color=black, fill=blue] (1.2*7*\x+0.03, 0.7) rectangle (1.2*8*\x-0.03, -0.1) node[midway] {Day 6}; 
-    \draw[color=black, fill=blue] (1.2*8*\x+0.03, 0.7) rectangle (1.2*9*\x-0.03, -0.1) node[midway] {Day 7}; 
-    \draw[color=black, fill=blue] (1.2*9*\x+0.03, 0.7) rectangle (1.2*10*\x-0.03, -0.1) node[midway] {Day 8}; 
-    \draw[color=black, fill=blue] (1.2*10*\x+0.03, 0.7) rectangle (1.2*11*\x-0.03, -0.1) node[midway] {Day 9}; 
-    \draw[color=black, fill=blue] (1.2*11*\x+0.03, 0.7) rectangle (1.2*12*\x-0.03, -0.1) node[midway] {Day 10}; 
-    
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (0*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs started\\from logs} (1.2*1*\x-0.03, 1);
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt,mirror}] (1.2*4*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*1*\x-0.03, 2.4);
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Days used to collect all the jobs submitted before \textit{Day 3}} (1.2*12*\x-0.03, 1);
-    \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*2*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\jobs} (1.2*3*\x-0.03, 1);
+    \draw[color=black, fill=blue] (1.2*1*\x+0.03, 0.7) rectangle (1.2*2*\x-0.03, -0.1) node[midway] {\textit{Day -n}}; 
+    \draw[color=black, fill=blue] (1.2*2*\x+0.03, 0.7) rectangle (1.2*3*\x-0.03, -0.1) node[midway] {\textit{...}}; 
+    \draw[color=black, fill=blue] (1.2*3*\x+0.03, 0.7) rectangle (1.2*4*\x-0.03, -0.1) node[midway] {\textit{...}}; 
+    \draw[color=black, fill=blue] (1.2*4*\x+0.03, 0.7) rectangle (1.2*5*\x-0.03, -0.1) node[midway] {\textit{Day -2}}; 
+    \draw[color=black, fill=blue] (1.2*5*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {\textit{Day -1}}; 
+    \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {\textit{Day 0}}; 
+    \draw[color=black, fill=red] (1.2*7*\x+0.03, 0.7) rectangle (1.2*8*\x-0.03, -0.1) node[midway] {\textit{Day 1}}; 
+    \draw[color=black, fill=blue] (1.2*8*\x+0.03, 0.7) rectangle (1.2*9*\x-0.03, -0.1) node[midway] {\textit{Day 2}}; 
+    %~ \draw[color=black, fill=blue] (1.2*4*\x+0.03, 0.7) rectangle (1.2*5*\x-0.03, -0.1) node[midway] {Day 3}; 
+    %~ \draw[color=black, fill=blue] (1.2*5*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {Day 4}; 
+    %~ \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {Day 5}; 
+    %~ \draw[color=black, fill=blue] (1.2*7*\x+0.03, 0.7) rectangle (1.2*8*\x-0.03, -0.1) node[midway] {Day 6}; 
+    %~ \draw[color=black, fill=blue] (1.2*8*\x+0.03, 0.7) rectangle (1.2*9*\x-0.03, -0.1) node[midway] {Day 7}; 
+    %~ \draw[color=black, fill=blue] (1.2*9*\x+0.03, 0.7) rectangle (1.2*10*\x-0.03, -0.1) node[midway] {Day 8}; 
+    %~ \draw[color=black, fill=blue] (1.2*10*\x+0.03, 0.7) rectangle (1.2*11*\x-0.03, -0.1) node[midway] {Day 9}; 
+    %~ \draw[color=black, fill=blue] (1.2*11*\x+0.03, 0.7) rectangle (1.2*12*\x-0.03, -0.1) node[midway] {Day 10}; 
+    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*1*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled from logs} (1.2*6*\x-0.03, 1);
+    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*6*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*9*\x-0.03, 2.4);
+    %~ \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Days used to collect all the jobs submitted before \textit{Day 3}} (1.2*12*\x-0.03, 1);
+    \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*7*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\jobs} (1.2*8*\x-0.03, 1);
   \end{tikzpicture}
 }
-\caption{Methodology followed to extract information from the log's and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
+\caption{Methodology followed to schedule and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
 \label{fig.ex}
 \end{figure*}
-
 On the real cluster, when a job finishes, it's information
 are written in a file corresponding to the day at which the day finished.
 This information contains the node that was attributed, the real job's duration, the walltime, 
@@ -634,52 +625,65 @@ Our goal is to schedule and evaluate all the jobs submitted on
 In order to get all the jobs that were submitted on \textit{Day 1}, we need to
 look into the logs of days 1 to 10. Indeed, most jobs do not last for more than 10 days,
 thus we should cover the vast majority of jobs that were actually submitted on 
-\textit{Day 1}. 
-Jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
-and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
-i.e. in the situation in which it was on the real cluster, with jobs submitted
-before and after.
-Jobs from \textit{Day -1} are jobs that were submitted before \textit{Day 0} and that are still running at the beggining of \textit{Day 0}.
+\textit{Day 1}.
+With this process we also gather jobs that were started before \textit{Day 0}.
+Jobs from \textit{Day -1} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
 We use the information from the log's history to start these jobs on the nodes
 were they really were scheduled and at the times at which they were started.
 This allows us to exactly replicate the state of the cluster on this day before starting
 to schedule jobs from \textit{Day 0}.
+Jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
+and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
+i.e. in the situation in which it was on the real cluster, with jobs submitted
+before and after.
 To summarize, before \textit{Day 0}, jobs are placed on the cluster
 following the log's history. Starting from \textit{Day 0} we 
 use one of our scheduler and only evaluate jobs submitted on \textit{Day 1}
 to avoid any side effect.
 
+
+\section{Performance evaluation and analysis}\label{sec.evaluations}
+
+We present below the results of experimental evaluations conducted 
+on 44 days extracted from logs of historical submitted jobs.
+
+\subsection{Settings}
+\todo[inline]{put this somewhere/explain:
+We consider that these jobs are dedicated to processing their input
+file. Hence, the larger the input file, the more cores the job
+requests, such that the file occupies a fraction of the memory
+proportional to the number of cores allocated to the job. A job with
+$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
+that file sizes are multiple of $M/m$. Max: I think it should go in section 5.}
+
+All strategies as well as the two baselines have been implemented on
+a simulator that we developed\todo[inline]{Max: Do we need to say more here?}.
+
 We measure the obtained performance with the mean
 stretch from jobs of \textit{Day 1}.
 The stretch of a job is the flow of the job divided
 by the flow the job would have gotten if it was scheduled on an empty cluster.
-They are denoted respectively $Flow(J_i)$ and $Empty\_flow(J_i)$:
+They are denoted respectively $Flow(J_i)$ and $\emptyflow(J_i)$.
+%~ To compute the flow of a job: $(\start(J_i) + min(\duration(J_i) + t_k' - t_k, \walltime(J_i)) - \submissiontime(J_i))$
 
 \begin{equation}
-\begin{split}
-Flow(J_i) & = \Endtime(J_i) - \submissiontime(J_i) \\
-& = (\start(J_i) + min(\duration(J_i) + t_k' - t_k, \\
-& \walltime(J_i)) - \submissiontime(J_i))
-\end{split}
+Flow(J_i) = \Endtime(J_i) - \submissiontime(J_i)
 \end{equation}
 
 \begin{equation}
-\begin{split}
-Empty\_flow(J_i) & = min(\duration(J_i) \\
-& + \frac{\memory(\file(J_i))}{\bandwidth}, \walltime(J_i))
-\end{split}
+\emptyflow(J_i) = \duration(J_i) + \frac{\size(\file(J_i))}{\bandwidth}
 \end{equation}
 
 The stretch of one job is computed as follows:
 \begin{equation}
-Stretch_{J_i} = \frac{Flow(J_i)}{Empty\_flow(J_i)}
+Stretch_{J_i} = \frac{Flow(J_i)}{\emptyflow(J_i)}
 \end{equation}
 
 \todo[inline]{Max: Is it okay here to use the $t_k' - t_k$ notation used in the pseudocodes to get the duration of the load that was required?}
 \todo[inline]{Max: Do we need a table to recap the acronyms and strategies or reading the section scheduler is sufficient to know the acronyms?}
 \todo[inline]{Max: When I show performance of a particular workload should I show both BF and non BF or only one of those? Do I show one and talk about the other one?}
-\todo[inline]{Max: Should I add -BF in the acronyms of BF? Here I instead put dashed lines in the barplot like on figure 20. Maybe I can do that each time I show the barplots?}
 We also evaluate the total amount of time spent waiting for a file to be available.
+Our main competitors on this measures will be FCFS and EFT.
 
 \subsection{An underutilized cluster, LEA issues and the appeal of LEM}
 
@@ -803,17 +807,19 @@ Thus, LEA's strategy, also found in LEM, allows to gratly reduce the mean stretc
 
 From Figure~\ref{stretch.08-16}, we observe that LEA has a stretch 33 times lower than
 it's competitor. LEM is almost 7 times lower. This drastic diminution is explained
-by two particularities of this workload. Firstly, it's a workload that heavily saturate the cluster (as can be seen on Figure~\ref{cluster_usage.08-16_fcfs}).
-Secondly, it's a workload largely composed of very short jobs, not using a lot of cores.
+by two particularities of this workload. Firstly, it's a workload that heavily saturate the cluster (as can be seen on Figure~\ref{cluster_usage.08-16_fcfs}, note that the y axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
+Secondly, it's a workload largely composed of jobs that are short and using less than five cores.
+Reducing the transfer times of small jobs has a much greater effect on the stretch.
+\todo[inline]{Max: explain more}
 
 \todo[inline]{Max: Compute the number of small jobs of this workload and compare it with the average ?}
 
-\subsection{Final results on 41 different evaluated workloads}
+\subsection{Final results on 44 different evaluated workloads}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\label{stretch.01-28}\end{figure}
 \begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's speed-up from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
 \begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's speed-up from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's speed-up from FCFS on all evaluated workloads.}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's speed-up from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
 
 We can read on Figure~\ref{boxplot.all} a boxplot showing the aggregated
 results of mean stretch's speed-up compared to FCFS over all workloads.
@@ -822,8 +828,16 @@ The whiskers delimit to the octiles, thus 75\% of the results are contained
 within the whiskers. It also means that between the lower side of the box and the maximum value,
 we find 75\% of the results (and similarly between the upper side of the box and the minimum value).
 
-
 Figure~\ref{boxplot.all_bf} shows the results but with the backfilling version of our schedulers and compared to FCFS-BF over all workloads.
+
+From the same data shown Figure~\ref{boxplot.all}, we plot an empirical distribution function on Figure~\ref{ecdf}.
+EFT's low variance is clearly visible in the sudden jump in probability around a speed-up of 1.
+It is interesting to note that for LEA and LEM, 20\% of the results have a speed up of more than 2.5.
+In addition, the switch between EFT and LEA for LEM clearly reduces
+performance's losses before the black line for LEM.
+We can also learn from this figure that LEO is in every respect a better version of EFT.
+Indeed, it does not have a higher probability before 1 and after, has significantly more
+results at after an 1.2 speed-up.
 
 \todo[inline]{Max: -Talk about perfs, jump in ECDF, outliers, mean and median. ECDF and ECDF BF are similar. Say that we logically gain more on FCFS than FCFS BF, thus the results are like that. 01-28 is a good example to talk about it and show on the same plot with and without backfilling.}
 
@@ -831,11 +845,7 @@ Figure~\ref{boxplot.all_bf} shows the results but with the backfilling version o
 
 \section{Conclusion}\label{sec.conclusion}
 
-\todo[inline]{Max: 
-Some schedulers do fairness as well with slurm or advance reservation with limitations (OAR).
-We can tune our algorithms to do that as well.
-Improve score to be efficient in any situation, any workload.
-Improve mixed strategy to do more locality.}
+\todo[inline]{Max: - Fairness - Advance reservation - Tune LEM - Improve locality of LEO}
 
 \bibliographystyle{IEEEtran}
 \bibliography{ref.bib}
