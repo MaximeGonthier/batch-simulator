@@ -25,7 +25,7 @@ PROPORTION="V10000"
 #~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 26 03 2022 core_by_core
 #~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 16 08 2022 core_by_core
 #~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
-#~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 #~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
 #~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.txt  data/Stretch_times_SCORE_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.txt stretch LEA 2022-07-16-\>2022-07-16_V10000
 #~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.txt  data/Stretch_times_EFT-SCORE-MIX_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.txt stretch LEM 2022-07-16-\>2022-07-16_V10000

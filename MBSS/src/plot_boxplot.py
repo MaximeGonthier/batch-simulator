@@ -14,7 +14,9 @@ score = list(df.iloc[:, 1])
 opportunistic = list(df.iloc[:, 2])
 eft_score = list(df.iloc[:, 3])
 
-# ~ print(eft_score)
+# ~ print("LEA:", score)
+# ~ print("LEO:", opportunistic)
+# ~ print("LEM:", eft_score)
 
 columns = [eft, score, opportunistic, eft_score]
 colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
@@ -48,6 +50,10 @@ for mean in box['means']:
     mean.set_linewidth(1.9)
     # ~ print(mean)
 
+
+print([item.get_ydata()[1] for item in box['whiskers']])
+# ~ print([item.get_ydata()[1] for item in box['boxes']])
+# ~ print(box['boxes'][0].get_ydata()[1])
 # ~ print(median)
 # ~ print(mean)
 
@@ -57,6 +63,10 @@ else:
 	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"])
 	
 plt.axhline(y = 1, color = 'black', linestyle = "dotted")
+
+
+# ~ plt.axhline(y = 1.35, color = 'black')
+# ~ plt.axhline(y = 0.85, color = 'black')
 
 # Max Y
 # ~ ax.set_ylim(0, 2.5)
