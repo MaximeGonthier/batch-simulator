@@ -187,12 +187,12 @@ if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
 		plt.ylabel("Seconds")
 elif (percentages_mode == 1):
 	print("Print speedup compared to FCFS")
-	print(Y)
+	# ~ print(Y)
 	plt.ylabel("Speedup compared to FCFS")
 	plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 elif (percentages_mode == 2):
 	print("Print speedup compared to FCFS BF")
-	print(Y)
+	# ~ print(Y)
 	plt.ylabel("Speedup compared to FCFS with BF")
 	plt.axhline(y = 1, color = 'black', linestyle = "dotted")
   

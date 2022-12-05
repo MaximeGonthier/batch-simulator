@@ -19,7 +19,8 @@ eft_score = list(df.iloc[:, 3])
 
 min_ecdf = min(eft + score + opportunistic + eft_score)
 # ~ max_ecdf = max(eft + score + opportunistic + eft_score)
-max_ecdf = 2.5
+max_ecdf = 3.15
+# ~ ax.set_ylim(0, 3.15)
 # ~ color=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"])
 x = np.linspace(min_ecdf, max_ecdf)
 
