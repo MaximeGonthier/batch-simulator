@@ -234,7 +234,7 @@ In addition, HDFS is particularly efficient when the input data used are identic
 In our case, one user will submit a lot of different jobs using the same data, but between users,
 the inputs are not the same. So HDFS would be less efficient.
 
-\section{Framework - Draft}\label{sec.framework}
+\section{Framework}\label{sec.framework}
 
 We consider the problem of scheduling a set of $N$ independent jobs,
 denoted $\jobset = {J_1, J_2, \ldots, J_N}$ on a set of $P$ nodes:
@@ -249,7 +249,7 @@ processing of a job $J_i$ on $\Node{k}$, file $\file(J_i)$ must be in
 the memory of $\Node{k}$. If this is not the case before starting
 computation of job $J_i$, then file $\file(J_i)$ is loaded into the
 memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_n\}$ the set
-of discting input files, whose size is denoted by $\size(F_i)$. Each
+of distinct input files, whose size is denoted by $\size(F_i)$. Each
 job runs on a single node, but on different number of cores.
 
 
@@ -540,42 +540,48 @@ core hours in length, then be quiet for a long time processing the results, and 
 On the other hand, it would be disruptive to expose a real user community to a wide variety of experimental scheduling strategies.
 
 For this reason, we used logs of historical submitted jobs, in terms of their exact submission time, size, stated runtime, and actual runtime.
-Since explicit data dependencies are not encoded in SLURM job specifications, we created an artificial pattern for this. 
-\todo[inline]{Carl: Max, please elaborate. Max: Okay, I added a paragraph.}
-Each job is carrying an input file.
-Let's consider two jobs from the logs of historical submitted jobs: $J_i$ and $J_j$.
+Since explicit data dependencies are not encoded in SLURM job specifications, we created an artificial pattern for this that replicate the behavior of an user.
+Let's consider two jobs from the logs: $J_i$ and $J_j$.
 They will be attributed a common input file if they match all the following requirements:
 \begin{enumerate}
-	\item $\core(J_i) = \core(J_j)$ i.e they are requiring the same amount of cores.
+	\item $\core(J_i) = \core(J_j)$ i.e they are requesting the same number of cores.
 	\item $J_i$ and $J_j$ were submitted by the same user.
-	\item $J_i$ and $J_j$ were submitted in a 800 seconds timeframe.
+	\item $J_i$ and $J_j$ were submitted in a 800 seconds timeframe. We consider this timeframe to be a reasonable amount of time for a user to submit all of his jobs using the same input file.
 \end{enumerate}
-Otherwise we consider that $J_i$ and $J_j$ are using distinct input files.
+Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files.
 
-\todo[inline]{Elisabeth: I think we should say Rackham so that readers can checkout the hardware, but perhaps it should be fully blind as a starting point.}
+\todo[inline]{Elisabeth: I think we should say Rackham so that readers can checkout the hardware, but perhaps it should be fully blind as a starting point?}
 The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 1024GB nodes.
 
-\todo[inline]{Max: I added a paragraph on why all nodes are the same size in our case:}
-Having $L$ different nodes sizes raises a new constraint. The model would have
+Having $L = {l_1, l_2, ..., l_n}$ different nodes sizes raises a new constraint. The model would have
 $L$ subsets of nodes, each possibly containing a different number of nodes.
-An input file can be too large to be computed on one or multiple of those subsets.
+Some input files would be to large to be computed on one or multiple of those subsets.
 Thus, in addition to the scheduling problem, a load balancing problem arises.
+For example, should a job using a file of size $l_1$ be scheduled on a node of size $l_2$?
 Indeed, the scheduler need to be able to manage each subset of nodes as an independent 
-resource that need to avoid starvation while also not being saturated in case of a large
-batch of jobs that could be submitted at once and that could only be computed on this node's size.
+resource that need to avoid starvation while also not being saturated
+in case of a sudden batch of jobs requesting a node of it's size.
 Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
-128 GB and the size of an input file is a multiple of 6.4.
-In other words, for each $\file(i) \in \fileset$, $\size(\file(i)) = 6.4 \times n$ with 
-$1 \leq n \leq 20$.
+$M = 128GB$.
+\todo[inline]{Loris: put this somewhere/explain:
+We consider that these jobs are dedicated to processing their input
+file. Hence, the larger the input file, the more cores the job
+requests, such that the file occupies a fraction of the memory
+proportional to the number of cores allocated to the job. A job with
+$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
+that file sizes are multiple of $M/m$.
+Max: Loris, I added your comment 
+on file size relative to number of cores here. But shouldn't it go in the framework instead?
+I propose to add:
+"In our described application case, for each $\file(i) \in \fileset$, $\size(\file(i)) = \frac{128}{20} \times \core(J_i)$."}
 
 The utilization levels are typically high ($>90\%$), but
 not fully consistently so. The vast majority of jobs on this resources are single node jobs, even sometimes single core jobs. Run times
 could extent to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
 but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
-\todo[inline]{Max: Add a paragraph or subsection for this part below?}
-Each application scenario is a day on the log's history of the workload.
-The way we collect and schedule jobs from the log's history is represented in Figure~\ref{fig.workload}.
+Each application scenario evaluated in the next section is a day on the log's history of the workload.
+The way we collect and schedule jobs from the log's history is represented on Figure~\ref{fig.workload}.
 \begin{figure*}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
 \definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
@@ -615,11 +621,11 @@ The way we collect and schedule jobs from the log's history is represented in Fi
 \caption{Methodology followed to schedule and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
 \label{fig.ex}
 \end{figure*}
-On the real cluster, when a job finishes, it's information
+On the real cluster, when a job finishes, all it's metadata
 are written in a file corresponding to the day at which the day finished.
-This information contains the node that was attributed, the real job's duration, the walltime, 
-the number of cores required, the user that submitted the job, the submission time, 
-the start and end time.
+%~ This information contains the node that was attributed, the real job's duration, the walltime, 
+%~ the number of cores required, the user that submitted the job, the submission time, 
+%~ the start and end time.
 Our goal is to schedule and evaluate all the jobs submitted on 
 \textit{Day 1} in the settings in which they were on the real cluster.
 In order to get all the jobs that were submitted on \textit{Day 1}, we need to
@@ -629,18 +635,16 @@ thus we should cover the vast majority of jobs that were actually submitted on
 With this process, we also gather jobs that were started on \textit{Day 0} and \textit{Day 2}. 
 Jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
 and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
-i.e. in the situation in which it was on the real cluster, with jobs submitted
-before and after, but also to avoid any side effect.
+i.e. in the situation in which it was on the real cluster while also to avoiding any side effect.
 Jobs from \textit{Day -1, -2, ..., -n} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
 We use the information from the log's history to start these jobs on the nodes
-were they really were scheduled and at the times at which they were started.
-This allows us to exactly replicate the state of the cluster on this day before starting
-to schedule jobs from \textit{Day 0}.
+were they really were executed and at the times at which they really started.
+This allows us to exactly replicate the state of the cluster on this day before
+scheduling jobs from \textit{Day 0}.
 To summarize, before \textit{Day 0}, jobs are placed on the cluster
 following the log's history. Starting from \textit{Day 0} we 
 use one of our scheduler and only evaluate jobs submitted on \textit{Day 1}
 to avoid any side effect.
-
 
 \section{Performance evaluation and analysis}\label{sec.evaluations}
 
@@ -648,13 +652,6 @@ We present below the results of experimental evaluations conducted
 on 44 days extracted from logs of historical submitted jobs.
 
 \subsection{Settings}
-\todo[inline]{put this somewhere/explain:
-We consider that these jobs are dedicated to processing their input
-file. Hence, the larger the input file, the more cores the job
-requests, such that the file occupies a fraction of the memory
-proportional to the number of cores allocated to the job. A job with
-$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
-that file sizes are multiple of $M/m$. Max: I think it should go in section 5.}
 
 All strategies as well as the two baselines have been implemented on
 a simulator that we developed\todo[inline]{Max: Do we need to say more here?}.
@@ -679,38 +676,38 @@ The stretch of one job is computed as follows:
 Stretch_{J_i} = \frac{Flow(J_i)}{\emptyflow(J_i)}
 \end{equation}
 
-\todo[inline]{Max: Is it okay here to use the $t_k' - t_k$ notation used in the pseudocodes to get the duration of the load that was required?}
 \todo[inline]{Max: Do we need a table to recap the acronyms and strategies or reading the section scheduler is sufficient to know the acronyms?}
-\todo[inline]{Max: When I show performance of a particular workload should I show both BF and non BF or only one of those? Do I show one and talk about the other one?}
 We also evaluate the total amount of time spent waiting for a file to be available.
-Our main competitors on this measures will be FCFS and EFT.
+Our main competitors on this measures will be FCFS and EFT, with and without backfilling.
+\todo[inline]{Max: Do we need more in this setting section?}
+Let's first study the behavior of our schedulers on different workloads,
+offering different saturations of the cluster.
 
 \subsection{An underutilized cluster, LEA issues and the appeal of LEM}
 
-\subsubsection{Results}
-\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}
+\subsubsection{Results\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 
-Figure~\ref{stretch.07-16} shows us the mean stretch on all jobs.
+Figure~\ref{stretch.07-16} shows us, for each scheduler, the mean stretch from all jobs
+submitted on July 16.\todo[inline]{Should we say on July 16 or on July the 16th?}
 The horizontal black dotted line correspond to a stretch of 1.
 It's the stretch obtained if all the jobs 
-are scheduled on an empty cluster.
-Thus, it means that the waiting time of a job was exactly
+are scheduled on an empty cluster, it means that the waiting time of each job was exactly
 the time it took to load the input file.
 FCFS, EFT, LEO and LEM have mean stretches close to 1.
-EFT, LEO and LEM have a small benefit over FCFS thanks to the file re-use.
+EFT, LEO and LEM have a slight benefit over FCFS thanks to the file re-use.
 LEA is 20\% slower.
 
-Figure~\ref{reuse.07-16} and Figure~\ref{load.07-16}
+Figures~\ref{reuse.07-16} and \ref{load.07-16}
 both gives us similar information. The first one 
 shows the number of jobs that re-used a file.
-Meaning that the file load was either nul or 
-the job was scheduled with another job loading the same file
-at the same time. The gray background denote the total
-number of jobs that re-used or not a file.
+Meaning that the file was already in memory or 
+or another job is currently loading the file.
+The gray background denote the total
+number of jobs.
 The second figure plot the total amount of time spent 
 waiting for a file to be ready before starting the computation.
 On both of these figures, LEA is the outlier:
@@ -718,16 +715,17 @@ it re-uses input files for more jobs and consequently the total time spent waiti
 
 \subsubsection{Understanding LEA's poor performance}
 
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with LEA.}\label{07_16_cluster_usage_lea}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July the 16th with LEA.}\label{07_16_cluster_usage_lea}\end{figure}
 \begin{figure}[tb]\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{subfigure}
 \begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{subfigure}\caption{Stretch times of each job compared to FCFS on the workload of July the 16th.}\end{figure}
 
 To understand the issues LEA encounter on this workload, we need to study the cluster's usage over time.
 Figure~\ref{07_16_cluster_usage_fcfs} shows us a visual representation of 
-our cluster's usage over time when using FCFS.
+our cluster's usage when using FCFS.
 The Y axis represents the number of requested cores either running on a node (lower half) or in the queue of jobs waiting to be executed (top half).
-The solid blue line shows the number of cores from all jobs.
+The blue line shows the number of cores from all jobs.
+%~ The solid blue line shows the number of cores from all jobs.
 %~ The dashed blue line shows the additional number of cores that would be needed
 %~ to run all the jobs in the queue at a given time (this would thus be the number
 %~ of used cores if all the jobs where running in parallel).
@@ -736,28 +734,37 @@ time within our evaluation window, in other words they are sub-parts of the blue
 that we evaluate.
 
 By looking at the top half of Figure~\ref{07_16_cluster_usage_fcfs}
-we understand that the job's queue is empty most of the time. In this situation, FCFS is very efficient. Indeed, choosing the earliest available node will in most cases choose a node that can immediately start the job, explaining the mean stretch close to one on Figure~\ref{stretch.07-16}.
-LEO is a strategy that uses the earliest available time of a node $t_k$ to decide if it should compute a score like LEA or 
-or weigh the transfer time and $t_k$ in the 
-equally. This allows LEO to have a behavior close to FCFS or EFT on underused clusters.
-Similarly, LEM switches between EFT and LEA depending on the clusters usage, it thus behave similarly to EFT on this particular workload.
+we understand that the job's queue is empty most of the time.
+In this situation, FCFS is very efficient. Indeed, the earliest available node will in
+most cases be a node that can immediately start the job, explaining the mean stretch close to 1 on Figure~\ref{stretch.07-16}.
+LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
+that heavily weigh the transfer time \todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here?} or weigh equally $t_k$, the transfer and eviction time. 
+Thus, on underused clusters, LEO will have a behavior close to EFT, while still trying to minimize evictions.
+Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
+Here the cluster's usage is under 80\%, so LEM behave similarly to EFT on this particular workload.
 On the contrary, LEA favours data re-use over an early start time for a job.
-On an underused cluster it will increase startvation.
+On an underused cluster it will increase starvation.
 We can notice this when looking at
-Figure~\ref{07_16_cluster_usage_lea}. It shows the custer usage when using LEA on this workload. We can notice that it uses fewer cores, notably before the first vertical orange dotted line. 
-This translates into a larger queue of jobs that you can see on the top half of the figure. Jobs in this queue are jobs that already have a valid copy of their file loaded on a node. The benefit of scheduling 
-these jobs immediately on another node and loading the file appears inferior to waiting for a file re-use for LEA and thus create this queue of jobs that does not exist for FCFS. 
-The consequence in term of stretch is immediately noticeable on Figure~\ref{07_16_fcfs_vs_lea}. This visualization shows the stretch's speed-up of each job compared to FCFS. The size of a circle is proportional to the job duration. On the workload of July 16, we can observe columns of jobs submitted at the same time and using the same file, meaning LEA was waiting to re-use the file to start the jobs, leading in a larger queue time when other nodes are available.
+Figure~\ref{07_16_cluster_usage_lea}. It shows the cluster usage when using LEA.
+We can notice that it uses fewer cores, notably before the first vertical orange dotted line. 
+This translates into a larger queue of jobs that you can see on the top half of the figure.
+Jobs in this queue are jobs that already have a valid copy of their file loaded on a node. 
+The benefit of scheduling these jobs immediately on another node and loading the file appears
+inferior to waiting for a file re-use for LEA and thus create this queue of jobs that does not exist for FCFS. 
+The consequence in term of stretch is immediately noticeable on Figure~\ref{07_16_fcfs_vs_lea}. This visualization shows the stretch's speed-up of each job compared to FCFS. The size of a circle is proportional to the job's duration. On the workload of July 16, we can observe, below 1, columns of jobs submitted at the same time and with the same duration (so probably using the same file), meaning LEA was waiting to re-use the file to start the jobs, leading in a larger queue time when other nodes are available.
+From Figure~\ref{07_16_fcfs_vs_lem}, we can see that most jobs have a speed-up close to 1, showing 
+that LEM do not fall in LEA's pathological case. 
 
 \subsection{An almost saturated cluster, the weakness of LEM and the resilience of LEO}
 
-We saw in the last section the benefit of using LEO or LEM over LEA. Here we evaluate our strategies on an almost saturated cluster that underline the weakness of LEM.
+We saw in the last section the benefit of using LEO or LEM over LEA.
+Here we evaluate our strategies on an almost saturated cluster that underline the weakness of LEM.
 
 \subsubsection{Results}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}
 \label{stretch.09-09}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}
 \label{load.09-09}\end{figure}
 
 Despite greatly reducing the amount of file transfers as can be seen on Figure~\ref{load.09-09}, LEA and LEM
@@ -778,12 +785,12 @@ In this case, the occupation rate is just above 80\% but not fully 100\%, thus L
 
 \subsection{A saturated cluster, the great benefits of LEA and LEM}\label{sec.03-26}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}
 \label{stretch.03-26}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\label{reuse.03-26}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March the 26th with FCFS.}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\label{reuse.03-26}\end{figure}
+\begin{figure}[H]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March the 26th with FCFS.}
 \label{cluster_usage.03-26_fcfs}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March the 26th.}
+\begin{figure}[H]\centering\includegraphics[scale=0.41]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March the 26th.}
 \label{vs_fcfs_lem_03-26}\end{figure}
 
 This workload saturate the cluster with FCFS. Indeed, 
@@ -798,11 +805,11 @@ Thus, LEA's strategy, also found in LEM, allows to gratly reduce the mean stretc
 
 \subsection{A cluster saturated with small jobs, the best case scenario for LEA and LEM}\label{sec.08-16}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}
 \label{stretch.08-16}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}
+\begin{figure}[H]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}
 \label{cluster_usage.08-16_fcfs}\end{figure}
-\begin{figure}[H]\centering\includegraphics[scale=0.47]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.}
+\begin{figure}[H]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.}
 \label{cluster_usage.08-16_lem}\end{figure}
 
 From Figure~\ref{stretch.08-16}, we observe that LEA has a stretch 33 times lower than
@@ -816,10 +823,10 @@ Reducing the transfer times of small jobs has a much greater effect on the stret
 
 \subsection{Final results on 44 different evaluated workloads}
 
-\begin{figure}[tb]\centering\includegraphics[scale=0.47]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\label{stretch.01-28}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's speed-up from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's speed-up from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
-\begin{figure}\centering\includegraphics[scale=0.47]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's speed-up from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\label{stretch.01-28}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.41]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's speed-up from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.41]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's speed-up from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
+\begin{figure}\centering\includegraphics[scale=0.41]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's speed-up from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
 
 We can read on Figure~\ref{boxplot.all} a boxplot showing the aggregated
 results of mean stretch's speed-up compared to FCFS over all evaluated workloads.
