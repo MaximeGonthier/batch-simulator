@@ -326,7 +326,7 @@ It is important to note that the file transfer is done before the computation an
 Jobs are non-preemptible: when started, a job is executed through its completion.
 
 
-\section{Schedulers - Draft}\label{sec.schedulers}
+\section{Schedulers}\label{sec.schedulers}
 \todo[inline]{Max: Say that we are online, we have no way to know the number or length of future jobs.}
 \todo[inline]{Max: Say that in our case the backfilling is only inside a node and not between multiple nodes.}
 \todo[inline]{Max: Say that the schedule is re-done each time a core is liberated?}
@@ -336,16 +336,16 @@ the partitioning problem presented above.
 
 Some of these methods uses start or completion time as a way to
 schedule each job (section~\ref{subsec.fcfs_eft}) while another compute 
-a score to choose the best node (section~\ref{subsec.score}) and others
+a score to choose the node that optimizes file loads (section~\ref{subsec.lea}) and others
 are opting for a mixed strategy between locality and earliest possible start time
-(sections~\ref{subsec.mixed} and~\ref{subsec.opportunistic}).
+(sections~\ref{subsec.leo} and~\ref{subsec.lem}).
 
 \subsection{Two scheduler from the state of the art: FCFS and EFT}\label{subsec.fcfs_eft}
 
 A widely used and considered effective job's scheduler is 
 First-Come-First-Serve or FCFS.
 
-\todo[inline]{Parler des cores dans le framework}
+\todo[inline]{M&x: Talk about cores in the framework?}
 
 The FCFS strategy coupled with conservative backfilling is implemented as follows:	
 \begin{algorithm*}[htb]%\small
@@ -389,7 +389,7 @@ be re-used.
 \end{algorithmic}
 \end{algorithm*}
 
-\subsection{A locality-focused algorithm: LEA}
+\subsection{A locality-focused algorithm: LEA}\label{subsec.lea}
 
 The previous strategies are focusing on starting as soon as possible (FCFS)
 of finishing as soon as possible a job (EFT).
@@ -429,7 +429,7 @@ on the node with the lowest score.
 \end{algorithmic}
 \end{algorithm*}
 
-\subsection{LEO}
+\subsection{LEO}\label{subsec.leo}
 
 \begin{algorithm*}[htb]%\small
 \caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
@@ -456,7 +456,7 @@ on the node with the lowest score.
 \end{algorithmic}
 \end{algorithm*}
 
-\subsection{LEM}
+\subsection{LEM}\label{subsec.lem}
 
 \begin{algorithm*}[htb]%\small
 \caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
@@ -900,7 +900,7 @@ However, our strategies do not benefit from backfilling as much as FCFS does for
 \begin{itemize}
 	\item Even if we consider data locality when backfilling, trying to fill as much as possible a node and optimizing data re-use are two contrary goals. 
 	Backfilling a job can compromise a re-use pattern that was planned by our locality-aware strategy, thus reducing the total 
-	amount of re-sued files.
+	amount of re-used files.
 	\item Our strategies, are already able to nicely fill the nodes without needing backfilling.
 	Indeed, grouping jobs by input file allow to have similar jobs on the same nodes.
 	Jobs having the same duration and number of requested cores can much more easily fill a node to its fullest than a completely heterogeneous set of jobs.
