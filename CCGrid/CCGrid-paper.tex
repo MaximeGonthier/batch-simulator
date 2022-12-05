@@ -345,7 +345,7 @@ are opting for a mixed strategy between locality and earliest possible start tim
 A widely used and considered effective job's scheduler is 
 First-Come-First-Serve or FCFS.
 
-\todo[inline]{M&x: Talk about cores in the framework?}
+\todo[inline]{Max: Talk about cores in the framework?}
 
 The FCFS strategy coupled with conservative backfilling is implemented as follows:	
 \begin{algorithm*}[htb]%\small
@@ -532,6 +532,7 @@ Additionally, when backfilling, the available cores with the smallest next
 start time are chosen in order to fill as much as possible the nodes."}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
+
 Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
 that are non-trivial to replicate in a fully artificial simulated job pattern. We believe that this is especially
 true for data-dependent patterns, where a project might launch a burst of jobs using the same file just a few thousand
