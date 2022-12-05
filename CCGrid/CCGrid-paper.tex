@@ -604,26 +604,26 @@ core hours in length, then be quiet for a long time processing the results, and 
 On the other hand, it would be disruptive to expose a real user community to a wide variety of experimental scheduling strategies.
 
 For this reason, we used logs of historical submitted jobs, in terms of their exact submission time, size, stated runtime, and actual runtime.
-Since explicit data dependencies are not encoded in SLURM job specifications, we created an artificial pattern for this that replicate the behavior of an user.
+Since explicit data dependencies are not encoded in SLURM job specifications, we created an artificial pattern for this that replicate the behavior of a user.
 Let's consider two jobs from the logs: $J_i$ and $J_j$.
 They will be attributed a common input file if they match the three following requirements:
 \begin{enumerate}
-	\item $\core(J_i) = \core(J_j)$ i.e they are requesting the same number of cores.
+	\item $\core(J_i) = \core(J_j)$, i.e., they are requesting the same number of cores.
 	\item $J_i$ and $J_j$ were submitted by the same user.
-	\item $J_i$ and $J_j$ were submitted in a 800 seconds timeframe. We consider this timeframe to be a reasonable amount of time for a user to submit all of his jobs using the same input file.
+	\item $J_i$ and $J_j$ were submitted in an 800 seconds timeframe. We consider this timeframe to be a reasonable amount of time for a user to submit all of her/his jobs using the same input file.
 \end{enumerate}
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files.
 
-\todo[inline]{Elisabeth: I think we should say Rackham so that readers can checkout the hardware, but perhaps it should be fully blind as a starting point?}
+
 The resource consists of 486 nodes with 20 cores each, with most of them having 128GB of RAM, with some 256GB and 1024GB nodes.
 
-Having $\mathbb{M} = {M_1, M_2, ..., M_l}$ different nodes sizes raises a new constraint. The model would have
+Having $\mathbb{M} = {M_1, M_2, ..., M_l}$ different node sizes raises a new constraint. The model would have
 $M_l$ subsets of nodes, each possibly containing a different number of nodes.
 Some input files would be to large to be computed on one or multiple of those subsets.
 Thus, in addition to the scheduling problem, a load balancing problem arises.
 For example, should a job using a file of size $M_1$ be scheduled on a node of size $M_2$?
-Indeed, the scheduler need to be able to manage each subset of nodes as an independent 
-resource that need to avoid starvation while also not being saturated
+Indeed, the scheduler needs to be able to manage each subset of nodes as an independent 
+resource that needs to avoid starvation while also not being saturated
 in case of a sudden batch of jobs requesting a node of it's size.
 Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
 $M = 128GB$.
@@ -641,11 +641,11 @@ I propose to add:
 
 The utilization levels are typically high ($>90\%$), but
 not fully consistently so. The vast majority of jobs on this resources are single node jobs, even sometimes single core jobs. Run times
-could extent to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
+could extend to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
 but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
-Each application scenario evaluated in the next section is a day on the log's history of the workload.
-The way we collect and schedule jobs from the log's history is represented on Figure~\ref{fig.workload}.
+Each application scenario evaluated in the next section is one day of the log's history of the workload.
+The way we collect and schedule jobs from the log's history is represented in Figure~\ref{fig.workload}.
 \begin{figure*}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
 \definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
@@ -699,14 +699,14 @@ thus we should cover the vast majority of jobs that were actually submitted on
 With this process, we also gather jobs that were started on \textit{Day 0} and \textit{Day 2}. 
 Thanks to this, jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
 and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
-i.e. in the situation in which it was on the real cluster while also avoiding any side effect.
+i.e., in the situation in which it was on the real cluster while also avoiding any side effect.
 Jobs from \textit{Day -1, -2, ..., -n} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
 We use the information from the log's history to start these jobs on the nodes
 were they really were executed and at the times at which they really started.
 This will exactly replicate the state of the cluster just before \textit{Day 0}.
 To summarize, before \textit{Day 0}, jobs are placed on the cluster
 following the log's history. Starting from \textit{Day 0} we 
-use one of our scheduler and only evaluate jobs submitted on \textit{Day 1}
+use one of our schedulers and only evaluate jobs submitted on \textit{Day 1}
 to avoid any side effect.
 
 \section{Performance evaluation and analysis}\label{sec.evaluations}
