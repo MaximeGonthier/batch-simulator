@@ -626,16 +626,16 @@ In order to get all the jobs that were submitted on \textit{Day 1}, we need to
 look into the logs of days 1 to 10. Indeed, most jobs do not last for more than 10 days,
 thus we should cover the vast majority of jobs that were actually submitted on 
 \textit{Day 1}.
-With this process we also gather jobs that were started before \textit{Day 0}.
-Jobs from \textit{Day -1} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
+With this process, we also gather jobs that were started on \textit{Day 0} and \textit{Day 2}. 
+Jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
+and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
+i.e. in the situation in which it was on the real cluster, with jobs submitted
+before and after, but also to avoid any side effect.
+Jobs from \textit{Day -1, -2, ..., -n} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
 We use the information from the log's history to start these jobs on the nodes
 were they really were scheduled and at the times at which they were started.
 This allows us to exactly replicate the state of the cluster on this day before starting
 to schedule jobs from \textit{Day 0}.
-Jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
-and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
-i.e. in the situation in which it was on the real cluster, with jobs submitted
-before and after.
 To summarize, before \textit{Day 0}, jobs are placed on the cluster
 following the log's history. Starting from \textit{Day 0} we 
 use one of our scheduler and only evaluate jobs submitted on \textit{Day 1}

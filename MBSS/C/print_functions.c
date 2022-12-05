@@ -1011,7 +1011,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_
 	
 	fprintf(f, "\nend_of_file\n");
 
-	printf("Successfully saved state.\n");
+	printf("Successfully saved state at time %d.\n", t);
 	fclose(f);
 }
 

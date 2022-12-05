@@ -67,18 +67,19 @@ oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compa
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-03-\>2022-04-03_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 oarsub -p nova -l core=16,walltime=10:40:00 -r '2022-11-23 22:11:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-04-04-\>2022-04-04_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt 1 1"
 
-Attention un resume pas necessaire peut arriver, il ne faut alors pas compter le deuxieme resume dans les resultats.
-
-job sur lyon:
-
-A finir et plot: voir document temp_results
-
-job sur grenoble:
-03 31 en resume OAR_JOB_ID=2170298
-09 15	T=8564460	OAR_JOB_ID=2170300 a besoin de plus de 14h mais pourra finir a relancer vendredi
-09 16	T=8659055	OAR_JOB_ID=2170301 a besoin de plus de 14h mais pourra finir a relancer vendredi
-08 12	T=1			OAR_JOB_ID=2170302 a besoin de plus de 14h mais pourra finir a relancer vendredi
-01-02	T=1			OAR_JOB_ID=2170303 a besoin de plus de 14h mais pourra finir a relancer vendredi
+gonthier@gonthier-Precision-3551:~/data-aware-batch-scheduling/MBSS$ ./C/main inputs/workloads/converted/2022-09-16-\>2022-09-16_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_conservativebf_x500_x1_x0_x0 0 outputs/test.csv 2 80 save_and_resume 8690000
+Time to save_and_resume is 8690000.
+Workload: inputs/workloads/converted/2022-09-16->2022-09-16_V10000
+Scheduler: Fcfs_with_a_score_conservativebf_x500_x1_x0_x0
+No constraint on sizes (0).
+Multiplier file to load: 500 / Multiplier file evicted: 1 / Multiplier nb of copy: 0 / Multiplier area bigger nodes: 0 / Adaptative multiplier : 0 / Penalty on sizes : 0 / Start immeditaly if EAT is t: 0 / Mixed strategy: 0.
+busy_cluster_threshold is 80.
+Backfill mode is 2.
+Successfully read state.
+Start simulation.
+Evaluated jobs: 7486/8672 | All jobs: 25000/32132 | T = 8620513.
+Evaluated jobs: 7969/8672 | All jobs: 27500/32132 | T = 8632934.
+Evaluated jobs: 8590/8672 | All jobs: 30000/32132 | T = 8657508.
 
 walltime=10:40:00
 2022-11-23 22:11:00
