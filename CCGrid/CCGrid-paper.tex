@@ -528,7 +528,7 @@ Line 3 is thus replaced by:
 \todo[inline]{Max: Do we want to say: "When choosing the cores that will be used for a job among the available cores, 
 we choose the ones with the lowest index. This allow to optimize the cores utilization and reduce the risk of
 creating holes that need backfilling to be used.
-Additionaly, when backfilling, the available cores with the smallest next 
+Additionally, when backfilling, the available cores with the smallest next 
 start time are chosen in order to fill as much as possible the nodes."}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
@@ -836,11 +836,15 @@ However the mean values are much higher at 2.26, 1.21 and 1.76.
 We can explain this huge increase from the good performance of LEA's strategy on locality
 on heavily saturated clusters (see section~\ref{sec.03-26} and \ref{sec.08-16}).
 In these cases, the mean stretch of LEA or LEM are much smaller than those of FCFS or EFT.
-For LEO, 87,5\% of the results are above a speed-up of 1.
-
-Figure~\ref{boxplot.all_bf} shows the results but with the backfilling version of our schedulers and compared to FCFS-BF over all workloads.
-
-
+Re-using the same files is not detrimental to the filling of all the nodes because there are 
+enough jobs to cover all nodes, thus decreasing largely the time spent waiting for a file
+and consequently reducing the stretch of each job.
+Compared to LEA, LEM has a smaller mean value but 75\% of the results are above 1.
+Whereas for LEA, only approximately 57\% of the results are above 1. 
+Being a mixed strategy is beneficial to LEM and offers us more sustained performance at the cost
+of fewer extreme speed-up.
+For LEO, 87,5\% of the results are above a speed-up of 1, which shows that our opportunistic
+strategy is much more consistent.
 From the same data shown Figure~\ref{boxplot.all}, we plot an empirical distribution function on Figure~\ref{ecdf}.
 EFT's low variance is clearly visible in the sudden jump in probability around a speed-up of 1.
 It is interesting to note that for LEA and LEM, 20\% of the results have a speed up of more than 2.5.
@@ -850,7 +854,19 @@ We can also learn from this figure that LEO is in every respect a better version
 Indeed, it does not have a higher probability before 1 and after, has significantly more
 results at after an 1.2 speed-up.
 
-\todo[inline]{Max: -Talk about perfs, jump in ECDF, outliers, mean and median. ECDF and ECDF BF are similar. Say that we logically gain more on FCFS than FCFS BF, thus the results are like that. 01-28 is a good example to talk about it and show on the same plot with and without backfilling.}
+Figure~\ref{boxplot.all_bf} shows the results but with the backfilling version of our schedulers and compared to FCFS-BF over all workloads.
+We can notice that with backfilling, our schedulers have smaller speed-ups.
+To understand this we can look at Figure~\ref{stretch.01-28}. We can see that 
+with backfilling (hashed bars), the mean stretch is much lower. 
+However our strategies do not benefit as much as FCFS with backfilling for two reasons:
+\begin{itemize}
+	\item Even if we consider data locality when backfilling, trying to fill as much as possible a node and optimizing data re-use are two contrary goals. The second one want to create an order that nicely re use data while the first one just cares about filling holes. So when backfilling, we sometimes compromise a nice re-use pattern planned by LEA.
+	\item Our strategies, especially LEO, are already able to nicely fill the nodes without needing backfilling. Indeed, grouping jobs by input file allow to have similar jobs on the same nodes. Jobs having the same length and number of requested cores are much easier to use to fill a node than a completely heterogeneous set of jobs. Consequently, the shortfall without backfilling is much lower for LEA, LEO and LEM than for FCFS and EFT.
+\end{itemize}
+Thus, we still reduce queue time with backfilling, but the gain of our strtagey is much lower.
+On Figure~\ref{boxplot.all_bf}, for both EFT and LEO, the speed-ups are not significant.
+LEA has a median slightly worse than our competitor. However it's still have a very high mean.
+LEM has more than 50\% of it's results that are better than FCFS-BF, with a mean at 1.31.
 
 \todo[inline]{LM: should we say somewhere that we tested with stronger data persistence and it did not really helps?}
 
