@@ -34,7 +34,7 @@
 \newcommand{\memory}{\ensuremath{\mathit{Mem}}\xspace}
 \newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
 \newcommand{\duration}{\mathit{Duration}\xspace}
-\newcommand{\bandwidth}{\mathit{BW}\xspace}
+\newcommand{\bandwidth}{\mathit{BandWidth}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{SubTime}\xspace}
 \newcommand{\emptyflow}{\mathit{Reference\_Flow}\xspace}
@@ -711,17 +711,17 @@ to avoid any side effect.
 
 \section{Performance evaluation and analysis}\label{sec.evaluations}
 
-We present below the results of experimental evaluations conducted 
+Below, we present the results of experimental evaluations conducted 
 on 44 days extracted from logs of historical submitted jobs.
 
 \subsection{Settings}
 
 All strategies as well as the two baselines have been implemented on
-a simulator that we developed\todo[inline]{Max: Do we need to say more here?}.
+a simulator that we developed\todo[inline]{Max: Do we need to say more here? Elisabeth: Citation to framework used for simulator or did you in the end make it from scratch?}.
 
 For each job, it's flow will be computed after it's termination.
-The flow of a job is the total amount of time the job spent in the systems, i.e
-the duration between the submission time and it's completion. The flow
+The flow of a job is the total amount of time the job spent in the system, i.e.,
+the duration from the submission time to the completion time. The flow
 allows to evaluate both the queue time and the time spent loading it's input file.
 We measure the obtained performance with the mean
 stretch from all jobs of \textit{Day 1}.
@@ -809,7 +809,7 @@ we understand that the job's queue is empty most of the time.
 In this situation, FCFS is very efficient. Indeed, the earliest available node will in
 most cases be a node that can immediately start the job, explaining the mean stretch close to 1 on Figure~\ref{stretch.07-16}.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
-that heavily weigh the transfer time \todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here?} or weigh equally $t_k$, the transfer and eviction time. 
+that puts a large weight on transfer time\todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here?} or weigh equally $t_k$, the transfer and eviction time. 
 Thus, on underused clusters, LEO will have a behaviour\todo[inline]{Max: Or behavior? It's british or american english right?} close to EFT, while trying to minimize evictions.
 Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under 80\%, so LEM behave similarly to EFT.
