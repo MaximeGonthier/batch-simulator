@@ -364,6 +364,9 @@ $\start+\size(\file(J_i))/\bandwidth$.
 It is important to note that the file transfer is done before the computation and cannot be overlapped.
 Jobs are non-preemptible: when started, a job is executed through its completion.
 
+\todo[inline]{Max: Do we need to talk about the objective in the
+  framework?\\
+  LM: Yes, I totally forgot. Will add this later.}
 
 \section{Job scheduling with input files}\label{sec.schedulers}
 %\todo[inline]{Max: Say that we are online, we have no way to know the number or length of future jobs.}
@@ -390,9 +393,8 @@ to one or several cores of a single node.
 For example with: "Our scheduling policies are online algorithms
 that are called each time a core become available or upon new job's arrival."}
 
-\todo[inline]{should be we present backfilling here or in the introduction?}
 
-\todo[inline]{Max: Do we need to talk about the objective in the framework?}
+
 
 % Some of these methods uses start or completion time as a way to
 % schedule each job (section~\ref{subsec.fcfs_eft}) while another compute 
@@ -403,25 +405,13 @@ that are called each time a core become available or upon new job's arrival."}
 \subsection{Two scheduler from the state of the art: FCFS and EFT}\label{subsec.fcfs_eft}
 
 A widely used and considered effective job's scheduler is
-First-Come-First-Serve or FCFS. The FCFS strategy without backfilling
-corresponds to Algorithm~\ref{algo.fcfs}. Implementing this scheduler
-requires to remember for each core the time at which it will become
+First-Come-First-Serve or FCFS, detailled on
+Algorithm~\ref{algo.fcfs}. Implementing this scheduler requires to
+remember for each core the time at which it will become
 available. Then, for each job, we look for the first time when a
 sufficient number of cores is available, and we allocate the job to
 these cores.
 
-\todo[inline]{LM: move following paragraph to last subsection}
-When backfilling is used, it is allowed to allocated a job $J_i$
-before other jobs that appear earlier in the queue, provided that it
-does not impact the starting time of these jobs (this is conservative
-backfiling). It consists in changing Line~\ref{fcfs.ln.find} of
-Algorithm \ref{algo.fcfs} into
-\begin{algorithmic}[0]
-  \State $\ref{fcfs.ln.find}'$: Find smallest time $t_k$ such that $\core(J_i)$ cores are
-  available from $t_k$ until $t_k + \walltime(J_i)$ on $\Node{k}$
-\end{algorithmic}
-We thus have to remember the whole occupation profile of each core, to
-be able to find an availability window sufficient to schedule the job.
 
 \begin{algorithm}[htbp]%\small
 \caption{First-Come-First-Serve (FCFS)}\label{algo.fcfs}
@@ -441,7 +431,7 @@ be able to find an availability window sufficient to schedule the job.
 \end{algorithm}
 
 
-FCFS (with or without backfilling) is a standard baseline comparison
+FCFS is a standard baseline comparison
 for job scheduling. However, it is not aware of the capability of the
 system to keep a large data file in the memory of a node between the execution of
 two consecutive jobs. A first step towards a locality-aware scheduler
@@ -626,18 +616,41 @@ otherwise we the EFT strategy is used.
 
 \subsection{Adding backfilling to all strategies}
 
-As mentionned in the related works (Section~\ref{sec.related_work}), 
-Conservative Backfilling is one of the most commonly used strategy to improve
-the usage of a set of nodes.
-We equipped each of our strategies with a variant using conservative backfilling and noted (-BF) on the figures.
-To add backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft}, \ref{algo.lea} and \ref{algo.leo} must modify the choice of the smallest time to use $\core(J_i)$ cores made on line 3 of each pseudo-code.
-The smallest time, $t_k$, must also be a time 
-that allows to compute the job for it's whole walltime
-without delaying an already scheduled job.
-Line 3 is thus replaced by:
-"Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$".
+As mentionned above, backfilling has been proposed to increase the
+performance of job schedulers, by allowing jobs with low priority to be
+scheduled before jobs with higher priority. In order to avoid jobs
+being perpetually delayed, bounds have to be set on how already
+scheduled jobs can be affected by backfilling. As discussed above,
+Conservative Backfilling is the most restrictive version and one of
+the most commonly used strategies to improve cluster utilization. It
+forbids any modification on the resource
+reservations of high priority jobs: a job may be scheduled
+before other jobs that appear earlier in the queue, provided that it
+does not impact the starting time of these jobs.
 
-\todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
+
+For each of the previous scheduling strategy, we consider a variant
+using conservative backfilling (and suffixed by -BF).  To add
+backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft},
+\ref{algo.lea} and~\ref{algo.leo} have to be modified: we change the
+choice of the earliest time when resources are available for a job
+(Line~\ref{fcfs.ln.find}). Instead of considering the time at which
+cores are (indefinitely) available, we look for an availability time
+window starting at $t_k$ and long enough to hold the
+job. Specifically, we change Line~\ref{fcfs.ln.find} into:
+\begin{algorithmic}[0]
+  \State $\ref{fcfs.ln.find}'$: Find smallest time $t_k$ such that $\core(J_i)$ cores are
+  available from $t_k$ until $t_k + \walltime(J_i)$ on $\Node{k}$
+\end{algorithmic}
+Note that this requires to remember the whole occupation profile of
+each core (with availability and unavailability times), whereas the
+version of each scheduler without backfilling simply requires the time
+of the last job completion.
+
+
+\todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like
+  this:? }
+
 \begin{figure}[tb]
 \centering\scalebox{0.75}{
 \begin{tikzpicture}\begin{axis}
@@ -680,7 +693,10 @@ we choose the ones with the lowest index.
 This allow to optimize the cores utilization and reduces the risk of
 covering available cores that will need backfilling to be used.
 Additionally, when backfilling a job, the cores with the smallest next 
-start time of a job are chosen, in order to fill as much as possible the nodes."}
+start time of a job are chosen, in order to fill as much as possible
+the nodes."\\
+LM: I don't think we need to mention this. Tie-breaking using smallest
+index is the default behaviour in most systems.}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 
