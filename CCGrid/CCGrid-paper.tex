@@ -343,7 +343,7 @@ Jobs are non-preemptible: when started, a job is executed through its completion
 %\todo[inline]{Max: Say that in our case the backfilling is only inside a node and not between multiple nodes.}
 
 
-We present here the various schedulers used to allocate jobs to
+We present here various schedulers used to allocate jobs to
 computing resources. We start with two basic schedulers (FCFS and EFT)
 and then move to proposing three locality-aware job schedulers (named
 LEA, LEO and LEM). Each of these five schedulers can be used both
@@ -416,7 +416,7 @@ be able to find an availability window sufficient to schedule the job.
 
 FCFS (with or without backfilling) is a standard baseline comparison
 for job scheduling. However, it is not aware of the capability of the
-system to keep a large data file on a node between the execution of
+system to keep a large data file in the memory of a node between the execution of
 two consecutive jobs. A first step towards a locality-aware scheduler
 is to select a node for each job not based on the cores' availability
 time, but also using the file availability time, based on the file
@@ -431,7 +431,8 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
   file and it is already in memory, thus $t'_k=t_k$;
 \item The input file of $J_i$ is not in memory and
   $t'_k=t_k+\frac{\size(\file(J_i))}{\bandwidth}$;
-\item The input file of $J_i$ is partially loaded on \Node{k}: some
+\item The input file of $J_i$ is partially loaded on \Node{k}: this
+  happens when some
   job $J_j$ using the same input file has been scheduled on other cores of
   the same job at time $\start(J_j)<t_k$ but the file transfer has not
   completed at time $t_k$. Then the file will be available at time:
@@ -458,7 +459,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k' \geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$ %\Comment{There are 3 scenarios. 1: the file is already in memory ($t_k' = t_k$), 2: the file is absent ($t_k' = t_k + \frac{\size(\file(J_i))}{\bandwidth}$), 3: the file is partially loaded by another job $J_i'$ started before time $t_k$ ($t_k' = t_k + \frac{\size(\file(J_i))}{\bandwidth} - \bandwidth \times (t_k - \start(J_i'))$)}
 		\EndFor
-                \State Select \Node{k}  with the smallest $t_k$
+                \State Select \Node{k}  with the smallest $t'_k$
                 \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
                 \State Mark these cores busy until time $t_k +\walltime(J_i)$
                 %\State Schedule $J_i$ on the node with the smallest $t_k'$
@@ -470,23 +471,47 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 
 \subsection{Data locality based schedulers}
 
-The previous strategies are focusing on starting as soon as possible (FCFS)
-of finishing as soon as possible a job (EFT).
-Those are good methods to avoid starvation of a node and reduce queue times.
-However, they are ignoring the effect multiplying the number of copy of a file
-over multiple nodes. Indeed, selecting different nodes for jobs using a common
-file will increase file loads in order to minimize immediate queue times.
-Our strategy (called LEA) aims at favoring locality in order to reduce
-queue times in the long run by reusing the same files. 
+The previous strategies focus on starting as soon as possible (FCFS)
+of finishing as soon as possible a job (EFT).  Those are good methods
+to avoid starvation of a node and reduce queue times.  However, they
+may lead to loading the same input file on a large number of nodes in
+the platform, simply to minimize immediate queue times. Time is spent
+loading the input file multiple times and this can affect the global
+performance of the system by delaying all jobs.  We present here three
+strategies that attempt to better take into account data locality in
+order to reduce queuing times in the long run by increasing data reuse.
 
-The main principle of our algorithm detailed in Algorithm~\ref{algo.lea} 
-is to find a balance between the earliest available time and data locality,
-with a tiebreak on data eviction. A score \todo[inline]{Max: Can we really call it a score when you have so few parameters?} composed of the earliest available 
-time, the time to load or wait for the files to be available and the cost of 
-reloading evicted files is computed for each node. The job is then scheduled
-on the node with the lowest score.
+% When the platform is fully loaded, favoring data reuse helps reducing the number of file
+% copies and hence reduces queue time in the long run.
 
-% The load duration is t_k' - t_k
+The first proposed algorithm called Locality and Eviction Aware (LEA)
+and detailed in Algorithm~\ref{algo.lea} aims at a good balance
+between node availability and data locality.  We consider three
+quantities to rank nodes:
+\begin{itemize}
+\item The available time for computation $t_k$;
+\item The time needed to complete loading the input file for the job
+  on \Node{k} ($t'_k - t_k$);
+\item The time required to reload files that need to be evicted before
+  loading the input file; this time is computed using all files in
+  memory and considering that a fraction of these files need to be
+  evicted, corresponding to the fraction of the memory used by the job.
+\end{itemize}
+
+The intuition for the third criterion is that if loading a large file
+in the memory requires to evict many other files, these file will not
+be available for later jobs and may have to be reloaded.
+In the LEA strategy, we put a strong emphasis on data load, in order
+to really favor data locality. Hence, when computing the score for
+each node \Node{k}, we sum the previous three quantities with a weight
+$W$ for the second one (loading time). In our experiments, based on
+empirical evaluation, we  set this value to $W=500$.
+Note that the other two quantities usually have very different values,
+at the availability time is usually much larger than the time for
+reloading evicted data. Hence this last criterion is mostly used as a
+tie-break in case of equality of the first two criteria.
+
+
 
 \begin{algorithm*}[htb]%\small
 \caption{Locality and Eviction Aware (LEA)}\label{algo.lea}
@@ -495,62 +520,82 @@ on the node with the lowest score.
 		\ForEach{$\Node{k} \in \nodeset$}
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
-			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
-			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
-			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-			\State $Eviction\_penalty \gets (\size(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-			\State $score_{\Node{k}} \gets t_k + 500 \times Load\_overhead + Eviction\_penalty$
+			\State Find time $t_k'\geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$
+			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
+%			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
+                        \State Let $\mathcal{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
+			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory(\Node{k}))/\bandwidth$
+			\State $score_{\Node{k}} \gets t_k + W \times \mathit{LoadOverhead} + \mathit{EvictionPenalty}$
 		\EndFor
-		\State Schedule $J_i$ on the node with the smallest $score_{\Node{k}}$, tiebreak with lowest node's id
-		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
-		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
+                \State Select \Node{k} with the smallest $score_{\Node{k}}$
+                \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
+                \State Mark these cores busy until time $t_k +\walltime(J_i)$
 	\EndFor
 \end{algorithmic}
 \end{algorithm*}
 
-%\subsection{LEO}\label{subsec.leo}
+%\subsection{LEO}
+
+The LEA strategy gives a dramatic importance on data loads. Hence, it
+is very useful when the platform is fully loaded and we can safely
+delay the processing of some job to favor data reuse and avoid
+unnecessary loads. However, when the platform is not fully loaded,
+delaying jobs is not a good idea, as it increases some jobs' response
+time without any benefit for other jobs. Our second proposed strategy,
+named Locality and Eviction Opportunistic (LEO) and described in Algorithm~\ref{algo.leo} tries to adapt to
+the load condition: if we find some nodes that can process the job
+right away, we select the one that will minimize the completion time
+(as in the EFT strategy). Otherwise, we assume that the platform is
+fully loaded and we apply the previous LEA strategy to favor data reuse.
+
 
 \begin{algorithm*}[htb]%\small
 \caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
 \begin{algorithmic}[1]
-	\Statex Current time is $t$
 	\ForEach{$J_i \in$ the job's queue}
 		\ForEach{$\Node{k} \in \nodeset$}
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
-			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
-			\State $Load\_overhead \gets t_k' - t_k$
-			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-			\State $Eviction\_penalty \gets (\size(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
-			\If{$t_k = t$}
-				\State $score_{\Node{k}} \gets t_k + Load\_overhead$
+			\State Find time $t_k'\geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$
+			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
+                        \State Let $\mathcal{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
+			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory(\Node{k}))/\bandwidth$
+			\If{$t_k = \mathit{current_time}$}
+				\State $score_{\Node{k}} \gets 't_k$
 			\Else
-				\State $score_{\Node{k}} \gets t_k + 500 \times Load\_overhead + Eviction\_penalty$
+			         \State $score_{\Node{k}} \gets t_k + W \times \mathit{LoadOverhead} + \mathit{EvictionPenalty}$
 			\EndIf
 		\EndFor
-		\State Schedule $J_i$ on the node with the smallest $score_{\Node{k}}$, tiebreak with lowest node's id
-		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
-		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
+                \State Select \Node{k} with the smallest $score_{\Node{k}}$
+                \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
+                \State Mark these cores busy until time $t_k +\walltime(J_i)$
 	\EndFor
 \end{algorithmic}
 \end{algorithm*}
 
-%\subsection{LEM}\label{subsec.lem}
+We present a third strategy called Locality and Eviction Mixed (LEM)
+and described in Algorithm~\ref{algo.lem} that takes a similar  approach to
+LEM but performs a simple mix between the EFT and the LEA strategies:
+when the load of the platform (measured as the number of jobs running
+at least one job) is above a criterion, the LEA strategy is applied,
+otherwise we the EFT strategy is used.
+ 
 
-\begin{algorithm*}[htb]%\small
+\begin{algorithm}[htb]%\small
 \caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
 \begin{algorithmic}[1]
-	\Statex Current time is $t$
 	\ForEach{$J_i \in$ the job's queue}
-		\State $occupation \gets$ the percentage of nodes running at least one job at time $t$
-		\If{$occupation < 80$}
+		\State $\mathit{load} \gets$  percentage of nodes running at least one job at current time
+		\If{$\mathit{load} < 80$}
 			\State $EFT(\jobset,\nodeset)$
 		\Else
 			\State $LEA(\jobset,\nodeset)$
 		\EndIf
 	\EndFor
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
+
+
 
 \subsection{Adding backfilling to all strategies}
 
