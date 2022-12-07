@@ -151,27 +151,43 @@ We present the following contributions in this paper:
 	We show that workloads that heavily saturate the cluster benefits much more from our strategies and gives us considerable speed-ups.
 \end{itemize}
 
-\section{Related work - Draft}\label{sec.related_work}
+\section{Related work}\label{sec.related_work}
 
 \subsection{Scheduling jobs on large clusters}
 
-To schedule jobs on batch systems, systems like:
-the Slurm Workload Manager~\cite{SLURM}, OAR~\cite{oar} or TORQUE~\cite{torque} are prominent.
-Slurm is used on most HPC clusters. Its default strategy is to schedule jobs based on priorities derived
-from submission time, in other words a First-Come First-Serve strategy~\cite{slurm_website_scheduling}.
-%~ Slurm is used by a number of production level clusters such as PlaFRIM~\cite{plafrim}, etc..
-On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
-\todo[inline]{Max: We talk about and cite backfilling in the scheduler section. Should we also 
-do it here? Or only here? Or only in the scheduler section?}
-%~ Backfilling is, most often, based on the First Come - First Served principle as well.
-%~ While the scheduler is running, jobs in the queue are sorted by priority and queuing time~\cite{New_Backfill}.
-%~ Then, the backfilling will start immediately all jobs that can be started and completed without delaying the planned schedule.
-%~ This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
-%~ for execution~\cite{Maui_Scheduler}.
-%~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
-To optimize the utilisation rate of a cluster, many strategies have been proposed like
-Gang scheduling~\cite{gang_scheduling} or Maui~\cite{Maui_Scheduler}.
-However these schedulers do not consider the issue of dealing with data-intensive workloads.
+A various number of workloads managers have emerged 
+as a way to meet the rising numbers of high performance computing clusters.
+Workload managers like Slurm~\cite{SLURM}, OAR~\cite{oar},
+TORQUE~\cite{torque}, LoadLeveler~\cite{loadleveler},
+Portable Batch System~\cite{pbs}, SunGrid~\cite{sungrid}
+or Load Sharing Facility~\cite{lsf} all offers 
+various scheduling strategies.
+
+The First Come First Served algorithm is the prevalent default
+scheduler on most of these solutions~\cite{survey_workload_manager_and_scheduler}.
+Moreover, Slurm is used on most of the TOP500 supercomputers and it's default strategy is FCFS~\cite{slurm_website_scheduling} as well.
+A backfilling strategy is known to increase
+a supercomputer resources' use~\cite{maui}~\cite{New_Backfill}. 
+The most commonly used backfilling strategy, called conservative 
+backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based} follows
+a simple paradigm: "a job can only be backfilled if it does not
+delay a job of higher priority".
+We can then safely assume that comparing ourselves to FCFS with nad without conservative backfilling can 
+bring significant insights on what improvements can be achieve on data-intensive workloads.
+
+Other scheduling strategies exist like 
+Maui~\cite{Maui_Scheduler}, Gang scheduling~\cite{gang_scheduling}, 
+RASA~\cite{rasa} that uses the advantages of both Min-min and Max-min algorithms,
+RSDC~\cite{rsdc} that divide large jobs in sub jobs for a more refined scheduling,
+or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are a priority based scheduler; 
+however these heuristics do not consider the impact
+inputs re-use could have on data-intensive workloads.
+Some works do like Selvarani et al. with an improved activity-based costing scheduler~\cite{Improved_cost_based_algorithm} 
+%where the scheduler adapt itself to different application types (CPU intensive, needing high memory, large I/O cost), but our focus will be more generic and aim at maximizing data re-use to meet these needs.
+were the processing capacity of each resource is evaluated to make the right decision.
+Our approach is more focused on maximizing data re-use on a 
+set of identical nodes.
+\todo[inline]{Max: Some citations are quite old, is it an issue?}
 
 \subsection{Using distributed file systems to deal with data-intensive workloads}
 
@@ -554,13 +570,9 @@ on the node with the lowest score.
 
 \subsection{Adding backfilling to all strategies}
 
-A backfilling strategy is known to increase
-a supercomputer resources' use~\cite{maui}. 
-The most commonly used backfilling strategy, called conservative 
-backfilling~\cite{Characterization_of_Backfilling}~\cite{slurm_website_scheduling}~\cite{Introducing-New-Backfill-based} follows
-a simple paradigm: "a job can only be backfilled if it does not
-delay a job of higher priority".
-\todo[inline]{Max: I've putted citation for conservative backfilling in this section but maybe it should go in the related works ?}
+As mentionned in the related works (Section~\ref{sec.related_work}), 
+Conservative Backfilling is one of the most commonly used strategy to improve
+the usage of a set of nodes.
 We equipped each of our strategies with a variant using conservative backfilling and noted (-BF) on the figures.
 To add backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft}, \ref{algo.lea} and \ref{algo.leo} must modify the choice of the smallest time to use $\core(J_i)$ cores made on line 3 of each pseudo-code.
 The smallest time, $t_k$, must also be a time 
