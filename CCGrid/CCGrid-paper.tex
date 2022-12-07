@@ -145,69 +145,89 @@ We present the following contributions in this paper:
 \begin{itemize}
 	\item We formalize our model of scheduling data-intensive jobs sharing input files on a cluster (Section~\ref{sec.framework}).
 	\item We propose three new schedulers focusing on re-using input files while minimizing evictions and avoiding starvation (Section~\ref{sec.schedulers}).
-	\item We extract jobs information from historical logs of a cluster to build workloads that corresponds to the needs and behaviors of real users (Section~\ref{sec.working}).
+	\item We extract job information from historical logs of a cluster to build workloads that corresponds to the needs and behaviors of real users (Section~\ref{sec.working}).
 	\item We implement all three heuristics as well as two state of the art schedulers on a simulator and study the performance (mean stretch and amount of time spent waiting for a file to be loaded) obtained on 44 different workloads (Section~\ref{sec.evaluations}).
-	Our evaluation demonstrate that our heuristics surpasses in most cases the state of the art schedulers.
+	Our evaluation demonstrate that our heuristics in most cases surpass the state of the art schedulers.
 	We show that workloads that heavily saturate the cluster benefits much more from our strategies and gives us considerable speed-ups.
 \end{itemize}
 
-\section{Related work - Draft}\label{sec.related_work}
+\section{Related work}\label{sec.related_work}
 
 \subsection{Scheduling jobs on large clusters}
 
-To schedule jobs on batch systems, systems like:
-the Slurm Workload Manager~\cite{SLURM}, OAR~\cite{oar} or TORQUE~\cite{torque} are prominent.
-Slurm is used on most HPC clusters. Its default strategy is to schedule jobs based on priorities derived
-from submission time, in other words a First-Come First-Serve strategy~\cite{slurm_website_scheduling}.
-%~ Slurm is used by a number of production level clusters such as PlaFRIM~\cite{plafrim}, etc..
-On top of that, a backfilling algorithm is often used~\cite{New_Backfill}.
-\todo[inline]{Max: We talk about and cite backfilling in the scheduler section. Should we also 
-do it here? Or only here? Or only in the scheduler section?}
-%~ Backfilling is, most often, based on the First Come - First Served principle as well.
-%~ While the scheduler is running, jobs in the queue are sorted by priority and queuing time~\cite{New_Backfill}.
-%~ Then, the backfilling will start immediately all jobs that can be started and completed without delaying the planned schedule.
-%~ This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
-%~ for execution~\cite{Maui_Scheduler}.
-%~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
-To optimize the utilisation rate of a cluster, many strategies have been proposed like
-Gang scheduling~\cite{gang_scheduling} or Maui~\cite{Maui_Scheduler}.
-However these schedulers do not consider the issue of dealing with data-intensive workloads.
+A various number of workloads managers have emerged 
+as a way to meet the rising numbers of high performance computing clusters.
+Workload managers like Slurm~\cite{SLURM}, OAR~\cite{oar},
+TORQUE~\cite{torque}, LoadLeveler~\cite{loadleveler},
+Portable Batch System~\cite{pbs}, SunGrid~\cite{sungrid}
+or Load Sharing Facility~\cite{lsf} all offers 
+various scheduling strategies.
+
+The First Come First Served algorithm is the prevalent default
+scheduler on most of these solutions~\cite{survey_workload_manager_and_scheduler}.
+Moreover, Slurm is used on most of the TOP500 supercomputers and it's default strategy is FCFS~\cite{slurm_website_scheduling} as well.
+A backfilling strategy is known to increase
+a supercomputer resources' use~\cite{maui}~\cite{New_Backfill}. 
+The most commonly used backfilling strategy, called conservative 
+backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based} follows
+a simple paradigm: "a job can only be backfilled if it does not
+delay a job of higher priority".
+We can then safely assume that comparing ourselves to FCFS with nad without conservative backfilling can 
+bring significant insights on what improvements can be achieve on data-intensive workloads.
+
+Other scheduling strategies exist like 
+Maui~\cite{Maui_Scheduler}, Gang scheduling~\cite{gang_scheduling}, 
+RASA~\cite{rasa} that uses the advantages of both Min-min and Max-min algorithms,
+RSDC~\cite{rsdc} that divide large jobs in sub jobs for a more refined scheduling,
+or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are a priority based scheduler; 
+however these heuristics do not consider the impact
+inputs re-use could have on data-intensive workloads.
+We aim at resolving this issue in this paper.
+\todo[inline]{Max: Some citations are quite old, is it an issue?}
 
 \subsection{Using distributed file systems to deal with data-intensive workloads}
 
-Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
-is a system designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
-%~ It adds storage servers that export access to the disk.
-%~ They use detailed knowledge of the workload characteristics.
-However, the main idea is not data re-use, but to
-facilitate the execution of I/O intensive batch
-jobs by selecting appropriate storage policies
-in regards to I/O scoping (creating a custom environment for each job
-for data that will be used a lot by the job, thus not accessing the main disk too
-much) and space allocation.
+Distributed file systems are a solution to ease the access to 
+shared input files. They facilitate the execution of I/O intensive batch
+jobs by selecting appropriate storage policies.
 
-HDFS~\cite{hdfs} or Hadoop Distributed File System is a distributed file system that
-incorporate storage-aware scheduling. It is particularly used to store large
-volume of data on a large number of systems. It's abstraction facilitates access to data
-under such conditions. Moreover, HDFS migrates a computation closer to where the data is
-located rather than moving the data to where the application is running in order to reduce communications.
-HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
+Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
+is designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
+HDFS~\cite{hdfs} or Hadoop Distributed File System
+incorporate storage-aware scheduling. 
+%It is particularly used to store large volumes of data on a large number of systems.
+It migrates a computation closer to where the data is
+located rather than moving the data to where the application is running in order to reduce communication.
+%~ HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
+
+These solutions are mainly storage systems that uses an historic on files locations to serve as a backup.
+\todo[inline]{Elisabeth: I don't understand the previous sentence. Could it be a history of file locations? How does it serve as a backup? Is it because the files have been duplicated and exist in several places? Max: yes they exist in several places. By default, 2 copies of the data are stored. If one of the machine where the data was stored fails, you can still retrieve the data.}
 \todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the nodes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundancy. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage. Max: Ok, I re-wrote this section accordingly.}
 In our scenario, we copy the data from an already redundant system (an online database for example)
 and store it locally on the node in an ephemeral way.
 Thus, in the event of a crash, we do not manage the data which is already redundant, it simply results in an aborted job.
-Secondly, the scheduling can cause issues. A paper describe in detail some problems from
-MapReduce~\cite{issue_with_hdfs}, the programming model used in HDFS.
-By not using HDFS or any distributed file system, we avoid altogether these problems. 
-In addition, HDFS is particularly efficient when the input data used are identical over time.
-In our case, between users, the inputs will be very differents making HDFS less efficient.
+Secondly, the scheduling can cause issues. A paper describes some problems from
+MapReduce~\cite{issue_with_hdfs}, the programming model used in HDFS, in detail.
+By not using HDFS or any distributed file system, we avoid these problems altogether. 
+Lastly, file systems are particularly efficient when the input data used are identical over time.
+In our case, between users, the inputs will be largely different making distributed file systems less efficient.
+
+
+%~ However, the main idea is not data re-use, but to
+%~ facilitate the execution of I/O intensive batch
+%~ jobs by selecting appropriate storage policies
+%~ in regards to I/O scoping (creating a custom environment for each job
+%~ for data that will be used a lot by the job, thus not accessing the main disk too
+%~ much) and space allocation.
+
 
 \subsection{Using schedulers to deal with data-intensive workloads}
 
-To deal with communication-intensive jobs within Slurm, a solution can be to
-minimize network contention by allocating nodes to even out node and switch contention
-~\cite{minimize_network_contention}. 
-In our model we are not studying the network topology and consider independent nodes.
+some schedulers tackle the issue of data-intensive workloads.
+
+A solution can be to minimize network contention by allocating nodes to even out node and
+switch contention~\cite{minimize_network_contention}. 
+In our model, we are not studying the network topology and consider independent nodes.
 This is reasonable, since our main concern is the cross-section bandwidth to a shared storage solution.
 \todo[inline]{Carl: Motivating why switch topology of less relevance.}
 %~ Moreover, this requires a tree-based network topologies, which is different from our model.
@@ -218,24 +238,31 @@ It was just another way to phrase what you wrote so I removed it. Also, their st
 is developed for a tree-based network topology, so it might not work on other topology like a ring or a star?
 So, we might want to say that our approach is more generic in regards to the network topology?}
 
-Some researchers~\cite{Nikolopoulos2003AdaptiveSU}
+Nikolopoulos et al.~\cite{Nikolopoulos2003AdaptiveSU}
 are focusing on a better utilization of idling memory together with 
 thrashing limitation.
-Our focus will be to control data loads limits eviction so the
-processing order will naturally limits thrashing.
+Our focus will be to control data loads in order to limit eviction
+and will thus naturally limit thrashing.
+\todo[inline]{Elisabeth: control data loads and limit evictions? Max: Ah yes. I corrected it.}
 
-It is also possible to schedule first jobs not sharing a file
-and evaluate the arrival rate of future jobs to maximize re-use
-~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}.
-% Specific to map reduce for this paper.
+Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
+propose to schedule jobs not sharing a file first
+and to use a stochastic model of job arrivals for each input file to maximize re-use.
+This work is aimed at the Map-Reduce model and allow to predict future jobs arrivals, two prerequisite that we do not consider.
 
-Equipping each node with a scheduler following a work
-stealing strategy that equilibrate data locality 
+Equipping each node with a scheduler that follows a work
+stealing strategy in order to manage both data locality 
 and load balancing is also a solution to reduce data transfers~\cite{Optimizing_load_balancing_and_data_locality_with_data_aware_scheduling}.
 
-%~ \subsection{Memory-aware scheduling} 
-%~ "Algorithmic Modifications to the
-%~ Jacobi-Davidson Parallel Eigensolver to Dynamically Balance External CPU and Memory Load"~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
+Selvarani et al. propose an improved activity-based costing scheduler~\cite{Improved_cost_based_algorithm}
+% where the scheduler adapt itself to different application types (CPU intensive, needing high memory, large I/O cost), but our focus will be more generic and aim at maximizing data re-use to meet these needs.
+were the processing capacity of each resource is evaluated to make the right decision.
+Our approach is more focused on maximizing data re-use on a 
+set of identical nodes.
+
+%~ An interesting solution proposed in the context
+%~ of the Jacobi-Davidson implementation for solving large
+%~ eigenproblems~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
 %~ estimate the time needed by the fastest processor to perform the required $m$ jobs. Thus they can equilibrate the load
 %~ with this information. In our study we could use a similar strategy by estimating the 
 %~ processing time of a job, the length of a file transfer, and the amount of file transfers needed.
@@ -244,7 +271,7 @@ and load balancing is also a solution to reduce data transfers~\cite{Optimizing_
 %~ The main differences are that they are using dynamic jobs. Also, we would like to 
 %~ manage eviction and optimize data reuse during the scheduling phase, instead of
 %~ receding execution on nodes.
-
+%~ But is specific to the Jacobi-Davidson method
 
 \section{Framework}\label{sec.framework}
 
@@ -599,13 +626,9 @@ otherwise we the EFT strategy is used.
 
 \subsection{Adding backfilling to all strategies}
 
-A backfilling strategy is known to increase
-a supercomputer resources' use~\cite{maui}. 
-The most commonly used backfilling strategy, called conservative 
-backfilling~\cite{Characterization_of_Backfilling}~\cite{slurm_website_scheduling}~\cite{Introducing-New-Backfill-based} follows
-a simple paradigm: "a job can only be backfilled if it does not
-delay a job of higher priority".
-\todo[inline]{Max: I've putted citation for conservative backfilling in this section but maybe it should go in the related works ?}
+As mentionned in the related works (Section~\ref{sec.related_work}), 
+Conservative Backfilling is one of the most commonly used strategy to improve
+the usage of a set of nodes.
 We equipped each of our strategies with a variant using conservative backfilling and noted (-BF) on the figures.
 To add backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft}, \ref{algo.lea} and \ref{algo.leo} must modify the choice of the smallest time to use $\core(J_i)$ cores made on line 3 of each pseudo-code.
 The smallest time, $t_k$, must also be a time 
