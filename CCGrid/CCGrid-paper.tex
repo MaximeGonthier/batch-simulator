@@ -190,29 +190,30 @@ We aim at resolving this issue in this paper.
 \subsection{Using distributed file systems to deal with data-intensive workloads}
 
 Distributed file systems are a solution to ease the access to 
-shared input files. They facilitate the execution of I/O intensive batch
+shared input files. They facilitate the execution of I/O-intensive batch
 jobs by selecting appropriate storage policies.
 
 Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
 is designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
-HDFS~\cite{hdfs} or Hadoop Distributed File System
-incorporate storage-aware scheduling. 
+HDFS~\cite{hdfs} (Hadoop Distributed File System)
+incorporates storage-aware scheduling. 
 %It is particularly used to store large volumes of data on a large number of systems.
 It migrates a computation closer to where the data is
-located rather than moving the data to where the application is running in order to reduce communication.
+located, rather than moving the data to where the application is
+running, in order to reduce communication.
 %~ HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
 
-These solutions are mainly storage systems that uses an historic on files locations to serve as a backup.
+These solutions are mainly storage systems that uses a history of files locations to serve as a backup.
 \todo[inline]{Elisabeth: I don't understand the previous sentence. Could it be a history of file locations? How does it serve as a backup? Is it because the files have been duplicated and exist in several places? Max: yes they exist in several places. By default, 2 copies of the data are stored. If one of the machine where the data was stored fails, you can still retrieve the data.}
 \todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the nodes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundancy. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage. Max: Ok, I re-wrote this section accordingly.}
-In our scenario, we copy the data from an already redundant system (an online database for example)
+In our scenario, we copy the data from an already-redundant system (an online database for example)
 and store it locally on the node in an ephemeral way.
 Thus, in the event of a crash, we do not manage the data which is already redundant, it simply results in an aborted job.
-Secondly, the scheduling can cause issues. A paper describes some problems from
+Secondly, the scheduling can cause issues. Weets et al. describe some problems from
 MapReduce~\cite{issue_with_hdfs}, the programming model used in HDFS, in detail.
 By not using HDFS or any distributed file system, we avoid these problems altogether. 
 Lastly, file systems are particularly efficient when the input data used are identical over time.
-In our case, between users, the inputs will be largely different making distributed file systems less efficient.
+In our case, between users, the inputs will be largely different, making distributed file systems less efficient.
 
 
 %~ However, the main idea is not data re-use, but to
@@ -225,7 +226,7 @@ In our case, between users, the inputs will be largely different making distribu
 
 \subsection{Using schedulers to deal with data-intensive workloads}
 
-some schedulers tackle the issue of data-intensive workloads.
+Some schedulers tackle the issue of data-intensive workloads.
 
 A solution can be to minimize network contention by allocating nodes to even out node and
 switch contention~\cite{minimize_network_contention}. 
@@ -250,7 +251,7 @@ and will thus naturally limit thrashing.
 Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
 propose to schedule jobs not sharing a file first
 and to use a stochastic model of job arrivals for each input file to maximize re-use.
-This work is aimed at the Map-Reduce model and allow to predict future jobs arrivals, two prerequisites that we do not consider.
+This work is aimed at the Map-Reduce model and allows to predict future jobs arrivals, two prerequisites that we do not consider.
 
 Equipping each node with a scheduler that follows a work
 stealing strategy in order to manage both data locality 
