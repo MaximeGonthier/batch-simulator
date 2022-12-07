@@ -145,10 +145,12 @@ We present the following contributions in this paper:
 \begin{itemize}
 	\item We formalize our model of scheduling data-intensive jobs sharing input files on a cluster (Section~\ref{sec.framework}).
 	\item We propose three new schedulers focusing on re-using input files while minimizing evictions and avoiding starvation (Section~\ref{sec.schedulers}).
-	\item We extract job information from historical logs of a cluster to build workloads that corresponds to the needs and behaviors of real users (Section~\ref{sec.working}).
-	\item We implement all three heuristics as well as two state of the art schedulers on a simulator and study the performance (mean stretch and amount of time spent waiting for a file to be loaded) obtained on 44 different workloads (Section~\ref{sec.evaluations}).
+	\item We extract job information from historical logs of a cluster to build workloads that correspond to the needs and behaviors of real users (Section~\ref{sec.working}).
+	\item We implement all three heuristics as well as two state-of-the-art schedulers on a simulator and study the performance (mean stretch and amount of time spent waiting for a file to be loaded) obtained on 44 different workloads (Section~\ref{sec.evaluations}).
 	Our evaluation demonstrate that our heuristics in most cases surpass the state of the art schedulers.
-	We show that workloads that heavily saturate the cluster benefits much more from our strategies and gives us considerable speed-ups.
+	We show that workloads that heavily saturate the cluster
+                benefits much more from our strategies which give us
+                considerable speed-ups.
 \end{itemize}
 
 \section{Related work}\label{sec.related_work}
@@ -160,28 +162,28 @@ as a way to meet the rising numbers of high performance computing clusters.
 Workload managers like Slurm~\cite{SLURM}, OAR~\cite{oar},
 TORQUE~\cite{torque}, LoadLeveler~\cite{loadleveler},
 Portable Batch System~\cite{pbs}, SunGrid~\cite{sungrid}
-or Load Sharing Facility~\cite{lsf} all offers 
+or Load Sharing Facility~\cite{lsf} all offer
 various scheduling strategies.
 
-The First Come First Served algorithm is the prevalent default
+The First-Come-First-Served (FCFS) algorithm is the prevalent default
 scheduler on most of these solutions~\cite{survey_workload_manager_and_scheduler}.
-Moreover, Slurm is used on most of the TOP500 supercomputers and it's default strategy is FCFS~\cite{slurm_website_scheduling} as well.
+Moreover, Slurm is used on most of the TOP500 supercomputers and its default strategy is FCFS~\cite{slurm_website_scheduling} as well.
 A backfilling strategy is known to increase
-a supercomputer resources' use~\cite{maui}~\cite{New_Backfill}. 
-The most commonly used backfilling strategy, called conservative 
+the use of supercomputer resources~\cite{maui}~\cite{New_Backfill}. 
+The most commonly-used backfilling strategy, called conservative 
 backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based} follows
 a simple paradigm: "a job can only be backfilled if it does not
 delay a job of higher priority".
-We can then safely assume that comparing ourselves to FCFS with nad without conservative backfilling can 
-bring significant insights on what improvements can be achieve on data-intensive workloads.
+We can then safely assume that comparing ourselves to FCFS with and without conservative backfilling can 
+bring significant insights on what improvements can be achieved on data-intensive workloads.
 
 Other scheduling strategies exist like 
 Maui~\cite{Maui_Scheduler}, Gang scheduling~\cite{gang_scheduling}, 
-RASA~\cite{rasa} that uses the advantages of both Min-min and Max-min algorithms,
-RSDC~\cite{rsdc} that divide large jobs in sub jobs for a more refined scheduling,
-or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are a priority based scheduler; 
+RASA~\cite{rasa} that use the advantages of both Min-min and Max-min algorithms,
+RSDC~\cite{rsdc} that divides large jobs in sub jobs for a more refined scheduling,
+or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are a priority-based scheduler; 
 however these heuristics do not consider the impact
-inputs re-use could have on data-intensive workloads.
+input re-use could have on data-intensive workloads.
 We aim at resolving this issue in this paper.
 \todo[inline]{Max: Some citations are quite old, is it an issue?}
 
