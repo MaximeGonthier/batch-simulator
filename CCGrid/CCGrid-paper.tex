@@ -320,6 +320,8 @@ A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ 
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{enumerate}
+This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
+allowing the same cache memory pages to serve multiple processes from different jobs.
 Otherwise we consider that memory operations of jobs scheduled between
 $J_i$ and $J_j$ will cause the file to be evicted.
 
@@ -335,7 +337,7 @@ $$
 For each $J_i$, we denote by
 $\allocatedcores(J_i)$ the set of cores of the same node
 $\allocatednode(J_i)$ allocated to $J_i$ and by
-$\start(J_i)$ is starting time. If at this time, the input file of
+$\start(J_i)$ its starting time. If at this time, the input file of
 $J_i$ is already in the memory of $\allocatednode(J_i)$, then $J_i$
 can start its execution at time $\start(J_i)$. Otherwise, its input
 file is first loaded, and the execution starts at time 
@@ -402,15 +404,14 @@ that are called each time a core become available or upon new job's arrival."}
 % are opting for a mixed strategy between locality and earliest possible start time
 % (sections~\ref{subsec.mixed} and~\ref{subsec.opportunistic}).
 
-\subsection{Two scheduler from the state of the art: FCFS and EFT}\label{subsec.fcfs_eft}
+\subsection{Two schedulers from the state of the art: FCFS and EFT}\label{subsec.fcfs_eft}
 
-A widely used and considered effective job's scheduler is
-First-Come-First-Serve or FCFS, detailled on
+A widely used job scheduler that is typically considered to be efficient is
+First-Come-First-Serve or FCFS, detailed in
 Algorithm~\ref{algo.fcfs}. Implementing this scheduler requires to
-remember for each core the time at which it will become
-available. Then, for each job, we look for the first time when a
-sufficient number of cores is available, and we allocate the job to
-these cores.
+remember the time of next availability for each core. Then, for each job, we look
+for the first time when a sufficient number of cores is available, and we allocate the job to
+those cores.
 
 
 \begin{algorithm}[htbp]%\small
@@ -488,13 +489,13 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 
 \subsection{Data locality based schedulers}
 
-The previous strategies focus on starting as soon as possible (FCFS)
-of finishing as soon as possible a job (EFT).  Those are good methods
-to avoid starvation of a node and reduce queue times.  However, they
+The previous strategies focus on starting (FCFS) or finishing (EFT) a job
+as soon as possible, respectively.  Those are good methods
+to avoid node starvation and reduce queue times.  However, they
 may lead to loading the same input file on a large number of nodes in
 the platform, simply to minimize immediate queue times. Time is spent
-loading the input file multiple times and this can affect the global
-performance of the system by delaying all jobs.  We present here three
+loading the input file multiple times. This can affect the global
+performance of the system by delaying subsequent jobs.  We present here three
 strategies that attempt to better take into account data locality in
 order to reduce queuing times in the long run by increasing data reuse.
 
