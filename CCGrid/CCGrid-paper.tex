@@ -248,7 +248,7 @@ and will thus naturally limit thrashing.
 Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
 propose to schedule jobs not sharing a file first
 and to use a stochastic model of job arrivals for each input file to maximize re-use.
-This work is aimed at the Map-Reduce model and allow to predict future jobs arrivals, two prerequisite that we do not consider.
+This work is aimed at the Map-Reduce model and allow to predict future jobs arrivals, two prerequisites that we do not consider.
 
 Equipping each node with a scheduler that follows a work
 stealing strategy in order to manage both data locality 
@@ -256,7 +256,7 @@ and load balancing is also a solution to reduce data transfers~\cite{Optimizing_
 
 Selvarani et al. propose an improved activity-based costing scheduler~\cite{Improved_cost_based_algorithm}
 % where the scheduler adapt itself to different application types (CPU intensive, needing high memory, large I/O cost), but our focus will be more generic and aim at maximizing data re-use to meet these needs.
-were the processing capacity of each resource is evaluated to make the right decision.
+where the processing capacity of each resource is evaluated to make the right decision.
 Our approach is more focused on maximizing data re-use on a 
 set of identical nodes.
 
@@ -306,10 +306,10 @@ Each job $J_i$ has the following attributes:
 We do not consider the data output of jobs.
 
 Each of the $N$ jobs must be processed on some of the $P$ nodes.  As
-stated earlier, the shared file system initially contains all of files
-of $\fileset$.  Each node is connected to the file system with a link
+stated earlier, the shared file system initially contains all files
+in $\fileset$.  Each node is connected to the file system with a link
 of limited bandwidth, denoted by $\bandwidth$.  The limited bandwidth
-as well as the large sizes of the files are the reasons why we aim at
+as well as the large file sizes are the reasons why we aim at
 restricting the amount of data movement.
 
 We consider that the memory of a node, denoted by $\memory(\Node{i})$,
