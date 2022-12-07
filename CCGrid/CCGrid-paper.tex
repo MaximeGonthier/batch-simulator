@@ -260,7 +260,9 @@ were the processing capacity of each resource is evaluated to make the right dec
 Our approach is more focused on maximizing data re-use on a 
 set of identical nodes.
 
-%~ A solution proposed for the Jacobi-Davidson~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
+%~ An interesting solution proposed in the context
+%~ of the Jacobi-Davidson implementation for solving large
+%~ eigenproblems~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
 %~ estimate the time needed by the fastest processor to perform the required $m$ jobs. Thus they can equilibrate the load
 %~ with this information. In our study we could use a similar strategy by estimating the 
 %~ processing time of a job, the length of a file transfer, and the amount of file transfers needed.
