@@ -169,17 +169,17 @@ do it here? Or only here? Or only in the scheduler section?}
 %~ This algorithm allows to increase the density of supercomputer ressources' use by 20\% as well as reducing the average waiting time
 %~ for execution~\cite{Maui_Scheduler}.
 %~ There are two types of backfills. Conservative and EASY. Conservative backfill jobs that do not delay all other jobs. EASY backfill jobs that do not delay only the first scheduled job.
-To optimize the utilisation rate of a cluster, many strategies have been proposed like Gang scheduling~\cite{gang_scheduling} or Maui~\cite{Maui_Scheduler}.
-However these schedulers do not consider the issue
-of dealing with data-intensive workloads.
+To optimize the utilisation rate of a cluster, many strategies have been proposed like
+Gang scheduling~\cite{gang_scheduling} or Maui~\cite{Maui_Scheduler}.
+However these schedulers do not consider the issue of dealing with data-intensive workloads.
 
-\subsection{Using Distributed File System to deal with data-intensive workloads}
+\subsection{Using distributed file systems to deal with data-intensive workloads}
 
 Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
 is a system designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
-It adds storage servers that export access to the disk.
-They use detailed knowledge of workload characteristics.
-However, the main idea is not data reuse, but to
+%~ It adds storage servers that export access to the disk.
+%~ They use detailed knowledge of the workload characteristics.
+However, the main idea is not data re-use, but to
 facilitate the execution of I/O intensive batch
 jobs by selecting appropriate storage policies
 in regards to I/O scoping (creating a custom environment for each job
@@ -519,7 +519,7 @@ on the node with the lowest score.
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k'$ at which $\file(J_i)$ is available on $\Node{k}$
-			\State $Load\_overhead \gets t_k' - t_k$ \Comment{It thus gets the load's duration}
+			\State $Load\_overhead \gets t_k' - t_k$
 			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
 			\State $Eviction\_penalty \gets (\size(\file(\mathit{sub\_J})) \times \frac{\core(J_i)}{\core(\Node{k})})/\bandwidth$
 			\If{$t_k = t$}
@@ -571,7 +571,7 @@ Line 3 is thus replaced by:
 
 \todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like this:?}
 \begin{figure}[tb]
-\centering\scalebox{0.9}{
+\centering\scalebox{0.75}{
 \begin{tikzpicture}\begin{axis}
 [ font=\footnotesize,
   ytick style={draw=none},
@@ -587,15 +587,17 @@ Line 3 is thus replaced by:
   const plot,
   stack plots=false,
   area style,
-  ytick={1,...,6},
+  %~ ytick={1,...,6},
+  ytick={1,...,5},
   yticklabels={},  
-  xtick={1,...,6},
-  extra y ticks={0,1,2,3,4,5,6},
-  extra x ticks={0,1,2,3,4,5,6},
+  xtick={1,...,5},
+  %~ extra y ticks={0,1,2,3,4,5,6},
+  extra y ticks={0,1,2,3,4,5},
+  extra x ticks={0,1,2,3,4,5},
   extra y tick style={yticklabel={$C_{\pgfmathprintnumber{\tick}}$}}] 
-\addplot[fill=orange!20] coordinates {(0,0) (0,3) (3,3) (3,0)} node at (current path bounding box.center) {Job 1}; 
-\addplot[fill=red!20] coordinates {(3,0) (3,6) (4,6) (4,0)} node at (current path bounding box.center) {Job 2}; 
-\addplot[fill=blue!20] coordinates {(4,0) (4,2) (6,2) (6,0)} node at (current path bounding box.center) {Job 3};
+\addplot[fill=orange!20] coordinates {(0,0) (0,3) (2,3) (2,0)} node at (current path bounding box.center) {Job 1}; 
+\addplot[fill=red!20] coordinates {(2,0) (2,5) (3,5) (3,0)} node at (current path bounding box.center) {Job 2}; 
+\addplot[fill=blue!20] coordinates {(3,0) (3,2) (5,2) (5,0)} node at (current path bounding box.center) {Job 3};
 \addplot[fill=blue!20,opacity=0.5] coordinates {(0,3) (0,5) (2,5) (2,3)} node at (current path bounding box.center) {Job 3};
 \node (A) at (4, 2) {};
 \node (B) at (2, 4) {};
@@ -604,11 +606,13 @@ Line 3 is thus replaced by:
 \caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled without delaying the start time of job 2.}
 \end{figure}
 
-\todo[inline]{Max: Do we want to say: "When choosing the cores that will be used for a job among the available cores, 
-we choose the ones with the lowest index. This allow to optimize the cores utilization and reduce the risk of
-creating holes that need backfilling to be used.
-Additionally, when backfilling, the available cores with the smallest next 
-start time are chosen in order to fill as much as possible the nodes."}
+\todo[inline]{Max: Do we want to say:
+"On a node, when choosing the cores that will be used for a job among the available ones, 
+we choose the ones with the lowest index.
+This allow to optimize the cores utilization and reduces the risk of
+covering available cores that will need backfilling to be used.
+Additionally, when backfilling a job, the cores with the smallest next 
+start time of a job are chosen, in order to fill as much as possible the nodes."}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 
@@ -733,7 +737,8 @@ on 44 days extracted from logs of historical submitted jobs.
 \subsection{Settings}
 
 All strategies as well as the two baselines have been implemented on
-a simulator that we developed\todo[inline]{Max: Do we need to say more here? Elisabeth: Citation to framework used for simulator or did you in the end make it from scratch?}.
+a simulator that we developed\todo[inline]{Max: Do we need to say more here? Elisabeth: Citation to framework used for simulator or did you in the end make it from scratch?
+Max: Yes I made it from scratch.}.
 
 For each job, it's flow will be computed after it's termination.
 The flow of a job is the total amount of time the job spent in the system, i.e.,
