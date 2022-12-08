@@ -392,10 +392,27 @@ delayed. Hence we have $\duration(J_i)\leq \walltime(J_i)$.
 It is important to note that the file transfer is done before the computation and cannot be overlapped.
 Jobs are non-preemptible: when started, a job is executed through its completion.
 
-\todo[inline]{Max: Do we need to talk about the objective in the
-  framework?\\
-  LM: Yes, I totally forgot. Will add this later.}
-
+Our objective is to obtain an efficient usage of the platform. Each
+user submitting jobs is interested in obtaining the result of his jobs
+as soon as possible. Hence we focus on the time spent in the system
+for each job, also called the flow time (or flow) of the job:
+$$
+\mathit{flow}(J_i) = \completiontime(J_i) - \start(J_i).
+$$
+In the following, we will consider aggregated performance metrics on
+job flows, such as average flow or maximum flow. However, the duration
+of a job significantly impacts its flow time, and jobs will the same
+flow but very different durations do not experience the same quality
+of service. To avoid this, the \emph{stretch} metric has been
+introduced:
+$$
+\mathit{stretch}(J_i) = \frac{\mathit{flow}(J_i)}{\duration(J_i)}.
+$$
+\todo[inline]{should it be flow/(transfer time + duration)?}
+The stretch represents the slow-down of a job due to sharing the
+platform with other jobs: if the job would be alone in the platform
+its flow would be equal to its duration. Considering the stretch
+allows to better aggregate performance from small and large jobs.
 
 
 
