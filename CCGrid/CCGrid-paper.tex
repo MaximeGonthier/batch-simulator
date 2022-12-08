@@ -753,7 +753,7 @@ Additionally, when backfilling a job, the cores with the smallest next
 start time of a job are chosen, in order to fill as much as possible
 the nodes."\\
 LM: I don't think we need to mention this. Tie-breaking using smallest
-index is the default behaviour in most systems.}
+index is the default behavior in most systems.}
 
 \section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 
@@ -980,12 +980,10 @@ In this situation, FCFS is very efficient. The earliest available node will in
 most cases be a node that can start the job immediately, explaining the mean stretch close to 1 in Figure~\ref{stretch.07-16}.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
 that puts a large weight on transfer time\todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here?} or weigh equally $t_k$, the transfer and eviction time. 
-Thus, on underused clusters, LEO will have a behaviour\todo[inline]{Max:
-Or behavior? It's british or american english right? Sam: yes, -our is
-english, -or is american. Same for colour/color etc.} close to EFT, while trying to minimize evictions.
+Thus, on underused clusters, LEO will have a behavior close to EFT, while trying to minimize evictions.
 Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under 80\%, so LEM behaves similarly to EFT.
-On the contrary, LEA favours\todo[inline]{Max: Or favor? Sam: idem :)} data re-use over an early start time for a job.
+On the contrary, LEA favors data re-use over an early start time for a job.
 On an underused cluster it will increase starvation.
 We can notice this when looking at
 Figure~\ref{07_16_cluster_usage_lea}. It shows the cluster usage when using LEA.
