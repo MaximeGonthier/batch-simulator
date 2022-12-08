@@ -687,8 +687,6 @@ job. Specifically, we change Line~\ref{fcfs.ln.find} into:
   \State $\ref{fcfs.ln.find}'$: Find smallest time $t_k$ such that $\core(J_i)$ cores are
   available from $t_k$ until $t_k + \walltime(J_i)$ on $\Node{k}$
 \end{algorithmic}
-\todo[inline]{Sam: shouldn't it take into account the file loading time,
-thus t'k?}
 
 Note that this requires to remember the whole occupation profile of
 each core (with availability and unavailability times), whereas the
