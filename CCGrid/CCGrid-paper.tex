@@ -1034,11 +1034,9 @@ However, why does LEM have similar results?
 
 \subsubsection{A pathological scenario of LEM}
 
-\begin{figure}[tb]
-\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{With FCFS.}\label{cluster_09-09_fcfs}\end{subfigure}
-\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{With LEM.}\label{cluster_09-09_lem}
-\end{subfigure}
-\caption{Visualization of the utilization rate of the cluster on the workload of September the 09th.\todo[inline]{Max: Is it readable to have this two figures side by side?}}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 9th with FCFS.}\label{cluster_09-09_fcfs}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September the 9th with LEM.}\label{cluster_09-09_lem}
+\end{figure}
 
 The workload of September the 9th, managed by FCFS (see Figure~\ref{cluster_09-09_fcfs})
 results in a cluster that alternates between full utilization and an approximately 80\% utilization rate.

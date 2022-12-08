@@ -23,6 +23,8 @@ year = sys.argv[13]
 precision_mode = sys.argv[14]
 print("Opening", sys.argv[1], "precision mode is", precision_mode)
 
+font_size = 14
+
 # ~ print(day + "-" + month + "-" + year)
 
 # ~ print(first_job_before_day_0, first_job_day_0, first_job_day_1, first_job_day_2)
@@ -175,31 +177,33 @@ else:
 		print("Wrong precision mode.")
 		exit
 	
-	axs[0].set_ylabel("In queue")
-	axs[1].set_ylabel("Running")
+	axs[0].set_ylabel("In queue", fontsize=font_size)
+	axs[1].set_ylabel("Running", fontsize=font_size)
 	axs[0].set_xticks([0, 86400, 86400*2])
 	axs[0].set_xticklabels(str_day_list, rotation = 90)
-	axs[0].axvline(x = 86400, color = 'orange', linestyle = "dotted")
-	axs[0].axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
-	axs[1].axvline(x = 86400, color = 'orange', linestyle = "dotted")
-	axs[1].axvline(x = 86400*2, color = 'orange', linestyle = "dotted")
-
+	axs[0].axvline(x = 86400, color = 'orange', linestyle = "dotted", lw=3)
+	axs[0].axvline(x = 86400*2, color = 'orange', linestyle = "dotted", lw=3)
+	axs[1].axvline(x = 86400, color = 'orange', linestyle = "dotted", lw=3)
+	axs[1].axvline(x = 86400*2, color = 'orange', linestyle = "dotted", lw=3)
+	
+	axs[1].tick_params(labelsize=font_size)
+	
 	if (workload != "2022-08-16->2022-08-16_V10000"):	
 		# ~ plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
 		# ~ axs[0].set_xlabel('Time in seconds')
 		
 		axs[0].set_yticks([2000, 4000, 6000, 8000, 10000])
 		axs[1].set_yticks([0, 2000, 4000, 6000, 8000])
-		axs[0].set_yticklabels(["2000", "4000", "6000", "8000", "10000"])
-		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"])
+		axs[0].set_yticklabels(["2000", "4000", "6000", "8000", "10000"], fontsize=font_size)
+		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"], fontsize=font_size)
 		
-		fig.text(0.014, 0.47, '$\downarrow$10000')
-		fig.text(0.077, 0.5, '$\u2191$0')
+		fig.text(-0.0235, 0.465, '$\downarrow$10000', fontsize=font_size)
+		fig.text(0.065, 0.5, '$\u2191$0', fontsize=font_size)
 		
 		axs[0].set_ylim(0, 10000)
 		axs[1].set_ylim(0, 10000)
 		
-		fig.text(-0.03, 0.5, 'Number of requested cores', va='center', rotation='vertical')
+		fig.text(-0.07, 0.5, 'Number of requested cores', va='center', rotation='vertical', fontsize=font_size)
 	else:
 		print("Cas particulier 08-16")
 			
@@ -208,21 +212,24 @@ else:
 		
 		axs[0].set_yticks([14000, 14000*2, 14000*3, 14000*4, 70000])
 		axs[1].set_yticks([0, 2000, 4000, 6000, 8000])
-		axs[0].set_yticklabels(["14000", "28000", "42000", "56000", "70000"])
-		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"])
+		axs[0].set_yticklabels(["14000", "28000", "42000", "56000", "70000"], fontsize=font_size)
+		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"], fontsize=font_size)
 		
-		fig.text(0.014, 0.288, '$\downarrow$10000')
-		fig.text(0.077, 0.318, '$\u2191$0')
+		# ~ fig.text(0.014, 0.288, '$\downarrow$10000', fontsize=font_size)
+		# ~ fig.text(0.077, 0.318, '$\u2191$0', fontsize=font_size)
+
+		fig.text(-0.0235, 0.288, '$\downarrow$10000', fontsize=font_size)
+		fig.text(0.065, 0.322, '$\u2191$0', fontsize=font_size)
 		
 		axs[0].set_ylim(0, 70000)
 		axs[1].set_ylim(0, 10000)
 		
-		fig.text(-0.03, 0.5, 'Number of requested cores', va='center', rotation='vertical')
+		fig.text(-0.07, 0.5, 'Number of requested cores', va='center', rotation='vertical', fontsize=font_size)
 
 
 	lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
 	lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-	fig.legend(lines, labels, loc="upper left", bbox_to_anchor = (0.125, -0.12, 1, 1))
+	fig.legend(lines, labels, loc="upper left", bbox_to_anchor = (0.125, -0.12, 1, 1), fontsize=font_size)
 	# ~ plt.legend(axs, labels, loc = 'lower center', bbox_to_anchor = (0, -0.1, 1, 1), bbox_transform = plt.gcf().transFigure)
 	
 filename = "plot/Cluster_usage/" + title + "_" + precision_mode + ".pdf"
