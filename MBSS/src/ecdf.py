@@ -7,6 +7,8 @@ import pandas as pd
 df = pd.read_csv(sys.argv[1])
 print("Opening file", sys.argv[1])
 
+font_size = 14
+
 eft = list(df.iloc[:, 0])
 score = list(df.iloc[:, 1])
 opportunistic = list(df.iloc[:, 2])
@@ -51,13 +53,15 @@ plt.step(x, y, label = "LEM", color = colors[3], linewidth=2, linestyle=linestyl
 
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	filename = "plot/ECDF/ecdf_mean_stretch_all_workloads.pdf"
-	plt.xlabel('Stretch\'s speed-up from FCFS')
+	plt.xlabel('Stretch\'s improvement from FCFS', fontsize=font_size)
 else:
 	filename = "plot/ECDF/ecdf_mean_stretch_all_workloads_bf.pdf"
-	plt.xlabel('Stretch\'s speed-up from FCFS-BF')
+	plt.xlabel('Stretch\'s improvement from FCFS-BF', fontsize=font_size)
 
+plt.xticks(fontsize=font_size)
+plt.yticks(fontsize=font_size)
 # ~ plt.xlabel('Stretch\'s speed-up')
-plt.ylabel('Cumulative probability')
-plt.legend()
+plt.ylabel('Cumulative probability', fontsize=font_size)
+plt.legend(fontsize=font_size, loc="lower right")
 
 plt.savefig(filename)

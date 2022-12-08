@@ -9,6 +9,8 @@ import pandas as pd
 df = pd.read_csv(sys.argv[1])
 print("Opening file", sys.argv[1])
 
+font_size = 14
+
 eft = list(df.iloc[:, 0])
 score = list(df.iloc[:, 1])
 opportunistic = list(df.iloc[:, 2])
@@ -58,9 +60,9 @@ print([item.get_ydata()[1] for item in box['whiskers']])
 # ~ print(mean)
 
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
-	plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"])
+	plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
 else:
-	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"])
+	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
 	
 plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 
@@ -71,16 +73,16 @@ plt.axhline(y = 1, color = 'black', linestyle = "dotted")
 # Max Y
 # ~ ax.set_ylim(0, 2.5)
 ax.set_ylim(0, 3.15)
-
+plt.yticks(fontsize=font_size)
 plt.rcParams['hatch.linewidth'] = 5
 for patch, color in zip(box['boxes'], colors):
     patch.set_facecolor(color)
     
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf"
-	plt.ylabel('Stretch\'s speed-up from FCFS')
+	plt.ylabel('Stretch\'s improvement from FCFS', fontsize=font_size)
 else:
 	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf"
-	plt.ylabel('Stretch\'s speed-up from FCFS-BF')
+	plt.ylabel('Stretch\'s improvement from FCFS-BF', fontsize=font_size)
 # ~ plt.legend(loc ="upper left")
 plt.savefig(filename)
