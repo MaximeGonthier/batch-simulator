@@ -709,6 +709,10 @@ of last job completion.
   this:? }
 
 \begin{figure}[tb]
+\pgfplotsset{every tick label/.append style={font=\large}}
+\definecolor{color1}{HTML}{CEDEF0}
+\definecolor{color2}{HTML}{9D9AD9}
+\definecolor{color3}{HTML}{6B9BD1}
 \centering\scalebox{0.75}{
 \begin{tikzpicture}\begin{axis}
 [ font=\footnotesize,
@@ -718,30 +722,28 @@ of last job completion.
   axis lines = middle,
   enlarge x limits = {value=.1,upper},
   enlarge y limits = {value=.05,upper},
-  ylabel={Cores},
-  xlabel={Time},
+  ylabel={\large Cores},
+  xlabel={\large Time},
   ylabel near ticks,
   xlabel near ticks,
   const plot,
   stack plots=false,
   area style,
-  %~ ytick={1,...,6},
-  ytick={1,...,5},
+  ytick={1,...,3},
   yticklabels={},  
   xtick={1,...,5},
-  %~ extra y ticks={0,1,2,3,4,5,6},
-  extra y ticks={0,1,2,3,4,5},
+  extra y ticks={0,1,2},
   extra x ticks={0,1,2,3,4,5},
   extra y tick style={yticklabel={$C_{\pgfmathprintnumber{\tick}}$}}] 
-\addplot[fill=orange!20] coordinates {(0,0) (0,3) (2,3) (2,0)} node at (current path bounding box.center) {Job 1}; 
-\addplot[fill=red!20] coordinates {(2,0) (2,5) (3,5) (3,0)} node at (current path bounding box.center) {Job 2}; 
-\addplot[fill=blue!20] coordinates {(3,0) (3,2) (5,2) (5,0)} node at (current path bounding box.center) {Job 3};
-\addplot[fill=blue!20,opacity=0.5] coordinates {(0,3) (0,5) (2,5) (2,3)} node at (current path bounding box.center) {Job 3};
-\node (A) at (4, 2) {};
-\node (B) at (2, 4) {};
+\addplot[fill=color1] coordinates {(0,0) (0,1) (1,1) (1,0)} node at (current path bounding box.center) {\large Job 1}; 
+\addplot[fill=color2] coordinates {(1,0) (1,2) (2,2) (2,0)} node at (current path bounding box.center) {\large Job 2}; 
+\addplot[fill=color3] coordinates {(2,0) (2,1) (3,1) (3,0)} node at (current path bounding box.center) {\large Job 3};
+\addplot[fill=color3,opacity=0.7] coordinates {(0,1) (0,2) (1,2) (1,1)} node at (current path bounding box.center) {\large Job 3};
+\node (A) at (2, 1) {};
+\node (B) at (1, 1.5) {};
 \draw [->,-{Latex[round]},line width=1.5] (A) edge (B);
 \end{axis}\end{tikzpicture}}
-\caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled without delaying the start time of job 2.}
+\caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled to start earlier without delaying the start time of job 2.}
 \end{figure}
 
 \todo[inline]{Max: Do we want to say:
@@ -1134,7 +1136,7 @@ on heavily saturated clusters (see Section~\ref{sec.03-26} and \ref{sec.08-16}).
 In these cases, the mean stretch values of LEA or LEM are much smaller than those of FCFS or EFT.
 Re-using the same files is not detrimental to the filling of all the nodes because there are 
 enough jobs to cover all nodes.
-A large decrese in the time spent waiting for a file greatly reduces the stretch of each job.
+A large decrease in the time spent waiting for a file greatly reduces the stretch of each job.
 Compared to LEA, LEM has a smaller mean value.
 However 75\% of its results are above 1, whereas for LEA, only approximately 57\% of the results are above 1. 
 LEM is a more versatile strategy and offers higher sustained performance on non-saturated cluster at the cost
