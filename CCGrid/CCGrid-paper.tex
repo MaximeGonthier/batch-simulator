@@ -494,7 +494,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 \item The input file of $J_i$ is partially loaded on \Node{k}: this
   happens when some
   job $J_j$ using the same input file has been scheduled on other cores of
-  the same \todo{EL: node?}job at time $\start(J_j)<t_k$ but the file transfer has not
+  the same node at time $\start(J_j)<t_k$ but the file transfer has not
   completed at time $t_k$. Then the file will be available at time:
   $t'_k = \start(J_j)+\frac{\size(\file(J_i))}{\bandwidth}.$
 \end{enumerate}
