@@ -1,0 +1,261 @@
+# importing package
+import matplotlib.pyplot as plt
+import pandas as pd
+import sys
+
+data = pd.read_csv(sys.argv[5])
+workload = sys.argv[1]
+comparaison1 = sys.argv[2]
+comparaison2 = sys.argv[3]
+cluster = sys.argv[4]
+
+font_size = 4
+
+bf_mode = int(sys.argv[6])
+
+title = workload + "_" + comparaison1 + "_" + comparaison2 + "_" + cluster
+
+if (comparaison1 == "Maximum_queue_time"):
+	Y_index = 2
+	plot_title = "Maximum Queue Time"
+elif (comparaison1 == "Mean_queue_time"):
+	Y_index = 3
+	plot_title = "Mean Queue Time"
+elif (comparaison1 == "Total_queue_time"):
+	Y_index = 4
+	plot_title = "Total Queue Time"
+elif (comparaison1 == "Maximum_flow"):
+	Y_index = 5
+	plot_title = "Maximum Flow"
+elif (comparaison1 == "Mean_flow"):
+	Y_index = 6
+	plot_title = "Mean Flow"
+elif (comparaison1 == "Total_flow"):
+	Y_index = 7
+	plot_title = "Total Flow"
+elif (comparaison1 == "Transfer_time"):
+	Y_index = 8
+	plot_title = "Transfer Time"
+elif (comparaison1 == "Makespan"):
+	Y_index = 9
+	plot_title = "Makespan"
+elif (comparaison1 == "Core_time_used"):
+	Y_index = 10
+	plot_title = "Core time used"
+elif (comparaison1 == "Waiting_for_a_load_time"):
+	Y_index = 11
+	plot_title = "Waiting for a load time"
+elif (comparaison1 == "Total_waiting_for_a_load_time_and_transfer_time"):
+	Y_index = 12
+	plot_title = "Total waiting for a load time and transfer time"
+elif (comparaison1 == "Mean_Stretch"):
+	Y_index = 13
+	plot_title = "Mean Stretch"
+elif (comparaison1 == "Mean_Stretch_With_a_Minimum"):
+	Y_index = 14
+	plot_title = "Mean Bounded Stretch"
+elif (comparaison1 == "Max_Stretch"):
+	Y_index = 15
+	plot_title = "Max Stretch"
+elif (comparaison1 == "Max_Stretch_With_a_Minimum"):
+	Y_index = 16
+	plot_title = "Max Bounded Stretch"
+elif (comparaison1 == "Nb_Upgraded_Jobs"):
+	Y_index = 17
+	plot_title = "Nb Upgraded Jobs"
+elif (comparaison1 == "Mean_Stretch_128"):
+	Y_index = 19 # Car il y a large queue time job que je plot pas mais qui est dans la data
+	plot_title = "Mean Stretch 128 jobs"
+elif (comparaison1 == "Mean_Stretch_256"):
+	Y_index = 20
+	plot_title = "Mean Stretch 256 jobs"
+elif (comparaison1 == "Mean_Stretch_1024"):
+	Y_index = 21
+	plot_title = "Mean Stretch 1024 jobs"
+elif (comparaison1 == "Mean_Stretch_With_a_Minimum_128"):
+	Y_index = 22
+	plot_title = "Mean Bounded Stretch 128 jobs"
+elif (comparaison1 == "Mean_Stretch_With_a_Minimum_256"):
+	Y_index = 23
+	plot_title = "Mean Bounded Stretch 256 jobs"
+elif (comparaison1 == "Mean_Stretch_With_a_Minimum_1024"):
+	Y_index = 24
+	plot_title = "Mean Bounded Stretch 1024 jobs"
+elif (comparaison1 == "Number_of_data_reuse"):
+	Y_index = 25
+	plot_title = "Number of data re-use"
+else:
+	print("Wrong comparison")
+	exit(1)
+
+if (comparaison2 == "Maximum_queue_time"):
+	Y_index2 = 2
+	plot_title = "Maximum Queue Time"
+elif (comparaison2 == "Mean_queue_time"):
+	Y_index2 = 3
+	plot_title = "Mean Queue Time"
+elif (comparaison2 == "Total_queue_time"):
+	Y_index2 = 4
+	plot_title = "Total Queue Time"
+elif (comparaison2 == "Maximum_flow"):
+	Y_index2 = 5
+	plot_title = "Maximum Flow"
+elif (comparaison2 == "Mean_flow"):
+	Y_index2 = 6
+	plot_title = "Mean Flow"
+elif (comparaison2 == "Total_flow"):
+	Y_index2 = 7
+	plot_title = "Total Flow"
+elif (comparaison2 == "Transfer_time"):
+	Y_index2 = 8
+	plot_title = "Transfer Time"
+elif (comparaison2 == "Makespan"):
+	Y_index2 = 9
+	plot_title = "Makespan"
+elif (comparaison2 == "Core_time_used"):
+	Y_index2 = 10
+	plot_title = "Core time used"
+elif (comparaison2 == "Waiting_for_a_load_time"):
+	Y_index2 = 11
+	plot_title = "Waiting for a load time"
+elif (comparaison2 == "Total_waiting_for_a_load_time_and_transfer_time"):
+	Y_index2 = 12
+	plot_title = "Total waiting for a load time and transfer time"
+elif (comparaison2 == "Mean_Stretch"):
+	Y_index2 = 13
+	plot_title = "Mean Stretch"
+elif (comparaison2 == "Mean_Stretch_With_a_Minimum"):
+	Y_index2 = 14
+	plot_title = "Mean Bounded Stretch"
+elif (comparaison2 == "Max_Stretch"):
+	Y_index2 = 15
+	plot_title = "Max Stretch"
+elif (comparaison2 == "Max_Stretch_With_a_Minimum"):
+	Y_index2 = 16
+	plot_title = "Max Bounded Stretch"
+elif (comparaison2 == "Nb_Upgraded_Jobs"):
+	Y_index2 = 17
+	plot_title = "Nb Upgraded Jobs"
+elif (comparaison2 == "Mean_Stretch_128"):
+	Y_index2 = 19 # Car il y a large queue time job que je plot pas mais qui est dans la data
+	plot_title = "Mean Stretch 128 jobs"
+elif (comparaison2 == "Mean_Stretch_256"):
+	Y_index2 = 20
+	plot_title = "Mean Stretch 256 jobs"
+elif (comparaison2 == "Mean_Stretch_1024"):
+	Y_index2 = 21
+	plot_title = "Mean Stretch 1024 jobs"
+elif (comparaison2 == "Mean_Stretch_With_a_Minimum_128"):
+	Y_index2 = 22
+	plot_title = "Mean Bounded Stretch 128 jobs"
+elif (comparaison2 == "Mean_Stretch_With_a_Minimum_256"):
+	Y_index2 = 23
+	plot_title = "Mean Bounded Stretch 256 jobs"
+elif (comparaison2 == "Mean_Stretch_With_a_Minimum_1024"):
+	Y_index2 = 24
+	plot_title = "Mean Bounded Stretch 1024 jobs"
+elif (comparaison2 == "Number_of_data_reuse"):
+	Y_index2 = 25
+	plot_title = "Number of data re-use"
+else:
+	print("Wrong comparison")
+	exit(1)
+	
+df = pd.DataFrame(data)
+
+X = list(df.iloc[:, 0])
+Y = list(df.iloc[:, Y_index])
+Y2 = list(df.iloc[:, Y_index2])
+
+# ~ print("Y2:", Y2)
+if (bf_mode == 0):
+	FCFS_time_to_load = Y2[0]
+elif (bf_mode == 3):
+	FCFS_time_to_load = Y2[1]
+elif (bf_mode == 4):
+	FCFS_time_to_load = Y2[0]
+	FCFS_time_to_load_bf = Y2[1]
+	
+fig, ax = plt.subplots(1, 2)
+fig.subplots_adjust(wspace=0.3)
+
+# Pour renommer les algos
+X[0] = "FCFS"
+X[1] = "FCFS-BF"
+X[2] = "EFT"
+X[3] = "EFT-BF"
+X[4] = "LEA"
+X[5] = "LEA-BF"
+X[6] = "LEO"
+X[7] = "LEO-BF"
+X[8] = "LEM"
+X[9] = "LEM-BF"
+	
+plt.rcParams['hatch.linewidth'] = 5
+
+markers=["o", "^", "s", "P", "h"]
+colors=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"]
+
+# Pour diviser en 2 BF/NON BF
+if (bf_mode == 0): # Non BF
+	Y_non_bf = [Y[2*i] for i in range(len(Y)//2)]
+	Y_non_bf_2 = [Y2[2*i] for i in range(len(Y2)//2)]
+	X_non_bf = [X[2*i] for i in range(len(X)//2)]
+	for i in range(len(X_non_bf)):
+		ax[0].scatter(X_non_bf[i], Y_non_bf[i], color=colors[i], s=220, marker=markers[i])
+		ax[1].bar(X_non_bf[i], Y_non_bf_2[i]/FCFS_time_to_load, color=colors[i])
+	# ~ plt.stem(X_non_bf, Y_non_bf)
+elif (bf_mode == 3): # BF
+	Y_bf = [Y[2*i+1] for i in range(len(Y)//2)]
+	Y_bf_2 = [Y2[2*i+1] for i in range(len(Y2)//2)]
+	X_bf = [X[2*i+1] for i in range(len(X)//2)]
+	for i in range(len(X_bf)):
+		ax[0].scatter(X_bf[i], Y_bf[i], color=colors[i], s=220, marker=markers[i])
+		ax[1].bar(X_bf[i], Y_bf_2[i]/FCFS_time_to_load, color=colors[i])
+elif (bf_mode == 4): # BF and NON BF on same plot
+	hatches = ['','/','','/','','/','','/','','/']
+	colors=["#4c0000","#4c0000","#E50000","#E50000","#00bfff","#00bfff","#ff9b15","#ff9b15","#91a3b0","#91a3b0"]
+	print(hatches)
+	# ~ for i in range(len(X)):
+		# ~ plt.scatter(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
+	for i in range(len(X)):
+		ax[0].scatter(X[i], Y[i], color=colors[i], s=220, marker=markers[i])
+		ax[1].bar(X[i], Y2[i]/FCFS_time_to_load, color=colors[i])
+else:
+	print("bf_mode not dealt with", bf_mode)
+	exit
+
+ax[0].set_ylim(0.9,)
+ax[1].set_ylim(0, 1.03)
+
+# ~ ax[0].set_xticks(fontsize=font_size)
+# ~ ax[1].set_xticks(fontsize=font_size)
+	
+ax[0].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
+ax[1].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
+ax[0].set_ylabel("Mean stretch")
+ax[1].set_ylabel("Load times compared to FCFS' load time")
+
+# ~ ax[0].xticks(fontsize=font_size)
+# ~ ax[0].yticks(fontsize=font_size)
+# ~ ax[1].xticks(fontsize=font_size)
+# ~ ax[1].yticks(fontsize=font_size)
+
+# Show the plot
+if (bf_mode == 3):
+	filename = "plot/BF_" + title + ".pdf"
+elif (bf_mode == 4):
+	filename = "plot/BF_AND_NON_BF_" + title + ".pdf"
+else:
+	filename = "plot/" + title + ".pdf"
+
+# ~ plt.subplots_adjust(left=0.1,
+# ~                     bottom=0.1,
+# ~                     right=0.9,
+# ~                     top=0.9,
+# ~                     wspace=0.4,
+# ~                     hspace=0.4)
+
+plt.savefig(filename, bbox_inches='tight')
+
+

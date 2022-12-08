@@ -937,9 +937,10 @@ offering different saturations of the cluster.
 
 \subsubsection{Results\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}}
 
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
+\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total transfer time on July 16.}\label{stretch.07-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 
 Figure~\ref{stretch.07-16} shows us, for each scheduler, the mean stretch from all jobs
 submitted on July 16.\todo[inline]{Should we say on July 16 or on July the 16th?
@@ -1038,10 +1039,11 @@ cluster, underlining the weakness of LEM.
 
 \subsubsection{Results}
 
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}
-\label{stretch.09-09}\end{figure}
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}
-\label{load.09-09}\end{figure}
+\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on September 09.}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}
+%~ \label{stretch.09-09}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}
+%~ \label{load.09-09}\end{figure}
 
 Despite greatly reducing the amount of file transfers as can be seen on Figure~\ref{load.09-09}, LEA and LEM
 do not manage to beat FCFS in terms of stretch (see Figure~\ref{stretch.09-09}). 
@@ -1078,7 +1080,8 @@ LEM on Figure~\ref{stretch.09-09}.
 
 \subsection{A saturated cluster, the great benefits of LEA and LEM}\label{sec.03-26}
 
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}
+\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on March 26.}
+%~ \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}
 \label{stretch.03-26}\end{figure}
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\label{reuse.03-26}\end{figure}
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March the 26th with FCFS.}
@@ -1107,7 +1110,8 @@ have a speed-up inferior to 1 and a large amount of jobs are above 2.
 
 \subsection{A cluster saturated with small jobs, the best case scenario for LEA and LEM}\label{sec.08-16}
 
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}
+\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on August 16.}
+%~ \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}
 \label{stretch.08-16}\end{figure}
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}
 \label{cluster_usage.08-16_fcfs}\end{figure}
@@ -1130,7 +1134,7 @@ drastic reduction for LEA and LEM, as can be seen on Figure~\ref{cluster_usage.0
 
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's improvement from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's improvement from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
-\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28.}\label{stretch.01-28}\end{figure}
+\begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with and without backfilling.}\label{stretch.01-28}\end{figure}
 \begin{figure}[t]\centering\includegraphics[scale=0.41]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's improvement from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
 
 We evaluated our 5 schedulers on 44 different days.

@@ -14,6 +14,8 @@ cluster = sys.argv[3]
 
 percentages_mode = int(sys.argv[6])
 
+font_size = 14
+
 title = workload + "_" + comparaison + "_" + cluster
 
 if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):	
@@ -159,11 +161,13 @@ elif (percentages_mode == 3): # BF
 elif (percentages_mode == 4): # BF and NON BF on same plot
 	if (comparaison == "Number_of_data_reuse"):
 		plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
-	hatches = ['','/','','/','','/','','/','','/']
+	# ~ hatches = ['','/','','/','','/','','/','','/']
+	hatches = ['','.','','.','','.','','.','','.']
 	colors=["#4c0000","#4c0000","#E50000","#E50000","#00bfff","#00bfff","#ff9b15","#ff9b15","#91a3b0","#91a3b0"]
 	print(hatches)
 	for i in range(len(X)):
-		plt.bar(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
+		# ~ plt.bar(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
+		plt.scatter(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white", s=220)
 else:
 	plt.bar(X, Y, color=["#E50000","#00bfff","#ff9b15","#91a3b0"])
 
