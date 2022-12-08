@@ -139,9 +139,43 @@ High Performance Data Analytics
 
 \section{Introduction}\label{sec.introduction}
 
-\todo[inline]{Details on: data intensive applications, challenges and objective}
+To meet the ever-increasing demand for scientific computation power,
+High-Performance Computing platforms are typically composed of large
+numbers of computation nodes. Scientists typically submit their
+computation jobs to a scheduler, which decides the ordering and mapping
+of the jobs on the platform. This needs to be performed with particular
+care of balancing between resource utilization and user satisfaction, so
+as to leverage the computation resources as efficiently as possible,
+while avoiding adverse pathological cases that could particularly impact
+some users rather than others.
 
-We present the following contributions in this paper:
+Computation jobs however need data input which, more often than not, can
+be very large, notably for many subfields of life science with highly
+data-dependent workflows. Loading such data input from the storage
+nodes may consume a significant part of the job duration. This load
+penalty can however be avoided altogether when the data was actually
+already used by the previous job running on the computation node, and
+thus still immediately available on the node. Taking care of scheduling
+jobs that use the same data input one after the other thus allows to
+reduce the jobs completion times, leading to better platform usage
+efficiency. Unfortunately, classical job schedulers mostly do not take
+data input into account, and thus do not benefit from such data reuse ;
+jobs most always have to re-load their data input.
+
+In this paper, we propose to model the benefits of re-using data loads
+betwen successive jobs, and we introduce new algorithms that add such
+data reuse to the scheduling balance. By tracking which data is loaded
+on which node for the scheduled jobs, they are able to significantly
+reduce data loads, thus improving both resource utilization and user
+satisfaction. We evaluated these algorithms thanks to traces of actual
+jobs submissions observed on a large cluster platform. This allows to
+assess the effectiveness of our heuristics over a variety of realistic
+working sets. This revealed that while our heuristics get slightly worse
+results over some working set samples (those which exhibit cluster ample
+underuse), most working set samples largely benefit from our heuristics,
+leading to interesting benefit overall.
+
+We thus present the following contributions in this paper:
 \begin{itemize}
 	\item We formalize our model of scheduling data-intensive jobs sharing input files on a cluster (Section~\ref{sec.framework}).
 	\item We propose three new schedulers focusing on re-using input files while minimizing evictions and avoiding starvation (Section~\ref{sec.schedulers}).
