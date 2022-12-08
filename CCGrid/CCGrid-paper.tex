@@ -575,7 +575,7 @@ tie-break in case of equality of the first two criteria.
 			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
 %			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
                         \State Let $\mathcal{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
-			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory(\Node{k}))/\bandwidth$
+			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
 			\State $score_{\Node{k}} \gets t_k + W \times \mathit{LoadOverhead} + \mathit{EvictionPenalty}$
 		\EndFor
                 \State Select \Node{k} with the smallest $score_{\Node{k}}$
@@ -610,7 +610,7 @@ fully loaded and we apply the previous LEA strategy, to favor data reuse.
 			\State Find time $t_k'\geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
                         \State Let $\mathcal{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
-			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory(\Node{k}))/\bandwidth$
+			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
 			\If{$t_k = \mathit{current\_time}$}
 				\State $score_{\Node{k}} \gets t'_k$
 			\Else
