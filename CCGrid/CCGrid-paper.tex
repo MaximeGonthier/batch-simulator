@@ -915,11 +915,15 @@ offering different saturations of the cluster.
 \subsubsection{Results\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16. Carl: I prefer July 16. A comment is also that file names containing > might cause prodcuction problems if the conference accepts tex files for submission.}\label{reuse.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 
 Figure~\ref{stretch.07-16} shows us, for each scheduler, the mean stretch from all jobs
-submitted on July 16.\todo[inline]{Should we say on July 16 or on July the 16th?}
+submitted on July 16.\todo[inline]{Should we say on July 16 or on July the 16th?
+Carl: I prefer July
+16. A comment is also that file names containing > might cause
+prodcuction problems if the conference accepts tex files for
+submission.}
 The horizontal black dotted line corresponds to a stretch of 1.
 This stretch is obtained if all jobs 
 are scheduled on an empty cluster. It would correspond to the waiting time of each job being exactly
