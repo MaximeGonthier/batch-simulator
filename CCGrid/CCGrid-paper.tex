@@ -384,9 +384,10 @@ $J_i$ is thus allocated a time window from $t_k$
 to $t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
 $\file(J_i)$ in the memory (if it is not already present at time
 $t_k$) and (ii) executing job $J(i)$. The scheduler must make sure
-that no two jobs are executed simultaneously on the same core. The
-true computation of the job takes a time $\duration(J_i)$, however if a
-job does not terminates before its deadline $t_k+\walltime(J_i)$, it
+that no two jobs are executed simultaneously on the same cores. The
+true computation of the job takes a time $\duration(J_i)$\todo{Sam: Doesn't
+it also include the transfer?}, however if a
+job does not terminate before its deadline $t_k+\walltime(J_i)$, it
 is killed by the scheduler to ensure that later jobs are not
 delayed. Hence we have $\duration(J_i)\leq \walltime(J_i)$.
 
