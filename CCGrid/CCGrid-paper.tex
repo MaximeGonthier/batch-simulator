@@ -549,13 +549,14 @@ quantities to rank nodes:
 \end{itemize}
 
 The intuition for the third criterion is that if loading a large file
-in the memory requires to evict many other files, these files will not
+in memory requires the eviction of many other files, these files will not
 be available for later jobs and may have to be reloaded.
-In the LEA strategy, we put a strong emphasis on data load, in order
+In the LEA strategy, we put a strong emphasis on data loading, in order
 to really favor data locality. Hence, when computing the score for
-each node \Node{k}, we sum the previous three quantities with a weight
+each node \Node{k}, we sum the previous three quantities, with a weight
 $W$ for the second one (loading time). In our experiments, based on
-empirical evaluation, we  set this value to $W=500$\todo{EL: Any comment on the value?}.
+empirical evaluation, we set this value to $W=500$, incidentally roughly
+equivalent to the number of nodes.
 Note that the other two quantities usually have very different values,
 and the availability time is usually much larger than the time for
 reloading evicted data. Hence this last criterion is mostly used as a
@@ -590,13 +591,13 @@ The LEA strategy puts a dramatic importance on data loads. Hence, it
 is very useful when the platform is fully loaded and we can safely
 delay the processing of some job to favor data reuse and avoid
 unnecessary loads. However, when the platform is not fully loaded,
-delaying jobs is not a good idea, as it increases some jobs' response
-time without any benefit for other jobs. Our second proposed strategy,
-named Locality and Eviction Opportunistic (LEO) and described in Algorithm~\ref{algo.leo} tries to adapt to
-the load condition: if we find some nodes that can process the job
+delaying jobs can be detrimental, as it can increases the response
+time for some jobs, without any benefit for other jobs. Our second proposed strategy,
+named Locality and Eviction Opportunistic (LEO) and described in Algorithm~\ref{algo.leo}, tries to adapt based
+on the current cluster load: if we find some nodes that can process the job
 right away, we select the one that will minimize the completion time
 (as in the EFT strategy). Otherwise, we assume that the platform is
-fully loaded and we apply the previous LEA strategy to favor data reuse.
+fully loaded and we apply the previous LEA strategy, to favor data reuse.
 
 
 \begin{algorithm*}[htb]%\small
@@ -650,7 +651,7 @@ otherwise the EFT strategy is used.
 \subsection{Adding backfilling to all strategies}
 
 As mentioned above, backfilling has been proposed to increase the
-performance of job schedulers, by allowing jobs with low priority to be
+performance of job schedulers, by allowing jobs with lower priority to be
 scheduled before jobs with higher priority.
 \todo[inline]{Sam: it seems to me we don't really want to talk about
 "priority", but rather submission order?}
@@ -666,23 +667,23 @@ does not impact the starting time of these jobs.
 
 
 For each of the previous scheduling strategies, we consider a variant
-using conservative backfilling (and suffixed by -BF).  To add
+using conservative backfilling (suffixed by -BF).  To add
 backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft},
 \ref{algo.lea} and~\ref{algo.leo} have to be modified: we change the
 choice of the earliest time when resources are available for a job
 (Line~\ref{fcfs.ln.find}). Instead of considering the time at which
 cores are (indefinitely) available, we look for an availability time
-window starting at $t_k$ and long enough to hold the
+window starting at $t_k$ long enough to hold the
 job. Specifically, we change Line~\ref{fcfs.ln.find} into:
 \begin{algorithmic}[0]
   \State $\ref{fcfs.ln.find}'$: Find smallest time $t_k$ such that $\core(J_i)$ cores are
   available from $t_k$ until $t_k + \walltime(J_i)$ on $\Node{k}$
 \end{algorithmic}
 
-Note that this requires to remember the whole occupation profile of
+Note that this requires the algorithm to store  the whole occupation profile of
 each core (with availability and unavailability times), whereas the
 version of each scheduler without backfilling simply requires the time
-of the last job completion.
+of last job completion.
 
 
 \todo[inline]{Max: Fig in tikz comparing fcfs and fcfs backfill like
@@ -786,7 +787,8 @@ not fully consistently so. The vast majority of jobs on these resources are sing
 could extend to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
 but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
-Each application scenario evaluated in the next section is one day of the log's history of the workload.
+Each application scenario evaluated in the next section represents one day's worth of log history from the real workload,
+processed in a realistic scheduling environment steady state also determined by the logs.
 The way we collect and schedule jobs from the log's history is represented in Figure~\ref{fig.workload}.
 \begin{figure*}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
@@ -844,7 +846,7 @@ and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
 i.e., in the situation in which it was on the real cluster while also avoiding any side effect.
 Jobs from \textit{Day -1, -2, ..., -n} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
 We use the information from the log's history to start these jobs on the nodes
-were they really were executed and at the times at which they really started.
+where they were actually executed and at the times at which they really started.
 This will exactly replicate the state of the cluster just before \textit{Day 0}.
 To summarize, before \textit{Day 0}, jobs are placed on the cluster
 following the log's history. Starting from \textit{Day 0} we 
@@ -886,7 +888,7 @@ Stretch_{J_i} = \frac{Flow(J_i)}{\emptyflow(J_i)}
 
 \todo[inline]{Max: Do we need a table to recap the acronyms and strategies or reading the section scheduler is sufficient to know the acronyms?}
 We also evaluate the total amount of time spent waiting for a file to be available.
-Our main competitors on these measures are FCFS and EFT, with and without backfilling.
+Our main competitors on these metrics are FCFS and EFT, with and without backfilling.
 \todo[inline]{Max: Do we need more in this setting section?}
 Let's first study the behavior of our schedulers on different workloads,
 offering different saturations of the cluster.
@@ -896,17 +898,17 @@ offering different saturations of the cluster.
 \subsubsection{Results\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}}
 
 \begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
-\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
+\begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16. Carl: I prefer July 16. A comment is also that file names containing > might cause prodcuction problems if the conference accepts tex files for submission.}\label{reuse.07-16}\end{figure}
 \begin{figure}[tb]\centering\includegraphics[scale=0.41]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 
 Figure~\ref{stretch.07-16} shows us, for each scheduler, the mean stretch from all jobs
 submitted on July 16.\todo[inline]{Should we say on July 16 or on July the 16th?}
 The horizontal black dotted line corresponds to a stretch of 1.
-It is the stretch obtained if all the jobs 
-are scheduled on an empty cluster, it means that the waiting time of each job was exactly
+This stretch is obtained if all jobs 
+are scheduled on an empty cluster. It would correspond to the waiting time of each job being exactly
 the time it takes to load the input file.
 FCFS, EFT, LEO and LEM have mean stretches close to 1.
-EFT, LEO and LEM have a slight benefit over FCFS thanks to the file re-use.
+EFT, LEO and LEM have a slight benefit over FCFS thanks to file re-use.
 LEA is 23\% slower.
 
 Figures~\ref{reuse.07-16} and \ref{load.07-16}
@@ -931,7 +933,7 @@ it re-uses input files for more jobs and consequently the total time spent waiti
 To understand the issues LEA encounters on this workload, we need to study the cluster's usage over time.
 Figure~\ref{07_16_cluster_usage_fcfs} shows us a visual representation of 
 our cluster's usage when using FCFS.
-The Y-axis represents the number of requested cores either running on a
+The Y axis represents the number of requested cores either running on a
 node (lower half) or in the queue of jobs waiting to be executed (top
 half). The maximum is the total number of cores on our cluster: 9720.
 The blue line shows the number of cores from all jobs.
@@ -939,20 +941,20 @@ The blue line shows the number of cores from all jobs.
 %~ The dashed blue line shows the additional number of cores that would be needed
 %~ to run all the jobs in the queue at a given time (this would thus be the number
 %~ of used cores if all the jobs where running in parallel).
-The red lines show the number of cores from the evaluated jobs, i.e.,
-those that have their submission time within our evaluation window; in
-other words they are a sub-part of the blue line, that we evaluate.
-If a line is drawn in the top half, it means that some jobs could not be scheduled
+The red lines show the number of cores used by the evaluated jobs, i.e.
+those jobs that have their submission time within our evaluation window. Thus, this forms a subset
+of the set indicated by the the blue line.
+If a line is present in the top half, it means that some jobs could not be scheduled
 and are thus waiting in the queue of available jobs. 
-A node could have available cores but too few to start some jobs.
-This explains why jobs can be in the queue even if the lower half does not reach the maximum.
+A node could have available cores that are still too few to accommodate some jobs.
+This explains why jobs can be in the queue, even if the lower half does not reach the maximum.
 The gray line represents the number of cores currently loading a file.
 \todo[inline]{Tell what dotted orange lines are}
 
 By looking at the top half of Figure~\ref{07_16_cluster_usage_fcfs}
-we understand that the job's queue is empty most of the time.
-In this situation, FCFS is very efficient. Indeed, the earliest available node will in
-most cases be a node that can immediately start the job, explaining the mean stretch close to 1 on Figure~\ref{stretch.07-16}.
+we understand that the job queue is empty most of the time.
+In this situation, FCFS is very efficient. The earliest available node will in
+most cases be a node that can start the job immediately, explaining the mean stretch close to 1 in Figure~\ref{stretch.07-16}.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
 that puts a large weight on transfer time\todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here?} or weigh equally $t_k$, the transfer and eviction time. 
 Thus, on underused clusters, LEO will have a behaviour\todo[inline]{Max:
@@ -974,23 +976,23 @@ This visualization shows the stretch's speed-up of each job compared to FCFS.
 The size of a circle is proportional to the job's duration.
 On the workload of July 16, we can observe, below a speed-up of 1, columns of jobs submitted at the same time and
 with the same duration (so probably jobs using the same file),
-meaning LEA was waiting for re-using the file before starting the jobs.
-Whereas FCFS paid the cost of loading the file but started the jobs
+meaning LEA was waiting for re-using the file before starting the jobs,
+whereas FCFS paid the cost of loading the file, but started the jobs
 earlier than LEA, leading to a 
 smaller flow with FCFS.
 From Figure~\ref{07_16_fcfs_vs_lem} concerning LEM, we can see that most jobs have a speed-up close to 1, showing 
 that LEM does not fall into LEA's pathological case.
 
 To summarize, on an underutilized cluster, LEA's focus on locality
-does not allow to use the cluster optimally, whereas LEO and LEM, thanks
+does not allow optimal utilization of the cluster, whereas LEO and LEM, thanks
 to their flexibility,
 achieve performance identical to EFT.
 
 \subsection{An almost saturated cluster, the weakness of LEM and the resilience of LEO}\label{sec.09-09}
 
-We saw in the previous section the benefit of using LEO or LEM over LEA.
+In the previous section, we saw the benefit of using LEO or LEM over LEA.
 Here we evaluate our strategies on a workload that almost saturated the
-cluster, that underlines the weakness of LEM.
+cluster, underlining the weakness of LEM.
 
 \subsubsection{Results}
 
@@ -1021,7 +1023,7 @@ Thus the queue of requested cores alternates between a few thousands and 0.
 
 Figure~\ref{cluster_09-09_lem} represents the same experiment with LEM.
 We can see that the queue of requested cores never hits 0.
-In this case, the occupation rate is just above 80\% but not fully
+In this case, the occupation rate is just above 80\%, but not fully
 100\%\todo[inline]{Sam: "then why did you choose 80\%? What would choosing
 100\% have gotten?"}, thus LEM stays on the same strategy as LEA.
 And as we saw in the last section, it is a sub-optimal heuristic when the cluster is not fully saturated.
@@ -1054,7 +1056,7 @@ more data re-use is associated with a smaller stretch for LEA and LEM.
 On a saturated cluster, filling all the cores with the first jobs of the queue, like FCFS does, is not crucial.
 It is more beneficial to group jobs using the same file.
 The first few jobs will have a longer queue than with FCFS,
-but, overtime, re-using files causes a snowball effect that will reduce the 
+but, over time, re-using files causes a snowball effect that will reduce the 
 queue times of all subsequent jobs.
 Moreover, the queue contains enough jobs to fill all the nodes even when grouping them by input file.
 We thus avoid the pathological cases presented in sections~\ref{sec.07-16} and \ref{sec.09-09}.
@@ -1075,8 +1077,8 @@ have a speed-up inferior to 1 and a large amount of jobs are above 2.
 From Figure~\ref{stretch.08-16}, we observe that LEA has a stretch 33 times smaller than
 its competitors. LEM is about 7 times smaller. This drastic diminution is explained
 by the two particularities of this workload.
-Firstly, it is a workload that heavily saturates the cluster as can be seen on Figure~\ref{cluster_usage.08-16_fcfs}
-(note that the y-axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
+Firstly, it is a workload that heavily saturates the cluster as can be seen in Figure~\ref{cluster_usage.08-16_fcfs}
+(note that the Y axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
 So for the same reasons as in Section~\ref{sec.03-26}, LEA and LEM largely reduce load times.
 Secondly, it is a workload largely composed of jobs that are short and using less than five cores.
 The size of a file is always between 6.4 and 128GB.
@@ -1096,7 +1098,7 @@ Figure~\ref{boxplot.all} represents boxplots from the aggregated
 results of the stretch's speed-up compared to FCFS on these evaluations.
 On this figure, 50\% of the results are within the box.
 The whiskers delimit the octiles, thus 75\% of the results are contained
-within the whiskers. It also means that between the lower side of the box and the maximum value,
+within the whiskers. This also means that between the lower side of the box and the maximum value,
 we find 75\% of the results (and similarly between the upper side of the box and the minimum value).
 The solid green lines show the median while the dashed ones show the mean stretch's speed-up compared to FCFS. 
 Each white circle is an outlier whose speed-up is in the first or last octile.
@@ -1108,13 +1110,13 @@ However the mean values are much higher at 2.26, 1.21 and 1.76.
 
 We can explain the larger mean values for LEA and LEM from the good performance of LEA's strategy
 on heavily saturated clusters (see Section~\ref{sec.03-26} and \ref{sec.08-16}).
-In these cases, the mean stretchs of LEA or LEM are much smaller than those of FCFS or EFT.
+In these cases, the mean stretch values of LEA or LEM are much smaller than those of FCFS or EFT.
 Re-using the same files is not detrimental to the filling of all the nodes because there are 
 enough jobs to cover all nodes.
-Largely decreasing the time spent waiting for a file greatly reduces the stretch of each job.
+A large decrese in the time spent waiting for a file greatly reduces the stretch of each job.
 Compared to LEA, LEM has a smaller mean value.
 However 75\% of its results are above 1, whereas for LEA, only approximately 57\% of the results are above 1. 
-LEM is a more versatile strategy and offers more sustained performance on a non-saturated cluster at the cost
+LEM is a more versatile strategy and offers higher sustained performance on non-saturated cluster at the cost
 of fewer extreme speed-ups on heavily saturated clusters.
 The maximum values are not shown. For LEA and LEM, 6 outliers are above the upper whisker with 
 a maximum respectively at 33.5 and 6.7.
@@ -1122,20 +1124,18 @@ a maximum respectively at 33.5 and 6.7.
 From the same data shown on Figure~\ref{boxplot.all}, we plot an empirical distribution function on Figure~\ref{ecdf}.
 EFT's low variance is clearly visible in the sudden jump in probability around a speed-up of 1.
 It is interesting to note that for LEA and LEM, 20\% of the results have a speed up of more than 3.
-In addition, thanks to its switch between EFT's and LEA's strategy, LEM clearly reduces
+In addition, thanks to its switch between the strategies of EFT and LEA, LEM clearly reduces
 performance losses on the left of the black line.
 We can also learn from this figure that LEO is in every respect a better version of EFT.
-Indeed, it does not have a higher cumulative probability before and
-after 1 and has significantly better
+At no point, it shows a higher cumulative probability before 1. Above 1 it shows significantly better
 results beyond a speed-up of 1.2.
 
 Thus, without backfilling, LEM is the best strategy to observe significant speed-ups.
 It can compute jobs between 1 and 1.5 times faster in 50\% of the cases,
 between 1.5 and 3 times faster in 12.5\% of the cases and between 3 and 6.7 times faster in 12.5\% of the cases.
 It is slower in only 25\% of the workloads, and 12.5\% of those are within a 0.15 slow-down.
-LEO is a more sustained strategy with 87,5\% of its results above a speed-up of 1, which shows that our opportunistic
-strategy is much more consistent, while still having great speed-ups in some cases as you can 
-see with the outliers above the 1.5 mark.
+LEO is a more sustained strategy with 87.5\% of its results above a speed-up of 1, which shows that our opportunistic
+strategy is much more consistent, while still having great speed-ups in some cases, as can be seen with the outliers above the 1.5 mark.
 
 \todo[inline]{Max: Below, when discussing backfilling, should I call everyone with a -BF or it's not necessary?}
 Figure~\ref{boxplot.all_bf} shows the results with the backfilling version of our
@@ -1149,9 +1149,9 @@ However, our strategies do not benefit from backfilling as much as FCFS-BF does 
 	Backfilling a job can compromise a re-use pattern that was planned by our locality-aware strategy, thus reducing the total 
 	amount of re-used files.
 	\item Our strategies are already able to nicely fill the nodes without needing backfilling.
-	Indeed, grouping jobs by input file allows to have similar jobs on the same nodes.
+	Grouping jobs by input file implies that similar jobs end up on the same nodes.
 	Jobs having the same duration and number of requested cores can much more easily fill a node to its fullest than a completely heterogeneous set of jobs.
-	Consequently, the shortfall without backfilling is much lower for LEA-BF, LEO-BF and LEM-BF than for FCFS-BF and EFT-BF.
+	Consequently, the shortfall without backfilling is much lower for LEA-BF, LEO-BF and LEM-BF, than for FCFS-BF and EFT-BF.
 \end{itemize}
 Thus, compared to FCFS-BF, we still reduce the total queue time with backfilling.
 However, the difference is less significant. One can observe an example of this
