@@ -521,7 +521,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 		\EndFor
                 \State Select \Node{k}  with the smallest $t'_k$
                 \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
-                \State Mark these cores busy until time $t'_k +\walltime(J_i)$
+                \State Mark these cores busy until time $t_k +\walltime(J_i)$
                 %\State Schedule $J_i$ on the node with the smallest $t_k'$
 %		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
 %		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
@@ -588,7 +588,7 @@ tie-break in case of equality of the first two criteria.
 		\EndFor
                 \State Select \Node{k} with the smallest $score_{\Node{k}}$
                 \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
-                \State Mark these cores busy until time $t'_k +\walltime(J_i)$
+                \State Mark these cores busy until time $t_k +\walltime(J_i)$
 	\EndFor
 \end{algorithmic}
 \end{algorithm*}
@@ -627,7 +627,7 @@ fully loaded and we apply the previous LEA strategy to favor data reuse.
 		\EndFor
                 \State Select \Node{k} with the smallest $score_{\Node{k}}$
                 \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
-                \State Mark these cores busy until time $t'_k +\walltime(J_i)$
+                \State Mark these cores busy until time $t_k +\walltime(J_i)$
 	\EndFor
 \end{algorithmic}
 \end{algorithm*}
@@ -913,7 +913,7 @@ offering different saturations of the cluster.
 Figure~\ref{stretch.07-16} shows us, for each scheduler, the mean stretch from all jobs
 submitted on July 16.\todo[inline]{Should we say on July 16 or on July the 16th?}
 The horizontal black dotted line corresponds to a stretch of 1.
-It's the stretch obtained if all the jobs 
+It is the stretch obtained if all the jobs 
 are scheduled on an empty cluster, it means that the waiting time of each job was exactly
 the time it takes to load the input file.
 FCFS, EFT, LEO and LEM have mean stretches close to 1.
@@ -1035,7 +1035,7 @@ We can see that the queue of requested cores never hits 0.
 In this case, the occupation rate is just above 80\% but not fully
 100\%\todo[inline]{Sam: "then why did you choose 80\%? What would choosing
 100\% have gotten?"}, thus LEM stays on the same strategy as LEA.
-And as we saw in the last section, it's a sub-optimal heuristic when the cluster is not fully saturated.
+And as we saw in the last section, it is a sub-optimal heuristic when the cluster is not fully saturated.
 It will create a queue of jobs that, as long as the cluster's utilization is above 80\%, won't
 be scheduled on a node for a long time unless it can re-use their file.
 Normally, with this behavior, using LEA leaves a lot of unused nodes that allows LEM
@@ -1086,10 +1086,10 @@ have a speed-up inferior to 1 and a large amount of jobs are above 2.
 From Figure~\ref{stretch.08-16}, we observe that LEA has a stretch 33 times smaller than
 its competitors. LEM is about 7 times smaller. This drastic diminution is explained
 by the two particularities of this workload.
-Firstly, it's a workload that heavily saturates the cluster as can be seen on Figure~\ref{cluster_usage.08-16_fcfs}
+Firstly, it is a workload that heavily saturates the cluster as can be seen on Figure~\ref{cluster_usage.08-16_fcfs}
 (note that the y-axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
 So for the same reasons as in Section~\ref{sec.03-26}, LEA and LEM largely reduce load times.
-Secondly, it's a workload largely composed of jobs that are short and using less than five cores.
+Secondly, it is a workload largely composed of jobs that are short and using less than five cores.
 The size of a file is always between 6.4 and 128GB.
 On shorter jobs, the proportion of the duration spent on the file transfer is very high. 
 Thus, reducing the transfer time of small jobs has a much greater effect on the stretch, resulting in this 
@@ -1143,7 +1143,7 @@ results beyond a speed-up of 1.2.
 Thus, without backfilling, LEM is the best strategy to observe significant speed-ups.
 It can compute jobs between 1 and 1.5 times faster in 50\% of the cases,
 between 1.5 and 3 times faster in 12.5\% of the cases and between 3 and 6.7 times faster in 12.5\% of the cases.
-It's slower in only 25\% of the workloads, and 12.5\% of those are within a 0.15 slow-down.
+It is slower in only 25\% of the workloads, and 12.5\% of those are within a 0.15 slow-down.
 LEO is a more sustained strategy with 87,5\% of its results above a speed-up of 1, which shows that our opportunistic
 strategy is much more consistent, while still having great speed-ups in some cases as you can 
 see with the outliers above the 1.5 mark.
