@@ -7,6 +7,7 @@ import sys
 import operator
 from dataclasses import dataclass
 from matplotlib.lines import Line2D
+from math import *
 
 @dataclass
 class Job:
@@ -22,6 +23,9 @@ data_size = []
 sizes = []
 job_list_algo_reference = []
 job_list_algo_compare = []
+
+
+font_size = 14
 
 with open(sys.argv[1]) as f:
 	line = f.readline()
@@ -64,25 +68,26 @@ for i in range (0, len(job_list_algo_compare)):
 	x.append(job_list_algo_reference[i].subtime)
 	y.append(job_list_algo_reference[i].time)
 	data_size.append(job_list_algo_reference[i].data_type)	
-	sizes.append(job_list_algo_reference[i].size/1000)	
-
+	# ~ sizes.append(job_list_algo_reference[i].size/1000)	
+	sizes.append(sqrt(job_list_algo_reference[i].size)/2)
+	# ~ print(job_list_algo_reference[i].size)
 fig, ax = plt.subplots()
 
 workload = sys.argv[5]
 
 if (workload == "2022-03-26->2022-03-26_V10000"):
 	ax.set_yticks([1, 10, 20, 30, 40])
-	ax.set_yticklabels(["1", "10", "20", "30", "40"])
+	ax.set_yticklabels(["1", "10", "20", "30", "40"], fontsize=font_size)
 elif (workload == "2022-07-16->2022-07-16_V10000"):
 	ax.set_yticks([0, 0.5, 1, 1.5, 2])
-	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2"])
+	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2"], fontsize=font_size)
 	ax.set_ylim(0,2)
 else:
 	print("not dealt with")
 	exit()
 
 ax.set_xticks([job_list_algo_reference[0].subtime, job_list_algo_reference[0].subtime + 21600, job_list_algo_reference[0].subtime + 21600*2, job_list_algo_reference[0].subtime + 21600*3, job_list_algo_reference[len(job_list_algo_reference)-1].subtime])
-ax.set_xticklabels(["00:00", "06:00", "12:00", "18:00", "00:00"])
+ax.set_xticklabels(["00:00", "06:00", "12:00", "18:00", "00:00"], fontsize=font_size)
 
 ax.axhline(y = 1, color = 'black', linestyle = '-', alpha=0.2)
 
@@ -98,7 +103,7 @@ elif (algo == "LEO"):
 elif (algo == "LEM"):
 	color_choosen = "#91a3b0"
 else:
-	print("error scheduler in plot queu  times")
+	print("error scheduler in plot queue times")
 	exit()
 	
 # Couleur en fonction du type de donnée
@@ -106,23 +111,27 @@ else:
 
 # Couleur en fonction de la stratégie
 ax.scatter(x, y, color=color_choosen, s=sizes, alpha=0.3)
+# ~ print(sizes)
 
-circles = [Line2D([0], [0], marker='o', color=color_choosen, label='20000 sec', markerfacecolor='black', markersize=20, alpha=0.3, linestyle="None"),
-Line2D([0], [0], marker='o', color=color_choosen, label='5000 sec', markerfacecolor='black', markersize=5, alpha=0.3, linestyle="None"),
-Line2D([0], [0], marker='o', color=color_choosen, label='1000 sec', markerfacecolor='black', markersize=1, alpha=0.3, linestyle="None")]
-# ~ circles = [Line2D([0], [0], marker='o', color="black", label='20000 sec', markerfacecolor='black', markersize=20, alpha=0.3, linestyle="None"),
-# ~ Line2D([0], [0], marker='o', color="black", label='5000 sec', markerfacecolor='black', markersize=5, alpha=0.3, linestyle="None"),
-# ~ Line2D([0], [0], marker='o', color="black", label='1000 sec', markerfacecolor='black', markersize=1, alpha=0.3, linestyle="None")]
+# ~ circles = [Line2D([0], [0], marker='o', color=color_choosen, label='20000 sec', markerfacecolor=color_choosen, markersize=(sqrt(20000)/2)/4, alpha=0.3, linestyle="None"),
+# ~ Line2D([0], [0], marker='o', color=color_choosen, label='5000 sec', markerfacecolor=color_choosen, markersize=(sqrt(5000)/2)/4, alpha=0.3, linestyle="None"),
+# ~ Line2D([0], [0], marker='o', color=color_choosen, label='1000 sec', markerfacecolor=color_choosen, markersize=(sqrt(1000)/2)/4, alpha=0.3, linestyle="None")]
+
+line1 = Line2D([], [], color=color_choosen, marker='o', markersize=(sqrt(20000)/2)/4, markerfacecolor=color_choosen, alpha=0.3, linestyle="None")
+line2 = Line2D([], [], color=color_choosen, marker='o', markersize=(sqrt(5000)/2)/4, markerfacecolor=color_choosen, alpha=0.3, linestyle="None")
+line3 = Line2D([], [], color=color_choosen, marker='o', markersize=(sqrt(1000)/2)/4, markerfacecolor=color_choosen, alpha=0.3, linestyle="None")
+plt.legend((line1, line2, line3), ('20000 sec', '5000 sec', '1000 sec'), loc='upper right', fontsize=font_size)
 
 
-plt.legend(handles=circles, loc='upper right')
-plt.xlabel("Submission times (sec)")
+# ~ plt.legend(handles=circles, loc='upper right')
+
+plt.xlabel("Submission times (sec)", fontsize=font_size)
 if sys.argv[3] == "stretch":
-	plt.ylabel("Stretch's speed-up from FCFS")
+	plt.ylabel("Stretch's speed-up from FCFS", fontsize=font_size)
 elif sys.argv[3] == "queue":
-	plt.ylabel("% of queue time difference from FCFS")
+	plt.ylabel("% of queue time difference from FCFS", fontsize=font_size)
 elif sys.argv[3] == "flow":
-	plt.ylabel("% of flow time difference from FCFS")
+	plt.ylabel("% of flow time difference from FCFS", fontsize=font_size)
 else:
 	print("Error type")
 	exit(1)
