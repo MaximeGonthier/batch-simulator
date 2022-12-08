@@ -279,10 +279,10 @@ set of identical nodes.
 \section{Framework}\label{sec.framework}
 
 We consider the problem of scheduling a set of $N$ independent jobs,
-denoted $\jobset = {J_1, J_2, \ldots, J_N}$ on a set of $P$ nodes:
+denoted $\jobset = \{J_1, J_2, \ldots, J_N\}$ on a set of $P$ nodes:
 $\nodeset = \{\Node{1}, \Node{2}, \ldots, \Node{P}\}$.
 %% LM: to be merged later:
-Each node $N_i$ is equipped with $m$ cores noted:
+Each node $\Node{i}$ is equipped with $m$ cores noted:
 $c^i_1,\ldots,c^i_m$ sharing a memory of size $M$.
 
 Each job depends on an input file noted $\file(J_i)$, which is
@@ -308,14 +308,15 @@ Each job $J_i$ has the following attributes:
 
 We do not consider the data output of jobs.
 
-Each of the $N$ jobs must be processed on some of the $P$ nodes.  As
+Each of the $N$ jobs must be processed on one of the $P$ nodes.  As
 stated earlier, the shared file system initially contains all files
 in $\fileset$.  Each node is connected to the file system with a link
 of limited bandwidth, denoted by $\bandwidth$.  The limited bandwidth
 as well as the large file sizes are the reasons why we aim at
 restricting the amount of data movement.
 
-We consider that the memory of a node, denoted by $\memory(\Node{i})$,
+We consider that the memory of a node, denoted by
+$\memory(\Node{i})$\todo{Sam: rather M?},
 is only used by the jobs' input files, since all other data are
 negligible in front of the input files.
 A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
@@ -324,7 +325,7 @@ A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ 
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{enumerate}
 This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
-allowing the same cache memory pages to serve multiple processes from different jobs.
+allowing the same page cache memory pages to serve multiple processes from different jobs.
 Otherwise we consider that memory operations of jobs scheduled between
 $J_i$ and $J_j$ will cause the file to be evicted.
 
@@ -337,13 +338,13 @@ $$
 \forall k,\forall t \quad \sum_{F_i\in \storage(\Node{k},t)} \size(F_i)\leq M.
 $$
 
-For each $J_i$, we denote by
-$\allocatedcores(J_i)$ the set of cores of the same node
-$\allocatednode(J_i)$ allocated to $J_i$ and by
+For each job $J_i$, we denote by $\allocatednode(J_i)$ the node on which
+$J_i$ is processed, by $\allocatedcores(J_i)$ the set of cores of
+$\allocatednode(J_i)$ that process $J_i$, and by
 $\start(J_i)$ its starting time. If at this time, the input file of
 $J_i$ is already in the memory of $\allocatednode(J_i)$, then $J_i$
 can start its execution at time $\start(J_i)$. Otherwise, its input
-file is first loaded, and the execution starts at time 
+file is loaded first, and the execution starts at time 
 $\start+\size(\file(J_i))/\bandwidth$.
 
 \todo[inline]{LM: maybe we should add/formalize:\\
@@ -379,24 +380,27 @@ Jobs are non-preemptible: when started, a job is executed through its completion
 
 
 We present here various schedulers used to allocate jobs to
-computing resources. We start with two basic schedulers (FCFS and EFT)
+computing resources. We start with two reference schedulers (FCFS and EFT)
 and then move to proposing three locality-aware job schedulers (named
 LEA, LEO and LEM). Each of these five schedulers can be used both
 without or with backfilling. For the sake of clarity, we first present
 the simpler version, without backfilling, before detailing the needed
 modification to including backfilling.
 
-As presented above, the task of the scheduler is to allocate resources
-to all jobs submitted until now: some jobs may be started right away,
+As presented above, the task of the scheduler is to allocate a set of
+cores of one node
+to each job submitted until now: some jobs may be started right away,
 while other jobs may be delayed and scheduled later: resource
 reservations are made for these jobs. Jobs are presented to the
 scheduler in the form of a global queue, sorted by job submission
-time.  Note that in accordance to our framework, each job is allocated
-to one or several cores of a single node.
+time. The policies are online algorithms which are called each time
+a task completes (thus making cores available) or upon the submission of
+a new job.
+%Note that in accordance to our framework, each job is allocated to one or several cores of a single node.
 
-\todo[inline]{Max: Say that the schedule is re-done each time a core is liberated?
-For example with: "Our scheduling policies are online algorithms
-that are called each time a core become available or upon new job's arrival."}
+%\todo[inline]{Max: Say that the schedule is re-done each time a core is liberated?
+%For example with: "Our scheduling policies are online algorithms
+%that are called each time a core become available or upon new job's arrival."}
 
 
 
@@ -409,8 +413,8 @@ that are called each time a core become available or upon new job's arrival."}
 
 \subsection{Two schedulers from the state of the art: FCFS and EFT}\label{subsec.fcfs_eft}
 
-A widely used job scheduler that is typically considered to be efficient is
-First-Come-First-Serve or FCFS, detailed in
+A widely-used job scheduler that is typically considered to be efficient is
+First-Come-First-Serve (FCFS), detailed in
 Algorithm~\ref{algo.fcfs}. Implementing this scheduler requires to
 remember the time of next availability for each core. Then, for each job, we look
 for the first time when a sufficient number of cores is available, and we allocate the job to
@@ -420,7 +424,7 @@ those cores.
 \begin{algorithm}[htbp]%\small
 \caption{First-Come-First-Serve (FCFS)}\label{algo.fcfs}
 \begin{algorithmic}[1]
-	\ForEach{$J_i \in$ the job's queue} %\Comment{The job's queue is sorted by submission times}
+	\ForEach{$J_i \in$ the jobs queue} %\Comment{The job's queue is sorted by submission times}
         \ForEach{$\Node{k} \in \nodeset$}
         \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available on \Node{k}\label{fcfs.ln.find}
         % Version with backfilling: \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
@@ -438,7 +442,9 @@ those cores.
 FCFS is a standard baseline comparison
 for job scheduling. However, it is not aware of the capability of the
 system to keep a large data file in the memory of a node between the execution of
-two consecutive jobs. A first step towards a locality-aware scheduler
+two consecutive jobs.
+
+A first step towards a locality-aware scheduler
 is to select a node for each job not based on the cores' availability
 time, but also using the file availability time, based on the file
 transfer time. This is the purpose of the Earliest-Finish-Time (or
@@ -474,7 +480,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 \begin{algorithm}[htbp]%\small
 \caption{Earliest-Finish-Time (EFT)}\label{algo.eft}
 \begin{algorithmic}[1]
-	\ForEach{$J_i \in$ the job's queue}
+	\ForEach{$J_i \in$ the jobs queue}
 		\ForEach{$\Node{k} \in \nodeset$}
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available \Node{k}
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
@@ -482,7 +488,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 		\EndFor
                 \State Select \Node{k}  with the smallest $t'_k$
                 \State Schedule $J_i$ on $\core(J_i)$ cores of \Node{k} that are available starting from $t_k$
-                \State Mark these cores busy until time $t_k +\walltime(J_i)$
+                \State Mark these cores busy until time $t'_k +\walltime(J_i)$
                 %\State Schedule $J_i$ on the node with the smallest $t_k'$
 %		\State Cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$ are updated to be available at time $t_k + \walltime(J_i)$
 %		\State Cores $c_1, ..., c_m$ of $\Node{k}$ are sorted in increasing order of available time
@@ -490,13 +496,13 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{Data locality based schedulers}
+\subsection{Data-locality-based schedulers}
 
 The previous strategies focus on starting (FCFS) or finishing (EFT) a job
 as soon as possible, respectively.  Those are good methods
 to avoid node starvation and reduce queue times.  However, they
 may lead to loading the same input file on a large number of nodes in
-the platform, simply to minimize immediate queue times. Time is spent
+the platform, only to minimize immediate queue times. Time is thus spent
 loading the input file multiple times. This can affect the global
 performance of the system by delaying subsequent jobs.  We present here three
 strategies that attempt to better take into account data locality in
@@ -520,7 +526,7 @@ quantities to rank nodes:
 \end{itemize}
 
 The intuition for the third criterion is that if loading a large file
-in the memory requires to evict many other files, these file will not
+in the memory requires to evict many other files, these files will not
 be available for later jobs and may have to be reloaded.
 In the LEA strategy, we put a strong emphasis on data load, in order
 to really favor data locality. Hence, when computing the score for
@@ -528,7 +534,7 @@ each node \Node{k}, we sum the previous three quantities with a weight
 $W$ for the second one (loading time). In our experiments, based on
 empirical evaluation, we  set this value to $W=500$.
 Note that the other two quantities usually have very different values,
-at the availability time is usually much larger than the time for
+and the availability time is usually much larger than the time for
 reloading evicted data. Hence this last criterion is mostly used as a
 tie-break in case of equality of the first two criteria.
 
@@ -537,7 +543,7 @@ tie-break in case of equality of the first two criteria.
 \begin{algorithm*}[htb]%\small
 \caption{Locality and Eviction Aware (LEA)}\label{algo.lea}
 \begin{algorithmic}[1]
-	\ForEach{$J_i \in$ the job's queue}
+	\ForEach{$J_i \in$ the jobs queue}
 		\ForEach{$\Node{k} \in \nodeset$}
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
@@ -573,7 +579,7 @@ fully loaded and we apply the previous LEA strategy to favor data reuse.
 \begin{algorithm*}[htb]%\small
 \caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
 \begin{algorithmic}[1]
-	\ForEach{$J_i \in$ the job's queue}
+	\ForEach{$J_i \in$ the jobs queue}
 		\ForEach{$\Node{k} \in \nodeset$}
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
@@ -596,16 +602,16 @@ fully loaded and we apply the previous LEA strategy to favor data reuse.
 
 We present a third strategy called Locality and Eviction Mixed (LEM)
 and described in Algorithm~\ref{algo.lem} that takes a similar  approach to
-LEM but performs a simple mix between the EFT and the LEA strategies:
+LEO but performs a simple mix between the EFT and the LEA strategies:
 when the load of the platform (measured as the number of jobs running
 at least one job) is above a criterion, the LEA strategy is applied,
-otherwise we the EFT strategy is used.
+otherwise the EFT strategy is used.
  
 
 \begin{algorithm}[htb]%\small
 \caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
 \begin{algorithmic}[1]
-	\ForEach{$J_i \in$ the job's queue}
+	\ForEach{$J_i \in$ the jobs queue}
 		\State $\mathit{load} \gets$  percentage of nodes running at least one job at current time
 		\If{$\mathit{load} < 80$}
 			\State $EFT(\jobset,\nodeset)$
@@ -620,20 +626,23 @@ otherwise we the EFT strategy is used.
 
 \subsection{Adding backfilling to all strategies}
 
-As mentionned above, backfilling has been proposed to increase the
+As mentioned above, backfilling has been proposed to increase the
 performance of job schedulers, by allowing jobs with low priority to be
-scheduled before jobs with higher priority. In order to avoid jobs
-being perpetually delayed, bounds have to be set on how already
-scheduled jobs can be affected by backfilling. As discussed above,
+scheduled before jobs with higher priority.
+\todo[inline]{Sam: it seems to me we don't really want to talk about
+"priority", but rather submission order?}
+In order to avoid jobs
+being perpetually delayed, bounds have to be set on how already-scheduled
+jobs can be affected by backfilling. As discussed above,
 Conservative Backfilling is the most restrictive version and one of
-the most commonly used strategies to improve cluster utilization. It
+the most commonly-used strategies to improve cluster utilization. It
 forbids any modification on the resource
-reservations of high priority jobs: a job may be scheduled
+reservations of high-priority jobs: a job may be scheduled
 before other jobs that appear earlier in the queue, provided that it
 does not impact the starting time of these jobs.
 
 
-For each of the previous scheduling strategy, we consider a variant
+For each of the previous scheduling strategies, we consider a variant
 using conservative backfilling (and suffixed by -BF).  To add
 backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft},
 \ref{algo.lea} and~\ref{algo.leo} have to be modified: we change the
@@ -646,6 +655,9 @@ job. Specifically, we change Line~\ref{fcfs.ln.find} into:
   \State $\ref{fcfs.ln.find}'$: Find smallest time $t_k$ such that $\core(J_i)$ cores are
   available from $t_k$ until $t_k + \walltime(J_i)$ on $\Node{k}$
 \end{algorithmic}
+\todo[inline]{Sam: shouldn't it take into account the file loading time,
+thus t'k?}
+
 Note that this requires to remember the whole occupation profile of
 each core (with availability and unavailability times), whereas the
 version of each scheduler without backfilling simply requires the time
