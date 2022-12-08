@@ -31,10 +31,10 @@
 \newcommand{\file}{\ensuremath{\mathit{File}}\xspace}
 \newcommand{\storage}{\ensuremath{\mathit{Storage}}\xspace}
 \newcommand{\size}{\ensuremath{\mathit{Size}}\xspace}
-\newcommand{\memory}{\ensuremath{\mathit{Mem}}\xspace}
-\newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}
+\newcommand{\memory}{\ensuremath{\mathit{M}}\xspace}
+%\newcommand{\memorymap}{\ensuremath{\mathcal{M}_{map}}\xspace}% not used anymore
 \newcommand{\duration}{\mathit{Duration}\xspace}
-\newcommand{\bandwidth}{\mathit{BandWidth}\xspace}
+\newcommand{\bandwidth}{\mathit{Bandwidth}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{SubTime}\xspace}
 \newcommand{\emptyflow}{\mathit{Reference\_Flow}\xspace}
@@ -345,14 +345,18 @@ We do not consider the data output of jobs.
 Each of the $N$ jobs must be processed on one of the $P$ nodes.  As
 stated earlier, the shared file system initially contains all files
 in $\fileset$.  Each node is connected to the file system with a link
-of limited bandwidth, denoted by $\bandwidth$.  The limited bandwidth
+of limited bandwidth, denoted by $\bandwidth$: transfering a data of
+size $S$ from the shared file system to some node's memory takes a
+time $S/\bandwidth$.
+The limited bandwidth
 as well as the large file sizes are the reasons why we aim at
 restricting the amount of data movement.
 
 We consider that the memory of a node, denoted by
-$\memory(\Node{i})$\todo{Sam: rather M?},
-is only used by the jobs' input files, since all other data are
-negligible compared with the input files.
+$\memory$is only used by the jobs' input files, since all other data are
+negligible compared with the input files. We assume that this memory
+is large enough to fit all input the files of jobs running on the
+node. \todo{LM: can we motivate this?}
 A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
@@ -363,50 +367,37 @@ allowing the same page cache memory pages to serve multiple processes from diffe
 Otherwise we consider that memory operations of jobs scheduled between
 $J_i$ and $J_j$ will cause the file to be evicted.
 
-We now more formally define the allocation of the jobs to the node and
-their schedule.
-We denote by $\storage(\Node{k}, t)$, the set of files loaded on $\Node{k}$
-at time $t$. The constraint on the limited size of the memory can be
-summarized by:
-$$
-\forall k,\forall t \quad \sum_{F_i\in \storage(\Node{k},t)} \size(F_i)\leq M.
-$$
+% We now more formally define the allocation of the jobs to the node and
+% their schedule.
+% We denote by $\storage(\Node{k}, t)$, the set of files loaded on $\Node{k}$
+% at time $t$. The constraint on the limited size of the memory can be
+% summarized by:
+% $$
+% \forall k,\forall t \quad \sum_{F_i\in \storage(\Node{k},t)} \size(F_i)\leq M.
+% $$
 
-For each job $J_i$, we denote by $\allocatednode(J_i)$ the node on which
-$J_i$ is processed, by $\allocatedcores(J_i)$ the set of cores of
-$\allocatednode(J_i)$ that process $J_i$, and by
-$\start(J_i)$ its starting time. If at this time, the input file of
-$J_i$ is already in the memory of $\allocatednode(J_i)$, then $J_i$
-can start its execution at time $\start(J_i)$. Otherwise, its input
-file is loaded first, and the execution starts at time 
-$\start+\size(\file(J_i))/\bandwidth$.
+For each job $J_i$, the scheduler is in charge of deciding which node
+will process $J_i$, and more precisely which cores of this node
+allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
+$J_i$ is thus allocated a time window from $t_k$
+to $t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
+$\file(J_i)$ in the memory (if it is not already present at time
+$t_k$) and (ii) executing job $J(i)$. The scheduler must make sure
+that no two jobs are executed simultaneously on the same core. The
+true computation of the job takes a time $\duration(J_i)$, however if a
+job does not terminates before its deadline $t_k+\walltime(J_i)$, it
+is killed by the scheduler to ensure that later jobs are not
+delayed. Hence we have $\duration(J_i)\leq \walltime(J_i)$.
 
-\todo[inline]{LM: maybe we should add/formalize:\\
-  - computation of the execution starting time and completion time,\\
-  - constraints on the fact that a core cannot process two jobs simultaneously.}
-
-% We denote by $\sigma(\Node{k}, \mathit{nb}_k)$ the set of $\mathit{nb}_k$ jobs
-% scheduled on $\Node{k}$, each equipped with a $\start(J_i)$ and an
-% input file $\file(J_i)$.
-% $\sigma(\Node{k}, i)$ corresponds to the $i^\text{th}$ job on this schedule.
-% On $\Node{k}$, the schedule is made of a
-% succession of $\mathit{nb}_k$
-% steps, each step being composed of the
-% following stages (in this order):
-% \begin{enumerate}
-% 	\item If $\start(\sigma(\Node{k}, i)) = t$ do:
-% 	\begin{enumerate}
-% 		\item If the input file $\file(\sigma(\Node{k}, i))$ is not yet in memory, it is 
-% 		loaded in the memory of $\Node{k}$ with a duration of $\frac{\size(\file(\sigma(\Node{k}, i)))}{\bandwidth}$.
-% 		\item Job $\sigma(\Node{k}, i)$ is processed on $\Node{k}$ during at most $\walltime(J_i)$.
-% 	\end{enumerate}
-% \end{enumerate}
 It is important to note that the file transfer is done before the computation and cannot be overlapped.
 Jobs are non-preemptible: when started, a job is executed through its completion.
 
 \todo[inline]{Max: Do we need to talk about the objective in the
   framework?\\
   LM: Yes, I totally forgot. Will add this later.}
+
+
+
 
 \section{Job scheduling with input files}\label{sec.schedulers}
 %\todo[inline]{Max: Say that we are online, we have no way to know the number or length of future jobs.}
