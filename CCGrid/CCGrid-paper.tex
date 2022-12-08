@@ -37,8 +37,8 @@
 \newcommand{\bandwidth}{\mathit{Bandwidth}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
 \newcommand{\submissiontime}{\mathit{SubTime}\xspace}
-\newcommand{\emptyflow}{\mathit{Reference\_Flow}\xspace}
-\newcommand{\Endtime}{\mathit{EndTime}\xspace}
+\newcommand{\emptyflow}{\mathit{ReferenceFlow}\xspace}
+%\newcommand{\Endtime}{\mathit{EndTime}\xspace}
 \newcommand{\walltime}{\mathit{WallTime}\xspace}
 \newcommand{\completiontime}{\mathit{CompletionTime}\xspace}
 \newcommand{\start}{\mathit{StartTime}\xspace}
@@ -354,9 +354,11 @@ restricting the amount of data movement.
 
 We consider that the memory of a node, denoted by
 $\memory$is only used by the jobs' input files, since all other data are
-negligible compared with the input files. We assume that this memory
-is large enough to fit all input the files of jobs running on the
-node. \todo{LM: can we motivate this?}
+negligible compared with the input files. We assume that jobs are
+devoted a fraction of the memory proportional to the number of
+requested cores, so that jobs willing to process large input files
+must request large number of cores. This way, we make sure that the
+memory of a node is large enough to accomodate all input files of running jobs.
 A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
@@ -380,16 +382,13 @@ $J_i$ and $J_j$ will cause the file to be evicted.
 For each job $J_i$, the scheduler is in charge of deciding which node
 will process $J_i$, and more precisely which cores of this node
 allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
-$J_i$ is thus allocated a time window from $t_k$
-to $t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
+$J_i$ is thus allocated a time window from $t_k$ to
+$t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
 $\file(J_i)$ in the memory (if it is not already present at time
-$t_k$) and (ii) executing job $J(i)$. The scheduler must make sure
-that no two jobs are executed simultaneously on the same cores. The
-true computation of the job takes a time $\duration(J_i)$\todo{Sam: Doesn't
-it also include the transfer?}, however if a
-job does not terminate before its deadline $t_k+\walltime(J_i)$, it
-is killed by the scheduler to ensure that later jobs are not
-delayed. Hence we have $\duration(J_i)\leq \walltime(J_i)$.
+$t_k$) and (ii) executing job $J(i)$. If the job has not completed at
+time $t_k+\walltime(J_i)$, it is killed by the scheduler to ensure
+that later jobs are not delayed.  The scheduler must also make sure
+that no two jobs are executed simultaneously on the same cores.
 
 It is important to note that the file transfer is done before the computation and cannot be overlapped.
 Jobs are non-preemptible: when started, a job is executed through its completion.
@@ -399,21 +398,21 @@ user submitting jobs is interested in obtaining the result of his jobs
 as soon as possible. Hence we focus on the time spent in the system
 for each job, also called the flow time (or flow) of the job:
 $$
-\mathit{flow}(J_i) = \completiontime(J_i) - \start(J_i).
+\mathit{Flow}(J_i) = \completiontime(J_i) - \start(J_i).
 $$
 In the following, we will consider aggregated performance metrics on
 job flows, such as average flow or maximum flow. However, the duration
 of a job significantly impacts its flow time, and jobs will the same
 flow but very different durations do not experience the same quality
 of service. To avoid this, the \emph{stretch} metric has been
-introduced:
-$$
-\mathit{stretch}(J_i) = \frac{\mathit{flow}(J_i)}{\duration(J_i)}.
-$$
-\todo[inline]{should it be flow/(transfer time + duration)?}
+introduced that compares the actual flow of a job to the one it would
+experience on an empty cluster:
+\begin{eqnarray*}
+\emptyflow(J_i) &=& \duration(J_i) + \frac{\size(\file(J_i))}{\bandwidth}\\
+\mathit{stretch}(J_i) &=& \frac{\mathit{Flow}(J_i)}{\emptyflow(J_i)}.
+\end{eqnarray*}
 The stretch represents the slow-down of a job due to sharing the
-platform with other jobs: if the job would be alone in the platform
-its flow would be equal to its duration. Considering the stretch
+platform with other jobs. Considering the stretch
 allows to better aggregate performance from small and large jobs.
 
 
@@ -671,9 +670,13 @@ otherwise the EFT strategy is used.
 
 As mentioned above, backfilling has been proposed to increase the
 performance of job schedulers, by allowing jobs with lower priority to be
-scheduled before jobs with higher priority.
+scheduled before jobs with higher priority. In our setting, the
+priority is directly linked to the submission order: if $J_i$ is
+submitted before $J_j$, then $J_i$ has a higher priori than $J_j$.
 \todo[inline]{Sam: it seems to me we don't really want to talk about
-"priority", but rather submission order?}
+"priority", but rather submission order?\\LM: I prefer to keep the
+``priority'' name, as it is the classical term used when presenting
+backfilling, but I tried to link it to submission order, ok?}
 In order to avoid jobs
 being perpetually delayed, bounds have to be set on how already-scheduled
 jobs can be affected by backfilling. As discussed above,
@@ -763,49 +766,60 @@ Actual workloads at HPC resources shared by a great number of users with diverse
 that are non-trivial to replicate in a fully artificial simulated job pattern. We believe that this is especially
 true for data-dependent patterns, where a project might launch a burst of jobs using the same file just a few thousand
 core hours in length, then be quiet for a long time processing the results, and then launch another such burst.
+However, changing the scheduling strategy of a production cluster for
+scheduling research would disrupt the community using this cluster.
 
-On the other hand, it would be disruptive to expose a real user community to a wide variety of experimental scheduling strategies.
 
-For this reason, we used logs of historically submitted jobs, in terms of their exact submission time, size, stated runtime, and actual runtime.
-Since explicit data dependencies are not encoded in SLURM job specifications, we created an artificial pattern for this that replicates the behavior of a user.
-Let's consider two jobs from the logs: $J_i$ and $J_j$.
-They will be attributed a common input file if they match the three following requirements:
+For this reason, we choose to perform simulations based on logs of
+historically submitted jobs, containing their exact submission time,
+size, stated walltime, and actual duration\footnote{Links to the logs
+  are omitted for double-blind review but will be made
+  available in the final submission.}.
+Since explicit data dependencies are not encoded in SLURM job
+specifications, we do not have access to the actual input files of
+these jobs. We thus create an artificial data dependency pattern that
+replicates user behaviors.
+We consider two jobs $J_i$ and $J_j$. These jobs are considered to
+share their input file if they match the three following requirements:
 \begin{enumerate}
 	\item $\core(J_i) = \core(J_j)$, i.e., they are requesting the same number of cores.
 	\item $J_i$ and $J_j$ were submitted by the same user.
-	\item $J_i$ and $J_j$ were submitted within an 800 seconds timeframe. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
+	\item $J_i$ and $J_j$ were submitted within an 800 seconds
+          time frame. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
 \end{enumerate}
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files.
 
 
-The resource consists of 486 nodes with 20 cores each, with most of them
+The platform where the logs have been extracted
+consist of 486 nodes with 20 cores each, with most of them
 having 128GB of RAM, and a few 256GB and 1024GB nodes.
 
-Having $\mathbb{M} = \{M_1 < M_2 < ... < M_l\}$ different node sizes raises a new constraint. The model would have
-$M_l$ subsets of nodes, each possibly containing a different number of nodes.
-Some input files would be too large to be computed on one or multiple of those subsets.
+Having three different node sizes does not fit the proposed model and
+raises new challenges: some input files are too large to be processed
+on a subset of nodes. However, a small input file may be processed on
+both nodes with small and large memory.
 Thus, in addition to the scheduling problem, a load balancing problem arises.
-For example, should a job using a file of size $M_1$ be scheduled on a node of size $M_2$?
+%For example, should a job using a file of size $M_1$ be scheduled on a node of size $M_2$?
 Indeed, the scheduler needs to be able to manage each subset of nodes as an independent 
 resource that needs to avoid starvation while also not being saturated
-in case of a sudden batch of jobs requesting a node of its size.
-Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
+in case of a sudden batch of jobs requesting a node of its size. This
+problem is left for future work as we focus in the present paper on
+data locality.
+Consequently, we consider here that the platform is made of 486 homogeneous nodes of size 
 $\memory = 128GB$.
-\todo[inline]{Loris: put this somewhere/explain:
-We consider that these jobs are dedicated to processing their input
-file. Hence, the larger the input file, the more cores the job
-requests, such that the file occupies a fraction of the memory
-proportional to the number of cores allocated to the job. A job with
-$k$ cores will be devoted a memory of size $k \memory/m$. Thus, we consider
-that file sizes are multiple of $\memory/m$.
-Max: Loris, I added your comment 
-on file size relative to number of cores here. But shouldn't it go in the framework instead?
-I propose to add:
-"In our described application case, for each $\file(i) \in \fileset$, $\size(\file(i)) = \frac{128}{20} \times \core(J_i)$."}
 
-The utilization levels are typically high ($>90\%$), but
-not fully consistently so. The vast majority of jobs on these resources are single-node jobs, even sometimes single-core jobs. Run times
-could extend to up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
+
+We consider that these jobs are dedicated to processing their input
+file. Hence, the more cores the job requests, 
+the larger its input file. This allows to compute the size of files as follows:
+$$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
+
+The utilization levels in the log of the platform are typically high ($>90\%$), but
+not fully consistently so. The vast majority of jobs on these
+resources are single-node jobs\todo[inline]{LM: but we consider only
+  single-node jobs, right??}, even sometimes single-core jobs. We
+notice that job
+durations extend up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
 but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
 Each application scenario evaluated in the next section represents one day's worth of log history from the real workload,
@@ -882,32 +896,37 @@ on 44 days extracted from logs of historical submitted jobs.
 \subsection{Settings}
 
 All strategies as well as the two baselines have been implemented on
-a simulator that we developed.
+a simulator that we developed\todo[inline]{put a link to an anonymous
+  repository here}. We compute the flow and stretch for all
+jobs after their termination.
 
-For each job, its flow will be computed after its termination.
-The flow of a job is the total amount of time the job spent in the system, i.e.,
-the duration from the submission time to the completion time. The flow
-allows to evaluate both the queue time and the time spent loading its input file.
-We measure the obtained performance with the mean
-stretch from all jobs of \textit{Day 1}.
-The stretch of a job is the flow of the job divided
-by the flow the job would have gotten if it was scheduled on an empty cluster.
-They are denoted respectively $Flow(J_i)$ and $\emptyflow(J_i)$.
+% For each job, its flow will be computed after its termination.
+% The flow of a job is the total amount of time the job spent in the system, i.e.,
+% the duration from the submission time to the completion time. The flow
+% allows to evaluate both the queue time and the time spent loading its input file.
+% We measure the obtained performance with the mean
+% stretch from all jobs of \textit{Day 1}.
 
-\begin{equation}
-Flow(J_i) = \Endtime(J_i) - \submissiontime(J_i)
-\end{equation}
+% The stretch of a job is the flow of the job divided
+% by the flow the job would have gotten if it was scheduled on an empty cluster.
+% They are denoted respectively $Flow(J_i)$ and $\emptyflow(J_i)$.
 
-\begin{equation}
-\emptyflow(J_i) = \duration(J_i) + \frac{\size(\file(J_i))}{\bandwidth}
-\end{equation}
+% \begin{equation}
+% Flow(J_i) = \completiontime(J_i) - \submissiontime(J_i)
+% \end{equation}
 
-The stretch of each job is computed as follows:
-\begin{equation}
-Stretch_{J_i} = \frac{Flow(J_i)}{\emptyflow(J_i)}
-\end{equation}
+% \begin{equation}
+% \emptyflow(J_i) = \duration(J_i) + \frac{\size(\file(J_i))}{\bandwidth}
+% \end{equation}
 
-\todo[inline]{Max: Do we need a table to recap the acronyms and strategies or reading the section scheduler is sufficient to know the acronyms?}
+% The stretch of each job is computed as follows:
+% \begin{equation}
+% Stretch_{J_i} = \frac{Flow(J_i)}{\emptyflow(J_i)}
+% \end{equation}
+
+\todo[inline]{Max: Do we need a table to recap the acronyms and
+  strategies or reading the section scheduler is sufficient to know
+  the acronyms? LM: no need for such table I guess}
 We also evaluate the total amount of time spent waiting for a file to be available.
 Our main competitors on these metrics are FCFS and EFT, with and without backfilling.
 \todo[inline]{Max: Do we need more in this setting section?}
