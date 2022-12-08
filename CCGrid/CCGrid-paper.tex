@@ -317,7 +317,7 @@ denoted $\jobset = \{J_1, J_2, \ldots, J_N\}$ on a set of $P$ nodes:
 $\nodeset = \{\Node{1}, \Node{2}, \ldots, \Node{P}\}$.
 %% LM: to be merged later:
 Each node $\Node{i}$ is equipped with $m$ cores noted:
-$c^i_1,\ldots,c^i_m$ sharing a memory of size $M$.
+$c^i_1,\ldots,c^i_m$ sharing a memory of size $\memory$.
 
 Each job depends on an input file noted $\file(J_i)$, which is
 initially stored in the main shared file system.  During the
@@ -373,7 +373,8 @@ $J_i$ and $J_j$ will cause the file to be evicted.
 % at time $t$. The constraint on the limited size of the memory can be
 % summarized by:
 % $$
-% \forall k,\forall t \quad \sum_{F_i\in \storage(\Node{k},t)} \size(F_i)\leq M.
+% \forall k,\forall t \quad \sum_{F_i\in \storage(\Node{k},t)}
+% \size(F_i)\leq \memory.
 % $$
 
 For each job $J_i$, the scheduler is in charge of deciding which node
@@ -786,14 +787,14 @@ Indeed, the scheduler needs to be able to manage each subset of nodes as an inde
 resource that needs to avoid starvation while also not being saturated
 in case of a sudden batch of jobs requesting a node of its size.
 Consequently, to focus on the issue of data-locality, we use a set of 486 nodes of size 
-$M = 128GB$.
+$\memory = 128GB$.
 \todo[inline]{Loris: put this somewhere/explain:
 We consider that these jobs are dedicated to processing their input
 file. Hence, the larger the input file, the more cores the job
 requests, such that the file occupies a fraction of the memory
 proportional to the number of cores allocated to the job. A job with
-$k$ cores will be devoted a memory of size $k M/m$. Thus, we consider
-that file sizes are multiple of $M/m$.
+$k$ cores will be devoted a memory of size $k \memory/m$. Thus, we consider
+that file sizes are multiple of $\memory/m$.
 Max: Loris, I added your comment 
 on file size relative to number of cores here. But shouldn't it go in the framework instead?
 I propose to add:
