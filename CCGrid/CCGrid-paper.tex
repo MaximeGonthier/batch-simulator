@@ -10,12 +10,14 @@
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath, amssymb, amsfonts, colortbl, xspace, todonotes, paralist, multirow, hyperref, pgfplots}
+\usepackage{amsmath, amssymb, amsfonts, colortbl, xspace, paralist, multirow, hyperref, pgfplots}
 \pgfplotsset{compat=newest}
 \hypersetup{
    colorlinks=false,
    pdfborder={0 0 0},
-}
+ }
+%\usepackage[disable]{todonotes}
+\usepackage{todonotes}
 \usepackage[english]{babel}
 \usepackage{graphicx, color, amssymb, url, xcolor, tikz, pgf, float, subcaption, algorithm,  tabularx}
 \usepackage[noend]{algpseudocode}
@@ -582,7 +584,7 @@ tie-break in case of equality of the first two criteria.
 
 
 
-\begin{algorithm*}[htb]%\small
+\begin{algorithm}[htb]%\small
 \caption{Locality and Eviction Aware (LEA)}\label{algo.lea}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -601,7 +603,7 @@ tie-break in case of equality of the first two criteria.
                 \State Mark these cores busy until time $t_k +\walltime(J_i)$
 	\EndFor
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 %\subsection{LEO}
 
@@ -618,7 +620,7 @@ right away, we select the one that will minimize the completion time
 fully loaded and we apply the previous LEA strategy, to favor data reuse.
 
 
-\begin{algorithm*}[htb]%\small
+\begin{algorithm}[htb]%\small
 \caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -640,7 +642,7 @@ fully loaded and we apply the previous LEA strategy, to favor data reuse.
                 \State Mark these cores busy until time $t_k +\walltime(J_i)$
 	\EndFor
 \end{algorithmic}
-\end{algorithm*}
+\end{algorithm}
 
 We present a third strategy called Locality and Eviction Mixed (LEM)
 and described in Algorithm~\ref{algo.lem} that takes a similar approach to
@@ -757,8 +759,8 @@ the nodes."\\
 LM: I don't think we need to mention this. Tie-breaking using smallest
 index is the default behavior in most systems.}
 
-\section{Working with information from a real workload and cluster\todo[inline]{Max: Another name for this section?}}\label{sec.working}
 
+\section{Performance evaluation and analysis}\label{sec.evaluations}
 
 Actual workloads at HPC resources shared by a great number of users with diverse needs can contain structures
 that are non-trivial to replicate in a fully artificial simulated job pattern. We believe that this is especially
@@ -768,11 +770,21 @@ However, changing the scheduling strategy of a production cluster for
 scheduling research would disrupt the community using this cluster.
 
 
-For this reason, we choose to perform simulations based on logs of
-historically submitted jobs, containing their exact submission time,
+For this reason, we choose to perform simulations based on logs of a
+real computing platform. In this section, we describe how we used
+these logs as well as the results of the corresponding simulations.
+All strategies as well as the two baselines have been implemented on
+a simulator that we developed\footnote{\url{https://github.com/user-for-double-blind-submission/Locality-aware-batch-scheduling-of-I-O-intensive-workloads}}.
+
+
+
+\subsection{Usage of real cluster logs}
+\label{sec.working}
+
+The logs we use contain historical data on jobs, namely their exact submission time,
 size, stated walltime, and actual duration\footnote{Links to the logs
   are omitted for double-blind review but will be made
-  available in the final submission.}.  
+  available in the final submission.}. 
 Since explicit data dependencies are not encoded in SLURM job
 specifications, we do not have access to the actual input files of
 these jobs. We thus create an artificial data dependency pattern that
@@ -814,17 +826,14 @@ $$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
 
 The utilization levels in the log of the platform are typically high ($>90\%$), but
 not fully consistently so. The vast majority of jobs on these
-resources are single-node jobs\todo[inline]{LM: but we consider only
-single-node jobs, right?? Max: Yes, I added a sentence to detail what 
-we do to multi-nodes jobs. Do we want to keep it like that?}, even sometimes single-core jobs.
-The few multi-nodes jobs are replaced by as many single-node jobs as necessary to represent the same occupation.
+resources are single-node jobs and thus fit in our framework.
+The few multi-nodes jobs are not representative of the typical usage
+of the platform, and are replaced by as many single-node jobs as necessary to represent the same workload.
 We notice that job
-durations extend up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
-but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
+durations extend up to 10 days, while some jobs only last a few
+minutes. Even if the workload is not homogeneous, it is representative
+of the real usage from an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
-Each application scenario evaluated in the next section represents one day's worth of log history from the real workload,
-processed in a realistic scheduling environment steady state also determined by the logs.
-The way we collect and schedule jobs from the log's history is represented in Figure~\ref{fig.workload}.
 \begin{figure*}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
 \definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
@@ -864,11 +873,18 @@ The way we collect and schedule jobs from the log's history is represented in Fi
 \caption{Methodology followed to schedule and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
 \label{fig.ex}
 \end{figure*}
+
+In order to avoid simulating the whole workload (one year) but to
+target different scenarios, we randomly select a number of days (44 days) and
+extract the jobs corresponding to these days from the logs. However,
+to simulate these jobs in a realistic, steady-state operation of the
+platform, we consider both jobs submitted before and after the day
+under consideration. More precisely, we proceed as follows (and as
+representated in Figure~\ref{fig.workload}).
+
+
 On the real cluster, when a job finishes, all of its metadata
 are written to a file corresponding to the day during which the job finished.
-%~ This information contains the node that was attributed, the real job's duration, the walltime, 
-%~ the number of cores required, the user that submitted the job, the submission time, 
-%~ the start and end time.
 Our goal is to schedule and evaluate all the jobs submitted on 
 \textit{Day 1} with the settings in which they were on the real cluster.
 In order to get all the jobs that were submitted on \textit{Day 1}, we
@@ -888,16 +904,8 @@ following the log's history. Starting from \textit{Day 0} we
 use one of our schedulers. We then only evaluate jobs submitted on \textit{Day 1}
 to avoid side effects.
 
-\section{Performance evaluation and analysis}\label{sec.evaluations}
 
-Below, we present the results of experimental evaluations conducted 
-on 44 days extracted from logs of historical submitted jobs.
 
-\subsection{Settings}
-
-All strategies as well as the two baselines have been implemented on
-a simulator that we developed\footnote{\url{https://github.com/user-for-double-blind-submission/Locality-aware-batch-scheduling-of-I-O-intensive-workloads}}.
-We compute the flow and stretch for all jobs after their termination.
 
 % For each job, its flow will be computed after its termination.
 % The flow of a job is the total amount of time the job spent in the system, i.e.,
@@ -941,20 +949,21 @@ offering different saturations of the cluster.
 %~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
 \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
 
-Figure~\ref{stretch.07-16}a shows us, for each scheduler, the mean stretch from all jobs
-submitted on July 16.
-\todo[inline]{Should we say on July 16 or on July 16?
-Carl: I prefer July
-16. A comment is also that file names containing > might cause
-production problems if the conference accepts tex files for
-submission. Max: Okay I've putted July 16. I'll remove the arrows once we have our final figures.}
+Figure~\ref{stretch.07-16}a shows, for each scheduler, the mean stretch from all jobs
+submitted on July 16, corresponding to an under-utilized
+cluster.\todo{give some stats?}
+% \todo[inline]{Should we say on July 16 or on July 16?
+% Carl: I prefer July
+% 16. A comment is also that file names containing > might cause
+% production problems if the conference accepts tex files for
+% submission. Max: Okay I've putted July 16. I'll remove the arrows once we have our final figures.}
 The horizontal black dotted line corresponds to a stretch of 1.
-This stretch is obtained if all jobs 
-are scheduled on an empty cluster. It corresponds to the waiting time of each job being exactly
+We recall that the stretch 1 corresponds to all jobs being
+scheduled on an empty cluster. It corresponds to the waiting time of each job being exactly
 the time it takes to load the input file.
 FCFS, EFT, LEO and LEM have mean stretches close to 1.
 EFT, LEO and LEM have a slight benefit over FCFS thanks to file re-use.
-LEA is 23\% slower.
+LEA has a stretch 23\% slower.
 
 Figures~\ref{stretch.07-16}b and \ref{reuse.07-16} 
 both gives us similar information. The first one
@@ -962,13 +971,12 @@ shows the total amount of time spent
 waiting for a file to be ready before starting the computation,
 relative to the total waiting time of FCFS.
 The second figure
-shows the number of jobs that re-used a file,
-i.e,. the file was already in memory or 
-another job was already loading the file.
+shows the number of jobs that re-used a file (or being transfered),
+and no specific file transfer needed to be started.
 The gray background denote the total
 number of jobs.
-On both of these figures, LEA is the outlier:
-it re-uses input files for more jobs and consequently the total time spent waiting for a load is lower.
+On both of these figures, LEA is the only strategy that increases the
+file re-use, which explains why the total time spent waiting for a load is lower.
 
 \subsubsection{Understanding LEA's poor performance}
 
@@ -980,7 +988,7 @@ it re-uses input files for more jobs and consequently the total time spent waiti
 To understand the issues LEA encounters on this workload, we need to study the cluster's usage over time.
 Figure~\ref{07_16_cluster_usage_fcfs} shows us a visual representation of 
 our cluster's usage when using FCFS.
-The Y axis represents the number of requested cores either running on a
+The vertical axis represents the number of requested cores either running on a
 node (lower half) or in the queue of jobs waiting to be executed (top
 half). The maximum is the total number of cores on our cluster: 9720.
 The blue line shows the number of cores from all jobs.
@@ -993,28 +1001,28 @@ those jobs that have their submission time within our evaluation window. Thus, t
 of the set indicated by the the blue line.
 If a line is present in the top half, it means that some jobs could not be scheduled
 and are thus waiting in the queue of available jobs. 
-A node could have available cores that are still too few to accommodate some jobs.
-This explains why jobs can be in the queue, even if the lower half does not reach the maximum.
+A node could have some available cores but not enough to accommodate some jobs with large requirements.
+This explains why the waiting job queue may not be empty, even if the lower half does not reach the maximum.
 The gray line represents the number of cores currently loading a file.
 Lastly, the orange lines delimits the submission times of our 
 evaluated jobs, in other words it's our evaluation window.
-\todo[inline]{Tell what dotted orange lines are. Max: Okay done.}
+%\todo[inline]{Tell what dotted orange lines are. Max: Okay done.}
 
 By looking at the top half of Figure~\ref{07_16_cluster_usage_fcfs}
 we understand that the job queue is empty most of the time.
-In this situation, FCFS is very efficient. The earliest available node is in
+In this situation, FCFS and EFT are very efficient. The earliest available node is in
 most cases a node that can start the job immediately, explaining the mean stretch close to 1 in Figure~\ref{stretch.07-16}a.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
-that puts a large weight on transfer time\todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here?} or weigh equally $t_k$, the transfer and eviction durations. 
+that puts a large weight on transfer time\todo[inline]{Max: We use $t_k$ as the "earliest available time to compute x cores on node k" in the schedulers section. Can we use it here? LM: Yes} or weigh equally $t_k$, the transfer and eviction durations. 
 Thus, on underused clusters, LEO has a behavior close to EFT, while trying to minimize evictions.
 Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under 80\%, so LEM behaves similarly to EFT.
 On the contrary, LEA favors data re-use over an early start time for a job.
-On an underused cluster it increases starvation.
+On an underused cluster, this increases starvation.
 We can notice this when looking at
-Figure~\ref{07_16_cluster_usage_lea}. It shows the cluster usage when using LEA.
-We can notice that it uses fewer cores, notably before the first vertical orange dotted line. 
-This translates into a larger queue of jobs that you can see on the top half of the figure.
+Figure~\ref{07_16_cluster_usage_lea}, which shows the cluster usage when using LEA.
+LEA uses fewer cores, notably before the first vertical orange dotted line. 
+This translates into a larger queue of jobs that you is noticeable on the top half of the figure.
 For LEA, most of the jobs in this queue are jobs that already have a valid copy of their file loaded on a node. 
 The benefit of scheduling these jobs immediately on another node and loading the file appears
 inferior to waiting for a file re-use for LEA and thus creates this queue of jobs that does not exist for FCFS. 
