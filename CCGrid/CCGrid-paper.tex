@@ -345,7 +345,7 @@ We do not consider the data output of jobs.
 Each of the $N$ jobs must be processed on one of the $P$ nodes.  As
 stated earlier, the shared file system initially contains all files
 in $\fileset$.  Each node is connected to the file system with a link
-of limited bandwidth, denoted by $\bandwidth$: transfering a data of
+of limited bandwidth, denoted by $\bandwidth$: transferring a data of
 size $S$ from the shared file system to some node's memory takes a
 time $S/\bandwidth$.
 The limited bandwidth
@@ -353,12 +353,12 @@ as well as the large file sizes are the reasons why we aim at
 restricting the amount of data movement.
 
 We consider that the memory of a node, denoted by
-$\memory$is only used by the jobs' input files, since all other data are
+$\memory$ is only used by the jobs' input files, since all other data are
 negligible compared with the input files. We assume that jobs are
 devoted a fraction of the memory proportional to the number of
 requested cores, so that jobs willing to process large input files
 must request large number of cores. This way, we make sure that the
-memory of a node is large enough to accomodate all input files of running jobs.
+memory of a node is large enough to accommodate all input files of running jobs.
 A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
@@ -398,8 +398,10 @@ user submitting jobs is interested in obtaining the result of his jobs
 as soon as possible. Hence we focus on the time spent in the system
 for each job, also called the flow time (or flow) of the job:
 $$
-\mathit{Flow}(J_i) = \completiontime(J_i) - \start(J_i).
+% \mathit{Flow}(J_i) = \completiontime(J_i) - \start(J_i).
+\mathit{Flow}(J_i) = \completiontime(J_i) - \submissiontime(J_i).
 $$
+\todo[inline]{Max: The flow is completiontime - submissiontime, not start time. I corrected it.}
 In the following, we will consider aggregated performance metrics on
 job flows, such as average flow or maximum flow. However, the duration
 of a job significantly impacts its flow time, and jobs will the same
@@ -948,6 +950,7 @@ Carl: I prefer July
 16. A comment is also that file names containing > might cause
 production problems if the conference accepts tex files for
 submission. Max: Okay I've putted July 16. I'll remove the arrows once we have our final figures.}
+On Figure~\ref{stretch.07-16} and other similar plots, the lower the value is, the better.\todo[inline]{Max: Do we need to explain that the lower the better on these figures?}
 The horizontal black dotted line corresponds to a stretch of 1.
 This stretch is obtained if all jobs 
 are scheduled on an empty cluster. It corresponds to the waiting time of each job being exactly
