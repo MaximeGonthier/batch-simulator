@@ -165,7 +165,7 @@ data input into account, and thus do not benefit from such data reuse ;
 jobs most always have to re-load their data input.
 
 In this paper, we propose to model the benefits of re-using data loads
-betwen successive jobs, and we introduce new algorithms that add such
+between successive jobs, and we introduce new algorithms that add such
 data reuse to the scheduling balance. By tracking which data is loaded
 on which node for the scheduled jobs, they are able to significantly
 reduce data loads, thus improving both resource utilization and user
@@ -882,7 +882,7 @@ extract the jobs corresponding to these days from the logs. However,
 to simulate these jobs in a realistic, steady-state operation of the
 platform, we consider both jobs submitted before and after the day
 under consideration. More precisely, we proceed as follows (and as
-representated in Figure~\ref{fig.workload}).
+represented in Figure~\ref{fig.workload}).
 
 
 On the real cluster, when a job finishes, all of its metadata
@@ -1080,7 +1080,7 @@ In this case, the occupation rate is just above 80\%, but not fully
 100\% have gotten?". Max: Okay I answered in the next 3 sentences. Is it alright?}, thus LEM stays on the same strategy as LEA.
 The threshold to switch between EFT and LEA is set to 80\%. 
 This value was found experimentally by testing different thresholds on various types of workloads (see the different cluster's usage in Sections~\ref{sec.07-16}, \ref{sec.09-09}, \ref{sec.03-26} and \ref{sec.08-16}).
-This threshold can vary depending on the cluster and it's different utilizations scenarios, and can be found following the same methodology.
+This threshold can vary depending on the cluster and it's different utilization scenarios, and can be found following the same methodology.
 Following LEA's strategy is a sub-optimal heuristic when the cluster is not fully saturated.
 It creates a queue of jobs that, as long as the cluster's utilization is above 80\%, won't
 be scheduled on a node for a long time unless it can re-use their file.
