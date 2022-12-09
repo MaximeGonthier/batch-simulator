@@ -177,6 +177,7 @@ elif (bf_mode == 4):
 	FCFS_time_to_load_bf = Y2[1]
 	
 fig, ax = plt.subplots(1, 2)
+# ~ fig, ax = plt.subplots(1, 2, ['a)', 'b)'], constrained_layout=True)
 fig.subplots_adjust(wspace=0.3)
 
 # Pour renommer les algos
@@ -191,19 +192,25 @@ X[7] = "LEO-BF"
 X[8] = "LEM"
 X[9] = "LEM-BF"
 	
-plt.rcParams['hatch.linewidth'] = 5
+plt.rcParams['hatch.linewidth'] = 2
 
-markers=["o", "^", "s", "P", "h"]
+markers=["^", "v", "s", "o", "D"]
 colors=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"]
 
 # Pour diviser en 2 BF/NON BF
 if (bf_mode == 0): # Non BF
+	print("bf_mode:",bf_mode)
 	Y_non_bf = [Y[2*i] for i in range(len(Y)//2)]
 	Y_non_bf_2 = [Y2[2*i] for i in range(len(Y2)//2)]
 	X_non_bf = [X[2*i] for i in range(len(X)//2)]
+	hatches = ["x","x","x","x","x"]
 	for i in range(len(X_non_bf)):
-		ax[0].scatter(X_non_bf[i], Y_non_bf[i], color=colors[i], s=220, marker=markers[i])
+		ax[0].scatter(X_non_bf[i], Y_non_bf[i], color=colors[i], s=220, marker=markers[i], linewidths=3)
 		ax[1].bar(X_non_bf[i], Y_non_bf_2[i]/FCFS_time_to_load, color=colors[i])
+
+		# ~ ax[0].bar(X_non_bf[i], Y_non_bf[i], color=colors[i])
+		# ~ ax[1].bar(X_non_bf[i], Y_non_bf_2[i]/FCFS_time_to_load, color=colors[i], hatch=hatches[i], edgecolor="white")
+		
 	# ~ plt.stem(X_non_bf, Y_non_bf)
 elif (bf_mode == 3): # BF
 	Y_bf = [Y[2*i+1] for i in range(len(Y)//2)]
@@ -213,14 +220,15 @@ elif (bf_mode == 3): # BF
 		ax[0].scatter(X_bf[i], Y_bf[i], color=colors[i], s=220, marker=markers[i])
 		ax[1].bar(X_bf[i], Y_bf_2[i]/FCFS_time_to_load, color=colors[i])
 elif (bf_mode == 4): # BF and NON BF on same plot
+	print(bf_mode)
 	hatches = ['','/','','/','','/','','/','','/']
 	colors=["#4c0000","#4c0000","#E50000","#E50000","#00bfff","#00bfff","#ff9b15","#ff9b15","#91a3b0","#91a3b0"]
-	print(hatches)
+	# ~ print(hatches)
 	# ~ for i in range(len(X)):
 		# ~ plt.scatter(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
 	for i in range(len(X)):
 		ax[0].scatter(X[i], Y[i], color=colors[i], s=220, marker=markers[i])
-		ax[1].bar(X[i], Y2[i]/FCFS_time_to_load, color=colors[i])
+		# ~ ax[1].bar(X[i], Y2[i]/FCFS_time_to_load, color=colors[i])
 else:
 	print("bf_mode not dealt with", bf_mode)
 	exit
@@ -233,14 +241,17 @@ ax[1].set_ylim(0, 1.03)
 	
 ax[0].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 ax[1].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
-ax[0].set_ylabel("Mean stretch")
-ax[1].set_ylabel("Load times compared to FCFS' load time")
+ax[0].set_ylabel("Stretch")
+ax[1].set_ylabel("Ratio")
 
 # ~ ax[0].xticks(fontsize=font_size)
 # ~ ax[0].yticks(fontsize=font_size)
 # ~ ax[1].xticks(fontsize=font_size)
 # ~ ax[1].yticks(fontsize=font_size)
 
+ax[0].annotate("(a) Mean stretch", xy=(0.22, -0.13), xycoords="axes fraction")
+ax[1].annotate("(b) Load time ratio from FCFS", xy=(0.01, -0.13), xycoords="axes fraction") 
+          
 # Show the plot
 if (bf_mode == 3):
 	filename = "plot/BF_" + title + ".pdf"
