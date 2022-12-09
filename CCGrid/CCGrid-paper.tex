@@ -1124,22 +1124,22 @@ have a speed-up inferior to 1 and a large amount of jobs are above 2.
 
 \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on August 16.}\label{stretch.08-16}\end{figure}
 %~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}\label{stretch.08-16}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}
-\label{cluster_usage.08-16_fcfs}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.\todo[inline]{Max: I think this figure can be removed, I don't really use it in the explanations.}}
-\label{cluster_usage.08-16_lem}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}\label{cluster_usage.08-16_fcfs}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.\todo[inline]{Max: I think this figure can be removed, I don't really use it in the explanations.}}\label{cluster_usage.08-16_lem}\end{figure}
 
 From Figure~\ref{stretch.08-16}a, we observe that LEA has a stretch 33 times smaller than
 its competitors. LEM is about 7 times smaller. This drastic diminution is explained
 by the two particularities of this workload.
-Firstly, it is a workload that heavily saturates the cluster as you can see\todo[inline]{Max: Can we say "as you can see" in an article? Talking directly to the reader.} in Figure~\ref{cluster_usage.08-16_fcfs}
-(note that the Y axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
+Firstly, it is a workload that heavily saturates the cluster.
+% as you can see in Figure~\ref{cluster_usage.08-16_fcfs}
+% (note that the Y axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
 So, for the same reasons as in Section~\ref{sec.03-26}, LEA and LEM largely reduce load times.
 Secondly, it is a workload largely composed of jobs that are short and using less than five cores.
-%The size of a file is always between 6.4 and 128GB.
+% The size of a file is always between 6.4 and 128GB.
 On shorter jobs, the proportion of the duration spent on the file transfer is very high. 
 Thus, reducing the transfer time of small jobs has a much greater effect on the stretch, resulting in this 
-drastic reduction for LEA and LEM, as can be seen on Figure~\ref{cluster_usage.08-16_lem}.
+drastic reduction for LEA and LEM.
+% , as can be seen on Figure~\ref{cluster_usage.08-16_lem}.
 
 \subsection{Aggregated results on 44 different evaluated workloads}
 
@@ -1199,7 +1199,8 @@ We can notice that with backfilling, our schedulers have smaller improvements.
 To understand this we can look at Figure~\ref{stretch.01-28}. We can see that 
 with backfilling 
 % (hashed bars),
-(hollow markers),
+% (hollow markers),
+(hollow crosses),
 the mean stretch is much lower for FCFS-BF and EFT-BF. 
 However, our strategies do not benefit from backfilling as much as FCFS-BF does for two reasons:
 \begin{itemize}
