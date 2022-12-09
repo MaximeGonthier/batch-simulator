@@ -995,7 +995,9 @@ and are thus waiting in the queue of available jobs.
 A node could have available cores that are still too few to accommodate some jobs.
 This explains why jobs can be in the queue, even if the lower half does not reach the maximum.
 The gray line represents the number of cores currently loading a file.
-\todo[inline]{Tell what dotted orange lines are}
+Lastly, the orange lines delimits the submission times of our 
+evaluated jobs, in other words it's our evaluation window.
+\todo[inline]{Tell what dotted orange lines are. Max: Okay done.}
 
 By looking at the top half of Figure~\ref{07_16_cluster_usage_fcfs}
 we understand that the job queue is empty most of the time.
@@ -1068,7 +1070,10 @@ Figure~\ref{cluster_09-09_lem} represents the same experiment with LEM.
 We can see that the queue of requested cores never hits 0.
 In this case, the occupation rate is just above 80\%, but not fully
 100\%\todo[inline]{Sam: "then why did you choose 80\%? What would choosing
-100\% have gotten?"}, thus LEM stays on the same strategy as LEA.
+100\% have gotten?". Max: Okay I answered in the next 3 sentences. Is it alright?}, thus LEM stays on the same strategy as LEA.
+The threshold to switch between EFT and LEA is set to 80\%. 
+This value was found experimentally by testing different thresholds on various types of workloads (see the different cluster's usage in Sections~\ref{sec.07-16}, \ref{sec.09-09}, \ref{sec.03-26} and \ref{sec.08-16}).
+This threshold can vary depending on the cluster and it's different utilizations scenarios, and can be found following the same methodology.
 And as we saw in the last section, it is a sub-optimal heuristic when the cluster is not fully saturated.
 It will create a queue of jobs that, as long as the cluster's utilization is above 80\%, won't
 be scheduled on a node for a long time unless it can re-use their file.
@@ -1147,7 +1152,6 @@ within the whiskers. This also means that between the lower side of the box and 
 we find 75\% of the results (and similarly between the upper side of the box and the minimum value).
 The solid green lines show the median while the dashed ones show the mean stretch's improvement compared to FCFS. 
 Each white circle is an outlier whose improvement is in the first or last octile.
-\todo[inline]{Max: Should we draw on the whiskers the distribution (12.5\%,12.5\%,25\%,25\%,12.5\%,12.5\%)?}
 
 As in the previous results, we observe that EFT does not bring any real improvement compared to FCFS.
 For LEA, LEO and LEM, the median are respectively 1.12, 1.03 and 1.13. 
