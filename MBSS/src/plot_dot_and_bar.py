@@ -194,7 +194,8 @@ X[9] = "LEM-BF"
 	
 plt.rcParams['hatch.linewidth'] = 2
 
-markers=["^", "v", "s", "o", "D"]
+# ~ markers=["^", "v", "s", "o", "D"]
+markers=["x", "x", "x", "x", "x"]
 colors=["#4c0000","#E50000","#00bfff","#ff9b15","#91a3b0"]
 
 # Pour diviser en 2 BF/NON BF
@@ -205,7 +206,7 @@ if (bf_mode == 0): # Non BF
 	X_non_bf = [X[2*i] for i in range(len(X)//2)]
 	hatches = ["x","x","x","x","x"]
 	for i in range(len(X_non_bf)):
-		ax[0].scatter(X_non_bf[i], Y_non_bf[i], color=colors[i], s=220, marker=markers[i], linewidths=3)
+		ax[0].scatter(X_non_bf[i], Y_non_bf[i], color=colors[i], s=200, marker=markers[i], linewidths=3)
 		ax[1].bar(X_non_bf[i], Y_non_bf_2[i]/FCFS_time_to_load, color=colors[i])
 
 		# ~ ax[0].bar(X_non_bf[i], Y_non_bf[i], color=colors[i])
@@ -217,7 +218,7 @@ elif (bf_mode == 3): # BF
 	Y_bf_2 = [Y2[2*i+1] for i in range(len(Y2)//2)]
 	X_bf = [X[2*i+1] for i in range(len(X)//2)]
 	for i in range(len(X_bf)):
-		ax[0].scatter(X_bf[i], Y_bf[i], color=colors[i], s=220, marker=markers[i])
+		ax[0].scatter(X_bf[i], Y_bf[i], color=colors[i], s=200, marker=markers[i])
 		ax[1].bar(X_bf[i], Y_bf_2[i]/FCFS_time_to_load, color=colors[i])
 elif (bf_mode == 4): # BF and NON BF on same plot
 	print(bf_mode)
@@ -227,7 +228,7 @@ elif (bf_mode == 4): # BF and NON BF on same plot
 	# ~ for i in range(len(X)):
 		# ~ plt.scatter(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
 	for i in range(len(X)):
-		ax[0].scatter(X[i], Y[i], color=colors[i], s=220, marker=markers[i])
+		ax[0].scatter(X[i], Y[i], color=colors[i], s=200, marker=markers[i])
 		# ~ ax[1].bar(X[i], Y2[i]/FCFS_time_to_load, color=colors[i])
 else:
 	print("bf_mode not dealt with", bf_mode)
@@ -240,7 +241,7 @@ ax[1].set_ylim(0, 1.03)
 # ~ ax[1].set_xticks(fontsize=font_size)
 	
 ax[0].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
-ax[1].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
+# ~ ax[1].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 ax[0].set_ylabel("Stretch", fontsize=font_size)
 ax[1].set_ylabel("Ratio", fontsize=font_size)
 

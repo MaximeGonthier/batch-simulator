@@ -161,20 +161,23 @@ elif (percentages_mode == 3): # BF
 elif (percentages_mode == 4): # BF and NON BF on same plot
 	if (comparaison == "Number_of_data_reuse"):
 		plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
-	markers=["^","^", "v","v", "s","s", "o","o", "D", "D"]
+	markers=["X", "X", "X", "X", "X", "X", "X", "X", "X", "X"]
 	hatches = ['','/','','/','','/','','/','','/']
 	colors=["#4c0000","#4c0000","#E50000","#E50000","#00bfff","#00bfff","#ff9b15","#ff9b15","#91a3b0","#91a3b0"]
 	colors_inside=["#4c0000","none","#E50000","none","#00bfff","none","#ff9b15","none","#91a3b0","none"]
 	fillstyles=["full", "none", "full", "none", "full", "none", "full", "none", "full", "none"]
 	for i in range(len(X)):
 		# ~ plt.bar(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
-		plt.scatter(X[i], Y[i], s=220, marker=markers[i], facecolors=colors_inside[i], edgecolors=colors[i], linewidths=3)
+		plt.scatter(X[i], Y[i], s=200, marker=markers[i], facecolors=colors_inside[i], edgecolors=colors[i], linewidths=3)
+		# ~ plt.scatter(X[i], Y[i], s=200, marker=markers[i], color=colors[i], linewidths=3)
 else:
 	plt.bar(X, Y, color=["#E50000","#00bfff","#ff9b15","#91a3b0"])
 
 
 
-# ~ plt.xticks(rotation=90)
+plt.xticks(fontsize=font_size, rotation = 40)
+plt.yticks(fontsize=font_size)
+plt.ylim(0.9,)
 # ~ plt.title(plot_title)
 # ~ plt.xlabel("Scheduler")
 	
@@ -185,7 +188,7 @@ if (percentages_mode == 0 or percentages_mode == 3 or percentages_mode == 4):
 		plt.ylabel("Number of upgraded jobs")
 	elif (comparaison == "Mean_Stretch"):
 		plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
-		plt.ylabel("Mean stretch")
+		plt.ylabel("Mean stretch", fontsize=font_size)
 	elif (comparaison == "Number_of_data_reuse"):
 		plt.ylabel("Number of jobs re-using a file")
 	else:

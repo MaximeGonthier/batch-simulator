@@ -127,7 +127,7 @@ plt.legend((line1, line2, line3), ('20000 sec', '5000 sec', '1000 sec'), loc='up
 
 plt.xlabel("Submission times (sec)", fontsize=font_size)
 if sys.argv[3] == "stretch":
-	plt.ylabel("Stretch's speed-up from FCFS", fontsize=font_size)
+	plt.ylabel("Stretch\'s improvement from FCFS", fontsize=font_size)
 elif sys.argv[3] == "queue":
 	plt.ylabel("% of queue time difference from FCFS", fontsize=font_size)
 elif sys.argv[3] == "flow":

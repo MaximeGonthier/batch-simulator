@@ -195,24 +195,10 @@
 	
 \section{Questions for next meeting}
 	\begin{enumerate}
-		\item Verif ce qu'on a fais sur: "by design the data is the right size" au moment de 
-		"We consider that the memory of a node, denoted by M is
-		only used by the jobs’ input files, since all other data are
-		negligible compared with the input files. We assume that this
-		memory is large enough to fit all input the files of jobs running
-		on the node" dans le framework.
-		\item Verif fusion des deux mentions de Stretch et flow et retirer celle de la section 6
-		\item On peut garder stretch speed-up dans la légende des figures VS car c'est job par job ?
-		\item Pas 100\% convaincu par improvement à la place de speed-ups. Peut-être que je dois réécrirer en parlant de \% d'améliorations ?
-		\item pas convaincu par les points a la place des barres aussi poir le stretch
-		\item for load time relative to FCFS I do algo_load_time/FCFS_load_time to have the lower the better, is it correct?
-		\item j'ai groupé les stretch et load time. On veut aussi les nb of re-use groupé ? A part ? Ou pas du tout je les mentionne juste?
-		\item sur les stretch times, d'une fig a l'autres le max de y ne sont pas les mêmes
-		\item sur les load times, d'une fig a l'autres les axes y sont les mêmes
-		\item pas convaincu des points surtout sur la figure du 28 janvier
+		\item Croix de fig normales et de fig BF non BF? Laquelle choisir ?
+		\item section 6.F clair avec improvement a la place de speed-ups?
+		\item sur les stretch times, d'une fig a l'autres le max de y ne sont pas les mêmes. le min de y oui.
 		\item fusionner section 5 et settings de section 6 ?
-		\item voir ce que Loris veut écrire pour le "The vast majority of jobs on these resources are single-node jobs"
-		\item Préciser the lower the better? car pour les fig avec strtecth et load time c'est le cas
 	\end{enumerate}
 	
 \section{Todo}
@@ -232,13 +218,16 @@
 		\end{enumerate}
 	\subsection{Uppsala}
 		\begin{enumerate}
+			\item reagrder cores*durée+transfer/corestotal*1jour pour les workloads évaluées déjà
+			\item revoir texte courbe VS. Parler de improvement plutot
+			\item august 16 enlever fig de cluster usage
+			\item essayer boxplots cote a cote
+			\item a partir de fig 9 pour cluster usage envlever legende et dire que c'est la même
+		
 			\item une fois finale, changer les -> en - dans les noms des figures du tex et des figs elle mêmes du coup
-			\item modifier texte section 6 en fonction des nouvelles figures
-			\item corriger texte ou je parle d'improvement avec "with 25\% of those results with an improvement greater than 35\%"
-			\item mettre le texte au présent dans les sections 5 et 6 surtout. Enlever donc le futur ("They will be attributed" -> "They are attributed..") et le passé et éviter la voix passive (ex: Every year thousands of people are killed on our roads.)
 			\item Soumettre le 12 décembre
 			\item faire depot github anonyme et clean le code + proposer deux trois expés + le mentionner et citer dans le texte de settings avec url mais pas de noms
-			\item Aussi il y a quelque chose que je n'ai jamais utilisé dans les explications c'est la courbe des cores qui chargent un fichiers sur les courbes d'utilisation du cluster, si jamais vous avez des idées/encdroit où je devrais l'utiliser pour parler de nos stratégies ?
+			\item Essayer figures 11 et 12 sur toute une largeur en 1 seule fig 
 
 
 
