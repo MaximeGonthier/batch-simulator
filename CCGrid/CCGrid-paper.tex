@@ -717,7 +717,7 @@ of last job completion.
 \definecolor{color1}{HTML}{CEDEF0}
 \definecolor{color2}{HTML}{9D9AD9}
 \definecolor{color3}{HTML}{6B9BD1}
-\centering\scalebox{0.75}{
+\centering\scalebox{0.7}{
 \begin{tikzpicture}\begin{axis}
 [ font=\footnotesize,
   ytick style={draw=none},
@@ -733,10 +733,10 @@ of last job completion.
   const plot,
   stack plots=false,
   area style,
-  ytick={1,...,3},
+  ytick={1,...,2},
   yticklabels={},  
   xtick={1,...,5},
-  extra y ticks={0,1,2},
+  extra y ticks={0,1},
   extra x ticks={0,1,2,3,4,5},
   extra y tick style={yticklabel={$C_{\pgfmathprintnumber{\tick}}$}}] 
 \addplot[fill=color1] coordinates {(0,0) (0,1) (1,1) (1,0)} node at (current path bounding box.center) {\large Job 1}; 

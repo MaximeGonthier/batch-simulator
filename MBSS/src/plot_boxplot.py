@@ -25,9 +25,10 @@ colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
 fig, ax = plt.subplots()
 
 # ~ print(columns)
-
+# ~ plt.figure(figsize=(6, 4))
 # Octile
-box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[12.5, 87.5])
+# ~ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[12.5, 87.5])
+box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[12.5, 87.5])
 
 # Idk what-ile
 # ~ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[15, 85])
@@ -90,15 +91,21 @@ plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 # Max Y
 # ~ ax.set_ylim(0, 2.5)
-ax.set_ylim(0, 3.15)
+# ~ ax.set_ylim(0, 3.15)
+plt.ylim(0, 3.15)
 plt.yticks(fontsize=font_size)
 
 plt.rcParams['hatch.linewidth'] = 9
 
-for patch, color in zip(box['boxes'], colors):
-    patch.set_facecolor("white")
-    patch.set_edgecolor(color)
-    
+if sys.argv[1] != "outputs/scatter_mean_stretch_all_workloads.csv":
+	for patch, color in zip(box['boxes'], colors):
+		patch.set_facecolor("white")
+		patch.set_edgecolor(color)
+else:
+	for patch, color in zip(box['boxes'], colors):
+		patch.set_facecolor(color)
+		# ~ patch.set_edgecolor(color)
+		
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf"
 	plt.ylabel('Stretch\'s improvement from FCFS', fontsize=font_size)
@@ -106,5 +113,9 @@ else:
 	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf"
 	plt.ylabel('Stretch\'s improvement from FCFS-BF', fontsize=font_size)
 # ~ plt.legend(loc ="upper left")
-plt.savefig(filename)
+
+# ~ fig.subplots_adjust(left=0, bottom=-1, right=1, top=1, wspace=0, hspace=0)
+# ~ fig.subplots_adjust(hspace=0, wspace=0)
+
+plt.savefig(filename, bbox_inches='tight')
 

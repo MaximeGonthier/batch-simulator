@@ -12,7 +12,7 @@ core_time_required_workload_1 = 0
 core_time_required_workload_2 = 0
 core_time_total = 486*20*3*24*60*60
 
-first_time_day_0 = -1
+first_time_day_0 = 0
 
 with open(f) as f:
 	line = f.readline()
