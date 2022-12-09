@@ -1003,7 +1003,7 @@ A node could have some available cores but not enough to accommodate some jobs w
 This explains why the waiting job queue may not be empty, even if the lower half does not reach the maximum.
 The gray line represents the number of cores currently loading a file.
 Lastly, the orange lines delimits the submission times of our 
-evaluated jobs, in other words it's our evaluation window.
+evaluated jobs, in other words it is our evaluation window.
 %\todo[inline]{Tell what dotted orange lines are. Max: Okay done.}
 
 By looking at the top half of Figure~\ref{07_16_cluster_usage_fcfs}
@@ -1080,7 +1080,7 @@ In this case, the occupation rate is just above 80\%, but not fully
 100\% have gotten?". Max: Okay I answered in the next 3 sentences. Is it alright?}, thus LEM stays on the same strategy as LEA.
 The threshold to switch between EFT and LEA is set to 80\%. 
 This value was found experimentally by testing different thresholds on various types of workloads (see the different cluster's usage in Sections~\ref{sec.07-16}, \ref{sec.09-09}, \ref{sec.03-26} and \ref{sec.08-16}).
-This threshold can vary depending on the cluster and it's different utilization scenarios, and can be found following the same methodology.
+This threshold can vary depending on the cluster and its different utilization scenarios, and can be found following the same methodology.
 Following LEA's strategy is a sub-optimal heuristic when the cluster is not fully saturated.
 It creates a queue of jobs that, as long as the cluster's utilization is above 80\%, won't
 be scheduled on a node for a long time unless it can re-use their file.
