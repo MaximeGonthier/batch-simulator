@@ -3,25 +3,11 @@ PROPORTION="V10000"
 # Plots in paper
 
 # Bar plots
-#~ for ((i=1; i<=5; i++))
-#~ for ((i=1; i<=1; i++))
-#~ do 
-	#~ if [ $((i)) == 1 ]; then DATE="2022-01-28->2022-01-28"; NJOBE=26481
-	#~ elif [ $((i)) == 2 ]; then DATE="2022-03-26->2022-03-26"; NJOBE=4721
-	#~ elif [ $((i)) == 3 ]; then DATE="2022-07-16->2022-07-16"; NJOBE=7434
-	#~ elif [ $((i)) == 4 ]; then DATE="2022-08-16->2022-08-16"; NJOBE=41306
-	#~ elif [ $((i)) == 5 ]; then DATE="2022-09-09->2022-09-09"; NJOBE=10201
-	#~ fi
-	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0 ${NJOBE} # Sans BF
-	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 3 ${NJOBE} # Avec BF
-	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Backfill 4 ${NJOBE} # Avec et sans BF
-#~ done
-
-python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-07-16-\>2022-07-16_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.csv 0
-python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-09-09-\>2022-09-09_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-09-09-\>2022-09-09_V10000_450_128_32_256_4_1024.csv 0
-python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-03-26-\>2022-03-26_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-03-26-\>2022-03-26_V10000_450_128_32_256_4_1024.csv 0
-python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-08-16-\>2022-08-16_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-08-16-\>2022-08-16_V10000_450_128_32_256_4_1024.csv 0
-python3 src/plot_barplot.py Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000 Mean_Stretch 450_128_32_256_4_1024 0 data/Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000_450_128_32_256_4_1024.csv 4
+#~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-07-16-\>2022-07-16_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.csv 0
+#~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-09-09-\>2022-09-09_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-09-09-\>2022-09-09_V10000_450_128_32_256_4_1024.csv 0
+#~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-03-26-\>2022-03-26_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-03-26-\>2022-03-26_V10000_450_128_32_256_4_1024.csv 0
+#~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-08-16-\>2022-08-16_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-08-16-\>2022-08-16_V10000_450_128_32_256_4_1024.csv 0
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000 Mean_Stretch 450_128_32_256_4_1024 0 data/Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000_450_128_32_256_4_1024.csv 4
 
 # Cluster usage
 #~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 16 07 2022 core_by_core
@@ -34,11 +20,11 @@ python3 src/plot_barplot.py Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_
 #~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_08-16.csv Used_nodes 2022-08-16-\>2022-08-16_V10000 450_128_32_256_4_1024 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 0 0 0 1 16 08 2022 core_by_core
 
 # Boxplots
-#~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
-#~ python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv
 
 # ECDF
-#~ python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
+python3 src/ecdf.py outputs/scatter_mean_stretch_all_workloads.csv
 
 # Courbes VS
 #~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.txt  data/Stretch_times_SCORE_2022-07-16-\>2022-07-16_V10000_450_128_32_256_4_1024.txt stretch LEA 2022-07-16-\>2022-07-16_V10000

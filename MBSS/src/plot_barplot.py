@@ -161,13 +161,14 @@ elif (percentages_mode == 3): # BF
 elif (percentages_mode == 4): # BF and NON BF on same plot
 	if (comparaison == "Number_of_data_reuse"):
 		plt.bar(X, int(sys.argv[7]), color="lightgray", hatch="-", edgecolor="white")
+	markers=["^","^", "v","v", "s","s", "o","o", "D", "D"]
 	hatches = ['','/','','/','','/','','/','','/']
 	colors=["#4c0000","#4c0000","#E50000","#E50000","#00bfff","#00bfff","#ff9b15","#ff9b15","#91a3b0","#91a3b0"]
 	colors_inside=["#4c0000","none","#E50000","none","#00bfff","none","#ff9b15","none","#91a3b0","none"]
 	fillstyles=["full", "none", "full", "none", "full", "none", "full", "none", "full", "none"]
 	for i in range(len(X)):
 		# ~ plt.bar(X[i], Y[i], color=colors[i], hatch=hatches[i], edgecolor="white")
-		plt.scatter(X[i], Y[i], s=220, marker="s", facecolors=colors_inside[i], edgecolors=colors[i], linewidths=3)
+		plt.scatter(X[i], Y[i], s=220, marker=markers[i], facecolors=colors_inside[i], edgecolors=colors[i], linewidths=3)
 else:
 	plt.bar(X, Y, color=["#E50000","#00bfff","#ff9b15","#91a3b0"])
 

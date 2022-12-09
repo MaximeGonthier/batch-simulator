@@ -9,7 +9,7 @@ comparaison1 = sys.argv[2]
 comparaison2 = sys.argv[3]
 cluster = sys.argv[4]
 
-font_size = 4
+font_size = 14
 
 bf_mode = int(sys.argv[6])
 
@@ -241,16 +241,16 @@ ax[1].set_ylim(0, 1.03)
 	
 ax[0].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 ax[1].axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
-ax[0].set_ylabel("Stretch")
-ax[1].set_ylabel("Ratio")
+ax[0].set_ylabel("Stretch", fontsize=font_size)
+ax[1].set_ylabel("Ratio", fontsize=font_size)
 
 # ~ ax[0].xticks(fontsize=font_size)
 # ~ ax[0].yticks(fontsize=font_size)
 # ~ ax[1].xticks(fontsize=font_size)
 # ~ ax[1].yticks(fontsize=font_size)
 
-ax[0].annotate("(a) Mean stretch", xy=(0.22, -0.13), xycoords="axes fraction")
-ax[1].annotate("(b) Load time ratio from FCFS", xy=(0.01, -0.13), xycoords="axes fraction") 
+ax[0].annotate("(a) Mean stretch", xy=(0.11, -0.13), xycoords="axes fraction", fontsize=font_size)
+ax[1].annotate("(b) Load time ratio from FCFS", xy=(-0.19, -0.13), xycoords="axes fraction", fontsize=font_size) 
           
 # Show the plot
 if (bf_mode == 3):

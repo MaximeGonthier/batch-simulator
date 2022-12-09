@@ -28,7 +28,7 @@ x = np.linspace(min_ecdf, max_ecdf)
 
 print("min:", min_ecdf, "max:", max_ecdf)
 colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
-plt.axvline(x = 1, linestyle = "dotted", color = "black")
+plt.axvline(x = 1, linestyle = "dotted", color = "black", linewidth=4)
 
 if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 	linestyle="solid"

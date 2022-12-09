@@ -64,7 +64,7 @@ if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
 else:
 	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
 	
-plt.axhline(y = 1, color = 'black', linestyle = "dotted")
+plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 
 # ~ plt.axhline(y = 1.35, color = 'black')
