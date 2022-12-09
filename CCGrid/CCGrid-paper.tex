@@ -817,8 +817,10 @@ $$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
 The utilization levels in the log of the platform are typically high ($>90\%$), but
 not fully consistently so. The vast majority of jobs on these
 resources are single-node jobs\todo[inline]{LM: but we consider only
-  single-node jobs, right??}, even sometimes single-core jobs. We
-notice that job
+single-node jobs, right?? Max: Yes, I added a sentence to detail what 
+we do to multi-nodes jobs. Do we want to keep it like that?}, even sometimes single-core jobs.
+The few multi-nodes jobs are replaced by as many single-node jobs as necessary to represent the same occupation.
+We notice that job
 durations extend up to 10 days, while some jobs only last a few minutes. We do not claim that this is an ideal job submission strategy,
 but rather it is an empirical observation of an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
