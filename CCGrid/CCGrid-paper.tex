@@ -964,7 +964,7 @@ relative to the total waiting time of FCFS.
 The second figure
 shows the number of jobs that re-used a file,
 i.e,. the file was already in memory or 
-or another job was already loading the file.
+another job was already loading the file.
 The gray background denote the total
 number of jobs.
 On both of these figures, LEA is the outlier:
@@ -1076,7 +1076,7 @@ The threshold to switch between EFT and LEA is set to 80\%.
 This value was found experimentally by testing different thresholds on various types of workloads (see the different cluster's usage in Sections~\ref{sec.07-16}, \ref{sec.09-09}, \ref{sec.03-26} and \ref{sec.08-16}).
 This threshold can vary depending on the cluster and it's different utilizations scenarios, and can be found following the same methodology.
 Following LEA's strategy is a sub-optimal heuristic when the cluster is not fully saturated.
-It will create a queue of jobs that, as long as the cluster's utilization is above 80\%, won't
+It creates a queue of jobs that, as long as the cluster's utilization is above 80\%, won't
 be scheduled on a node for a long time unless it can re-use their file.
 Normally, with this behavior, using LEA leaves a lot of unused nodes that allows LEM
 to periodically switch to EFT. But in the case of an almost 
