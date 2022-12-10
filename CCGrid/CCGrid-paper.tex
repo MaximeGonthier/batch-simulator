@@ -884,15 +884,16 @@ On the real cluster, when a job finishes, all of its metadata
 are written to a file corresponding to the day during which the job finished.
 Our goal is to schedule and evaluate all the jobs submitted on 
 \textit{Day 1} with the settings in which they were on the real cluster.
-In order to get all the jobs that were submitted on \textit{Day 1}, we
-look into the logs of days 0 to 10. Indeed, almost all jobs do not last for more than 10 days,
+To extract those jobs, we
+look into the logs of days 0 to 10. Most jobs do not last for more than 10 days,
 thus we should be able to cover the vast majority of jobs that were actually submitted on 
 \textit{Day 1}.
-With this process, we also gather jobs that were started on \textit{Day 0} and \textit{Day 2}. 
-Thanks to this, jobs of \textit{Day 1} are respectively preceded and succeeded with jobs from \textit{Day 0}
-and \textit{Day 2} in order to place \textit{Day 1} in its "real environment",
-i.e., in the situation in which it was on the real cluster while also avoiding any side effect.
-Jobs from \textit{Day -1, -2, ..., -n} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
+With this process, we also gather jobs that were started on \textit{Day 0} and \textit{2}. 
+Being respectively preceded and succeeded with jobs from \textit{Day 0}
+and \textit{Day 2}, jobs from \textit{Day 1} are in
+the situation in which they were on the real cluster.
+This also prevent any side effect.
+Jobs from \textit{Day -1, ..., -n} are jobs that were submitted before \textit{Day 0} and that are still running at the beginning of \textit{Day 0}.
 We use the information from the log's history to start these jobs on the nodes
 where they were actually executed and at the times at which they really started.
 This will exactly replicate the state of the cluster just before \textit{Day 0}.
