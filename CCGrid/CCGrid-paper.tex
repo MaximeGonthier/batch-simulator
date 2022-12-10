@@ -804,24 +804,28 @@ share their input file if they match the three following requirements:
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files.
 
 
-The platform where the logs have been extracted
+\todo[inline]{Max: Instead of the following text:
+"The platform where the logs have been extracted
 consists of 486 nodes with 20 cores each, with most of them
 having 128GB of RAM, and a few 256GB and 1024GB nodes.
-
 Having three different node sizes does not fit the proposed model and
 raises new challenges: some input files are too large to be processed
 on a subset of nodes. However, a small input file may be processed on
 both nodes with small and large memory.
 Thus, in addition to the scheduling problem, a load balancing problem arises.
-%For example, should a job using a file of size $M_1$ be scheduled on a node of size $M_2$?
 Indeed, the scheduler needs to be able to manage each subset of nodes as an independent 
 resource that needs to avoid starvation while also not being saturated
 in case of a sudden batch of jobs requesting a node of its size. This
 problem is left for future work as we focus in the present paper on
 data locality.
 Consequently, we consider here that the platform is made of 486 homogeneous nodes of size 
-$\memory = 128GB$.
-
+$\memory = 128GB$."
+I propose to gain some space:}
+The platform where the logs have been extracted
+consists of 486 nodes with 20 cores each, with most of them
+having 128GB of RAM, and a few larger nodes.
+To avoid an additional constraint, while maintaining a model close to real clusters,
+we consider that the platform is made of 486 homogeneous nodes of size $\memory = 128GB$.
 
 We consider that these jobs are dedicated to processing their input
 file. Hence, the more cores the job requests, 
@@ -838,7 +842,7 @@ durations extend up to 10 days, while some jobs only last a few
 minutes. Even if the workload is not homogeneous, it is representative
 of the real usage from an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
-\begin{figure*}[tb]
+\begin{figure}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
 \definecolor{darkblue}{RGB}{17, 42, 60} % 112A3C
 \definecolor{red}{RGB}{175, 49, 39} % AF3127
@@ -854,29 +858,18 @@ of the real usage from an actual user community including, but not exclusively c
     \def\x{1}\def\y{1}
     \draw[color=black, fill=blue] (1.2*1*\x+0.03, 0.7) rectangle (1.2*2*\x-0.03, -0.1) node[midway] {\textit{Day -n}}; 
     \draw[color=black, fill=blue] (1.2*2*\x+0.03, 0.7) rectangle (1.2*3*\x-0.03, -0.1) node[midway] {\textit{...}}; 
-    \draw[color=black, fill=blue] (1.2*3*\x+0.03, 0.7) rectangle (1.2*4*\x-0.03, -0.1) node[midway] {\textit{...}}; 
-    \draw[color=black, fill=blue] (1.2*4*\x+0.03, 0.7) rectangle (1.2*5*\x-0.03, -0.1) node[midway] {\textit{Day -2}}; 
-    \draw[color=black, fill=blue] (1.2*5*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {\textit{Day -1}}; 
-    \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {\textit{Day 0}}; 
-    \draw[color=black, fill=red] (1.2*7*\x+0.03, 0.7) rectangle (1.2*8*\x-0.03, -0.1) node[midway] {\textit{Day 1}}; 
-    \draw[color=black, fill=blue] (1.2*8*\x+0.03, 0.7) rectangle (1.2*9*\x-0.03, -0.1) node[midway] {\textit{Day 2}}; 
-    %~ \draw[color=black, fill=blue] (1.2*4*\x+0.03, 0.7) rectangle (1.2*5*\x-0.03, -0.1) node[midway] {Day 3}; 
-    %~ \draw[color=black, fill=blue] (1.2*5*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {Day 4}; 
-    %~ \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {Day 5}; 
-    %~ \draw[color=black, fill=blue] (1.2*7*\x+0.03, 0.7) rectangle (1.2*8*\x-0.03, -0.1) node[midway] {Day 6}; 
-    %~ \draw[color=black, fill=blue] (1.2*8*\x+0.03, 0.7) rectangle (1.2*9*\x-0.03, -0.1) node[midway] {Day 7}; 
-    %~ \draw[color=black, fill=blue] (1.2*9*\x+0.03, 0.7) rectangle (1.2*10*\x-0.03, -0.1) node[midway] {Day 8}; 
-    %~ \draw[color=black, fill=blue] (1.2*10*\x+0.03, 0.7) rectangle (1.2*11*\x-0.03, -0.1) node[midway] {Day 9}; 
-    %~ \draw[color=black, fill=blue] (1.2*11*\x+0.03, 0.7) rectangle (1.2*12*\x-0.03, -0.1) node[midway] {Day 10}; 
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*1*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled from logs} (1.2*6*\x-0.03, 1);
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*6*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*9*\x-0.03, 2.4);
-    %~ \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Days used to collect all the jobs submitted before \textit{Day 3}} (1.2*12*\x-0.03, 1);
-    \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*7*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\jobs} (1.2*8*\x-0.03, 1);
+    \draw[color=black, fill=blue] (1.2*3*\x+0.03, 0.7) rectangle (1.2*4*\x-0.03, -0.1) node[midway] {\textit{Day -1}}; 
+    \draw[color=black, fill=blue] (1.2*4*\x+0.03, 0.7) rectangle (1.2*5*\x-0.03, -0.1) node[midway] {\textit{Day 0}}; 
+    \draw[color=black, fill=red] (1.2*5*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {\textit{Day 1}}; 
+    \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {\textit{Day 2}}; 
+    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*1*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled from logs} (1.2*4*\x-0.03, 1);
+    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*7*\x-0.03, 2.4);
+    \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*5*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\jobs} (1.2*6*\x-0.03, 1);
   \end{tikzpicture}
 }
 \caption{Methodology followed to schedule and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
 \label{fig.ex}
-\end{figure*}
+\end{figure}
 
 In order to avoid simulating the whole workload (one year) but to
 target different scenarios, we randomly select a number of days (44 days) and
