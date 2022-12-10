@@ -942,15 +942,15 @@ offering different saturations of the cluster.
 
 \subsubsection{Results\todo[inline]{Max: Maybe use paragraphs instead of subsubsection?}}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total transfer time on July 16.}\label{stretch.07-16}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total transfer time on July 16.}\label{stretch.07-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on July 16.}\label{stretch.07-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on July 16.}\label{load.07-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.6\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-07-16->2022-07-16_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on July 16.}\label{reuse.07-16}\end{figure}
 
 Figure~\ref{stretch.07-16}a shows, for each scheduler, the mean stretch from all jobs
 submitted on July 16, corresponding to an under-utilized
 cluster.\todo{give some stats?}
-On Figure~\ref{stretch.07-16} and other similar plots, the lower the value is, the better.\todo[inline]{Max: Do we need to explain that the lower the better on these figures? LM: I would not add this here.}
+On Figure~\ref{stretch.07-16} and other similar plots, the lower the value is, the better.\todo[inline]{Max: Do we need to explain that the lower the better on these figures? LM: I would not add this here. Max: Should we add it elswhere or I just delete it?}
 The horizontal black dotted line corresponds to a stretch of 1.
 We recall that the stretch 1 corresponds to all jobs being
 scheduled on an empty cluster. It corresponds to the waiting time of each job being exactly
@@ -959,25 +959,36 @@ FCFS, EFT, LEO and LEM have mean stretches close to 1.
 EFT, LEO and LEM have a slight benefit over FCFS thanks to file re-use.
 LEA has a stretch 23\% slower.
 
-Figures~\ref{stretch.07-16}b and \ref{reuse.07-16} 
-both gives us similar information. The first one
+%~ Figures~\ref{stretch.07-16}b and \ref{reuse.07-16} 
+%~ both gives us similar information. The first one
+%~ shows the total amount of time spent 
+%~ waiting for a file to be ready before starting the computation,
+%~ relative to the total waiting time of FCFS.
+%~ The second figure
+%~ shows the number of jobs that re-used a file (or being transferred),
+%~ and no specific file transfer needed to be started.
+%~ The gray background denote the total
+%~ number of jobs.
+%~ On both of these figures, LEA is the only strategy that increases the
+%~ file re-use, which explains why the total time spent waiting for a load is lower.
+
+\todo[inline]{Max: I re-wrote this part after deleting the plot showing 
+the number of jobs re-using a file. Is it ok?}
+Figure~\ref{stretch.07-16}b
 shows the total amount of time spent 
 waiting for a file to be ready before starting the computation,
 relative to the total waiting time of FCFS.
-The second figure
-shows the number of jobs that re-used a file (or being transferred),
-and no specific file transfer needed to be started.
-The gray background denote the total
-number of jobs.
-On both of these figures, LEA is the only strategy that increases the
+On this workload, LEA re-uses a file for 6205 out of the 7434 evaluated jobs.
+All the other strategies re-use a file for around 5500 jobs.
+In this case, LEA is the only strategy that increases the
 file re-use, which explains why the total time spent waiting for a load is lower.
 
 \subsubsection{Understanding LEA's poor performance}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July 16 with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July 16 with LEA.}\label{07_16_cluster_usage_lea}\end{figure}
-\begin{figure}[t]\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{subfigure}
-\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{subfigure}\caption{Stretch times of each job compared to FCFS on the workload of July 16.}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July 16 with FCFS.}\label{07_16_cluster_usage_fcfs}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-07-16->2022-07-16_V10000_Fcfs_with_a_score_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of July 16 with LEA.}\label{07_16_cluster_usage_lea}\end{figure}
+\begin{figure}[t]\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{subfigure}
+\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-07-16->2022-07-16_V10000_450_128_32_256_4_1024.pdf}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{subfigure}\caption{Stretch times of each job compared to FCFS on the workload of July 16.}\end{figure}
 
 To understand the issues LEA encounters on this workload, we need to study the cluster's usage over time.
 Figure~\ref{07_16_cluster_usage_fcfs} shows us a visual representation of 
@@ -1045,10 +1056,10 @@ cluster, underlining the weakness of LEM.
 
 \subsubsection{Results}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on September 09.}\label{stretch.09-09}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on September 09.}\label{stretch.09-09}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on September 09.}
 %~ \label{stretch.09-09}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-09-09->2022-09-09_V10000_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Amount of time spent waiting for a file to be available on September 09.}
 %~ \label{load.09-09}\end{figure}
 
 Despite greatly reducing the amount of file transfers as can be seen on Figure~\ref{stretch.09-09}b, LEA and LEM
@@ -1061,8 +1072,8 @@ However, why does LEM have similar results?
 
 \subsubsection{A pathological scenario of LEM}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September 9 with FCFS.}\label{cluster_09-09_fcfs}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September 9 with LEM.}\label{cluster_09-09_lem}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September 9 with FCFS.}\label{cluster_09-09_fcfs}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-09-09->2022-09-09_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of September 9 with LEM.}\label{cluster_09-09_lem}
 \end{figure}
 
 The workload of September 9, managed by FCFS (see Figure~\ref{cluster_09-09_fcfs})
@@ -1089,13 +1100,13 @@ LEM on Figure~\ref{stretch.09-09}a.
 
 \subsection{A saturated cluster, the great benefits of LEA and LEM}\label{sec.03-26}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on March 26.}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on March 26.}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on March 26.}
 \label{stretch.03-26}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\label{reuse.03-26}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March 26 with FCFS.}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Number_of_data_reuse_450_128_32_256_4_1024.pdf}\caption{Number of evaluated jobs re-using a data on March 26.}\label{reuse.03-26}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March 26 with FCFS.}
 \label{cluster_usage.03-26_fcfs}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March 26.}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March 26.}
 \label{vs_fcfs_lem_03-26}\end{figure}
 
 The workload presented here saturates the cluster with FCFS. 
@@ -1121,10 +1132,10 @@ have a worse stretch than FCFS and a large amount of jobs are above an improveme
 
 \subsection{A cluster saturated with small jobs, the best case scenario for LEA and LEM}\label{sec.08-16}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on August 16.}\label{stretch.08-16}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}\label{stretch.08-16}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}\label{cluster_usage.08-16_fcfs}\end{figure}
-%~ \begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.\todo[inline]{Max: I think this figure can be removed, I don't really use it in the explanations.}}\label{cluster_usage.08-16_lem}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on August 16.}\label{stretch.08-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on August 16.}\label{stretch.08-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with FCFS.}\label{cluster_usage.08-16_fcfs}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-08-16->2022-08-16_V10000_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of August 16 with LEM.\todo[inline]{Max: I think this figure can be removed, I don't really use it in the explanations.}}\label{cluster_usage.08-16_lem}\end{figure}
 
 From Figure~\ref{stretch.08-16}a, we observe that LEA has a stretch 33 times smaller than
 its competitors. LEM is about 7 times smaller. This drastic diminution is explained
@@ -1142,10 +1153,10 @@ drastic reduction for LEA and LEM.
 
 \subsection{Aggregated results on 44 different evaluated workloads}
 
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's improvement from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's improvement from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with and without backfilling.\todo[inline]{Max: Do you want to keep this or I put the old one with bars and hashed bars for backfilling?}}\label{stretch.01-28}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=1\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's improvement from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's improvement from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean.}\label{boxplot.all}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's improvement from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with and without backfilling.\todo[inline]{Max: Do you want to keep this or I put the old one with bars and hashed bars for backfilling?}}\label{stretch.01-28}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's improvement from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
 
 We evaluated our 5 schedulers on 44 different days.
 Figure~\ref{boxplot.all} represents boxplots from the aggregated
