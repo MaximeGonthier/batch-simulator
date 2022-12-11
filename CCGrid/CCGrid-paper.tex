@@ -1243,7 +1243,33 @@ Among the slow-downs, only 25\% are superior to 0.15.
 \section{Conclusion}\label{sec.conclusion}
 
 \todo[inline]{Max: - Results of LEA, LEO and LEM - Fairness - Advance reservation - Tune LEM - Improve locality of LEO - Tune BF for LEA, LEO and LEM - Talk about the genericity of our problem?}
+\todo[inline]{Max: Proposition for a conclusion. It's a draft, please do not hesitate to completely modify it.}
 
+Classical job schedulers on batch systems are usually resilient
+in most cases. 
+However, the demand for computing power continues to increase,
+as well as the need for large inputs to be stored on the nodes. 
+Users can submit dozens of jobs requesting the same multi-GB input files.
+In these cases, classical schedulers do not manage data re-use and 
+thus fail to benefit from data re-use.
+We proposed three new strategies, named LEA, LEO and LEM, 
+capable of increasing data locality by grouping together 
+jobs sharing inputs. We have shown that, over 44 evaluated workloads,
+LEM significantly improves the mean waiting time of a job, especially on
+when the cluster is under a high computing demand.
+Without backfilling LEM is better that our baseline n 75\% of the cases, it's bettter 
+in 50\% of the cases with backfilling. 
+Several exciting future directions are possible.
+Firstly, LEM can be tuned to better adapt to the utilization rate of the cluster.
+Switching between a locality first and distribution first strategy could be done 
+gradually.
+Secondly, we saw that LEO was very resilient but did not re-uses enough the files to
+provide significant improvements. A direction is to 
+improve locality for LEO.
+Lastly we could improve the pairing of backfilling and file re-use.
+In the long run, our objective is to consider others issues raised by batch scheduling:
+improving fairness between users, or dealing with advance reservations.
+ 
 %~ \newpage
 \bibliographystyle{IEEEtran}
 \bibliography{ref.bib}
