@@ -241,8 +241,7 @@ located, rather than moving the data to where the application is
 running, in order to reduce communication.
 %~ HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
 
-These solutions are mainly storage systems that uses a history of files locations to serve as a backup.
-\todo[inline]{Elisabeth: I don't understand the previous sentence. Could it be a history of file locations? How does it serve as a backup? Is it because the files have been duplicated and exist in several places? Max: yes they exist in several places. By default, 2 copies of the data are stored. If one of the machine where the data was stored fails, you can still retrieve the data.}
+These solutions are mainly storage systems that uses a history of file locations to serve as a backup.
 \todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the nodes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundancy. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage. Max: Ok, I re-wrote this section accordingly.}
 In our scenario, we copy the data from an already-redundant system (an online database for example)
 and store it locally on the node in an ephemeral way.
@@ -284,7 +283,6 @@ are focusing on a better utilization of idling memory together with
 thrashing limitation.
 Our focus will be to control data loads in order to limit eviction
 and will thus naturally limit thrashing.
-\todo[inline]{Elisabeth: control data loads and limit evictions? Max: Ah yes. I corrected it.}
 
 Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
 propose to schedule jobs not sharing a file first
@@ -398,7 +396,7 @@ It is important to note that the file transfer is done before the computation an
 Jobs are non-preemptible: when started, a job is executed through its completion.
 
 Our objective is to obtain an efficient usage of the platform. Each
-user submitting jobs is interested in obtaining the result of his jobs
+user submitting jobs is interested in obtaining the result of jobs
 as soon as possible. Hence we focus on the time spent in the system
 for each job, also called the flow time (or flow) of the job:
 $$
@@ -877,7 +875,12 @@ extract the jobs corresponding to these days from the logs. However,
 to simulate these jobs in a realistic, steady-state operation of the
 platform, we consider both jobs submitted before and after the day
 under consideration. More precisely, we proceed as follows (and as
-represented in Figure~\ref{fig.workload}).
+represented in Figure~\ref{fig.workload}).\todo[inline]{Elisabeth: I think that in principle this paragraph is enough together with the picture. We need to clarify that we consider jobs submitted on a specific day rather than jobs running a specific day. Suggestion: In order to avoid simulating the whole workload (one year) but to
+target different scenarios, we randomly select a number of days (44 days) and
+extract the jobs submitted on these days from the logs. However,
+to simulate these jobs in a realistic, steady-state operation of the
+platform, we also consider jobs submitted before and after the day
+under consideration. More precisely, we proceed as illustrated in Figure~\ref{fig.workload}).}
 
 
 On the real cluster, when a job finishes, all of its metadata
@@ -1001,7 +1004,7 @@ The blue line shows the number of cores from all jobs.
 %~ The dashed blue line shows the additional number of cores that would be needed
 %~ to run all the jobs in the queue at a given time (this would thus be the number
 %~ of used cores if all the jobs where running in parallel).
-The red lines show the number of cores used by the evaluated jobs, i.e.
+The red lines show the number of cores used by the evaluated jobs, i.e.,
 those jobs that have their submission time within our evaluation window. Thus, this forms a subset
 of the set indicated by the the blue line.
 If a line is present in the top half, it means that some jobs could not be scheduled
@@ -1182,7 +1185,7 @@ Re-using the same files is not detrimental to the filling of all the nodes becau
 enough jobs to cover all nodes.
 A large decrease in the time spent waiting for a file greatly reduces the stretch of each job.
 Compared to LEA, LEM has a smaller mean value.
-However 75\% of its results are above 1, i.e. an improvement, whereas for LEA, only approximately 57\% of the results are above 1. 
+However 75\% of its results are above 1, i.e., an improvement, whereas for LEA, only approximately 57\% of the results are above 1. 
 LEM is a more versatile strategy and offers higher sustained performance on non-saturated cluster at the cost
 of fewer extreme improvements on heavily saturated clusters.
 The maximum values are not shown. For LEA and LEM, 6 outliers are above the upper whisker with 
@@ -1255,15 +1258,15 @@ thus fail to benefit from data re-use.
 We proposed three new strategies, named LEA, LEO and LEM, 
 capable of increasing data locality by grouping together 
 jobs sharing inputs. We have shown that, over 44 evaluated workloads,
-LEM significantly improves the mean waiting time of a job, especially on
+LEM significantly improves the mean waiting time of a job, especially 
 when the cluster is under a high computing demand.
-Without backfilling LEM is better that our baseline n 75\% of the cases, it's bettter 
+Without backfilling LEM is better than our baseline in 75\% of the cases, it's better 
 in 50\% of the cases with backfilling. 
 Several exciting future directions are possible.
 Firstly, LEM can be tuned to better adapt to the utilization rate of the cluster.
 Switching between a locality first and distribution first strategy could be done 
 gradually.
-Secondly, we saw that LEO was very resilient but did not re-uses enough the files to
+Secondly, we saw that LEO was very resilient but did not re-use enough the files to
 provide significant improvements. A direction is to 
 improve locality for LEO.
 Lastly we could improve the pairing of backfilling and file re-use.
