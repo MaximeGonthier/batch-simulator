@@ -382,7 +382,7 @@ $J_i$ and $J_j$ will cause the file to be evicted.
 
 For each job $J_i$, the scheduler is in charge of deciding which node
 will process $J_i$, and more precisely which cores of this node
-allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
+are allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
 $J_i$ is thus allocated a time window from $t_k$ to
 $t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
 $\file(J_i)$ in the memory (if it is not already present at time
@@ -466,7 +466,7 @@ for the first time when a sufficient number of cores is available, and we alloca
 those cores.
 
 
-\begin{algorithm}[htbp]%\small
+\begin{algorithm}[t]%\small
 \caption{First-Come-First-Serve (FCFS)}\label{algo.fcfs}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue} %\Comment{The job's queue is sorted by submission times}
@@ -522,7 +522,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 % \todo[inline]{Max: Say that EFT with bf consider completion time as well.}
 % \todo[inline]{Max: The large comment I added in Algo2 should maybe be in a text before with a smaller comment with a reference to the text?}
 		
-\begin{algorithm}[htbp]%\small
+\begin{algorithm}[t]%\small
 \caption{Earliest-Finish-Time (EFT)}\label{algo.eft}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -585,7 +585,7 @@ tie-break in case of equality of the first two criteria.
 
 
 
-\begin{algorithm}[htb]%\small
+\begin{algorithm}[t]%\small
 \caption{Locality and Eviction Aware (LEA)}\label{algo.lea}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -621,7 +621,7 @@ right away, we select the one that will minimize the completion time
 fully loaded and we apply the previous LEA strategy, to favor data reuse.
 
 
-\begin{algorithm}[htb]%\small
+\begin{algorithm}[t]%\small
 \caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -653,7 +653,7 @@ at least one job) is above a criterion, the LEA strategy is applied,
 otherwise the EFT strategy is used.
  
 
-\begin{algorithm}[htb]%\small
+\begin{algorithm}[t]%\small
 \caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
