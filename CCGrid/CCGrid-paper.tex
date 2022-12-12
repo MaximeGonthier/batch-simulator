@@ -335,10 +335,10 @@ Each job $J_i$ has the following attributes:
 \begin{itemize}
 \item Resource requirement: job $J_i$ requests $\core(J_i)$  cores, such that $1 \leq \core(J_i) \leq m$;
 \item Input file: $\file(J_i) \in \fileset$;
-\item Submission date: $\submissiontime(J_i)$.
+\item Submission date: $\submissiontime(J_i)$;
 \item Requested running time (or walltime): $\walltime(J_i)$: if not
   finished after this duration, job $J_i$ is killed by the scheduler;
-\item Actual running time: $\duration(J_i)$ (unknown to  the scheduler).
+\item Actual running time: $\duration(J_i)$ (unknown to  the scheduler);
 \end{itemize}
 
 We do not consider the data output of jobs.
