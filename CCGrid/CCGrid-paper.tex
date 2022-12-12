@@ -187,8 +187,8 @@ We thus present the following contributions in this paper:
 	\item We implement all three heuristics as well as two state-of-the-art schedulers on a simulator and study the performance (mean stretch and amount of time spent waiting for a file to be loaded) obtained on 44 different workloads (Section~\ref{sec.evaluations}).
 	Our evaluation demonstrate that our heuristics in most cases surpass the state of the art schedulers.
 	We show that workloads that heavily saturate the cluster
-                benefits much more from our strategies which give us
-                considerable speed-ups.\todo[inline]{Do we want improvement instead of speed-up here?}
+                benefits much more from our strategies which results
+                considerable reduction in the job waiting times.
 \end{itemize}
 
 \section{Related work}\label{sec.related_work}
@@ -275,23 +275,23 @@ This is reasonable, since our main concern is the cross-section bandwidth to a s
 Max: I was trying to say that they use the network topology to make a decision and we don't. 
 It was just another way to phrase what you wrote so I removed it. Also, their strategy 
 is developed for a tree-based network topology, so it might not work on other topology like a ring or a star?
-So, we might want to say that our approach is more generic in regards to the network topology?}
-
+So, we might want to say that our approach is more generic in regards to the network topology?} 
+%
 Nikolopoulos et al.~\cite{Nikolopoulos2003AdaptiveSU}
 focus on a better utilization of idling memory together with 
 thrashing limitation.
 Our focus will be to control data loads in order to limit eviction
-and will thus naturally limit thrashing.
-
+and will thus naturally limit thrashing. 
+%
 Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
 propose to schedule jobs not sharing a file first
 and to use a stochastic model of job arrivals for each input file to maximize re-use.
-This work is aimed at the Map-Reduce model and allows to predict future jobs arrivals, two prerequisites that we do not consider.
-
+This work is aimed at the Map-Reduce model and allows to predict future jobs arrivals, two prerequisites that we do not consider. 
+%
 Equipping each node with a scheduler that follows a work
 stealing strategy in order to manage both data locality 
-and load balancing is also a solution to reduce data transfers~\cite{Optimizing_load_balancing_and_data_locality_with_data_aware_scheduling}.
-
+and load balancing is also a solution to reduce data transfers~\cite{Optimizing_load_balancing_and_data_locality_with_data_aware_scheduling}. 
+%
 Selvarani et al. propose an improved activity-based costing scheduler~\cite{Improved_cost_based_algorithm}
 % where the scheduler adapt itself to different application types (CPU intensive, needing high memory, large I/O cost), but our focus will be more generic and aim at maximizing data re-use to meet these needs.
 where the processing capacity of each resource is evaluated to make the right decision.
@@ -338,11 +338,11 @@ Each job $J_i$ has the following attributes:
 \item Submission date: $\submissiontime(J_i)$;
 \item Requested running time (or walltime): $\walltime(J_i)$: if not
   finished after this duration, job $J_i$ is killed by the scheduler;
-\item Actual running time: $\duration(J_i)$ (unknown to  the scheduler);
+\item Actual running time: $\duration(J_i)$ (unknown to  the scheduler
+  before the job completion).
 \end{itemize}
 
 We do not consider the data output of jobs.
-
 Each of the $N$ jobs must be processed on one of the $P$ nodes.  As
 stated earlier, the shared file system initially contains all files
 in $\fileset$.  Each node is connected to the file system with a link
@@ -363,7 +363,9 @@ memory of a node is large enough to accommodate all input files of running jobs.
 A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
-	\item $J_i$ and $J_j$ are computed on the same node consecutively.
+	\item $J_i$ and $J_j$ are computed on the same node
+          consecutively (i.e., no is started on this node before the
+          completion of $J_i$ and the start of $J_j$).
 \end{enumerate}
 This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
 allowing the same page cache to serve multiple processes from different jobs.
@@ -394,7 +396,8 @@ that no two jobs are executed simultaneously on the same cores.
 It is important to note that the file transfer is done before the computation and cannot be overlapped.
 Jobs are non-preemptible: when started, a job is executed through its completion.
 
-Our objective is to obtain an efficient usage of the platform. Each
+Our objective is to reach an efficient usage of the platform and to
+limit job waiting times. Each
 user submitting jobs is interested in obtaining the result of jobs
 as soon as possible. Hence we focus on the time spent in the system
 for each job, also called the flow time (or flow) of the job:
@@ -438,7 +441,7 @@ to each job submitted until now: some jobs may be started right away,
 while other jobs may be delayed and scheduled later: resource
 reservations are made for these jobs. Jobs are presented to the
 scheduler in the form of a global queue, sorted by job submission
-time. The policies are online algorithms which are called each time
+time. These scheduling policies are online algorithms which are called each time
 a task completes (making cores available) or upon the submission of
 a new job.
 %Note that in accordance to our framework, each job is allocated to one or several cores of a single node.
@@ -466,7 +469,7 @@ for the first time when a sufficient number of cores is available, and we alloca
 those cores.
 
 
-\begin{algorithm}[t]%\small
+\begin{algorithm}[htbp]%\small
 \caption{First-Come-First-Serve (FCFS)}\label{algo.fcfs}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue} %\Comment{The job's queue is sorted by submission times}
@@ -488,14 +491,13 @@ FCFS is a standard baseline comparison
 for job scheduling. However, it is not aware of the capability of the
 system to keep a large data file in the memory of a node between the execution of
 two consecutive jobs.
-
 A first step towards a locality-aware scheduler
 is to select a node for each job not based on the cores' availability
 time, but also using the file availability time, based on the file
 transfer time. This is the purpose of the Earliest-Finish-Time (or
 EFT) scheduler, described in Algorithm~\ref{algo.eft}: by selecting
 the node that can effectively start the job at the earliest time, it
-minimizes the job completion time. There are three scenarios for the
+minimizes the job completion time. There are three scenarios to compute the
 time $t'_k$ at which the input file of a job $J_i$ is available on
 \Node{k}:
 \begin{enumerate}
@@ -522,7 +524,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 % \todo[inline]{Max: Say that EFT with bf consider completion time as well.}
 % \todo[inline]{Max: The large comment I added in Algo2 should maybe be in a text before with a smaller comment with a reference to the text?}
 		
-\begin{algorithm}[t]%\small
+\begin{algorithm}[htbp]%\small
 \caption{Earliest-Finish-Time (EFT)}\label{algo.eft}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -578,8 +580,8 @@ each node \Node{k}, we sum the previous three quantities, with a weight
 $W$ for the second one (loading time). In our experiments, based on
 empirical evaluation, we set this value to $W=500$, incidentally roughly
 equivalent to the number of nodes.
-Note that the other two quantities usually have very different values,
-and the availability time is usually much larger than the time for
+Note that the other two quantities usually have very different values:
+the availability time is usually much larger than the time for
 reloading evicted data. Hence this last criterion is mostly used as a
 tie-break in case of equality of the first two criteria.
 
@@ -609,8 +611,8 @@ tie-break in case of equality of the first two criteria.
 %\subsection{LEO}
 
 The LEA strategy puts a dramatic importance on data loads. Hence, it
-is very useful when the platform is fully loaded and we can safely
-delay the processing of some job to favor data reuse and avoid
+is very useful when the platform is fully loaded and  some jobs
+can safely be delayed to favor data reuse and avoid
 unnecessary loads. However, when the platform is not fully loaded,
 delaying jobs can be detrimental, as it can increases the response
 time for some jobs, without any benefit for other jobs. Our second proposed strategy,
@@ -653,7 +655,7 @@ at least one job) is above a criterion, the LEA strategy is applied,
 otherwise the EFT strategy is used.
  
 
-\begin{algorithm}[t]%\small
+\begin{algorithm}[htbp]%\small
 \caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -705,10 +707,10 @@ job. Specifically, we change Line~\ref{fcfs.ln.find} into:
   available from $t_k$ until $t_k + \walltime(J_i)$ on $\Node{k}$
 \end{algorithmic}
 
-Note that this requires the algorithm to store  the whole occupation profile of
+Note that this requires the schedulers to store  the whole occupation profile of
 each core (with availability and unavailability times), whereas the
 version of each scheduler without backfilling simply requires the time
-of last job completion.
+of last job completion on each core.
 
 
 %~ \begin{figure}[t]
@@ -764,17 +766,14 @@ For this reason, we choose to perform simulations based on logs of a
 real computing platform. In this section, we describe how we used
 these logs as well as the results of the corresponding simulations.
 All strategies as well as the two baselines have been implemented on
-a simulator that we developed\footnote{\url{https://github.com/user-for-double-blind-submission/Locality-aware-batch-scheduling-of-I-O-intensive-workloads}}.
+a simulator that we developed\footnote{See code and anonymized logs at: \url{https://github.com/user-for-double-blind-submission/Locality-aware-batch-scheduling-of-I-O-intensive-workloads}}.
 
 
 \subsection{Usage of real cluster logs}
 \label{sec.working}
 
 The logs we use contain historical data on jobs, namely their exact submission time,
-size, stated walltime, and actual duration
-\footnote{The logs are
-  available with the reproducible code}. 
-  \todo[inline]{LM: change this footnote if we manage to make anonymous logs available. Max: Okay done.}
+size, stated walltime, and actual duration.
 Since explicit data dependencies are not encoded in SLURM job
 specifications, we do not have access to the actual input files of
 these jobs. We thus create an artificial data dependency pattern that
@@ -787,9 +786,8 @@ share their input file if they match the three following requirements:
 	\item $J_i$ and $J_j$ were submitted within an 800 seconds
           time frame. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
 \end{enumerate}
-Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files.
-
-
+Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files. 
+% 
 \todo[inline]{Max: Instead of the following text:
 "The platform where the logs have been extracted
 consists of 486 nodes with 20 cores each, with most of them
