@@ -7,7 +7,7 @@ PROPORTION="V10000"
 #~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-09-09-\>2022-09-09_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-09-09-\>2022-09-09_V10000_450_128_32_256_4_1024.csv 0
 #~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-03-26-\>2022-03-26_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-03-26-\>2022-03-26_V10000_450_128_32_256_4_1024.csv 0
 #~ python3 src/plot_dot_and_bar.py Results_FCFS_Score_Backfill_2022-08-16-\>2022-08-16_V10000 Mean_Stretch Total_waiting_for_a_load_time_and_transfer_time 450_128_32_256_4_1024 data/Results_FCFS_Score_Backfill_2022-08-16-\>2022-08-16_V10000_450_128_32_256_4_1024.csv 0
-python3 src/plot_barplot.py Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000 Mean_Stretch 450_128_32_256_4_1024 0 data/Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000_450_128_32_256_4_1024.csv 4
+#~ python3 src/plot_barplot.py Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000 Mean_Stretch 450_128_32_256_4_1024 0 data/Results_FCFS_Score_Backfill_2022-01-28-\>2022-01-28_V10000_450_128_32_256_4_1024.csv 4
 
 # Cluster usage
 #~ python3 src/plot_stats_one_execution.py data/Stats_Fcfs_07-16.csv Used_nodes 2022-07-16-\>2022-07-16_V10000 450_128_32_256_4_1024 Fcfs 0 0 0 0 1 16 07 2022 core_by_core
