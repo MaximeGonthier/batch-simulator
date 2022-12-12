@@ -1121,7 +1121,7 @@ In this situation, re-using files has a significant impact
 on the queue times. 
 On this workload, LEA and LEM re-uses files for approximately 3500
 of the 4721 evaluated jobs. In contrast, FCFS only re-uses files for 2100 jobs.
-This is confirmed by Figure~\ref{stretch.03-26}:
+This is confirmed by Figure~\ref{stretch.03-26}a:
 more data re-use is associated with a smaller stretch for LEA and LEM.
 %\todo[inline]{Max: I also removed the fig on number of data re-use here and modified the text.}
 
@@ -1164,7 +1164,7 @@ drastic reduction for LEA and LEM.
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's improvement from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean. 6 outliers for LEA and LEM (with maximum value at 33.5) are not depicted for better readability.}\label{boxplot.all}\end{figure}
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's improvement from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with and without backfilling.\todo[inline]{Max: Do you want to keep this or I put the old one with bars and hashed bars for backfilling? LM: put the same cross for non-BF strategy, and a different symbol (circle) for those with BF}}\label{stretch.01-28}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with (circles) and without (crosses) backfilling.\todo[inline]{Max: Do you want to keep this or I put the old one with bars and hashed bars for backfilling? LM: put the same cross for non-BF strategy, and a different symbol (circle) for those with BF}}\label{stretch.01-28}\end{figure}
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's improvement from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
 
 We evaluated our 5 schedulers on 44 different days.
