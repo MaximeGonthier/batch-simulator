@@ -779,14 +779,14 @@ All strategies as well as the two baselines have been implemented on
 a simulator that we developed\footnote{\url{https://github.com/user-for-double-blind-submission/Locality-aware-batch-scheduling-of-I-O-intensive-workloads}}.
 
 
-
 \subsection{Usage of real cluster logs}
 \label{sec.working}
 
 The logs we use contain historical data on jobs, namely their exact submission time,
-size, stated walltime, and actual duration\footnote{Links to the logs
-  are omitted for double-blind review but will be made
-  available in the final submission.}. \todo[inline]{LM: change this footnote if we manage to make anonymous logs available}
+size, stated walltime, and actual duration
+\footnote{The logs
+  available with the reproducible code}. 
+  \todo[inline]{LM: change this footnote if we manage to make anonymous logs available. Max: Okay done.}
 Since explicit data dependencies are not encoded in SLURM job
 specifications, we do not have access to the actual input files of
 these jobs. We thus create an artificial data dependency pattern that
