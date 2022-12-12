@@ -364,7 +364,7 @@ A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ 
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node
-          consecutively (i.e., no is started on this node before the
+          consecutively (i.e., no job is started on this node before the
           completion of $J_i$ and the start of $J_j$).
 \end{enumerate}
 This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
@@ -766,7 +766,7 @@ For this reason, we choose to perform simulations based on logs of a
 real computing platform. In this section, we describe how we used
 these logs as well as the results of the corresponding simulations.
 All strategies as well as the two baselines have been implemented on
-a simulator that we developed\footnote{See code and anonymized logs at: \url{https://github.com/user-for-double-blind-submission/Locality-aware-batch-scheduling-of-I-O-intensive-workloads}}.
+a simulator that we developed\footnote{See code and anonymized logs at: \url{https://github.com/userccgrid/Locality-aware-batch-scheduling}}.
 
 
 \subsection{Usage of real cluster logs}
