@@ -833,6 +833,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_
 	fprintf(f, "constraint_on_sizes: %d\n", constraint_on_sizes);
 	fprintf(f, "nb_cores: %d\n", nb_cores);
 	fprintf(f, "nb_job_to_evaluate: %d\n", nb_job_to_evaluate);
+	fprintf(f, "nb_data_reuse: %d\n", nb_data_reuse);
 	fprintf(f, "finished_jobs: %d\n", finished_jobs);
 	fprintf(f, "old_finished_jobs: %d\n", old_finished_jobs);
 	fprintf(f, "total_number_jobs: %d\n", total_number_jobs);
@@ -1040,6 +1041,8 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	fscanf(f, "%s %d\n", str, &nb_cores);
 	
 	fscanf(f, "%s %d\n", str, &nb_job_to_evaluate);
+	
+	fscanf(f, "%s %d\n", str, &nb_data_reuse);
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, nb_job_to_evaluate);
