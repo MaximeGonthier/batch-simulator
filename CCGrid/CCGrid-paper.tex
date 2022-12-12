@@ -18,7 +18,7 @@
  }
  
 %~ \usepackage[disable]{todonotes}
-\usepackage{todonotes}
+%~ \usepackage{todonotes}
 
 \usepackage[english]{babel}
 \usepackage{graphicx, color, amssymb, url, xcolor, tikz, pgf, float, subcaption, algorithm,  tabularx}
@@ -735,9 +735,9 @@ of last job completion.
   ytick={0.25,0.75},
   yticklabels={$C_1$, $C_2$},  
   xtick={1,...,5},
-  %~ extra y ticks={0,1,2},
+  % extra y ticks={0,1,2},
   extra x ticks={0,1,2,3,4,5}]
-  %~ extra y tick style={yticklabel={C1}}] 
+  % extra y tick style={yticklabel={C1}}] 
 \addplot[fill=color1] coordinates {(0,0) (0,0.5) (1,0.5) (1,0)} node at (current path bounding box.center) {\large Job 1}; 
 \addplot[fill=color2] coordinates {(1,0) (1,1) (2,1) (2,0)} node at (current path bounding box.center) {\large Job 2}; 
 \addplot[fill=color3] coordinates {(2,0) (2,0.5) (3,0.5) (3,0)} node at (current path bounding box.center) {\large Job 3};
