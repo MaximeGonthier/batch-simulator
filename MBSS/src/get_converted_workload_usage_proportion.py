@@ -12,6 +12,7 @@ core_time_required_workload_1 = 0
 core_time_required_workload_2 = 0
 core_time_total = 486*20*3*24*60*60
 core_time_1_day = 486*20*1*24*60*60
+core_time_2_day = 486*20*2*24*60*60
 
 first_time_day_0 = -1
 
@@ -70,3 +71,5 @@ print("Core time required from Day 1 is", (core_time_required_workload_1*100)/co
 print("Core time required from Day 2 is", (core_time_required_workload_2*100)/core_time_total, "% of the total core time")
 
 print("Core time required from Day 1 over 24 hours is", (core_time_required_workload_1*100)/core_time_1_day, "% of 1 day of core time")
+print("Core time required from Day 0, 1 and -1 over 48 hours is", ((core_time_required_workload_1+core_time_required_workload_0+core_time_required_workload_minus_1+core_time_required_workload_minus_2)*100)/core_time_2_day, "% of 2 day of core time")
+print("Core time required from Day 0, 1 over 48 hours is", ((core_time_required_workload_1+core_time_required_workload_0)*100)/core_time_2_day, "% of 2 day of core time")
