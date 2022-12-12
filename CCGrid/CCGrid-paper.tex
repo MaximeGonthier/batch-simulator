@@ -711,54 +711,43 @@ version of each scheduler without backfilling simply requires the time
 of last job completion.
 
 
-\begin{figure}[t]
-\pgfplotsset{every tick label/.append style={font=\large}}
-\definecolor{color1}{HTML}{CEDEF0}
-\definecolor{color2}{HTML}{9D9AD9}
-\definecolor{color3}{HTML}{6B9BD1}
-\centering\scalebox{0.7}{
-\begin{tikzpicture}\begin{axis}
-[ font=\footnotesize,
-  ytick style={draw=none},
-  xtick style={draw=none},
-  unit vector ratio*=1 1 1,
-  axis lines = middle,
-  enlarge x limits = {value=.1,upper},
-  enlarge y limits = {value=.05,upper},
-  ylabel={\large Cores},
-  xlabel={\large Time},
-  ylabel near ticks,
-  xlabel near ticks,
-  const plot,
-  stack plots=false,
-  area style,
-  ytick={0.25,0.75},
-  yticklabels={$C_1$, $C_2$},  
-  xtick={1,...,5},
-  % extra y ticks={0,1,2},
-  extra x ticks={0,1,2,3,4,5}]
-  % extra y tick style={yticklabel={C1}}] 
-\addplot[fill=color1] coordinates {(0,0) (0,0.5) (1,0.5) (1,0)} node at (current path bounding box.center) {\large Job 1}; 
-\addplot[fill=color2] coordinates {(1,0) (1,1) (2,1) (2,0)} node at (current path bounding box.center) {\large Job 2}; 
-\addplot[fill=color3] coordinates {(2,0) (2,0.5) (3,0.5) (3,0)} node at (current path bounding box.center) {\large Job 3};
-\addplot[fill=color3,opacity=0.7] coordinates {(0,0.5) (0,1) (1,1) (1,0.5)} node at (current path bounding box.center) {\large Job 3};
-\node (A) at (2, 0.55) {};
-\node (B) at (1, 0.80) {};
-\draw [->,-{Latex[round]},line width=1.5] (A) edge (B);
-\end{axis}\end{tikzpicture}}
-\caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled to start earlier without delaying the start time of job 2.}
-\end{figure}
-
-\todo[inline]{Max: Do we want to say:
-"On a node, when choosing the cores that will be used for a job among the available ones, 
-we choose the ones with the lowest index.
-This allow to optimize the cores utilization and reduces the risk of
-covering available cores that will need backfilling to be used.
-Additionally, when backfilling a job, the cores with the smallest next 
-start time of a job are chosen, in order to fill as much as possible
-the nodes."\\
-LM: I don't think we need to mention this. Tie-breaking using smallest
-index is the default behavior in most systems.}
+%~ \begin{figure}[t]
+%~ \pgfplotsset{every tick label/.append style={font=\large}}
+%~ \definecolor{color1}{HTML}{CEDEF0}
+%~ \definecolor{color2}{HTML}{9D9AD9}
+%~ \definecolor{color3}{HTML}{6B9BD1}
+%~ \centering\scalebox{0.7}{
+%~ \begin{tikzpicture}\begin{axis}
+%~ [ font=\footnotesize,
+  %~ ytick style={draw=none},
+  %~ xtick style={draw=none},
+  %~ unit vector ratio*=1 1 1,
+  %~ axis lines = middle,
+  %~ enlarge x limits = {value=.1,upper},
+  %~ enlarge y limits = {value=.05,upper},
+  %~ ylabel={\large Cores},
+  %~ xlabel={\large Time},
+  %~ ylabel near ticks,
+  %~ xlabel near ticks,
+  %~ const plot,
+  %~ stack plots=false,
+  %~ area style,
+  %~ ytick={0.25,0.75},
+  %~ yticklabels={$C_1$, $C_2$},  
+  %~ xtick={1,...,5},
+  %~ % extra y ticks={0,1,2},
+  %~ extra x ticks={0,1,2,3,4,5}]
+  %~ % extra y tick style={yticklabel={C1}}] 
+%~ \addplot[fill=color1] coordinates {(0,0) (0,0.5) (1,0.5) (1,0)} node at (current path bounding box.center) {\large Job 1}; 
+%~ \addplot[fill=color2] coordinates {(1,0) (1,1) (2,1) (2,0)} node at (current path bounding box.center) {\large Job 2}; 
+%~ \addplot[fill=color3] coordinates {(2,0) (2,0.5) (3,0.5) (3,0)} node at (current path bounding box.center) {\large Job 3};
+%~ \addplot[fill=color3,opacity=0.7] coordinates {(0,0.5) (0,1) (1,1) (1,0.5)} node at (current path bounding box.center) {\large Job 3};
+%~ \node (A) at (2, 0.55) {};
+%~ \node (B) at (1, 0.80) {};
+%~ \draw [->,-{Latex[round]},line width=1.5] (A) edge (B);
+%~ \end{axis}\end{tikzpicture}}
+%~ \caption{Example of the benefit of conservative backfilling. Job 3 was submitted after job 2 but can be backfilled to start earlier without delaying the start time of job 2.}
+%~ \end{figure}
 
 
 \section{Performance evaluation and analysis}\label{sec.evaluations}
@@ -783,7 +772,7 @@ a simulator that we developed\footnote{\url{https://github.com/user-for-double-b
 
 The logs we use contain historical data on jobs, namely their exact submission time,
 size, stated walltime, and actual duration
-\footnote{The logs
+\footnote{The logs are
   available with the reproducible code}. 
   \todo[inline]{LM: change this footnote if we manage to make anonymous logs available. Max: Okay done.}
 Since explicit data dependencies are not encoded in SLURM job
