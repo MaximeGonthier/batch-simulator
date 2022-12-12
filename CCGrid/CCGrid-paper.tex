@@ -366,7 +366,7 @@ A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ 
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{enumerate}
 This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
-allowing the same page cache memory pages to serve multiple processes from different jobs.
+allowing the same page cache to serve multiple processes from different jobs.
 Otherwise we consider that memory operations of jobs scheduled between
 $J_i$ and $J_j$ will cause the file to be evicted.
 
@@ -403,8 +403,8 @@ $$
 \mathit{Flow}(J_i) = \completiontime(J_i) - \submissiontime(J_i).
 $$
 
-In the following, we will consider aggregated performance metrics on
-job flows, such as average flow or maximum flow. However, the duration
+In the following, we want to consider aggregated performance metrics on
+job flows, such as average flow. However, the duration
 of a job significantly impacts its flow time. Jobs with the same
 flow but very different durations do not experience the same quality
 of service. To avoid this, the \emph{stretch} metric has been
