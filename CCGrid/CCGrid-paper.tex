@@ -17,8 +17,8 @@
    pdfborder={0 0 0},
  }
  
-%~ \usepackage[disable]{todonotes}
-%~ \usepackage{todonotes}
+%\usepackage[disable]{todonotes}
+\usepackage{todonotes}
 
 \usepackage[english]{babel}
 \usepackage{graphicx, color, amssymb, url, xcolor, tikz, pgf, float, subcaption, algorithm,  tabularx}
@@ -366,7 +366,7 @@ A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ 
 	\item $J_i$ and $J_j$ are computed on the same node consecutively.
 \end{enumerate}
 This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
-allowing the same page cache memory pages to serve multiple processes from different jobs.
+allowing the same page cache to serve multiple processes from different jobs.
 Otherwise we consider that memory operations of jobs scheduled between
 $J_i$ and $J_j$ will cause the file to be evicted.
 
@@ -382,7 +382,7 @@ $J_i$ and $J_j$ will cause the file to be evicted.
 
 For each job $J_i$, the scheduler is in charge of deciding which node
 will process $J_i$, and more precisely which cores of this node
-allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
+are allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
 $J_i$ is thus allocated a time window from $t_k$ to
 $t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
 $\file(J_i)$ in the memory (if it is not already present at time
@@ -403,8 +403,8 @@ $$
 \mathit{Flow}(J_i) = \completiontime(J_i) - \submissiontime(J_i).
 $$
 
-In the following, we will consider aggregated performance metrics on
-job flows, such as average flow or maximum flow. However, the duration
+In the following, we want to consider aggregated performance metrics on
+job flows, such as average flow. However, the duration
 of a job significantly impacts its flow time. Jobs with the same
 flow but very different durations do not experience the same quality
 of service. To avoid this, the \emph{stretch} metric has been
@@ -466,7 +466,7 @@ for the first time when a sufficient number of cores is available, and we alloca
 those cores.
 
 
-\begin{algorithm}[htbp]%\small
+\begin{algorithm}[t]%\small
 \caption{First-Come-First-Serve (FCFS)}\label{algo.fcfs}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue} %\Comment{The job's queue is sorted by submission times}
@@ -522,7 +522,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 % \todo[inline]{Max: Say that EFT with bf consider completion time as well.}
 % \todo[inline]{Max: The large comment I added in Algo2 should maybe be in a text before with a smaller comment with a reference to the text?}
 		
-\begin{algorithm}[htbp]%\small
+\begin{algorithm}[t]%\small
 \caption{Earliest-Finish-Time (EFT)}\label{algo.eft}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -585,7 +585,7 @@ tie-break in case of equality of the first two criteria.
 
 
 
-\begin{algorithm}[htb]%\small
+\begin{algorithm}[t]%\small
 \caption{Locality and Eviction Aware (LEA)}\label{algo.lea}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -621,7 +621,7 @@ right away, we select the one that will minimize the completion time
 fully loaded and we apply the previous LEA strategy, to favor data reuse.
 
 
-\begin{algorithm}[htb]%\small
+\begin{algorithm}[t]%\small
 \caption{Locality and Eviction Opportunistic (LEO)}\label{algo.leo}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -653,7 +653,7 @@ at least one job) is above a criterion, the LEA strategy is applied,
 otherwise the EFT strategy is used.
  
 
-\begin{algorithm}[htb]%\small
+\begin{algorithm}[t]%\small
 \caption{Locality and Eviction Mixed (LEM)}\label{algo.lem}
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
@@ -676,10 +676,10 @@ performance of job schedulers, by allowing jobs with lower priority to be
 scheduled before jobs with higher priority. In our setting, the
 priority is directly linked to the submission order: if $J_i$ is
 submitted before $J_j$, then $J_i$ has a higher priority than $J_j$.
-\todo[inline]{Sam: it seems to me we don't really want to talk about
-"priority", but rather submission order?\\LM: I prefer to keep the
-``priority'' name, as it is the classical term used when presenting
-backfilling, but I tried to link it to submission order, ok?}
+%\todo[inline]{Sam: it seems to me we don't really want to talk about
+%"priority", but rather submission order?\\LM: I prefer to keep the
+%``priority'' name, as it is the classical term used when presenting
+%backfilling, but I tried to link it to submission order, ok?}
 In order to avoid jobs
 being perpetually delayed, bounds have to be set on how already-scheduled
 jobs can be affected by backfilling. As discussed above,
@@ -1271,7 +1271,7 @@ waiting time of a job, especially
 when the cluster is under a high computing demand.
 Without backfilling, LEM is better than our baseline in 75\% of the
 cases (50\% of the cases with backfilling).
-This works open several exciting future directions.
+This work opens several exciting future directions.
 Firstly, LEM can be tuned to better adapt to the utilization rate of the cluster.
 Switching between a locality first and distribution first strategy could be done 
 gradually.
