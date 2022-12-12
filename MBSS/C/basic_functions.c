@@ -1,8 +1,16 @@
 #include <main.h>
 
+/** 
+ * This file contains functions that can be called
+ * by any scheduler. They return jobs depending
+ * on the parameters that want to be maximized, return
+ * values from a node list, etc... 
+**/
+
+/** Return the smallest time that can be used to compute a job of size
+ * nb_cores cores. Do not deal with backfilling. **/
 int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from, int last_node_size_to_choose_from, int nb_cores, int t)
 {
-	//~ printf("get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from %d, int last_node_size_to_choose_from %d, int nb_cores %d, int t %d).\n", first_node_size_to_choose_from, last_node_size_to_choose_from, nb_cores, t);
 	int min_EAT = INT_MAX;
 	int i = 0;
 	
@@ -37,7 +45,8 @@ int get_min_EAT(struct Node_List** head_node, int first_node_size_to_choose_from
 	return min_EAT;
 }
 
-/* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. */
+/** Schedule a job on the node with the smallest start time.
+ * Does not deal with backfilling. **/
 int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** head_node, int t, int nb_non_available_cores, bool use_bigger_nodes)
 {
 	int i = 0;
@@ -46,30 +55,9 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	int first_node_size_to_choose_from = 0;
 	int last_node_size_to_choose_from = 0;
 	
-	/* In which node size I can pick. */
 	if (use_bigger_nodes == true)
 	{
 		get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
-		//~ if (j->index_node_list == 0)
-		//~ {
-			//~ first_node_size_to_choose_from = 0;
-			//~ last_node_size_to_choose_from = 2;
-		//~ }
-		//~ else if (j->index_node_list == 1)
-		//~ {
-			//~ first_node_size_to_choose_from = 1;
-			//~ last_node_size_to_choose_from = 2;
-		//~ }
-		//~ else if (j->index_node_list == 2)
-		//~ {
-			//~ first_node_size_to_choose_from = 2;
-			//~ last_node_size_to_choose_from = 2;
-		//~ }
-		//~ else
-		//~ {
-			//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-			//~ exit(EXIT_FAILURE);
-		//~ }
 	}
 	else
 	{
@@ -83,19 +71,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		struct Node* n = head_node[i]->head;
 		while (n != NULL)
 		{
-			
-			//~ if (j->unique_id == 1020 && n->unique_id == 0)
-			//~ {
-				//~ for (int k = 0; k < 20; k++)
-				//~ {
-					//~ printf("avail time of core %d = %d.\n", n->cores[k]->unique_id, n->cores[k]->available_time);
-				//~ }
-				//~ print_cores_in_specific_node(n);
-			//~ }
-			
-			
-			//~ struct Node* n = head_node[i]->head;
-			earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+			earliest_available_time = n->cores[j->cores - 1]->available_time;
 			if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 			{
 				earliest_available_time = t;
@@ -107,7 +83,6 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 				
 				if (min_time == t)
 				{
-					//~ printf("break.\n");
 					i = last_node_size_to_choose_from + 1;
 					break;
 				}
@@ -119,11 +94,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	/* Update infos on the job and on cores. */
 	j->start_time = min_time;
 	j->end_time = min_time + j->walltime;
-	
-	/** unused methods because useless **/
-	//~ /** Remplacement avec méthode plus couteuse qui prend les nodes par leurs index. **/
-	//~ nb_non_available_cores = fill_cores_in_job_and_update_available_times(j, j->node_used, nb_non_available_cores, min_time, t);
-	
+		
 	for (i = 0; i < j->cores; i++)
 	{
 		j->cores_used[i] = j->node_used->cores[i]->unique_id;
@@ -132,36 +103,12 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 			nb_non_available_cores += 1;
 		}
 		j->node_used->cores[i]->available_time = min_time + j->walltime;
-		//~ /* Maybe I need job queue or not not sure. TODO. */
-		// copy_job_and_insert_tail_job_list(n->cores[i]->job_queue, j);
 	}
 	
-	//~ int k = 0;
-	//~ sort_cores_by_unique_id_in_specific_node(j->node_used);
-	//~ for (i = 0; i < j->cores; i++)
-	//~ {
-		//~ while(1)
-		//~ {
-			//~ if (j->node_used->cores[k]->available_time <= j->start_time)
-			//~ {
-				//~ j->cores_used[i] = j->node_used->cores[k]->unique_id;								
-				//~ j->node_used->cores[k]->available_time = j->start_time + j->walltime;
-				//~ if (j->node_used->cores[k]->available_time <= t)
-				//~ {
-					//~ nb_non_available_cores += 1;
-				//~ }
-				//~ k++;
-				//~ break;
-			//~ }
-			//~ k++;
-		//~ }
-	//~ }
-		
 	#ifdef PRINT
 	print_decision_in_scheduler(j);
 	#endif
 
-	/* Need to sort cores after each schedule of a job. */
 	sort_cores_by_available_time_in_specific_node(j->node_used);
 		
 	return nb_non_available_cores;
@@ -172,8 +119,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
  * 1: Minimise la création de trous. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence dans le plus longtemps pour favoriser les jobs schedule en cas de terminaison de walltime plus tôt.
  * 2: Minimise la création de trous. Si il trouve un trou, se met sur les coeurs qui ont un job qui commence le plus tôt pour favoriser les jobs backfill.
  **/
-/* Correspond to def schedule_job_on_earliest_available_cores_no_return(j, node_list, t, nb_non_available_cores) in the python code. 
- * nb_non_available_cores est que sur t et pas sur t y en a 2 pas plus loin à cause du backfill. */
+/** **/
 void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct Job* j, struct Node_List** head_node, int t, int backfill_mode, int* nb_non_available_cores, int* nb_non_available_cores_at_time_t)
 {
 	/* NEW core selection conservative bf only */

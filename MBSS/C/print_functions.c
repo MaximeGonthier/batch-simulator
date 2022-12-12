@@ -1,5 +1,13 @@
 #include <main.h>
 
+/** 
+ * This file contains various functions used to
+ * print in terminal or output files.
+ * The printed information in output files have 
+ * been used to plot figures nad better understand 
+ * the behavior of our schedulers.
+**/
+
 void print_tab_of_int (int arr[], int n)
 {
 	for (int i = 0; i < n; i++)
@@ -9,6 +17,7 @@ void print_tab_of_int (int arr[], int n)
 	printf("\n");
 }
 
+/** Print in terminal informations about the set of nodes. **/
 void print_node_list(struct Node_List** list)
 {
 	for (int i = 0; i < 3; i++)
@@ -16,7 +25,8 @@ void print_node_list(struct Node_List** list)
 		struct Node* n = list[i]->head;
 		while (n != NULL)
 		{
-			printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); fflush(stdout);
+			printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); 
+			fflush(stdout);
 			n = n->next;
 		}
 	}
@@ -71,7 +81,9 @@ void print_data_intervals(struct Node_List** list, int t)
 
 void print_single_node(struct Node* n)
 {
-	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores); fflush(stdout);
+	printf("Id: %d Memory: %d Bandwidth: %f Available cores: %d\n", n->unique_id, n->memory, n->bandwidth, n->n_available_cores);
+	fflush(stdout);
+	
 	struct Data* d = n->data->head;
 	while (d != NULL)
 	{
@@ -91,6 +103,7 @@ void print_job_list(struct Job* list)
 	}
 }
 
+/** Print the set of nex start and end times of running jobs. **/
 void print_time_list(struct Next_Time* list, int end_or_start)
 {
 	if (list == NULL)
@@ -114,6 +127,7 @@ void print_time_list(struct Next_Time* list, int end_or_start)
 	printf("\n"); fflush(stdout);
 }
 
+/** Print the starting time, node and cores attributed to a job in the schedule. **/
 void print_decision_in_scheduler(struct Job* j)
 {
 	printf("==> Job %d using file %d category %d workload %d will be computed on node %d core(s) ", j->unique_id, j->data, j->index_node_list, j->workload, j->node_used->unique_id); fflush(stdout);
@@ -140,10 +154,9 @@ void print_job_to_print(struct To_Print* tp)
 	printf("Job to print %d, subtime %d, time %d, time used %d, transfer+waiting time %d, start/end %d/%d, empty cluster time %f will give a stretch of %f.\n", tp->job_unique_id, tp->job_subtime, tp->time, tp->time_used, tp->transfer_time + tp->waiting_for_a_load_time, tp->job_start_time, tp->job_end_time, tp->empty_cluster_time, (tp->job_end_time - tp->job_subtime)/tp->empty_cluster_time);
 }
 
-/* Print in a csv file the results of this job allocation */
+/** Print in a csv file information on a job that just finished. **/
 void to_print_job_csv(struct Job* job, int time)
 {
-	//~ char* file_to_open;
 	int time_used = job->end_time - job->start_time;
 	
 	/* Plotting stats on choosen method. */
@@ -158,9 +171,8 @@ void to_print_job_csv(struct Job* job, int time)
 	fclose(f_stats_choosen_method);
 	#endif
 	
-	/* Only evaluate jobs from workload 1 */
+	/* Only for evaluated jobs */
 	if (job->workload == 1)
-	//~ if (job->workload == 1 && job->cores > 2) /* juste pour tester sur le workload d'Août */
 	{
 		struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));
 		new->next = NULL;
@@ -184,27 +196,10 @@ void to_print_job_csv(struct Job* job, int time)
 		{
 			new->upgraded = 0;
 		}
-		
-		//~ print_job_to_print(new);
-		
+				
 		insert_tail_to_print_list(jobs_to_print_list, new);
 	}
-	
-	//~ #ifdef PRINT_CLUSTER_USAGE
-	//~ int start_time = 0;
-	//~ if (job->workload == -2)
-	//~ {
-		//~ start_time = job->start_time_from_history;
-	//~ }
-	//~ else
-	//~ {
-		//~ start_time = job->start_time;
-	//~ }
-	//~ FILE* f_results_job_by_job = fopen("outputs/Results_for_cluster_usage.txt", "a");
-	//~ fprintf(f_results_job_by_job, "Node: %d | Cores: %d | Start: %d | End: %d | Workload: %d\n", job->node_used->unique_id, job->cores, start_time, job->end_time, job->workload);
-	//~ fclose(f_results_job_by_job);
-	//~ #endif
-	
+		
 	#ifdef PRINT_GANTT_CHART
 	int i = 0;
 	char* file_to_open = malloc(100*sizeof(char));
@@ -217,10 +212,6 @@ void to_print_job_csv(struct Job* job, int time)
 		printf("Error opening file Results_all_jobs_scheduler.csv\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
-	/* OLD */
-	//~ fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0, time_used, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
-	//~ printf("la\n"); fflush(stdout);
-	/* Print transfer time if any */
 	if (job->transfer_time > 0)
 	{
 		if (job->transfer_time > job->walltime) { job->transfer_time = job->walltime; }
@@ -247,9 +238,7 @@ void to_print_job_csv(struct Job* job, int time)
 		fprintf(f, ",-1,\"\"\n");
 	}
 	
-	/* Then print actual job */
 	fprintf(f, "%d,%d,delay,%f,%d,%d,1,COMPLETED_SUCCESSFULLY,%d,%d,%d,%d,%d,%d,", job->unique_id, job->unique_id, 0.0, job->cores, job->walltime, job->start_time - first_subtime_day_0 + job->transfer_time, time_used - job->transfer_time, job->end_time - first_subtime_day_0, job->start_time - first_subtime_day_0, job->end_time - first_subtime_day_0, 1);
-	/* Printing the cores used. */
 	if (job->cores > 1)
 	{
 		for (i = 0; i < job->cores; i++)
@@ -291,10 +280,10 @@ void to_print_job_csv(struct Job* job, int time)
 	#endif
 }
 
-/* Print in a file the final results. Only called once at the end of the simulation. */
+/** Print in a file the final results. Only called once at the end of the simulation. **/
 void print_csv(struct To_Print* head_to_print)
 {
-	int size_file_to_open = 300; /* provoque des main: malloc.c:2401: sysmalloc: Assertion `(old_top == initial_top (av) && old_size == 0) || ((unsigned long) (old_size) >= MINSIZE && prev_inuse (old_top) && ((unsigned long) old_end & (pagesize - 1)) == 0)' failed. parce que je ne fais pas attention à la taille du fichier + taille du scheduler à ouvrir dans le malloc. 300 est complètement arbitraire il faudrait le changer pour une valeur exacte. */
+	int size_file_to_open = 300;
 
 	if (strcmp(scheduler, "Fcfs") == 0)
 	{
@@ -543,16 +532,13 @@ void print_csv(struct To_Print* head_to_print)
 	int nb_upgraded_jobs = 0;
 	int what_is_a_large_queue_time = 25000;
 	int nb_large_queue_times = 0;
-	
-	//~ printf("Nb of job evaluated: %d.\n", nb_job_to_evaluate);
-	
+		
 	int verify_nb_job_to_evaluate = 0;
 	
 	while (head_to_print != NULL)
 	{
 		verify_nb_job_to_evaluate += 1;
 		
-		/* Get smaller jobs on bigger nodes */
 		nb_upgraded_jobs += head_to_print->upgraded;
 				
 		/* Flow stretch */
@@ -574,7 +560,7 @@ void print_csv(struct To_Print* head_to_print)
 			printf("error print csv data type %f.\n", head_to_print->job_data_size);
 			exit(EXIT_FAILURE);
 		}
-		//~ printf("here2\n");
+
 		/* Bounded flow stretch */
 		if (head_to_print->empty_cluster_time > 300)
 		{
@@ -603,7 +589,7 @@ void print_csv(struct To_Print* head_to_print)
 			exit(EXIT_FAILURE);
 		}
 
-		/* Maximum in flow stretch */
+		/* Maximum flow stretch */
 		if (max_flow_stretch < (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time)
 		{
 			max_flow_stretch = (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time;
@@ -614,7 +600,7 @@ void print_csv(struct To_Print* head_to_print)
 		}
 			
 		core_time_used += head_to_print->time_used*head_to_print->job_cores;
-		//~ printf("here3\n");
+
 		if (head_to_print->job_start_time - head_to_print->job_subtime < 0)
 		{
 			printf("Error queue time is %d for job %d.\n", head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->job_unique_id);
@@ -623,7 +609,6 @@ void print_csv(struct To_Print* head_to_print)
 		
 		total_queue_time += head_to_print->job_start_time - head_to_print->job_subtime;
 		
-		/* For nb of large queue times */
 		if (head_to_print->job_start_time - head_to_print->job_subtime > what_is_a_large_queue_time)
 		{
 			nb_large_queue_times += 1;
@@ -638,10 +623,8 @@ void print_csv(struct To_Print* head_to_print)
 		{
 			max_flow = head_to_print->job_end_time - head_to_print->job_subtime;
 		}
-		//~ total_transfer_time += head_to_print->transfer_time - head_to_print->waiting_for_a_load_time;
 		total_transfer_time += head_to_print->transfer_time;
 		total_waiting_for_a_load_time += head_to_print->waiting_for_a_load_time;
-		//~ total_waiting_for_a_load_time_and_transfer_time += head_to_print->transfer_time;
 		total_waiting_for_a_load_time_and_transfer_time += head_to_print->transfer_time + head_to_print->waiting_for_a_load_time;
 		if (makespan < head_to_print->job_end_time)
 		{
@@ -816,29 +799,21 @@ void print_holes(struct Node_List** list)
 }
 void print_holes_specific_node(struct Node* n)
 {
-	//~ int i = 0;
 	bool at_least_one_hole = false;
-	//~ for (i = 0; i < 3; i++)
-	//~ {
-		//~ struct Node* n = list[i]->head;
-		//~ while (n != NULL)
-		//~ {
-			struct Core_in_a_hole* c = n->cores_in_a_hole->head;
-			while (c != NULL)
-			{
-				printf("Hole on node %d core %d. Next job start at time %d.\n", n->unique_id, c->unique_id, c->start_time_of_the_hole);
-				at_least_one_hole = true;
-				c = c->next;
-			}
-			//~ n = n->next;
-		//~ }
-	//~ }
+	struct Core_in_a_hole* c = n->cores_in_a_hole->head;
+	while (c != NULL)
+	{
+		printf("Hole on node %d core %d. Next job start at time %d.\n", n->unique_id, c->unique_id, c->start_time_of_the_hole);
+		at_least_one_hole = true;
+		c = c->next;
+	}
 	if (at_least_one_hole == false)
 	{
 		printf("No holes.\n");
 	}
 }
 
+/** Save state of an execution **/
 void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_job_file)
 {
 	reset_cores(node_list, t);
@@ -866,7 +841,6 @@ void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_
 	fprintf(f, "running_nodes: %d\n", running_nodes);
 	fprintf(f, "nb_job_to_schedule: %d\n", nb_job_to_schedule);
 	fprintf(f, "nb_cores_to_schedule: %d\n", nb_cores_to_schedule);
-	//~ fprintf(f, "running_nodes_workload_minus_2: %d\n", running_nodes_workload_minus_2);
 	fprintf(f, "total_queue_time: %d\n", total_queue_time);
 	fprintf(f, "first_subtime_day_0: %d\n", first_subtime_day_0);
 	fprintf(f, "Planned_Area[3][3]:"); 
@@ -938,7 +912,6 @@ void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_
 			n = n->next;
 		}
 	}	
-
 	
 	struct Job* job = job_list_to_start_from_history->head;
 	if (job != NULL)
@@ -1015,6 +988,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_
 	fclose(f);
 }
 
+/** Resume execution **/
 void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* input_job_file)
 {
 	job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
@@ -1032,18 +1006,14 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
-	
-	//~ printf("Reading resumed state...\n");
-	
+		
 	char* to_open = malloc(37*sizeof(char));
 	strcpy(to_open, "outputs/saved_state_");
 	strcat(to_open, (char *)input_job_file + strlen(input_job_file) - 17);
-	//~ printf("File to resume: %s\n", to_open);
 	FILE *f = fopen(to_open, "r");
 	free(to_open);
 	
 	int i = 0;
-	//~ int j = 0;
 	char str[100];
 	int end_before_walltime_bool_converter = 0;
 	
@@ -1102,9 +1072,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	#endif
 	
 	fscanf(f, "%s %d\n", str, &nb_cores_to_schedule);
-	
-	//~ fscanf(f, "%s %d\n", str, &running_nodes_workload_minus_2);
-	
+		
 	fscanf(f, "%s %d\n", str, &total_queue_time);
 	
 	fscanf(f, "%s %d\n", str, &first_subtime_day_0);
@@ -1133,7 +1101,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate_started);
 	#endif
 	
-	
 	// Nodes
 	fscanf(f, "%s", str); // node_list:
 	node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
@@ -1143,8 +1110,8 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		node_list[i]->head = NULL;
 		node_list[i]->tail = NULL;
 	}
-	fscanf(f, "%s", str); // premier unique_id
-	while (strcmp(str, "job_list:") != 0) /* tant qu'on a pas lu toutes les nodes */
+	fscanf(f, "%s", str);
+	while (strcmp(str, "job_list:") != 0)
 	{
 		struct Node *new_node = (struct Node*) malloc(sizeof(struct Node));
 		fscanf(f, "%d %s %s %d %s %s %f %s %s %s", &new_node->unique_id, str, str, &new_node->memory, str, str, &new_node->bandwidth, str, str, str);
@@ -1157,8 +1124,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		new_node->data->head = NULL;
 		new_node->data->tail = NULL;
 		
-		/* Lecture des données */
-		fscanf(f, "%s", str); // premier unique_id ou ]
+		fscanf(f, "%s", str);
 		while (strcmp(str, "],") != 0)
 		{
 			struct Data *new_data = (struct Data*) malloc(sizeof(struct Data));
@@ -1171,12 +1137,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 			#endif
 			
 			insert_tail_data_list(new_node->data, new_data);
-			fscanf(f, "%s", str); // unique_id suivant ou ],
+			fscanf(f, "%s", str);
 		}
 		
-		/* Lecture des cores */
 		int running_job_bool_converter = false;
-		fscanf(f, "%s %s", str, str); // cores: [
+		fscanf(f, "%s %s", str, str);
 		new_node->cores = (struct Core**) malloc(20*sizeof(struct Core));
 		for (i = 0; i < 20; i++)
 		{
@@ -1197,7 +1162,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		print_cores_in_specific_node(new_node);
 		#endif
 		
-		/* For conservative bf */
 		new_node->number_cores_in_a_hole = 0;
 		new_node->cores_in_a_hole = malloc(sizeof(*new_node->cores_in_a_hole));
 		new_node->cores_in_a_hole->head = NULL;
@@ -1234,11 +1198,9 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 			exit(EXIT_FAILURE);
 		}
 		
-		fscanf(f, "%s", str); // unique_id suivant ou fin de la node list et donc job_list:
+		fscanf(f, "%s", str);
 	}
 
-
-	// Main job list
 	fscanf(f, "%s", str);
 	while (strcmp(str, "new_job_list:") != 0)
 	{
@@ -1268,7 +1230,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(job_list, new_job);
 
-		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
+		fscanf(f, "%s", str);
 	}
 	
 	#ifdef PRINT
@@ -1277,8 +1239,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	
-	// New job list
 	fscanf(f, "%s", str);
 	while (strcmp(str, "scheduled_job_list:") != 0)
 	{
@@ -1308,7 +1268,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(new_job_list, new_job);
 		
-		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
+		fscanf(f, "%s", str);
 	}
 	
 	#ifdef PRINT
@@ -1317,7 +1277,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	// Scheduled job list
 	fscanf(f, "%s", str);
 	while (strcmp(str, "running_jobs:") != 0)
 	{
@@ -1347,7 +1306,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(scheduled_job_list, new_job);
 		
-		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
+		fscanf(f, "%s", str);
 	}
 	
 	#ifdef PRINT
@@ -1356,8 +1315,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	
-	// Running jobs
 	struct Node* n = (struct Node*) malloc(sizeof(struct Node));
 	int node_used_id = 0;
 	fscanf(f, "%s", str);
@@ -1391,16 +1348,14 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		printf("Node used: %d\n", new_job->node_used->unique_id);
 		#endif
 		
-		// Cores 
 		new_job->cores_used = (int*) malloc(new_job->cores*sizeof(int));
-		fscanf(f, "%s %s %s", str, str, str); // , cores_used: [
+		fscanf(f, "%s %s %s", str, str, str);
 		for (i = 0; i < new_job->cores; i++)
 		{
 			fscanf(f, "%d", &new_job->cores_used[i]);
-			fscanf(f, "%s", str); // ,
+			fscanf(f, "%s", str);
 		}
 		
-		// Le reste
 		fscanf(f, "%s %d %s %s %d %s %s %d %s %s %d %s %s %d", str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
 
 		if (end_before_walltime_bool_converter == 0)
@@ -1420,7 +1375,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(running_jobs, new_job);
 		
-		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
+		fscanf(f, "%s", str);
 	}
 	#ifdef PRINT
 	printf("running_jobs:\n");
@@ -1428,8 +1383,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	
-	// Job To Print
 	jobs_to_print_list = malloc(sizeof(*jobs_to_print_list));
 	jobs_to_print_list->head = NULL;
 	jobs_to_print_list->tail = NULL;
@@ -1452,14 +1405,12 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 				
 		insert_tail_to_print_list(jobs_to_print_list, new_job);
 		
-		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
+		fscanf(f, "%s", str);
 	}
 	#ifdef PRINT
 	printf("\n");
 	#endif
 	
-	
-	// Next start times
 	start_times = malloc(sizeof(*start_times));
 	start_times->head = NULL;
 	fscanf(f, "%s", str);
@@ -1474,14 +1425,13 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 						
 		insert_next_time_in_sorted_list(start_times, new_time);
 		
-		fscanf(f, "%s", str); /* unique id du prochain job ou la prochiane liste ce qui casse la boucle while. */
+		fscanf(f, "%s", str);
 	}
 	#ifdef PRINT
 	print_time_list(start_times->head, 0);
 	printf("\n");
 	#endif
 	
-	// Next end times
 	end_times = malloc(sizeof(*end_times));
 	end_times->head = NULL;
 	fscanf(f, "%s", str);
@@ -1495,7 +1445,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 						
 		insert_next_time_in_sorted_list(end_times, new_time);
 		
-		fscanf(f, "%s", str); /* prochain teps ou fin du fichier */
+		fscanf(f, "%s", str);
 	}
 	#ifdef PRINT
 	print_time_list(end_times->head, 1);

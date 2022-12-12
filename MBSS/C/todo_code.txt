@@ -1,3 +1,0 @@
-Important to sort cores after each schedule in the node you selected.
-
-Diff vient de get_current_intervals(head_node, t);

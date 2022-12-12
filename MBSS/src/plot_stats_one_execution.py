@@ -229,8 +229,13 @@ else:
 
 	lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
 	lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
-	fig.legend(lines, labels, loc="upper left", bbox_to_anchor = (0.125, -0.12, 1, 1), fontsize=font_size)
-	# ~ plt.legend(axs, labels, loc = 'lower center', bbox_to_anchor = (0, -0.1, 1, 1), bbox_transform = plt.gcf().transFigure)
+	
+	if (workload == "2022-09-09->2022-09-09_V10000" or workload == "2022-03-26->2022-03-26_V10000"):
+		# ~ print("no legend")
+		labels = ["All jobs", "Ev. jobs", "Waiting"]
+		fig.legend(lines, labels, loc="upper right", bbox_to_anchor = (0.125, -0.12, 0.78, 1.01), fontsize=font_size)
+	else:
+		fig.legend(lines, labels, loc="upper left", bbox_to_anchor = (0.125, -0.12, 1, 1), fontsize=font_size)
 	
 filename = "plot/Cluster_usage/" + title + "_" + precision_mode + ".pdf"
 
