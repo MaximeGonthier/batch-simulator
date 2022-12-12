@@ -402,10 +402,10 @@ $$
 % \mathit{Flow}(J_i) = \completiontime(J_i) - \start(J_i).
 \mathit{Flow}(J_i) = \completiontime(J_i) - \submissiontime(J_i).
 $$
-\todo[inline]{Max: The flow is completiontime - submissiontime, not start time. I corrected it.}
+
 In the following, we will consider aggregated performance metrics on
 job flows, such as average flow or maximum flow. However, the duration
-of a job significantly impacts its flow time, and jobs will the same
+of a job significantly impacts its flow time. Jobs with the same
 flow but very different durations do not experience the same quality
 of service. To avoid this, the \emph{stretch} metric has been
 introduced that compares the actual flow of a job to the one it would
