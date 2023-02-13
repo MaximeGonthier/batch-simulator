@@ -96,6 +96,7 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 	free(nb_node);
 }
 
+/* FCFS */
 void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, bool use_bigger_nodes)
 {
 	#ifdef PRINT
@@ -1130,12 +1131,16 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				#endif
 			}
 
+	/* Test complexité réduite */
+	int nb_non_cores_rescheduled = 0;
 
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
 	while (j != NULL)
 	{		
-		if (nb_non_available_cores < nb_cores)
+		/* Test complexité réduite */
+		if (nb_non_available_cores < nb_cores && nb_non_cores_rescheduled < 486*4)
+		//~ if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
@@ -1185,26 +1190,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			
 			/* In which node size I can pick. */
 			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
-			//~ if (j->index_node_list == 0)
-			//~ {
-				//~ first_node_size_to_choose_from = 0;
-				//~ last_node_size_to_choose_from = 2;
-			//~ }
-			//~ else if (j->index_node_list == 1)
-			//~ {
-				//~ first_node_size_to_choose_from = 1;
-				//~ last_node_size_to_choose_from = 2;
-			//~ }
-			//~ else if (j->index_node_list == 2)
-			//~ {
-				//~ first_node_size_to_choose_from = 2;
-				//~ last_node_size_to_choose_from = 2;
-			//~ }
-			//~ else
-			//~ {
-				//~ printf("Error index value in schedule_job_on_earliest_available_cores.\n");  fflush(stdout);
-				//~ exit(EXIT_FAILURE);
-			//~ }
 						
 			/* --- Reduced complexity nb of copy --- */
 			if (multiplier_nb_copy != 0)
@@ -1223,6 +1208,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 										
 					/* 2.1. A = Get the earliest available time from the number of cores required by the job and add it to the score. */
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
+					
+					/* Test complexité réduite */
+					//~ if (earliest_available_time > t + 3600*4)
+					//~ {
+						//~ goto next_node;
+					//~ }
+					
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
 						earliest_available_time = t;
@@ -1364,148 +1356,136 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					fprintf(f_fcfs_score, "Node: %d EAT: %d C: %f CxX: %f Score: %f\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
 					#endif
 					
+					/* Test complexité réduite */
+					//~ next_node: ;
+					
 					n = n->next;
 				}
 			}
 			
-			j->transfer_time = choosen_time_to_load_file;
-					
-			/* Get start time and update available times of the cores. */
-			j->start_time = min_time;
-			j->end_time = min_time + j->walltime;
 			
-			
-			/* Cas mixte */
-			//~ print_decision_in_scheduler(j);
-			if (mixed_strategy == 1 && j->node_used->n_available_cores == 20 && j->start_time == t)
+			/* Test complexité réduite */
+			/* Update info if job was successfully scheduled. Else I put -1 at start_time to avoid any issue. */
+			if (min_score != -1)
 			{
-				#ifdef PRINT
-				printf("Used node is %d.\n", j->node_used->unique_id);
-				#endif
+				/* Test complexité réduite */
+				nb_non_cores_rescheduled += j->cores;
 				
-				bool new_running_node = true;
-				for (int v = 0; v < 20; v++)
+				j->transfer_time = choosen_time_to_load_file;
+						
+				/* Get start time and update available times of the cores. */
+				j->start_time = min_time;
+				j->end_time = min_time + j->walltime;
+				
+				/* Cas mixte pour LEO */
+				if (mixed_strategy == 1 && j->node_used->n_available_cores == 20 && j->start_time == t)
 				{
-					if (j->node_used->cores[v]->available_time > t)
+					#ifdef PRINT
+					printf("Used node is %d.\n", j->node_used->unique_id);
+					#endif
+					
+					bool new_running_node = true;
+					for (int v = 0; v < 20; v++)
 					{
-						new_running_node = false;
-						break;
+						if (j->node_used->cores[v]->available_time > t)
+						{
+							new_running_node = false;
+							break;
+						}
+					}
+					if (new_running_node == true)
+					{
+						temp_running_nodes += 1;
 					}
 				}
-				if (new_running_node == true)
-				{
-					temp_running_nodes += 1;
-					//~ printf("New running nodes.\n");
-				}
-				else
-				{
-					//~ printf("Not a new running node.\n");
-				}
-			}
-			
-			for (int k = 0; k < j->cores; k++)
-			{
-				j->cores_used[k] = j->node_used->cores[k]->unique_id;
-				if (j->node_used->cores[k]->available_time <= t)
-				{
-					nb_non_available_cores += 1;
-				}
-				j->node_used->cores[k]->available_time = min_time + j->walltime;
 				
-				/* Maybe I need job queue or not not sure. TODO. */
-			}
+				for (int k = 0; k < j->cores; k++)
+				{
+					j->cores_used[k] = j->node_used->cores[k]->unique_id;
+					if (j->node_used->cores[k]->available_time <= t)
+					{
+						nb_non_available_cores += 1;
+					}
+					j->node_used->cores[k]->available_time = min_time + j->walltime;
+					
+					/* Maybe I need job queue or not not sure. TODO. */
+				}
 
-			/* Need to add here intervals for current scheduling. */
-			found = false;
-			
-			#ifdef DATA_PERSISTENCE
-			struct Data* d = j->node_used->temp_data->head;
-			#else
-			struct Data* d = j->node_used->data->head;
-			#endif
-			
-			//~ printf("Add data %d in node %d\n", j->data, j->node_used->unique_id);
-			
-			while (d != NULL)
-			{
-				if (d->unique_id == j->data)
-				{
-					found = true;
-					create_and_insert_tail_interval_list(d->intervals, j->start_time);
-					create_and_insert_tail_interval_list(d->intervals, j->start_time + j->transfer_time);
-					create_and_insert_tail_interval_list(d->intervals, j->end_time);
-					break;
-				}
-				d = d->next;
-			}
-			
-			if (found == false)
-			{
-				#ifdef PRINT
-				printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
-				#endif
-				
-				/* Create a class Data for this node. */
-				struct Data* new = (struct Data*) malloc(sizeof(struct Data));
-				new->next = NULL;
-				new->unique_id = j->data;
-				new->start_time = -1;
-				new->end_time = -1;
-				
-				#ifndef DATA_PERSISTENCE
-				new->nb_task_using_it = 0;
-				#endif
-				
-				new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
-				new->intervals->head = NULL;
-				new->intervals->tail = NULL;
-				create_and_insert_tail_interval_list(new->intervals, j->start_time);
-				create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
-				create_and_insert_tail_interval_list(new->intervals, j->end_time);
-				new->size = j->data_size;
+				/* Need to add here intervals for current scheduling. */
+				found = false;
 				
 				#ifdef DATA_PERSISTENCE
-				insert_tail_data_list(j->node_used->temp_data, new);
+				struct Data* d = j->node_used->temp_data->head;
 				#else
-				insert_tail_data_list(j->node_used->data, new);
+				struct Data* d = j->node_used->data->head;
 				#endif
-			}			
-			
-			//~ #ifdef PRINT
-			//~ printf("After add interval are:\n"); fflush(stdout);
-			//~ print_data_intervals(head_node, t);
-			//~ #endif
-			
-			/* Need to sort cores after each schedule of a job. */
-			sort_cores_by_available_time_in_specific_node(j->node_used);
+							
+				while (d != NULL)
+				{
+					if (d->unique_id == j->data)
+					{
+						found = true;
+						create_and_insert_tail_interval_list(d->intervals, j->start_time);
+						create_and_insert_tail_interval_list(d->intervals, j->start_time + j->transfer_time);
+						create_and_insert_tail_interval_list(d->intervals, j->end_time);
+						break;
+					}
+					d = d->next;
+				}
+				
+				if (found == false)
+				{
+					#ifdef PRINT
+					printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
+					#endif
+					
+					/* Create a class Data for this node. */
+					struct Data* new = (struct Data*) malloc(sizeof(struct Data));
+					new->next = NULL;
+					new->unique_id = j->data;
+					new->start_time = -1;
+					new->end_time = -1;
+					
+					#ifndef DATA_PERSISTENCE
+					new->nb_task_using_it = 0;
+					#endif
+					
+					new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+					new->intervals->head = NULL;
+					new->intervals->tail = NULL;
+					create_and_insert_tail_interval_list(new->intervals, j->start_time);
+					create_and_insert_tail_interval_list(new->intervals, j->start_time + j->transfer_time);
+					create_and_insert_tail_interval_list(new->intervals, j->end_time);
+					new->size = j->data_size;
+					
+					#ifdef DATA_PERSISTENCE
+					insert_tail_data_list(j->node_used->temp_data, new);
+					#else
+					insert_tail_data_list(j->node_used->data, new);
+					#endif
+				}			
+				
+				/* Need to sort cores after each schedule of a job. */
+				sort_cores_by_available_time_in_specific_node(j->node_used);
+											
+				#ifdef PRINT
+				print_decision_in_scheduler(j);
+				#endif
 										
-			#ifdef PRINT
-			print_decision_in_scheduler(j);
-			#endif
-			
-			//~ if (j->node_used->unique_id == 28 || j->unique_id == 968)
-			//~ {
-				//~ printf("T = %d | ", t);
-				//~ print_decision_in_scheduler(j);
-			//~ }
-						
-			/* Insert in start times. */
-			insert_next_time_in_sorted_list(start_times, j->start_time);
-			
-			/* --- Normal complexity nb of copy --- */
-			/* Free time already checked. */
-			//~ free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
-			
-			/* --- Normal complexity nb of copy --- */
-			/* Increment nb of copy for current file if we scheduled at time t the current job. */
-			if (multiplier_nb_copy != 0 && j->start_time == t)
-			{
-				//~ printf("Need to increment for job %d Multi is %d.\n", j->unique_id, multiplier_nb_copy); fflush(stdout);
-				increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
-				//~ printf("Increment ok for job %d.\n", j->unique_id); fflush(stdout);
+				/* Insert in start times. */
+				insert_next_time_in_sorted_list(start_times, j->start_time);
+							
+				/* Increment nb of copy for current file if we scheduled at time t the current job. */
+				if (multiplier_nb_copy != 0 && j->start_time == t)
+				{
+					increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
+				}
 			}
-			
-			
+			/* Test complexité réduite */
+			else /* Could not schedule the job in the time frame t + 1h */
+			{
+				j->start_time = -1;
+			}
 			j = j->next;
 		}				
 		else

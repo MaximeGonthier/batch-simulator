@@ -2,6 +2,8 @@
 # bash Compare_FCFS_Score.sh workload cluster contrainte_taille
 # oarsub -p nova -l core=16,walltime=04:00:00 -r '2022-09-22 14:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
 
+#~ taskset -c (num de cpu) ./exec
+
 start=`date +%s`
 
 if [ "$#" -ne 4 ]; then

@@ -189,7 +189,7 @@ PROPORTION="V10000"
 	#~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Percentages_to_fcfs_bf_${DATE}_${PROPORTION} Percentage_FCFS_BF 2
 #~ done
 
-# Fifth batch not done yet
+# Fifth batch
 #~ echo "Fifth batch"
 #~ for ((i=1; i<=3; i++))
 #~ do 

@@ -1,0 +1,262 @@
+\documentclass[sigconf,review,anonymous]{acmart}
+
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+    
+\usepackage[disable]{todonotes}
+%\usepackage{todonotes}
+
+\begin{document}
+
+\title{Locality-aware batch scheduling of I/O intensive workloads}
+
+\begin{abstract}
+  Clusters make use of workload schedulers such as
+  the Slurm Workload Manager to allocate computing jobs onto
+  nodes. These schedulers usually aim at a good trade-off between
+  increasing resource utilization and user satisfaction (decreasing
+  job waiting time). However, these schedulers are typically unaware
+  of jobs sharing large input files, which may happen in data
+  intensive scenarios. The same input files may be loaded several
+  times, leading to a waste of resources.
+   
+  We study how to design a \textit{data-aware job scheduler} that is
+  able to keep large input files on the computing nodes, without
+  impacting other memory needs, and can use previously loaded files to
+  \textit{limit data transfers in order to reduce the waiting times of
+    jobs}.
+
+  We present three schedulers capable of distributing the load between
+  the computing nodes as well as re-using an input file already loaded
+  in the memory of some node as much as possible.
+  
+  We perform simulations using real cluster usage traces to compare
+  them to classical job schedulers.  The results show that
+  keeping data in local memory between successive jobs and using data
+  locality information to schedule jobs allows a reduction in job
+  waiting time and a drastic decrease in the amount of data transfers.
+
+
+  %%%% Longer version below:
+  %   Clusters and supercomputers make use of workload schedulers such as
+  % the Slurm Workload Manager or OAR to allocate computing jobs onto nodes. These schedulers
+  % usually aim at a good trade-off between increasing resource
+  % utilization and user satisfaction (decreasing job waiting
+  % time). However, these schedulers are typically unaware of jobs
+  % sharing large input files: in data-intensive scenarios, tens to
+  % hundreds of jobs dedicated to the study of the same multi-GB input
+  % file may be successively submitted. Running each of these jobs
+  % first requires to load the input file, leading to a large data
+  % transfer overhead. Users could manually group some of these
+  % tasks into larger jobs to reduce data transfers, but this would result in less granular units that are
+  % more difficult to schedule by the resource manager, and would
+  % thus result in a larger delay as well. We study how to design a \textit{data-aware
+  %   job scheduler} that is able to keep large input files on the 
+  % computing nodes, provided this does not impact the memory needs of
+  % other jobs, and can use previously loaded files to \textit{limit
+  %   data transfers in order to reduce the waiting times of jobs}.
+
+  % We present three schedulers capable of distributing the load between
+  % the computing nodes as well as being aware of what the memory of each
+  % node contains in order to re-use an input file
+  % already loaded in the memory of some node as many times as possible.
+  
+  
+  % We report simulations performed using real cluster usage traces. 
+  % Our approach is compared to currently used schedulers in batch systems.
+  % The results show that keeping data locally, in memory, between successive
+  % jobs and using data locality information to schedule jobs allows a
+  % reduction in job waiting time and a drastic decrease in the amount of data
+  % transfers.
+
+\end{abstract}
+
+\maketitle
+
+\keywords{
+%~ Batch scheduling,
+Job input sharing,
+%~ Real workload,
+Data-aware,
+Job scheduling,
+High Performance Data Analytics
+%~ Job-input-aware
+%~ Communication-aware,
+%~ Batch systems
+}
+
+\section{Introduction}\label{sec.introduction}
+
+To meet the ever-increasing demand for scientific computation power,
+High-Performance Computing platforms are typically composed of large
+numbers of computation nodes. Scientists typically submit their
+computation jobs to a scheduler, which decides the ordering and mapping
+of the jobs on the platform. This needs to be performed with particular
+care of balancing between resource utilization and user satisfaction, so
+as to leverage the computation resources as efficiently as possible,
+while avoiding adverse pathological cases that could particularly impact
+some users rather than others.
+
+Computation jobs however need data input which, more often than not, can
+be very large, notably for many subfields of life science with highly
+data-dependent workflows. Loading such data input from the storage
+nodes may consume a significant part of the job duration. This load
+penalty can however be avoided altogether when the data was actually
+already used by the previous job running on the computation node, and
+thus still immediately available on the node. Taking care of scheduling
+jobs that use the same data input one after the other thus allows to
+reduce the jobs completion times, leading to better platform usage
+efficiency. Unfortunately, classical job schedulers mostly do not take
+data input into account, and thus do not benefit from such data reuse ;
+most jobs always have to re-load their data input.
+
+In this paper, we propose to model the benefits of re-using data loads
+between successive jobs, and we introduce new algorithms that add such
+data reuse to the scheduling balance. By tracking which data is loaded
+on which node for the scheduled jobs, they are able to significantly
+reduce data loads, thus improving both resource utilization and user
+satisfaction. We evaluated these algorithms thanks to traces of actual
+jobs submissions observed on a large cluster platform. This allows to
+assess the effectiveness of our heuristics over a variety of realistic
+working sets. This revealed that while our heuristics get slightly worse
+results over some working set samples (those which exhibit cluster ample
+underuse), most working set samples largely benefit from our heuristics,
+leading to interesting benefit overall.
+
+We thus present the following contributions in this paper:
+\begin{itemize}
+	\item We formalize our model of scheduling data-intensive jobs sharing input files on a cluster (Section~\ref{sec.framework}).
+	\item We propose three new schedulers focusing on re-using input files while minimizing evictions and avoiding starvation (Section~\ref{sec.schedulers}).
+	\item We extract job information from historical logs of a cluster to build workloads that correspond to the needs and behaviors of real users (Section~\ref{sec.working}).
+	\item We implement all three heuristics as well as two state-of-the-art schedulers on a simulator and study the performance (mean stretch and amount of time spent waiting for a file to be loaded) obtained on 44 different workloads (Section~\ref{sec.evaluations}).
+	Our evaluation demonstrate that our heuristics in most cases surpass the state of the art schedulers.
+	We show that workloads that heavily saturate the cluster
+                benefits much more from our strategies which results
+                considerable reduction in the job waiting times.
+\end{itemize}
+
+\section{Related work}\label{sec.related_work}
+
+\subsection{Scheduling jobs on large clusters}
+
+A various number of workloads managers have emerged 
+as a way to meet the rising numbers of high performance computing clusters.
+Workload managers like Slurm~\cite{SLURM}, OAR~\cite{oar},
+TORQUE~\cite{torque}, LoadLeveler~\cite{loadleveler},
+Portable Batch System~\cite{pbs}, SunGrid~\cite{sungrid}
+or Load Sharing Facility~\cite{lsf} all offer
+various scheduling strategies.
+
+The First-Come-First-Served (FCFS) algorithm is the prevalent default
+scheduler on most of these solutions~\cite{survey_workload_manager_and_scheduler}.
+Moreover, Slurm is used on most of the TOP500 supercomputers and its default strategy is FCFS~\cite{slurm_website_scheduling} as well.
+A backfilling strategy is known to increase
+the use of supercomputer resources~\cite{maui}~\cite{New_Backfill}. 
+The most commonly used backfilling strategy, called conservative 
+backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based} follows
+a simple paradigm: "a job can only be backfilled if it does not
+delay a job of higher priority".
+We can then safely assume that comparing ourselves to FCFS with and without conservative backfilling can 
+bring significant insights on what improvements can be achieved on data-intensive workloads.
+
+Other scheduling strategies exist like 
+Maui~\cite{Maui_Scheduler}, Gang scheduling~\cite{gang_scheduling}, 
+RASA~\cite{rasa} that use the advantages of both Min-min and Max-min algorithms,
+RSDC~\cite{rsdc} that divides large jobs in sub jobs for a more refined scheduling,
+or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are a priority-based schedulers; 
+however these heuristics do not consider the impact
+input re-use could have on data-intensive workloads.
+We aim at resolving this issue in this paper.
+\todo[inline]{Max: Some citations are quite old, is it an issue?}
+
+\subsection{Using distributed file systems to deal with data-intensive workloads}
+
+Distributed file systems are a solution to ease the access to 
+shared input files. They facilitate the execution of I/O-intensive batch
+jobs by selecting appropriate storage policies.
+
+Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
+is designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
+HDFS~\cite{hdfs} (Hadoop Distributed File System)
+incorporates storage-aware scheduling. 
+%It is particularly used to store large volumes of data on a large number of systems.
+It migrates a computation closer to where the data is
+located, rather than moving the data to where the application is
+running, in order to reduce communication.
+%~ HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
+
+These solutions are mainly storage systems that uses a history of file locations to serve as a backup.
+\todo[inline]{Carl: I find this second point far more important. HDFS is treating the storage point as the actual source of the data, while anything loaded on the nodes in our scenario is just ephemeral copies of a shared storage, which itself has significant levels of redundancy. Individual nodes can sometimes fail in an HPC cluster as well, but those result in the loss of a job, not of primary storage. Max: Ok, I re-wrote this section accordingly.}
+In our scenario, we copy the data from an already-redundant system (an online database for example)
+and store it locally on the node in an ephemeral way.
+Thus, in the event of a crash, we do not manage the data which is already redundant, it simply results in an aborted job.
+Secondly, the scheduling can cause issues. Weets et al. describe some problems from
+MapReduce~\cite{issue_with_hdfs}, the programming model used in HDFS, in detail.
+By not using HDFS or any distributed file system, we avoid these problems altogether. 
+Lastly, file systems are particularly efficient when the input data used are identical over time.
+In our case, between users, the inputs will be largely different, making distributed file systems less efficient.
+
+
+%~ However, the main idea is not data re-use, but to
+%~ facilitate the execution of I/O intensive batch
+%~ jobs by selecting appropriate storage policies
+%~ in regards to I/O scoping (creating a custom environment for each job
+%~ for data that will be used a lot by the job, thus not accessing the main disk too
+%~ much) and space allocation.
+
+
+\subsection{Using schedulers to deal with data-intensive workloads}
+
+Some schedulers tackle the issue of data-intensive workloads. 
+A solution can be to minimize network contention by allocating nodes to even out node and
+switch contention~\cite{minimize_network_contention}. 
+In our model, we are not studying the network topology and consider independent nodes.
+This is reasonable, since our main concern is the cross-section bandwidth to a shared storage solution.
+\todo[inline]{Carl: Motivating why switch topology of less relevance.}
+%~ Moreover, this requires a tree-based network topologies, which is different from our model.
+%~ Furthermore, we are scheduling further down the topology (i.e nodes and not switches).
+\todo[inline]{Carl: I find the two last two sentences a bit confusing. What are we really trying to say here?
+Max: I was trying to say that they use the network topology to make a decision and we don't. 
+It was just another way to phrase what you wrote so I removed it. Also, their strategy 
+is developed for a tree-based network topology, so it might not work on other topology like a ring or a star?
+So, we might want to say that our approach is more generic in regards to the network topology?} 
+%
+Nikolopoulos et al.~\cite{Nikolopoulos2003AdaptiveSU}
+focus on a better utilization of idling memory together with 
+thrashing limitation.
+Our focus will be to control data loads in order to limit eviction
+and will thus naturally limit thrashing. 
+%
+Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
+propose to schedule jobs not sharing a file first
+and to use a stochastic model of job arrivals for each input file to maximize re-use.
+This work is aimed at the Map-Reduce model and allows to predict future jobs arrivals, two prerequisites that we do not consider. 
+%
+Equipping each node with a scheduler that follows a work
+stealing strategy in order to manage both data locality 
+and load balancing is also a solution to reduce data transfers~\cite{Optimizing_load_balancing_and_data_locality_with_data_aware_scheduling}. 
+%
+Selvarani et al. propose an improved activity-based costing scheduler~\cite{Improved_cost_based_algorithm}
+% where the scheduler adapt itself to different application types (CPU intensive, needing high memory, large I/O cost), but our focus will be more generic and aim at maximizing data re-use to meet these needs.
+where the processing capacity of each resource is evaluated to make the right decision.
+Our approach is more focused on maximizing data re-use on a 
+set of identical nodes.
+
+%~ An interesting solution proposed in the context
+%~ of the Jacobi-Davidson implementation for solving large
+%~ eigenproblems~\cite{loadbalance_and_trashing} tackle both load balancing and memory constraint. For the load balancing, they 
+%~ estimate the time needed by the fastest processor to perform the required $m$ jobs. Thus they can equilibrate the load
+%~ with this information. In our study we could use a similar strategy by estimating the 
+%~ processing time of a job, the length of a file transfer, and the amount of file transfers needed.
+%~ To deal with memory constraint the strategy applied in the paper is to check if 
+%~ nodes are thrashing data. If yes, it will recede execution of jobs on this node.
+%~ The main differences are that they are using dynamic jobs. Also, we would like to 
+%~ manage eviction and optimize data reuse during the scheduling phase, instead of
+%~ receding execution on nodes.
+%~ But is specific to the Jacobi-Davidson method
+
+\bibliographystyle{acm}
+\bibliography{ref.bib}
+\end{document}
