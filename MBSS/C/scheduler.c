@@ -311,12 +311,10 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			{
 				if ((temp_running_nodes*100)/486 < busy_cluster_threshold)
 				{
-					//~ printf("Call not busy.\n");
 					schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, 1, 0, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t, mixed_strategy, &temp_running_nodes);
 				}
 				else
 				{
-					//~ printf("Call busy.\n");
 					schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t, mixed_strategy, &temp_running_nodes);
 				}
 			}
@@ -325,14 +323,18 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 				schedule_job_fcfs_score_with_conservative_backfill(j, head_node, t, multiplier_file_to_load, multiplier_file_evicted, adaptative_multiplier, start_immediately_if_EAT_is_t, backfill_mode, &nb_non_available_cores, &nb_non_available_cores_at_time_t, mixed_strategy, &temp_running_nodes);
 			}
 						
-			if (j->start_time < t)
-			{
-				printf("Error: j->start_time < t\n");
-				exit(EXIT_FAILURE);
-			}
+			//~ if (j->start_time < t)
+			//~ {
+				//~ printf("Error: j->start_time < t\n");
+				//~ exit(EXIT_FAILURE);
+			//~ }
 			
-			insert_next_time_in_sorted_list(start_times, j->start_time);
-			j = j->next;
+			/* Test complexité réduite */
+			if (j->start_time >= t)
+			{
+				insert_next_time_in_sorted_list(start_times, j->start_time);
+			}
+				j = j->next;
 		}
 		else if (nb_non_available_cores_at_time_t < nb_cores) // Ajouter un && nb_non_available_cores_at_time_t > 20 car ça peut tout bloquer pour rien ?
 		{
@@ -1132,15 +1134,15 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			}
 
 	/* Test complexité réduite */
-	int nb_non_cores_rescheduled = 0;
+	//~ int nb_non_cores_rescheduled = 0;
 
 	/* 1. Loop on available jobs. */
 	struct Job* j = head_job;
 	while (j != NULL)
 	{		
 		/* Test complexité réduite */
-		if (nb_non_available_cores < nb_cores && nb_non_cores_rescheduled < 486*4)
-		//~ if (nb_non_available_cores < nb_cores)
+		//~ if (nb_non_available_cores < nb_cores && nb_non_cores_rescheduled < 486*2)
+		if (nb_non_available_cores < nb_cores)
 		{
 			#ifdef PRINT
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
@@ -1210,10 +1212,11 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 					
 					/* Test complexité réduite */
-					//~ if (earliest_available_time > t + 3600*4)
-					//~ {
-						//~ goto next_node;
-					//~ }
+					//~ if (earliest_available_time > t + 3600*3)
+					if (earliest_available_time > t + 3600*1)
+					{
+						goto next_node;
+					}
 					
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
@@ -1251,7 +1254,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 							//~ }
 						//~ }s
 						//~ printf("For job %d using file of size %f, div is %d.\n", j->unique_id, j->data_size, div_multiplier);
-						
 						//~ multiplier_file_to_load_increment = 0;
 						
 						/* 2.2. B = Compute the time to load all data. For this look at the data that will be available at the earliest available time of the node. */
@@ -1357,7 +1359,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					#endif
 					
 					/* Test complexité réduite */
-					//~ next_node: ;
+					next_node: ;
 					
 					n = n->next;
 				}
@@ -1369,7 +1371,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			if (min_score != -1)
 			{
 				/* Test complexité réduite */
-				nb_non_cores_rescheduled += j->cores;
+				//~ nb_non_cores_rescheduled += j->cores;
 				
 				j->transfer_time = choosen_time_to_load_file;
 						

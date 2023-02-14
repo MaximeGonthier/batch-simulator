@@ -1018,94 +1018,191 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	char str[100];
 	int end_before_walltime_bool_converter = 0;
 	
-	fscanf(f, "%s %d\n", str, t);
+	if(!fscanf(f, "%s %d\n", str, t))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT		
 	printf("%s %d\n", str, *t);	
 	#endif
 		
-	fscanf(f, "%s %d\n", str, next_submit_time);
+	if(!fscanf(f, "%s %d\n", str, next_submit_time))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, *next_submit_time);
 	#endif
 	
-	fscanf(f, "%s %d\n", str, &planned_or_ratio);
+	if(!fscanf(f, "%s %d\n", str, &planned_or_ratio))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, planned_or_ratio);
 	#endif
 	
-	fscanf(f, "%s %d\n", str, &constraint_on_sizes);
+	if(!fscanf(f, "%s %d\n", str, &constraint_on_sizes))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &nb_cores);
+	if(!fscanf(f, "%s %d\n", str, &nb_cores))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &nb_job_to_evaluate);
+	if(!fscanf(f, "%s %d\n", str, &nb_job_to_evaluate))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &nb_data_reuse);
+	if(!fscanf(f, "%s %d\n", str, &nb_data_reuse))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, nb_job_to_evaluate);
 	#endif
 	
-	fscanf(f, "%s %d\n", str, &finished_jobs);
+	if(!fscanf(f, "%s %d\n", str, &finished_jobs))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, finished_jobs);
 	#endif
 	
-	fscanf(f, "%s %d\n", str, old_finished_jobs);
+	if(!fscanf(f, "%s %d\n", str, old_finished_jobs))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, *old_finished_jobs);
 	#endif
 	
-	fscanf(f, "%s %d\n", str, &total_number_jobs);
+	if(!fscanf(f, "%s %d\n", str, &total_number_jobs))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &total_number_nodes);
+	if(!fscanf(f, "%s %d\n", str, &total_number_nodes))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &running_cores);
+	if(!fscanf(f, "%s %d\n", str, &running_cores))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &running_nodes);
+	if(!fscanf(f, "%s %d\n", str, &running_nodes))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &nb_job_to_schedule);
+	if(!fscanf(f, "%s %d\n", str, &nb_job_to_schedule))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("%s %d\n", str, nb_job_to_schedule);
 	#endif
 	
-	fscanf(f, "%s %d\n", str, &nb_cores_to_schedule);
+	if(!fscanf(f, "%s %d\n", str, &nb_cores_to_schedule))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 		
-	fscanf(f, "%s %d\n", str, &total_queue_time);
+	if(!fscanf(f, "%s %d\n", str, &total_queue_time))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d\n", str, &first_subtime_day_0);
+	if(!fscanf(f, "%s %d\n", str, &first_subtime_day_0))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %lld %lld %lld %lld %lld %lld %lld %lld %lld", str, &Planned_Area[0][0], &Planned_Area[0][1], &Planned_Area[0][2], &Planned_Area[1][0], &Planned_Area[1][1], &Planned_Area[1][2], &Planned_Area[2][0], &Planned_Area[2][1], &Planned_Area[2][2]);
+	if(!fscanf(f, "%s %lld %lld %lld %lld %lld %lld %lld %lld %lld", str, &Planned_Area[0][0], &Planned_Area[0][1], &Planned_Area[0][2], &Planned_Area[1][0], &Planned_Area[1][1], &Planned_Area[1][2], &Planned_Area[2][0], &Planned_Area[2][1], &Planned_Area[2][2]))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
-	fscanf(f, "%s %d %d %d", str, &number_node_size[0], &number_node_size[1], &number_node_size[2]);
+	if(!fscanf(f, "%s %d %d %d", str, &number_node_size[0], &number_node_size[1], &number_node_size[2]))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 
-	fscanf(f, "%s %d", str, &busy_cluster);
+	if(!fscanf(f, "%s %d", str, &busy_cluster))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("busy_cluster: %d\n", busy_cluster);
 	#endif
 	
-	fscanf(f, "%s %d", str, &backfill_mode);
+	if(!fscanf(f, "%s %d", str, &backfill_mode))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("backfill_mode: %d\n", backfill_mode);
 	#endif
 	
-	fscanf(f, "%s %lld %lld %lld %lld %lld %lld %lld %lld %lld", str, &Allocated_Area[0][0], &Allocated_Area[0][1], &Allocated_Area[0][2], &Allocated_Area[1][0], &Allocated_Area[1][1], &Allocated_Area[1][2], &Allocated_Area[2][0], &Allocated_Area[2][1], &Allocated_Area[2][2]);
+	if(!fscanf(f, "%s %lld %lld %lld %lld %lld %lld %lld %lld %lld", str, &Allocated_Area[0][0], &Allocated_Area[0][1], &Allocated_Area[0][2], &Allocated_Area[1][0], &Allocated_Area[1][1], &Allocated_Area[1][2], &Allocated_Area[2][0], &Allocated_Area[2][1], &Allocated_Area[2][2]))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 
-	fscanf(f, "%s %d", str, &nb_job_to_evaluate_started);
+	if(!fscanf(f, "%s %d", str, &nb_job_to_evaluate_started))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	
 	#ifdef PRINT
 	printf("nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate_started);
 	#endif
 	
 	// Nodes
-	fscanf(f, "%s", str); // node_list:
+	if(!fscanf(f, "%s", str)) // node_list:
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
+	
 	node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
 	for (i = 0; i < 3; i++)
 	{
@@ -1113,11 +1210,21 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		node_list[i]->head = NULL;
 		node_list[i]->tail = NULL;
 	}
-	fscanf(f, "%s", str);
+	
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
+	
 	while (strcmp(str, "job_list:") != 0)
 	{
 		struct Node *new_node = (struct Node*) malloc(sizeof(struct Node));
-		fscanf(f, "%d %s %s %d %s %s %f %s %s %s", &new_node->unique_id, str, str, &new_node->memory, str, str, &new_node->bandwidth, str, str, str);
+		if(!fscanf(f, "%d %s %s %d %s %s %f %s %s %s", &new_node->unique_id, str, str, &new_node->memory, str, str, &new_node->bandwidth, str, str, str))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 		
 		#ifdef PRINT
 		printf("%d %d %f", new_node->unique_id, new_node->memory, new_node->bandwidth);
@@ -1127,29 +1234,54 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		new_node->data->head = NULL;
 		new_node->data->tail = NULL;
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
+	
 		while (strcmp(str, "],") != 0)
 		{
 			struct Data *new_data = (struct Data*) malloc(sizeof(struct Data));
 			new_data->next = NULL;
 			
 			#ifndef DATA_PERSISTENCE
-			fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %s %s %f", &new_data->unique_id, str, str, &new_data->start_time, str ,str, &new_data->end_time, str, str, &new_data->nb_task_using_it, str, str, str, str, &new_data->size);
+			if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %s %s %f", &new_data->unique_id, str, str, &new_data->start_time, str ,str, &new_data->end_time, str, str, &new_data->nb_task_using_it, str, str, str, str, &new_data->size))
+			{
+				perror("Error if(!fscanf");
+				exit(EXIT_FAILURE);
+			}
 			#else
-			fscanf(f, "%d %s %s %d %s %s %d %s %s %s %s %f", &new_data->unique_id, str, str, &new_data->start_time, str ,str, &new_data->end_time, str, str, str, str, &new_data->size);
+			if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %s %s %f", &new_data->unique_id, str, str, &new_data->start_time, str ,str, &new_data->end_time, str, str, str, str, &new_data->size))
+			{
+				perror("Error if(!fscanf");
+				exit(EXIT_FAILURE);
+			}
 			#endif
 			
 			insert_tail_data_list(new_node->data, new_data);
-			fscanf(f, "%s", str);
+			if(!fscanf(f, "%s", str))
+			{
+				perror("Error if(!fscanf");
+				exit(EXIT_FAILURE);
+			}
 		}
 		
 		int running_job_bool_converter = false;
-		fscanf(f, "%s %s", str, str);
+		if(!fscanf(f, "%s %s", str, str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		new_node->cores = (struct Core**) malloc(20*sizeof(struct Core));
 		for (i = 0; i < 20; i++)
 		{
 			new_node->cores[i] = (struct Core*) malloc(sizeof(struct Core));
-			fscanf(f, "%s %d %s %s %d %s %s %d %s %s %d", str, &new_node->cores[i]->unique_id, str, str, &new_node->cores[i]->available_time, str, str, &running_job_bool_converter, str, str, &new_node->cores[i]->running_job_end);
+			if(!fscanf(f, "%s %d %s %s %d %s %s %d %s %s %d", str, &new_node->cores[i]->unique_id, str, str, &new_node->cores[i]->available_time, str, str, &running_job_bool_converter, str, str, &new_node->cores[i]->running_job_end))
+			{
+				perror("Error if(!fscanf");
+				exit(EXIT_FAILURE);
+			}
 			if (running_job_bool_converter == 0)
 			{
 				new_node->cores[i]->running_job = false;
@@ -1159,7 +1291,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 				new_node->cores[i]->running_job = true;
 			}
 		}
-		fscanf(f, "%s", str); // ],
+		if(!fscanf(f, "%s", str)) // ],
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		
 		#ifdef PRINT
 		print_cores_in_specific_node(new_node);
@@ -1171,9 +1307,17 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		new_node->cores_in_a_hole->tail = NULL;
 
 		#ifndef DATA_PERSISTENCE
-		fscanf(f, "%s %d %s %s %d %s %s %d %s %s %s", str, &new_node->n_available_cores, str, str, &new_node->index_node_list, str, str, &new_node->number_cores_in_a_hole, str, str, str);
+		if(!fscanf(f, "%s %d %s %s %d %s %s %d %s %s %s", str, &new_node->n_available_cores, str, str, &new_node->index_node_list, str, str, &new_node->number_cores_in_a_hole, str, str, str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		#else
-		fscanf(f, "%s %d %s %s %d %s %s %d %s %s %s %s %d %s %s %s", str, &new_node->n_available_cores, str, str, &new_node->index_node_list, str, str, &new_node->number_cores_in_a_hole, str, str, str, str, &new_node->data_occupation, str, str, str);
+		if(!fscanf(f, "%s %d %s %s %d %s %s %d %s %s %s %s %d %s %s %s", str, &new_node->n_available_cores, str, str, &new_node->index_node_list, str, str, &new_node->number_cores_in_a_hole, str, str, str, str, &new_node->data_occupation, str, str, str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		#endif
 		
 		#ifdef DATA_PERSISTENCE
@@ -1201,10 +1345,18 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 			exit(EXIT_FAILURE);
 		}
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 	}
 
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	while (strcmp(str, "new_job_list:") != 0)
 	{
 		#ifdef PRINT
@@ -1212,7 +1364,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		#endif
 		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
-		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
+		if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		
 		if (end_before_walltime_bool_converter == 0)
 		{
@@ -1233,7 +1389,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(job_list, new_job);
 
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 	}
 	
 	#ifdef PRINT
@@ -1242,7 +1402,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	while (strcmp(str, "scheduled_job_list:") != 0)
 	{
 		#ifdef PRINT
@@ -1250,7 +1414,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		#endif
 		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
-		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
+		if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		
 		if (end_before_walltime_bool_converter == 0)
 		{
@@ -1271,7 +1439,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(new_job_list, new_job);
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 	}
 	
 	#ifdef PRINT
@@ -1280,7 +1452,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	while (strcmp(str, "running_jobs:") != 0)
 	{
 		#ifdef PRINT
@@ -1288,7 +1464,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		#endif
 		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
-		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
+		if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %s %s %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, str, str, str, str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history))
+			{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		
 		if (end_before_walltime_bool_converter == 0)
 		{
@@ -1309,7 +1489,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(scheduled_job_list, new_job);
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 	}
 	
 	#ifdef PRINT
@@ -1320,7 +1504,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	
 	struct Node* n = (struct Node*) malloc(sizeof(struct Node));
 	int node_used_id = 0;
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	while (strcmp(str, "job_to_print:") != 0)
 	{
 		#ifdef PRINT
@@ -1328,7 +1516,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		#endif
 		
 		struct Job* new_job = (struct Job*) malloc(sizeof(struct Job));
-		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, &node_used_id);
+		if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d", &new_job->unique_id, str, str, &new_job->subtime, str, str, &new_job->delay, str, str, &new_job->walltime, str, str, &new_job->cores, str, str, &new_job->data, str, str, &new_job->data_size, str, str, &new_job->index_node_list, str, str, &new_job->start_time, str, str, &new_job->end_time, str, str, &end_before_walltime_bool_converter, str, str, &node_used_id))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		
 		// Node used
 		new_job->node_used = (struct Node*) malloc(sizeof(struct Node));
@@ -1352,14 +1544,30 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		#endif
 		
 		new_job->cores_used = (int*) malloc(new_job->cores*sizeof(int));
-		fscanf(f, "%s %s %s", str, str, str);
+		if(!fscanf(f, "%s %s %s", str, str, str))
+		{
+			perror("Error if(!fscanf");
+			exit(EXIT_FAILURE);
+		}
 		for (i = 0; i < new_job->cores; i++)
 		{
-			fscanf(f, "%d", &new_job->cores_used[i]);
-			fscanf(f, "%s", str);
+			if(!fscanf(f, "%d", &new_job->cores_used[i]))
+			{
+				perror("Error if(!fscanf");
+				exit(EXIT_FAILURE);
+			}
+			if(!fscanf(f, "%s", str))
+			{
+				perror("Error if(!fscanf");
+				exit(EXIT_FAILURE);
+			}
 		}
 		
-		fscanf(f, "%s %d %s %s %d %s %s %d %s %s %d %s %s %d", str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history);
+		if(!fscanf(f, "%s %d %s %s %d %s %s %d %s %s %d %s %s %d", str, &new_job->transfer_time, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->workload, str, str, &new_job->start_time_from_history, str, str, &new_job->node_from_history))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 
 		if (end_before_walltime_bool_converter == 0)
 		{
@@ -1378,7 +1586,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		insert_tail_job_list(running_jobs, new_job);
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	}
 	#ifdef PRINT
 	printf("running_jobs:\n");
@@ -1389,7 +1601,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	jobs_to_print_list = malloc(sizeof(*jobs_to_print_list));
 	jobs_to_print_list->head = NULL;
 	jobs_to_print_list->tail = NULL;
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	while (strcmp(str, "next_start_time:") != 0)
 	{
 		#ifdef PRINT
@@ -1398,7 +1614,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		
 		struct To_Print* new_job = (struct To_Print*) malloc(sizeof(struct To_Print));
 
-		fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %f %s %s %d", &new_job->job_unique_id, str, str, &new_job->job_subtime, str, str, &new_job->time, str, str, &new_job->time_used, str, str, &new_job->transfer_time, str, str, &new_job->job_start_time, str, str, &new_job->job_end_time, str, str, &new_job->job_cores, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->empty_cluster_time, str, str, &new_job->data_type, str, str, &new_job->job_data_size, str, str, &new_job->upgraded);
+		if(!fscanf(f, "%d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %d %s %s %f %s %s %d %s %s %f %s %s %d", &new_job->job_unique_id, str, str, &new_job->job_subtime, str, str, &new_job->time, str, str, &new_job->time_used, str, str, &new_job->transfer_time, str, str, &new_job->job_start_time, str, str, &new_job->job_end_time, str, str, &new_job->job_cores, str, str, &new_job->waiting_for_a_load_time, str, str, &new_job->empty_cluster_time, str, str, &new_job->data_type, str, str, &new_job->job_data_size, str, str, &new_job->upgraded))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 		
 		#ifdef PRINT
 		printf("%d %d %d %d %d %d %d %d %d %f %d %f %d", new_job->job_unique_id, new_job->job_subtime, new_job->time, new_job->time_used, new_job->transfer_time, new_job->job_start_time, new_job->job_end_time, new_job->job_cores, new_job->waiting_for_a_load_time, new_job->empty_cluster_time, new_job->data_type, new_job->job_data_size, new_job->upgraded);
@@ -1408,7 +1628,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 				
 		insert_tail_to_print_list(jobs_to_print_list, new_job);
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	}
 	#ifdef PRINT
 	printf("\n");
@@ -1416,7 +1640,11 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	
 	start_times = malloc(sizeof(*start_times));
 	start_times->head = NULL;
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	int new_time = 0;
 	while (strcmp(str, "next_end_time:") != 0)
 	{
@@ -1424,11 +1652,19 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 		printf("Add a time in next_start_time\n");
 		#endif
 		
-		fscanf(f, "%d", &new_time);
+		if(!fscanf(f, "%d", &new_time))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 						
 		insert_next_time_in_sorted_list(start_times, new_time);
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	}
 	#ifdef PRINT
 	print_time_list(start_times->head, 0);
@@ -1437,18 +1673,30 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	
 	end_times = malloc(sizeof(*end_times));
 	end_times->head = NULL;
-	fscanf(f, "%s", str);
+	if(!fscanf(f, "%s", str))
+	{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	while (strcmp(str, "end_of_file") != 0)
 	{
 		#ifdef PRINT
 		printf("Add a time in next_end_time\n");
 		#endif
 		
-		fscanf(f, "%d", &new_time);
+		if(!fscanf(f, "%d", &new_time))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 						
 		insert_next_time_in_sorted_list(end_times, new_time);
 		
-		fscanf(f, "%s", str);
+		if(!fscanf(f, "%s", str))
+		{
+		perror("Error if(!fscanf");
+		exit(EXIT_FAILURE);
+	}
 	}
 	#ifdef PRINT
 	print_time_list(end_times->head, 1);
