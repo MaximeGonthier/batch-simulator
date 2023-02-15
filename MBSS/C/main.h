@@ -15,6 +15,9 @@
 #include <limits.h>
 
 /* Global variables */
+extern int first_node_size_to_choose_from;
+extern int last_node_size_to_choose_from;
+
 extern int planned_or_ratio; /* O = planned, 1 = ratio */
 extern int constraint_on_sizes;
 extern int nb_cores;

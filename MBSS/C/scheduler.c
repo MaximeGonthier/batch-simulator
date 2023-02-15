@@ -116,7 +116,11 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 			
 			nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
 			
-			insert_next_time_in_sorted_list(start_times, j->start_time);
+			/* test reduced complexity */
+			if (j->start_time >= t)
+			{
+				insert_next_time_in_sorted_list(start_times, j->start_time);
+			}
 			
 			j = j->next;
 		}
@@ -217,13 +221,20 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 			
 			//~ nb_cores_rescheduled += j->cores;
 			
-			if (j->start_time < t)
+			//~ if (j->start_time < t)
+			//~ {
+				//~ printf("Error: j->start_time < t\n"); fflush(stdout);
+				//~ exit(1);
+			//~ }
+			
+			//~ insert_next_time_in_sorted_list(start_times, j->start_time);
+			
+			/* Test complexité réduite */
+			if (j->start_time >= t)
 			{
-				printf("Error: j->start_time < t\n"); fflush(stdout);
-				exit(1);
+				insert_next_time_in_sorted_list(start_times, j->start_time);
 			}
 			
-			insert_next_time_in_sorted_list(start_times, j->start_time);
 			j = j->next;
 		}
 		else if (nb_non_available_cores_at_time_t < nb_cores) // Ajouter un && nb_non_available_cores_at_time_t > 20 car ça peut tout bloquer pour rien ?
@@ -334,7 +345,8 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 			{
 				insert_next_time_in_sorted_list(start_times, j->start_time);
 			}
-				j = j->next;
+			
+			j = j->next;
 		}
 		else if (nb_non_available_cores_at_time_t < nb_cores) // Ajouter un && nb_non_available_cores_at_time_t > 20 car ça peut tout bloquer pour rien ?
 		{
@@ -507,8 +519,8 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 	int i = 0;
 	int min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -645,18 +657,18 @@ void fcfs_with_a_score_easybf_scheduler(struct Job* head_job, struct Node_List**
 			/* Reset some values. */					
 			min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
 			could_schedule = false;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -1018,8 +1030,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	int i = 0;
 	int min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -1184,15 +1196,15 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			/* Reset some values. */					
 			min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
-						
+			//~ get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+
 			/* --- Reduced complexity nb of copy --- */
 			if (multiplier_nb_copy != 0)
 			{
@@ -1530,8 +1542,8 @@ double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List**
 	int i = 0;
 	int min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -1597,17 +1609,17 @@ double fake_fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List**
 			/* Reset some values. */					
 			min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -1914,8 +1926,8 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 	int i = 0;
 	bool best_score_is_zero = false;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	int score = 0;
@@ -1948,10 +1960,10 @@ void locality_scheduler(struct Job* head_job, struct Node_List** head_node, int 
 			best_score_is_zero = false;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -2177,8 +2189,8 @@ int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, i
 	int i = 0;
 	bool best_score_is_zero = false;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	int score = 0;
@@ -2211,10 +2223,10 @@ int locality_scheduler_single_job(struct Job* j, struct Node_List** head_node, i
 			//~ best_score_is_zero = false;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -2441,8 +2453,8 @@ double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_nod
 	int i = 0;
 	bool best_score_is_zero = false;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	int score = 0;
@@ -2477,10 +2489,10 @@ double fake_locality_scheduler(struct Job* head_job, struct Node_List** head_nod
 			best_score_is_zero = false;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -2697,8 +2709,8 @@ void eft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 	int min_score = -1;
 	int i = 0;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	int score = 0;
@@ -2731,10 +2743,10 @@ void eft_scheduler(struct Job* head_job, struct Node_List** head_node, int t)
 			is_being_loaded = false;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -2946,8 +2958,8 @@ int eft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t,
 	int min_score = -1;
 	int i = 0;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	int score = 0;
@@ -2980,10 +2992,10 @@ int eft_scheduler_single_job(struct Job* j, struct Node_List** head_node, int t,
 			//~ is_being_loaded = false;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -3187,8 +3199,8 @@ double fake_eft_scheduler(struct Job* head_job, struct Node_List** head_node, in
 	int i = 0;
 	int min_between_delay_and_walltime = 0;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	int score = 0;
@@ -3223,10 +3235,10 @@ double fake_eft_scheduler(struct Job* head_job, struct Node_List** head_node, in
 			node_used = NULL;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -3755,8 +3767,8 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 	int i = 0;
 	//~ int min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -3805,17 +3817,17 @@ void fcfs_with_a_score_backfill_big_nodes_95th_percentile_scheduler(struct Job* 
 			/* Reset some values. */					
 			//~ min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -4172,8 +4184,8 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 	tab_min_score[1] = -1;
 	tab_min_score[2] = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -4232,8 +4244,8 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 			tab_choosen_time_to_load_file[1] = 0;
 			tab_choosen_time_to_load_file[2] = 0;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
@@ -4242,10 +4254,10 @@ void fcfs_with_a_score_backfill_big_nodes_weighted_random_scheduler(struct Job* 
 			tab_node_used[2] = NULL;
 					
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -4642,8 +4654,8 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 	int node_size_choosen = 0;
 	long long min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -4701,8 +4713,8 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 			/* Reset some values. */					
 			min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
@@ -4721,10 +4733,10 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 			tab_node_used[2] = NULL;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -5091,8 +5103,8 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	long long min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -5136,17 +5148,17 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 			/* Reset some values. */					
 			min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -5336,11 +5348,11 @@ void fcfs_with_a_score_area_filling_scheduler(struct Job* head_job, struct Node_
 			{
 				if (planned_or_ratio == 1)
 				{
-					Temp_Allocated_or_Planned_Area[choosen_size][j->index_node_list] += Area_j;
+					//~ Temp_Allocated_or_Planned_Area[choosen_size][j->index_node_list] += Area_j;
 				}
 				else
 				{
-					Temp_Allocated_or_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
+					//~ Temp_Allocated_or_Planned_Area[choosen_size][j->index_node_list] -= Area_j;
 				}
 			}
 
@@ -5451,8 +5463,8 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);		
 	long long min_score = -1;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	float time_to_load_file = 0;
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
@@ -5494,18 +5506,18 @@ void fcfs_with_a_score_area_factor_scheduler (struct Job* head_job, struct Node_
 			/* Reset some values. */					
 			min_score = -1;
 			earliest_available_time = 0;
-			first_node_size_to_choose_from = 0;
-			last_node_size_to_choose_from = 0;
+			// first_node_size_to_choose_from = 0;
+			// last_node_size_to_choose_from = 0;
 			is_being_loaded = false;
 			time_to_reload_evicted_files = 0;
 			nb_copy_file_to_load = 0;
 			area_ratio_used = 0;
 			
 			/* In which node size I can pick. */
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)
@@ -5804,8 +5816,8 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 	//~ int i = 0;
 	//~ bool best_score_is_zero = false;
 	int earliest_available_time = 0;
-	int first_node_size_to_choose_from = 0;
-	int last_node_size_to_choose_from = 0;
+	// int // first_node_size_to_choose_from = 0;
+	// int // last_node_size_to_choose_from = 0;
 	//~ float time_to_load_file = 0;
 	//~ bool is_being_loaded = false;
 	//~ int score = 0;
@@ -5828,10 +5840,10 @@ void mixed_if_EAT_is_t_scheduler(struct Job* head_job, struct Node_List** head_n
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);
 			#endif
 		
-			get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
+			// get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 			//~ if (j->index_node_list == 0)
 			//~ {
-				//~ first_node_size_to_choose_from = 0;
+				//~ // first_node_size_to_choose_from = 0;
 				//~ last_node_size_to_choose_from = 2;
 			//~ }
 			//~ else if (j->index_node_list == 1)

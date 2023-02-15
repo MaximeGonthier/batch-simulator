@@ -26,6 +26,9 @@
 
 #include <main.h>
 
+int first_node_size_to_choose_from;
+int last_node_size_to_choose_from;
+
 int planned_or_ratio; /* O = planned, 1 = ratio */
 int constraint_on_sizes;
 int nb_cores;
@@ -85,17 +88,17 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 	
+	#ifdef SAVE
 	/* By default I don't save/resume */
 	bool need_to_save_state = false;
 	bool need_to_resume_state = false;
 	int time_to_save = 0;
-		
+			
 	/* If you add save or resume as the last argument */
 	if (argc > 8)
 	{
 		// T = 1406544 pour le save state de fcfs with a score mai 21-22
 		// T = 2237306 pour le save state de fcfs with a score mars 15 16 data persistence
-		//~ printf("%s\n", argv[9]);
 		if (strcmp(argv[8], "save") == 0)
 		{
 			need_to_save_state = true;
@@ -124,6 +127,7 @@ int main(int argc, char *argv[])
 			exit(EXIT_FAILURE);
 		}
 	}
+	#endif
 	
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
@@ -154,6 +158,8 @@ int main(int argc, char *argv[])
 	//~ int running_cores_from_workload_1 = 0;
 	#endif
 	
+	first_node_size_to_choose_from = 0;
+	last_node_size_to_choose_from = 2;
 	
 	//~ nb_job_to_evaluate_finished = 0;
 	nb_job_to_evaluate_started = 0;
@@ -225,22 +231,23 @@ int main(int argc, char *argv[])
 	}
 	
 	/* Read cluster */
-	if (need_to_resume_state == false)
-	{
-		read_cluster(input_node_file);
-	}
+	#ifndef SAVE
+	read_cluster(input_node_file);
+	#endif
 
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
 	
 	/* Read workload */
-	if (need_to_resume_state == false)
-	{
+	#ifndef SAVE
+	//~ if (need_to_resume_state == false)
+	//~ {
 		read_workload(input_job_file, constraint_on_sizes);	
 		nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 		first_subtime_day_0 = get_first_time_day_0(job_list->head);
-	}
+	//~ }
+	#endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
@@ -250,13 +257,14 @@ int main(int argc, char *argv[])
 	int t = first_subtime_day_0;
 
 	/* First start jobs from rackham's history. First need to sort it by start time */
-	if (need_to_resume_state == false)
-	{
+	#ifndef SAVE
+	//~ {
 		if (job_list_to_start_from_history->head != NULL)
 		{
 			get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 		}
-	}
+	//~ }
+	#endif
 
 	#ifdef PRINT
 	printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
@@ -264,8 +272,8 @@ int main(int argc, char *argv[])
 	#endif
 
 	/* getting the number of jobs we need to schedule */
-	if (need_to_resume_state == false)
-	{
+	#ifndef SAVE
+	//~ {
 		job_pointer = scheduled_job_list->head;
 		nb_job_to_schedule = 0;
 		nb_cores_to_schedule = 0;
@@ -276,17 +284,16 @@ int main(int argc, char *argv[])
 			job_pointer = job_pointer->next;
 		}
 		//~ printf("After scheduling jobs of workload -2, the number of jobs to schedule at t = 0 is %d.\n", nb_job_to_schedule);
-	}
-	
-	if (need_to_resume_state == false)
-	{
+	//~ }	
+	//~ {
 		/* Just for -2 jobs here */
 		if (scheduled_job_list->head != NULL)
 		{
 			start_jobs(t, scheduled_job_list->head);
 		}
 		//~ printf("Start jobs before day 0 done.\n");
-	}
+	//~ }
+	#endif
 	
 	#ifdef PRINT
 	printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
@@ -824,13 +831,15 @@ int main(int argc, char *argv[])
 	
 	printf("Backfill mode is %d.\n", backfill_mode);
 	
-	if (need_to_resume_state == true)
-	{
+	
+	#ifdef SAVE
+	//~ {
 		need_to_resume_state = false;
 		resume_state(&t, &old_finished_jobs, &next_submit_time, input_job_file);
 		
 		//~ printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
-	}
+	//~ }
+	#endif
 	
 	//~ #ifdef PRINT_CLUSTER_USAGE
 	//~ int time_all_job_workload_1_started = -1;
@@ -846,16 +855,7 @@ int main(int argc, char *argv[])
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
 	#endif
 	{
-		//~ printf("t=%d\n", t);
-		//~ #ifdef PRINT_CLUSTER_USAGE
-		//~ if (nb_job_to_evaluate == nb_job_to_evaluate_started && time_all_job_workload_1_started == -1)
-		//~ {
-			//~ printf("%d = %d t is %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started, t); exit(1);
-			//~ time_all_job_workload_1_started = t;
-		//~ }
-		//~ #endif
-		
-		
+		#ifdef SAVE
 		/* Test pour save l'état et recommencer */
 		if (need_to_save_state == true && t >= time_to_save)
 		{
@@ -863,12 +863,11 @@ int main(int argc, char *argv[])
 			printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");
 			exit(1);
 			#endif
-			
-			//~ printf("%s\n", input_job_file[10:12]); exit(1);
-			//~ printf("Save state at time %d >= %d (time_to_save)\n", t, time_to_save);
 			save_state(t, old_finished_jobs, next_submit_time, input_job_file);
 			exit(1);
 		}
+		printf("la\n");
+		#endif
 				
 		/* Get ended job. */
 		old_finished_jobs = finished_jobs;
@@ -876,6 +875,7 @@ int main(int argc, char *argv[])
 		{
 			end_jobs(running_jobs->head, t);
 		}
+		
 		/* Get started jobs. */
 		if (start_times->head != NULL)
 		{
@@ -885,15 +885,14 @@ int main(int argc, char *argv[])
 			}
 		}
 				
-		//~ if ((running_nodes*100)/4 >= busy_cluster_threshold)
-		if ((running_nodes*100)/486 >= busy_cluster_threshold)
-		{
-			busy_cluster = 1;
-		}
-		else
-		{
-			busy_cluster = 0;
-		}
+		//~ if ((running_nodes*100)/486 >= busy_cluster_threshold)
+		//~ {
+			//~ busy_cluster = 1;
+		//~ }
+		//~ else
+		//~ {
+			//~ busy_cluster = 0;
+		//~ }
 		
 		new_jobs = false;
 		/* Get the set of available jobs at time t */
@@ -1042,10 +1041,7 @@ int main(int argc, char *argv[])
 				}
 			}
 		}
-		
-		//~ if (running_cores_from_workload_1 != 0) {
-		//~ printf("%d.\n", running_cores_from_workload_1); }
-				
+						
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
 		
@@ -1066,11 +1062,11 @@ int main(int argc, char *argv[])
 		t += 1;
 		
 		/* Je dépasse les int max ? */
-		if (t > 2000000000)
-		{
-			printf("Risque de dépasser les int max t = %d.\n", t);
-			exit(EXIT_FAILURE);
-		}
+		//~ if (t > 2000000000)
+		//~ {
+			//~ printf("Risque de dépasser les int max t = %d.\n", t);
+			//~ exit(EXIT_FAILURE);
+		//~ }
 	}
 	
 	#ifdef PRINT_CLUSTER_USAGE
