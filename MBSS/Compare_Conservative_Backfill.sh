@@ -1,6 +1,5 @@
 #!/bin/bash
-# bash Compare_FCFS_Score.sh workload cluster contrainte_taille
-# oarsub -p nova -l core=16,walltime=04:00:00 -r '2022-09-22 14:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 1 0"
+# oarsub -p dahu -l core=1,walltime=14:00:00 -r '2023-02-15 19:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-02-\>2022-01-02_V10000_anonymous 1 0"
 
 # bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 1 0
 #~ taskset -c (num de cpu) ./exec
