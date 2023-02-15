@@ -207,26 +207,31 @@ int main(int argc, char *argv[])
 	
 	printf("Workload: %s\n", input_job_file);
 	//~ printf("Cluster: %s\n", input_node_file);
-	printf("Scheduler: %s\n", scheduler);
-	if (constraint_on_sizes == 0)
+	printf("Scheduler: %s - Backfill mode: %d\n", scheduler, backfill_mode);
+	//~ if (constraint_on_sizes == 0)
+	//~ {
+		//~ printf("No constraint on sizes (%d).\n", constraint_on_sizes);
+	//~ }
+	//~ else if (constraint_on_sizes == 1)
+	//~ {
+		//~ printf("Constraint on sizes (%d).\n", constraint_on_sizes);
+	//~ }
+	//~ else if (constraint_on_sizes == 2)
+	//~ {
+		//~ printf("Constraint on sizes but data transfers ignored (%d).\n", constraint_on_sizes);
+	//~ }
+	//~ else if (constraint_on_sizes == 3)
+	//~ {
+		//~ printf("Constraint on sizes and can only execute on your size (%d).\n", constraint_on_sizes);
+	//~ }
+	//~ else
+	//~ {
+		//~ perror("Error constraint on size.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	if (constraint_on_sizes != 0)
 	{
-		printf("No constraint on sizes (%d).\n", constraint_on_sizes);
-	}
-	else if (constraint_on_sizes == 1)
-	{
-		printf("Constraint on sizes (%d).\n", constraint_on_sizes);
-	}
-	else if (constraint_on_sizes == 2)
-	{
-		printf("Constraint on sizes but data transfers ignored (%d).\n", constraint_on_sizes);
-	}
-	else if (constraint_on_sizes == 3)
-	{
-		printf("Constraint on sizes and can only execute on your size (%d).\n", constraint_on_sizes);
-	}
-	else
-	{
-		perror("Error constraint on size.\n");
+		printf("Error constraint on size.\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 	
@@ -632,8 +637,13 @@ int main(int argc, char *argv[])
 	// busy_cluster_threshold =  99;
 	//~ busy_cluster_threshold = 100;
 	busy_cluster_threshold = atoi(argv[7]);
-	printf("busy_cluster_threshold is %d.\n", busy_cluster_threshold);
-		//~ printf("&\n");
+	
+	if (busy_cluster_threshold != 80)
+	{
+		printf("Exit, busy_cluster_threshold is not %d.\n", 80); fflush(stdout);
+		exit(1);
+	}	
+
 	int division_by_planned_area = 0;
 	
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
@@ -829,7 +839,7 @@ int main(int argc, char *argv[])
 		printf("There are %d nodes of size 128 and more, %d of size 256 and more, %d of size 1024.\n", number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024);
 	}
 	
-	printf("Backfill mode is %d.\n", backfill_mode);
+	//~ printf("Backfill mode is %d.\n", backfill_mode);
 	
 	
 	#ifdef SAVE
@@ -846,7 +856,7 @@ int main(int argc, char *argv[])
 	//~ #endif
 	
 	/** START OF SIMULATION **/
-	printf("Start simulation.\n"); fflush(stdout);
+	//~ printf("Start simulation.\n"); fflush(stdout);
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	while (finished_jobs != total_number_jobs)

@@ -1,33 +1,34 @@
 #!/bin/bash
 # bash Compare_FCFS_Score.sh workload cluster contrainte_taille
-# oarsub -p nova -l core=16,walltime=04:00:00 -r '2022-09-22 14:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 inputs/clusters/rackham_450_128_32_256_4_1024.txt 0 1"
+# oarsub -p nova -l core=16,walltime=04:00:00 -r '2022-09-22 14:00:00' "bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 1 0"
 
+# bash Compare_Conservative_Backfill.sh inputs/workloads/converted/2022-01-17-\>2022-01-17_V9271 1 0
 #~ taskset -c (num de cpu) ./exec
 
 start=`date +%s`
 
-if [ "$#" -ne 4 ]; then
-    echo "Usage is bash Compare_Conservative_Backfill.sh converted_workload cluster starting_i save_time"
+if [ "$#" -ne 3 ]; then
+    echo "Usage is bash Compare_Conservative_Backfill.sh converted_workload starting_i save_time"
     exit
 fi
 
 # Get arguments
 WORKLOAD=$1
 WORKLOAD_TP=${WORKLOAD:27}
-CLUSTER=$2
+CLUSTER="inputs/clusters/rackham_450_128_32_256_4_1024.txt"
 CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 #~ echo "Workload:" ${WORKLOAD_TP}
 #~ echo "Cluster:" ${CLUSTER_TP}
 CONTRAINTES_TAILLES=0
 #~ echo "Contraintes tailles:" ${CONTRAINTES_TAILLES}
-STARTING_I=$(($3))
+STARTING_I=$(($2))
 BUSY_CLUSTER_THRESHOLD=80
 
 make -C C/
 #~ ulimit -S -s 10000000
 
-SAVE_TIME=$(($4))
+SAVE_TIME=$(($3))
 
 OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}.csv
 if (($((STARTING_I)) == 1))
@@ -51,7 +52,7 @@ do
 	elif [ $((i)) == 10 ]; then SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
 	fi
 	
-	if (($((SAVE_TIME)) == 1))
+	if (($((SAVE_TIME)) == 0))
 	then
 		./C/main $WORKLOAD $CLUSTER $SCHEDULER $CONTRAINTES_TAILLES $OUTPUT_FILE $BACKFILL_MODE $BUSY_CLUSTER_THRESHOLD
 	else

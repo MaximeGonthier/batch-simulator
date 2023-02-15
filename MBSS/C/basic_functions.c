@@ -1976,7 +1976,6 @@ void start_jobs(int t, struct Job* head)
 	while (j != NULL)
 	{
 		if (j->start_time == t)
-		//~ if (j->start_time <= t)
 		{
 			/* Update nb of jobs to schedule */
 			nb_job_to_schedule -= 1;
@@ -1994,7 +1993,6 @@ void start_jobs(int t, struct Job* head)
 				exit(EXIT_FAILURE);
 			}
 			
-			//~ printf("It needs to start.\n");
 			/* Remove from list of starting times. */
 			if (start_times->head != NULL && start_times->head->time == t)
 			{
@@ -2007,24 +2005,14 @@ void start_jobs(int t, struct Job* head)
 			transfer_time = 0;
 			waiting_for_a_load_time = 0;
 			
-			//~ if (j->data != 0)
 			if (j->data != 0 && constraint_on_sizes != 2)
 			{
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time, j->delay, j->walltime, j->start_time, j->cores);
 			}
-			//~ if (constraint_on_sizes == 2)
-			//~ {
-				//~ j->transfer_time = 0;
-				//~ j->waiting_for_a_load_time = 0;
-			//~ }
-			//~ else
-			//~ {
-			//~ transfer_time = 0;
-			//~ waiting_for_a_load_time = 0;
-				j->transfer_time = transfer_time;
-				j->waiting_for_a_load_time = waiting_for_a_load_time;
-			//~ }
+			
+			j->transfer_time = transfer_time;
+			j->waiting_for_a_load_time = waiting_for_a_load_time;
 			
 			/* Pour compter le nombre de fois qu'on reutilise des données (ou du moins que 2 jobs utilisant le même fichier ont été schedule en même temps sur la même node. Que pour les jobs du workload évalué. */
 			if (j->workload == 1 && (j->transfer_time == 0 || j->waiting_for_a_load_time != 0))
@@ -2033,40 +2021,39 @@ void start_jobs(int t, struct Job* head)
 			}
 			
 			/* If the scheduler is area filling I need to update allocated area if job j was scheduled on a bigger node. */
-			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list)
-			{
-				if (planned_or_ratio == 1)
-				{
-					Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
-					#ifdef PRINT
-					printf("update for real area: %lld\n", Allocated_Area[j->node_used->index_node_list][j->index_node_list]);
-					#endif
-				}
-				else
-				{
-					Planned_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*j->walltime;
-					#ifdef PRINT
-					printf("update for real area: %lld\n", Planned_Area[j->node_used->index_node_list][j->index_node_list]);
-					#endif
-				}
-			}
+			//~ if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list)
+			//~ {
+				//~ if (planned_or_ratio == 1)
+				//~ {
+					//~ Allocated_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*j->walltime;
+					//~ #ifdef PRINT
+					//~ printf("update for real area: %lld\n", Allocated_Area[j->node_used->index_node_list][j->index_node_list]);
+					//~ #endif
+				//~ }
+				//~ else
+				//~ {
+					//~ Planned_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*j->walltime;
+					//~ #ifdef PRINT
+					//~ printf("update for real area: %lld\n", Planned_Area[j->node_used->index_node_list][j->index_node_list]);
+					//~ #endif
+				//~ }
+			//~ }
 			
 			overhead_of_load = 0;
-				//~ printf("%d %d.\n", transfer_time, waiting_for_a_load_time);
-				if (transfer_time == 0)
-				{
-					overhead_of_load = waiting_for_a_load_time;
-				}
-				else if (waiting_for_a_load_time == 0)
-				{
-					overhead_of_load = transfer_time;
-				}
-				else
-				{
-					printf("Error calcul transfer time.\n");
-					exit(EXIT_FAILURE);
-				}
-			//~ }
+
+			if (transfer_time == 0)
+			{
+				overhead_of_load = waiting_for_a_load_time;
+			}
+			else if (waiting_for_a_load_time == 0)
+			{
+				overhead_of_load = transfer_time;
+			}
+			else
+			{
+				printf("Error calcul transfer time.\n");
+				exit(EXIT_FAILURE);
+			}
 			
 			#ifdef PRINT
 			printf("For job %d (delay = %d): %d transfer time and %d waiting for a load time. Overhead is %d\n", j->unique_id, j->delay, transfer_time, waiting_for_a_load_time, overhead_of_load); fflush(stdout);
@@ -2074,13 +2061,11 @@ void start_jobs(int t, struct Job* head)
 			
 			if (j->delay + overhead_of_load < j->walltime)
 			{
-				//~ printf("end before walltime\n");
 				min_between_delay_and_walltime = j->delay + overhead_of_load;
 				j->end_before_walltime = true;
 			}
 			else
 			{
-				//~ printf("end at walltime\n");
 				min_between_delay_and_walltime = j->walltime;
 				j->end_before_walltime = false;
 			}
@@ -2097,7 +2082,6 @@ void start_jobs(int t, struct Job* head)
 			#ifdef PRINT
 			printf("==> Job %d %d cores start at time %d on node %d and will end at time %d before walltime: %d transfer time is %d data was %d.\n", j->unique_id, j->cores, t, j->node_used->unique_id, j->end_time, j->end_before_walltime, transfer_time, j->data);
 			#endif
-			
 			
 			/* For easy bf */
 			running_cores += j->cores;
@@ -2172,9 +2156,6 @@ void start_jobs(int t, struct Job* head)
 					}
 				}
 			}
-			//~ jobs_to_remove.append(j)
-			//~ insert_tail_job_list(running_jobs, j);
-			//~ copy_job_and_insert_tail_job_list(running_jobs, j);
 			
 			/* Test with finish in start jobs instead of end jobs. */
 			if (j->workload == 1)
@@ -2192,7 +2173,6 @@ void start_jobs(int t, struct Job* head)
 	{
 		if (j->start_time == t)
 		{
-			//~ printf("Delete job %d from scheduled.\n", j->unique_id); fflush(stdout);
 			struct Job* temp = j->next;
 			copy_delete_insert_job_list(scheduled_job_list, running_jobs, j);
 			j = temp;
@@ -2202,12 +2182,6 @@ void start_jobs(int t, struct Job* head)
 			j = j->next;
 		}
 	}
-	//~ printf("End of start jobs.\n"); fflush(stdout);
-	//~ print_job_list(scheduled_job_list->head);
-	//~ if len(jobs_to_remove) > 0:
-		//~ scheduled_job_list = remove_jobs_from_list(scheduled_job_list, jobs_to_remove)
-		//~ available_job_list = remove_jobs_from_list(available_job_list, jobs_to_remove)
-	//~ return scheduled_job_list, running_jobs, end_times, running_cores, running_nodes, total_queue_time, available_job_list
 }
 
 /* Go through running jobs to find finished jobs. */
@@ -2230,26 +2204,27 @@ void end_jobs(struct Job* job_list_head, int t)
 			{				
 				delete_next_time_linked_list(end_times, t);
 			}
-						
-			/* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
-			/* Attention c'est pas pour fcfs with a score area factor!! */
-			if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
-			{
-				if (planned_or_ratio == 1)
-				{
-					Allocated_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*(j->walltime - (j->end_time - j->start_time));
-					#ifdef PRINT
-					printf("update for real area: %lld\n", Allocated_Area[j->node_used->index_node_list][j->index_node_list]);
-					#endif
-				}
-				else
-				{
-					Planned_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*(j->walltime - (j->end_time - j->start_time));
-					#ifdef PRINT
-					printf("update for real area: %lld\n", Planned_Area[j->node_used->index_node_list][j->index_node_list]);
-					#endif
-				}
-			}
+				
+			/* Mis en comm pour gagner un if car cette fonction est bcp appellé */		
+			//~ /* If the scheduler is area filling and the job finished before the walltime, I want to remove (or add) the difference from the walltime. */
+			//~ /* Attention c'est pas pour fcfs with a score area factor!! */
+			//~ if ((strncmp(scheduler, "Fcfs_area_filling", 17) == 0) && j->index_node_list < j->node_used->index_node_list && j->end_before_walltime == true)
+			//~ {
+				//~ if (planned_or_ratio == 1)
+				//~ {
+					//~ Allocated_Area[j->node_used->index_node_list][j->index_node_list] -= j->cores*(j->walltime - (j->end_time - j->start_time));
+					//~ #ifdef PRINT
+					//~ printf("update for real area: %lld\n", Allocated_Area[j->node_used->index_node_list][j->index_node_list]);
+					//~ #endif
+				//~ }
+				//~ else
+				//~ {
+					//~ Planned_Area[j->node_used->index_node_list][j->index_node_list] += j->cores*(j->walltime - (j->end_time - j->start_time));
+					//~ #ifdef PRINT
+					//~ printf("update for real area: %lld\n", Planned_Area[j->node_used->index_node_list][j->index_node_list]);
+					//~ #endif
+				//~ }
+			//~ }
 
 			finished_jobs += 1;
 			
@@ -2258,8 +2233,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			#endif
 			
 			/* Just printing, can remove */
-			if (finished_jobs%2500 == 0)
-			//~ if (finished_jobs%100 == 0)
+			if (finished_jobs%5000 == 0)
 			{
 				printf("Evaluated jobs: %d/%d | All jobs: %d/%d | T = %d.\n", nb_job_to_evaluate_started, nb_job_to_evaluate, finished_jobs, total_number_jobs, t); fflush(stdout);
 			}
@@ -2277,7 +2251,6 @@ void end_jobs(struct Job* job_list_head, int t)
 			{
 				running_nodes -= 1;
 			}
-			//~ #ifdef PRINT_CLUSTER_USAGE
 
 			if (j->node_used->n_available_cores < 0 || j->node_used->n_available_cores > 20)
 			{
@@ -2320,22 +2293,7 @@ void end_jobs(struct Job* job_list_head, int t)
 			{
 				remove_data_from_node(j, t);
 			}
-			//~ #else
-			//~ if (j->data != 0 && j->end_before_walltime == true)
-			//~ {
-				//~ remove_data_from_node(j, t);
-			//~ }
 			#endif
-			
-			//~ for (i = 0; i < j->cores; i++)
-			//~ {
-				// j->cores_used[i].job_queue.remove(j)
-				//~ j->cores_used[i].running_job = None					
-				//~ core_ids.append(j->cores_used[i].unique_id)
-			//~ }
-			
-			/* Adding in a struct the data needed for statistics. */
-			//~ to_print_job_csv(j, t);
 		}
 		j = j->next;
 	}				
@@ -2346,18 +2304,9 @@ void end_jobs(struct Job* job_list_head, int t)
 	{
 		if (j->end_time == t)
 		{
-			//~ printf("Before:\n");
-			//~ print_job_list(running_jobs->head);
-			//~ printf("Deletion of job %d.\n", j->unique_id); fflush(stdout);
 			struct Job* temp = j->next;
-			//~ printf("delete_job_linked_list for %d...\n", j->unique_id); fflush(stdout);
-			//~ if (j->unique_id == 11) {
-				//~ printf("Job %d, %d %d %d %d %d %f %d %d %d %d %d cores: %d %d %d %d %d %d %d %d %d %d\n", j->unique_id, j->subtime, j->delay, j->walltime, j->cores, j->data, j->data_size, j->index_node_list, j->start_time, j->end_time, j->end_before_walltime, j->node_used->unique_id, j->cores_used[0],j->cores_used[1],j->cores_used[2],j->cores_used[3],j->cores_used[4], j->transfer_time, j->waiting_for_a_load_time, j->workload, j->start_time_from_history, j->node_from_history);
-			//~ }
 			delete_job_linked_list(running_jobs, j->unique_id);
-			//~ printf("delete_job_linked_list for %d Ok!\n", j->unique_id); fflush(stdout);
 			j = temp;
-			//~ print_job_list(running_jobs->head);
 		}
 		else
 		{

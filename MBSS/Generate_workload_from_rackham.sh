@@ -7,7 +7,7 @@ if [ "$#" -le 3 ]; then
     exit
 fi
 
-echo "Merging input files..."
+#~ echo "Merging input files..."
 echo "There are $(($#-3)) input files"
 
 for ((i=1; i<=$#; i++))
@@ -76,8 +76,8 @@ do
 	fi
 done
 
-echo "Start and end times"
-cat outputs/start_end_date_evaluated_jobs.txt
+#~ echo "Start and end times"
+#~ cat outputs/start_end_date_evaluated_jobs.txt
 
 VARIANCE=10000
 python3 src/generate_workload_from_rackham.py $START"->"$END 0 0 1 $((VARIANCE))
@@ -95,4 +95,4 @@ python3 src/generate_workload_from_rackham.py $START"->"$END 0 0 1 $((VARIANCE))
 #~ python3 src/generate_workload_from_rackham.py $START"->"$END 7 1 1 $((VARIANCE))
 #~ python3 src/plot_stats_one_converted_workload.py $START"->"$END"_V"$((VARIANCE))
 
-echo "Plotting stats done!"
+#~ echo "Plotting stats done!"
