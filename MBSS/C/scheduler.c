@@ -1036,64 +1036,64 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	bool is_being_loaded = false;
 	float time_to_reload_evicted_files = 0;
 	int nb_copy_file_to_load = 0;
-	int time_or_data_already_checked = 0;
+	//~ int time_or_data_already_checked = 0;
 	int score = 0;
 	int min_time = 0;
 	int choosen_time_to_load_file = 0;
 	bool found = false;
 	//~ float multiplier_file_to_load_increment = 0;
 	
-	/** 1 = gives the number of running nodes as a multiplier.
-	 *  2 = gives the number of jobs to schedule divided by the total number of nodes as a multiplier.
-	 *  3 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75%.
-	 *  4 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75% and the queue of jobs to schedule is too important.
-	 **/
-	if (adaptative_multiplier == 1) 
-	{
-		if (multiplier_file_to_load != 0)
-		{
-			multiplier_file_to_load = running_nodes;
-		}
-	}
-	else if (adaptative_multiplier == 2)
-	{
-		if (multiplier_file_to_load != 0)
-		{
-			multiplier_file_to_load = (int) ceil ((float) nb_job_to_schedule/486);
-		}
-	}
-	else if (adaptative_multiplier == 3)
-	{
-		if (running_nodes < 454)
-		{
-			multiplier_file_to_load = 1;
-			multiplier_file_evicted = 0;
-			multiplier_nb_copy = 0;
-		}
-		else
-		{
-			if (multiplier_file_to_load != 0)
-			{
-				multiplier_file_to_load = running_nodes;
-			}
-		}
-	}
-	else if (adaptative_multiplier == 4)
-	{
-		if (486*20 - running_cores >= nb_cores_to_schedule)
-		{
-			multiplier_file_to_load = 1;
-			multiplier_file_evicted = 0;
-			multiplier_nb_copy = 0;
-		}
-		else
-		{
-			if (multiplier_file_to_load != 0)
-			{
-				multiplier_file_to_load = running_nodes;
-			}
-		}
-	}
+	//~ /** 1 = gives the number of running nodes as a multiplier.
+	 //~ *  2 = gives the number of jobs to schedule divided by the total number of nodes as a multiplier.
+	 //~ *  3 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75%.
+	 //~ *  4 = gives the number of running nodes as a multiplier but put only 1 if the number of runing nodes is inferior to 75% and the queue of jobs to schedule is too important.
+	 //~ **/
+	//~ if (adaptative_multiplier == 1) 
+	//~ {
+		//~ if (multiplier_file_to_load != 0)
+		//~ {
+			//~ multiplier_file_to_load = running_nodes;
+		//~ }
+	//~ }
+	//~ else if (adaptative_multiplier == 2)
+	//~ {
+		//~ if (multiplier_file_to_load != 0)
+		//~ {
+			//~ multiplier_file_to_load = (int) ceil ((float) nb_job_to_schedule/486);
+		//~ }
+	//~ }
+	//~ else if (adaptative_multiplier == 3)
+	//~ {
+		//~ if (running_nodes < 454)
+		//~ {
+			//~ multiplier_file_to_load = 1;
+			//~ multiplier_file_evicted = 0;
+			//~ multiplier_nb_copy = 0;
+		//~ }
+		//~ else
+		//~ {
+			//~ if (multiplier_file_to_load != 0)
+			//~ {
+				//~ multiplier_file_to_load = running_nodes;
+			//~ }
+		//~ }
+	//~ }
+	//~ else if (adaptative_multiplier == 4)
+	//~ {
+		//~ if (486*20 - running_cores >= nb_cores_to_schedule)
+		//~ {
+			//~ multiplier_file_to_load = 1;
+			//~ multiplier_file_evicted = 0;
+			//~ multiplier_nb_copy = 0;
+		//~ }
+		//~ else
+		//~ {
+			//~ if (multiplier_file_to_load != 0)
+			//~ {
+				//~ multiplier_file_to_load = running_nodes;
+			//~ }
+		//~ }
+	//~ }
 			
 	/* temp multiplier pour le cas avec if EAT is t start now */
 	int temp_multiplier_file_to_load = multiplier_file_to_load;
@@ -1120,8 +1120,8 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	/* --- Reduced complexity nb of copy --- */	
 	//~ if (multiplier_nb_copy != 0)
 	//~ {
-		struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
-		time_or_data_already_checked_nb_of_copy_list->head = NULL;
+		//~ struct Time_or_Data_Already_Checked_Nb_of_Copy_List* time_or_data_already_checked_nb_of_copy_list = (struct Time_or_Data_Already_Checked_Nb_of_Copy_List*) malloc(sizeof(struct Time_or_Data_Already_Checked_Nb_of_Copy_List));
+		//~ time_or_data_already_checked_nb_of_copy_list->head = NULL;
 	//~ }
 
 			/* Cas non dynamique */
@@ -1206,10 +1206,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			//~ get_node_size_to_choose_from(j->index_node_list, &first_node_size_to_choose_from, &last_node_size_to_choose_from);
 
 			/* --- Reduced complexity nb of copy --- */
-			if (multiplier_nb_copy != 0)
-			{
-				time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
-			}
+			//~ if (multiplier_nb_copy != 0)
+			//~ {
+				//~ time_or_data_already_checked = was_time_or_data_already_checked_for_nb_copy(j->data, time_or_data_already_checked_nb_of_copy_list);
+			//~ }
 
 			for (i = first_node_size_to_choose_from; i <= last_node_size_to_choose_from; i++)
 			{
@@ -1306,34 +1306,35 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 							
 							if (min_score == -1 || earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files < min_score)
 							{
+								/* Comenté car pas utilisé dans mon cas */
 								/* 2.5bis Get number of copy of the file we want to load on other nodes (if you need to load a file that is) at the time that is predicted to be used. So if a file is already loaded on a lot of node, you have a penalty if you want to load it on a new node. */
-								if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
-								{
-									/* --- Reduced complexity nb of copy --- */
-									if (time_or_data_already_checked == -1)
-									{
-										#ifdef PRINT
-										printf("Need to compute nb of copy it was never done.\n");
-										#endif
-										nb_copy_file_to_load = get_nb_valid_copy_of_a_file(t, head_node, j->data);
-										create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, j->data, nb_copy_file_to_load);
-										time_or_data_already_checked = nb_copy_file_to_load;
-										#ifdef PRINT
-										printf("Compute nb of copy done, it's %d.\n", nb_copy_file_to_load);
-										#endif
-									}
-									else
-									{
-										nb_copy_file_to_load = time_or_data_already_checked;
-										#ifdef PRINT
-										printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, t, nb_copy_file_to_load);
-										#endif
-									}
-								}
-								else
-								{
+								//~ if (time_to_load_file != 0 && is_being_loaded == false && multiplier_nb_copy != 0)
+								//~ {
+									//~ /* --- Reduced complexity nb of copy --- */
+									//~ if (time_or_data_already_checked == -1)
+									//~ {
+										//~ #ifdef PRINT
+										//~ printf("Need to compute nb of copy it was never done.\n");
+										//~ #endif
+										//~ nb_copy_file_to_load = get_nb_valid_copy_of_a_file(t, head_node, j->data);
+										//~ create_and_insert_head_time_or_data_already_checked_nb_of_copy_list(time_or_data_already_checked_nb_of_copy_list, j->data, nb_copy_file_to_load);
+										//~ time_or_data_already_checked = nb_copy_file_to_load;
+										//~ #ifdef PRINT
+										//~ printf("Compute nb of copy done, it's %d.\n", nb_copy_file_to_load);
+										//~ #endif
+									//~ }
+									//~ else
+									//~ {
+										//~ nb_copy_file_to_load = time_or_data_already_checked;
+										//~ #ifdef PRINT
+										//~ printf("Already done for job %d at time %d so nb of copy is %d.\n", j->unique_id, t, nb_copy_file_to_load);
+										//~ #endif
+									//~ }
+								//~ }
+								//~ else
+								//~ {
 									nb_copy_file_to_load = 0;
-								}
+								//~ }
 								
 								#ifdef PRINT
 								printf("Nb of copy for data %d at time %d on node %d is %d.\n", j->data, earliest_available_time, n->unique_id, nb_copy_file_to_load); fflush(stdout);
@@ -1448,7 +1449,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				}
 				
 				if (found == false)
-				{
+				{					
 					#ifdef PRINT
 					printf("Need to create a data and intervals for the node %d data %d.\n", j->node_used->unique_id, j->data); fflush(stdout);
 					#endif
@@ -1489,11 +1490,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				/* Insert in start times. */
 				insert_next_time_in_sorted_list(start_times, j->start_time);
 							
+				/* Je le commente car je n'utilise pas ce multiplier et ça fais hgagner un if */
 				/* Increment nb of copy for current file if we scheduled at time t the current job. */
-				if (multiplier_nb_copy != 0 && j->start_time == t)
-				{
-					increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
-				}
+				//~ if (multiplier_nb_copy != 0 && j->start_time == t)
+				//~ {
+					//~ increment_time_or_data_nb_of_copy_specific_time_or_data(time_or_data_already_checked_nb_of_copy_list, j->data);
+				//~ }
 			}
 			/* Test complexité réduite */
 			else /* Could not schedule the job in the time frame t + 1h */
@@ -1519,12 +1521,13 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 		}
 	}
 	
+	/* Je le commente car je n'utilise pas ce multiplier et ça fais hgagner un if */
 	/* --- Reduced complexity nb of copy --- */
 	/* Free time already checked. */
-	if (multiplier_nb_copy != 0)
-	{
-		free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
-	}
+	//~ if (multiplier_nb_copy != 0)
+	//~ {
+		//~ free_time_or_data_already_checked_nb_of_copy_linked_list(&time_or_data_already_checked_nb_of_copy_list->head);
+	//~ }
 
 	#ifdef PRINT_SCORES_DATA
 	fclose(f_fcfs_score);

@@ -1573,9 +1573,6 @@ void get_current_intervals(struct Node_List** head_node, int t)
 	#else
 	int i = 0;
 	
-	//~ printf("BEFORE\n");
-	//~ print_data_intervals(head_node, t);
-
 	/* Des free se font a des moments ou c'est pas necessaire ? Ce n'st pas vraiment à NULL ou alors il y a un elmeent a vide ? */
 	for (i = 0; i < 3; i++)
 	{
@@ -1592,24 +1589,32 @@ void get_current_intervals(struct Node_List** head_node, int t)
 					//~ if (d->intervals->head != NULL) /* Pour éviter les free en trop ? */
 					//~ {
 						//~ free_interval_linked_list(&d->intervals->head, &d->intervals->tail);
+						//~ freelist(d->intervals->head);
 						//~ printf("free %d on node %d.\n", d->unique_id, n->unique_id); 
 						//~ print_data_intervals(head_node, t);
 					//~ }
-
+					
+					//~ free(d->intervals);
+				
+					//~ struct Interval* current = *head_ref;
+					   struct Interval* next;
+					 
+					   while (d->intervals->head != NULL)
+					   {
+						   next = d->intervals->head->next;
+						   free(d->intervals->head);
+						   d->intervals->head = next;
+					   }
+					   free(d->intervals);
+									
 					/* OLD */
 					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));	
+					//~ d->intervals = realloc(d->intervals, sizeof(struct Interval_List));	
 					d->intervals->head = NULL;
 					d->intervals->tail = NULL;
-				
-					//~ printf("free %d.\n", d->unique_id); print_data_intervals(head_node, t);
-					
+									
 					if (d->nb_task_using_it > 0)
 					{
-						/* NEW */
-						//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));					
-						//~ d->intervals->head = NULL;
-						//~ d->intervals->tail = NULL;
-
 						create_and_insert_tail_interval_list(d->intervals, t);
 						if (d->start_time < t)
 						{
@@ -1759,7 +1764,6 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 	{
 		if (data_unique_id == d->unique_id) /* It is already on node */
 		{
-			//~ printf("la1\n"); fflush(stdout);
 			#ifdef DATA_PERSISTENCE
 			//~ if (d->nb_task_using_it > 0 || d->end_time == t) /* And is still valid! */
 			//~ {
@@ -1839,7 +1843,7 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 		}
 		d = d->next;
 	}
-	//~ printf("la\n");
+
 	if (data_is_on_node == false) /* Need to load it */
 	{
 		#ifdef PRINT
@@ -1875,6 +1879,7 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 		new->size = data_size;
 		new->next = NULL;
 		new->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+		new->intervals->head = NULL;
 		insert_tail_data_list(node_used->data, new);
 		
 		#ifdef DATA_PERSISTENCE
@@ -2382,6 +2387,8 @@ float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, s
 	struct Data* d = n->data->head;
 	#endif
 	
+	//~ struct Interval* i = malloc(sizeof(struct Interval));
+	
 	int* temp_interval_usage_time = malloc(3*sizeof(int));
 	while (d != NULL)
 	{
@@ -2389,6 +2396,8 @@ float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, s
 		printf("Data %d is on node %d.\n", d->unique_id, n->unique_id); fflush(stdout);
 		#endif
 		
+		//~ struct Interval* i = malloc(sizeof(struct Interval));
+		//~ i = d->intervals->head;
 		struct Interval* i = d->intervals->head;
 		if (d->unique_id == current_data && i != NULL)
 		{
@@ -2445,6 +2454,7 @@ float is_my_file_on_node_at_certain_time_and_transfer_time(int predicted_time, s
 		d = d->next;
 	}
 	*is_being_loaded = false;
+	//~ free(i);
 	free(temp_interval_usage_time);
 	return current_data_size/n->bandwidth;
 }
@@ -2464,8 +2474,9 @@ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_tim
 	
 	while (d != NULL)
 	{
-		struct Interval* i = d->intervals->head;
-		if (d->unique_id != current_data && i != NULL)
+		//~ struct Interval* i = d->intervals->head;
+		//~ if (d->unique_id != current_data && i != NULL)
+		if (d->unique_id != current_data && d->intervals->head != NULL)
 		{
 			#ifdef PRINT
 			printf("Checking tail of the interval of data %d: %d->\n", d->unique_id, d->intervals->tail->time);
@@ -2481,12 +2492,13 @@ float time_to_reload_percentage_of_files_ended_at_certain_time(int predicted_tim
 			}
 		}
 		d = d->next;
+		//~ free(i);
 	}
 	
 	#ifdef PRINT
 	printf("Total size of data on node ending before my EAT is: %f but I return (%f*%f)/%f = %f.\n", size_file_ended, percentage_occupied, size_file_ended, n->bandwidth, (size_file_ended*percentage_occupied)/n->bandwidth); fflush(stdout);
 	#endif
-	
+		
 	return (size_file_ended*percentage_occupied)/n->bandwidth;
 }
 

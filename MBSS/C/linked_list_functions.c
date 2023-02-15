@@ -243,28 +243,6 @@ void create_and_insert_tail_interval_list(struct Interval_List* liste, int time_
 		liste->tail->next = i;
 		liste->tail = i;
 	}
-	
-	//~ //if head is NULL, it is an empty list
-    //~ if(liste->head == NULL)
-    //~ {
-         //~ liste->head = i;
-	 //~ }
-    //~ //Otherwise, find the last node and add the newNode
-    //~ else
-    //~ {
-        //~ struct Interval *lastNode = liste->head;
-        
-
-        //~ //last node's next address will be NULL.
-        //~ while(lastNode->next != NULL)
-        //~ {
-            //~ lastNode = lastNode->next;
-        //~ }
-
-        //~ //add the newNode at the end of the linked list
-        //~ lastNode->next = i;
-    //~ }
-
 }
 
 void insert_tail_to_print_list(struct To_Print_List* liste, struct To_Print* tp)
@@ -796,6 +774,15 @@ void free_cores_in_a_hole(struct Core_in_a_hole** head_ref)
    /* deref head_ref to affect the real head back
       in the caller. */
    *head_ref = NULL;
+}
+
+void freelist(struct Interval* headNode){
+    struct Interval* currentNode;
+    while (headNode != NULL){
+        currentNode = headNode;
+        headNode = headNode->next;
+        free(currentNode);
+    }
 }
 
 void free_interval_linked_list(struct Interval** head_ref, struct Interval** tail_ref)

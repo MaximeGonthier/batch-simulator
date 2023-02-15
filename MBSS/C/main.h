@@ -198,8 +198,8 @@ struct Data {
     int nb_task_using_it;
     #endif
     
-    //~ /** For mixed decreasing strategy **/
     struct Interval_List* intervals;
+    
     float size;
     //~ /** For mixed decreasing strategy **/
     //~ int number_of_task_using_it_not_running;
@@ -248,6 +248,9 @@ struct Interval {
 	struct Interval* next;
 	int time;
 };
+
+/* Test free intervals */
+void freelist(struct Interval* headNode);
 
 /* From read_input_files.c */
 void read_cluster(char* input_node_file);
