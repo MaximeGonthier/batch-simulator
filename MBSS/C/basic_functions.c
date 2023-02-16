@@ -76,7 +76,7 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 			earliest_available_time = n->cores[j->cores - 1]->available_time;
 			
 			/* Test complexité réduite */
-			if (earliest_available_time > t + 3600*1)
+			if (earliest_available_time > t + 3600*nb_h_scheduled)
 			{
 				goto next_node;
 			}
@@ -187,7 +187,7 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 					earliest_available_time = n->cores[j->cores - 1]->available_time;
 					
 					/* Test complexité réduite */
-					if (earliest_available_time > t + 3600*1)
+					if (earliest_available_time > t + 3600*nb_h_scheduled)
 					{
 						goto next_node;
 					}
@@ -576,7 +576,7 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 				earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 				
 				/* Test complexité réduite */
-				if (earliest_available_time > t + 3600*1)
+				if (earliest_available_time > t + 3600*nb_h_scheduled)
 				{
 					goto next_node;
 				}

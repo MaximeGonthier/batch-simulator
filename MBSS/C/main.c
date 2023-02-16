@@ -77,9 +77,12 @@ int biggest_hole_unique_id;
 int global_nb_non_available_cores_at_time_t;
 int nb_data_reuse;
 int busy_cluster_threshold;
+int nb_h_scheduled;
 
 int main(int argc, char *argv[])
 {
+	nb_h_scheduled = 10;
+	
 	nb_data_reuse = 0;
 	
 	if (argc != 8 && argc != 9 && argc != 10)

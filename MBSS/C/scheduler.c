@@ -1225,7 +1225,7 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					
 					/* Test complexité réduite */
 					//~ if (earliest_available_time > t + 3600*3)
-					if (earliest_available_time > t + 3600*1)
+					if (earliest_available_time > t + 3600*nb_h_scheduled)
 					{
 						goto next_node;
 					}
