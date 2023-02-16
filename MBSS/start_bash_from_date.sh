@@ -22,61 +22,61 @@ BUSY_CLUSTER_THRESHOLD=80
 make -C C/
 
 SCHEDULER="Fcfs"; BACKFILL_MODE=0
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=2
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_x1_x0_x0_x0"; BACKFILL_MODE=0
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_conservativebf_x1_x0_x0_x0"; BACKFILL_MODE=2
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"; BACKFILL_MODE=0
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0"; BACKFILL_MODE=0
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"; BACKFILL_MODE=0
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}
 
 SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
-OUTPUT_FILE=outputs/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
 call="oarsub -p dahu -l core=1,walltime=${WALLTIME} -r '${DATE_DEBUT} ${HEURE_DEBUT}' \"./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD))\""
 echo "call: ${call}"
 eval ${call}

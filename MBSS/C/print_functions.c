@@ -674,7 +674,8 @@ void print_csv(struct To_Print* head_to_print)
 	/* Main file of results */
 	char* file_to_open_2 = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open_2, output_file);
-	FILE* f = fopen(file_to_open_2, "a");
+	//~ FILE* f = fopen(file_to_open_2, "a");
+	FILE* f = fopen(file_to_open_2, "w");
 	if (!f)
 	{
 		perror("Error opening file.\n"); fflush(stdout);
