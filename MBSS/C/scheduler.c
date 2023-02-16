@@ -1224,11 +1224,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 					
 					/* Test complexité réduite */
-					//~ if (earliest_available_time > t + 3600*3)
+					#ifdef NB_HOUR_MAX
 					if (earliest_available_time > t + 3600*nb_h_scheduled)
 					{
 						goto next_node;
 					}
+					#endif
 					
 					if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 					{
@@ -1371,8 +1372,10 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					fprintf(f_fcfs_score, "Node: %d EAT: %d C: %f CxX: %f Score: %f\n", n->unique_id, earliest_available_time, time_to_reload_evicted_files, time_to_reload_evicted_files*multiplier_file_evicted, earliest_available_time + multiplier_file_to_load*time_to_load_file + multiplier_file_evicted*time_to_reload_evicted_files);
 					#endif
 					
+					#ifdef NB_HOUR_MAX
 					/* Test complexité réduite */
 					next_node: ;
+					#endif
 					
 					n = n->next;
 				}

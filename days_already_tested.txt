@@ -1,11 +1,9 @@
 Avec l'optimisation de t + 1h:
 2022
 Janvier
-01-01: 52min
-01-02: en cours
-01-03: en cours
-01-04: en cours
-01-05: en cours
+Jours générés: 01->15
+Jours testés:
+01->10 en cours sur Grenoble
 Février
 Mars
 Avril

@@ -244,3 +244,36 @@ PROPORTION="V10000"
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Threshold_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Threshold 0
 #~ DATE="2022-08-16->2022-08-16"
 #~ bash plot.sh inputs/workloads/converted/${DATE}_${PROPORTION} inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Threshold_${DATE}_${PROPORTION}_450_128_32_256_4_1024.csv FCFS_Score_Threshold 0
+
+# For ICPP
+
+ALL="0 mean"
+ALL_BF="1 mean"
+# January 1->15
+N=15
+for ((i=1; i<=$((N)); i++))
+do 
+	DATE="2022-01-"
+	if [ $((i)) -lt 10 ]; then
+		DATE="${DATE}0"$((i))"->${DATE}0"$((i))
+	else
+		DATE="${DATE}"$((i))"->${DATE}"$((i))
+	fi
+	echo ${DATE}
+	bash plot.sh inputs/workloads/converted/${DATE}_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt data/Results_FCFS_Score_Backfill_${DATE}_V10000_anonymous_450_128_32_256_4_1024.csv FCFS_Score_Backfill 0
+	python3 src/compute_percentage_reduction.py data/Results_FCFS_Score_Backfill_${DATE}_V10000_anonymous_450_128_32_256_4_1024.csv ${DATE}_V10000
+	ALL="${ALL} data/Percentages_to_fcfs_${DATE}_V10000"
+	ALL_BF="${ALL_BF} data/Percentages_to_fcfs_bf_${DATE}_V10000"
+done
+ALL="python3 src/compute_percentages_all_workloads.py ${N} ${ALL}"
+ALL_BF="python3 src/compute_percentages_all_workloads.py ${N} ${ALL_BF}"
+echo ${ALL}
+echo ${ALL_BF}
+
+${ALL}
+${ALL_BF}
+#~ bash ${ALL}
+#~ bash ${ALL_BF}
+
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads.csv
+python3 src/plot_boxplot.py outputs/scatter_mean_stretch_all_workloads_bf.csv

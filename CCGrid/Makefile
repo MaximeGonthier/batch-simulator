@@ -1,10 +1,10 @@
-all: clean CCGrid-paper.pdf
+all: clean CCGrid-paper.pdf RR.pdf
 
 abstract:
 	pdflatex CCGrid-abstract.tex
 	pdflatex CCGrid-abstract.tex
 	rm -f CCGrid-abstract.aux CCGrid-abstract.log CCGrid-abstract.out CCGrid-abstract.blg CCGrid-abstract.bbl
-	
+
 %.pdf: %.tex
 	pdflatex $*.tex
 	bibtex $*

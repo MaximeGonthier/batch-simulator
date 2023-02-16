@@ -75,11 +75,13 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		{
 			earliest_available_time = n->cores[j->cores - 1]->available_time;
 			
+			#ifdef NB_HOUR_MAX
 			/* Test complexité réduite */
 			if (earliest_available_time > t + 3600*nb_h_scheduled)
 			{
 				goto next_node;
 			}
+			#endif
 			
 			if (earliest_available_time < t) /* A core can't be available before t. This happens when a node is idling. */				
 			{
@@ -97,7 +99,9 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 				}
 			}
 			
+			#ifdef NB_HOUR_MAX
 			next_node: ;
+			#endif
 			
 			n = n->next;
 		}
@@ -186,11 +190,13 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 					
 					earliest_available_time = n->cores[j->cores - 1]->available_time;
 					
+					#ifdef NB_HOUR_MAX
 					/* Test complexité réduite */
 					if (earliest_available_time > t + 3600*nb_h_scheduled)
 					{
 						goto next_node;
 					}
+					#endif
 					
 					if (earliest_available_time < t)	
 					{
@@ -213,8 +219,10 @@ void schedule_job_on_earliest_available_cores_with_conservative_backfill(struct 
 						}
 					}
 
+					#ifdef NB_HOUR_MAX
 					next_node: ;
-				
+					#endif
+					
 					backfilled_job = can_it_get_backfilled(j, n, t, &nb_cores_from_hole, &nb_cores_from_outside);
 					if (backfilled_job == true)
 					{
@@ -575,11 +583,13 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 				want_to_save_times_for_backfill = false;
 				earliest_available_time = n->cores[j->cores - 1]->available_time; /* -1 because tab start at 0 */
 				
+				#ifdef NB_HOUR_MAX
 				/* Test complexité réduite */
 				if (earliest_available_time > t + 3600*nb_h_scheduled)
 				{
 					goto next_node;
 				}
+				#endif
 				
 				if (earliest_available_time <= t) /* A core can't be available before t. This happens when a node is idling. */				
 				{
@@ -686,8 +696,10 @@ void schedule_job_fcfs_score_with_conservative_backfill(struct Job* j, struct No
 					}
 				}
 				
+				#ifdef NB_HOUR_MAX
 				/* Test complexité réduite */
 				next_node: ;
+				#endif
 				
 				#ifdef PRINT
 				printf("Can I backfill on node %d?\n", n->unique_id);

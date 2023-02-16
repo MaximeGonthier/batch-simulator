@@ -77,11 +77,17 @@ int biggest_hole_unique_id;
 int global_nb_non_available_cores_at_time_t;
 int nb_data_reuse;
 int busy_cluster_threshold;
+
+#ifdef NB_HOUR_MAX
 int nb_h_scheduled;
+#endif
 
 int main(int argc, char *argv[])
 {
+	#ifdef NB_HOUR_MAX
+	//~ nb_h_scheduled = 1;
 	nb_h_scheduled = 10;
+	#endif
 	
 	nb_data_reuse = 0;
 	
