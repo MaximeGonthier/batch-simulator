@@ -27,11 +27,13 @@ do
 		collection=$((i-1))
 	fi
 done
+
 START=${FILE_START:21}
 END=${FILE_END:21}
 OUTPUT="inputs/workloads/raw/"$START"->"$END
 echo "Output will be" $OUTPUT
 truncate -s 0 $OUTPUT
+
 for ((i=1; i<=$#; i++))
 do
 	# Day 0

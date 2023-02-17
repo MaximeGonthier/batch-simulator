@@ -1,7 +1,39 @@
+
+
+------------------------------------------------------------------------------------------
+Listes de commandes à lancer pour faire mes test:
+
+1. Générer les inputs convertis
+bash call_generate_workload_from_one_date.sh 2022-02-01 semaine
+ou
+bash call_generate_workload_from_one_date.sh 2022-02-01 jour
+
+2. Lancer les tests en local ou sur PlaFRIM
+bash srun_from_date.sh 25:00:00 02-01 02-07 srun
+ou
+bash srun_from_date.sh 25:00:00 02-01 02-07 local
+
+(3. Merge les fichiers entre eux:
+bash merge_results_one_day.sh 02-01 02-07
+Utile uniquement pour faire les barplots)
+
+4. Calculer le pourcentage d'amélioration des stretch 1 à 1:
+python3 src/compute_stretch_improvement.py 02-01 02-07
+
+5. Plot les barplots correspondant:
+python3 src/plot_boxplot.py 02-01 02-07 NO_BF 
+python3 src/plot_boxplot.py 02-01 02-07 BF 
+
+(Pour tuer un job en local: k sur htop. Sur PlaFRIM scancel id)
+------------------------------------------------------------------------------------------
+
+
+Plafrim: srun -t 02:00:00 ./C/main inputs/workloads/converted/2022-01-01-\>2022-01-01_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0 data/Results_FCFS_Score_Backfill_2022-01-01-\>2022-01-01_V10000_anonymous_450_128_32_256_4_1024_Fcfs.csv 0 80 > test.txt &
+
 Avec l'optimisation de t + 1h:
 2022
 Janvier
-Jours générés: 01->15
+Jours générés: 01->31
 Jours testés:
 01->10 en cours sur Grenoble
 Février
@@ -18,11 +50,21 @@ Décembre
 
 Sans l'optimisation de t + 1h:
 2022
+
 Janvier
+
 01-02
+01-12
+01-13
+01-16
 01-17
+01-18 sur plafrim
+01-19 sur plafrim
 01-21
 01-28
+01-30
+01-31: manque LEA BF sur plafrim
+
 Février
 02-01
 Mars
