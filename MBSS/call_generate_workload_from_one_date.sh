@@ -266,7 +266,7 @@ else
 		fi
 		call="${call} inputs/workloads/raw/${year}-${nextmonth}-${nextday}"
 		lastday=${nextday}
-		c=${nextmonth}
+		lastmonth=${nextmonth}
 	done
 	call="${call} end"
 	lastdayforanonymize=${lastday}

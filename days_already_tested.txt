@@ -27,6 +27,11 @@ python3 src/plot_boxplot.py 02-01 02-07 BF
 (Pour tuer un job en local: k sur htop. Sur PlaFRIM scancel id)
 ------------------------------------------------------------------------------------------
 
+Semaine testé: du 02-01 au 02-07 (semaine du mercredi au mercredi :/)
+En cours:
+bash srun_from_date.sh 50:00:00 02-13 02-19 srun
+bash srun_from_date.sh 50:00:00 02-20 02-26 srun
+bash srun_from_date.sh 50:00:00 02-27 02-05 srun
 
 Plafrim: srun -t 02:00:00 ./C/main inputs/workloads/converted/2022-01-01-\>2022-01-01_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0 data/Results_FCFS_Score_Backfill_2022-01-01-\>2022-01-01_V10000_anonymous_450_128_32_256_4_1024_Fcfs.csv 0 80 > test.txt &
 
