@@ -285,6 +285,26 @@ void print_csv(struct To_Print* head_to_print)
 {
 	int size_file_to_open = 300;
 
+	char* file_to_open = malloc(size_file_to_open*sizeof(char));
+	char* day = malloc(22*sizeof(char));
+	int i = 0;
+	for (i = 0; i < 22; i++)
+	{
+		day[i] = input_job_file[i + 27];
+	}
+	file_to_open = malloc(size_file_to_open*sizeof(char));
+	strcpy(file_to_open, "data/Stretch_times_");
+	strcat(file_to_open, day);
+	strcat(file_to_open, "_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
+	FILE* f_stretch = fopen(file_to_open, "w");
+	if (!f_stretch)
+	{
+		perror("Error opening file.\n");
+		exit(EXIT_FAILURE);
+	}
+
 	if (strcmp(scheduler, "Fcfs") == 0)
 	{
 		scheduler = "FCFS";
@@ -451,29 +471,26 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_data_persistence_exploited);
 	#endif
 	
-	char* file_to_open = malloc(size_file_to_open*sizeof(char));
+	//~ char* file_to_open = malloc(size_file_to_open*sizeof(char));
+	//~ char* day = malloc(22*sizeof(char));
+	//~ int i = 0;
+	//~ for (i = 0; i < 22; i++)
+	//~ {
+		//~ day[i] = input_job_file[i + 27];
+	//~ }
 	
-	char* day = malloc(22*sizeof(char));
-	
-	//~ inputs/workloads/converted/
-	int i = 0;
-	for (i = 0; i < 22; i++)
-	{
-		day[i] = input_job_file[i + 27];
-	}
-	
-	file_to_open = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open, "data/Stretch_times_");
-	strcat(file_to_open, day);
-	strcat(file_to_open, "_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	FILE* f_stretch = fopen(file_to_open, "w");
-	if (!f_stretch)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
+	//~ file_to_open = malloc(size_file_to_open*sizeof(char));
+	//~ strcpy(file_to_open, "data/Stretch_times_");
+	//~ strcat(file_to_open, day);
+	//~ strcat(file_to_open, "_");
+	//~ strcat(file_to_open, scheduler);
+	//~ strcat(file_to_open, ".txt");
+	//~ FILE* f_stretch = fopen(file_to_open, "w");
+	//~ if (!f_stretch)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	/* For distribution of flow and queue times on each job. */
