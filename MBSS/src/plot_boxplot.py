@@ -6,79 +6,68 @@ import numpy as np
 import sys
 import pandas as pd
 
-df = pd.read_csv(sys.argv[1])
-print("Opening file", sys.argv[1])
+date1 = sys.argv[1]
+date2 = sys.argv[2]
+mode = sys.argv[3]
+
+if (mode == "NO_BF"):
+	file_to_open_eft = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x1_x0_x0_x0.txt"
+	file_to_open_lea = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x500_x1_x0_x0.txt"
+	file_to_open_leo = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0.txt"
+	file_to_open_lem = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt"
+else:
+	file_to_open_eft = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x1_x0_x0_x0.txt"
+	file_to_open_lea = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt"
+	file_to_open_leo = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
+	file_to_open_lem = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
+
+
+df_eft = pd.read_csv(file_to_open_eft)
+# ~ print("Opening file", file_to_open_eft)
+
+# ~ exit(1)
+
+df_lea = pd.read_csv(file_to_open_lea)
+df_leo = pd.read_csv(file_to_open_leo)
+df_lem = pd.read_csv(file_to_open_lem)
 
 font_size = 14
 
-eft = list(df.iloc[:, 0])
-score = list(df.iloc[:, 1])
-opportunistic = list(df.iloc[:, 2])
-eft_score = list(df.iloc[:, 3])
-
-# ~ print("LEA:", score)
-# ~ print("LEO:", opportunistic)
-# ~ print("LEM:", eft_score)
+eft = list(df_eft.iloc[:, 0])
+score = list(df_lea.iloc[:, 0])
+opportunistic = list(df_leo.iloc[:, 0])
+eft_score = list(df_lem.iloc[:, 0])
 
 columns = [eft, score, opportunistic, eft_score]
 colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
 fig, ax = plt.subplots()
 
-# ~ print(columns)
-# ~ plt.figure(figsize=(6, 4))
-# Octile
-# ~ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[12.5, 87.5])
-box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[12.5, 87.5])
 
-# Idk what-ile
-# ~ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[15, 85])
+# ~ size_extremity = 25 # Quartile
+size_extremity = 12.5 # Octile
+# ~ size_extremity = 6.25 # 16-tile
+# ~ size_extremity = 3.125 # 32-tile
+# ~ size_extremity = 1 # Percentile
 
-# Quartile
-# ~ box = ax.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[25, 75])
+box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[size_extremity, 100 - size_extremity])
+
 
 c="#095228"
 
-# ~ plt.rcParams['hatch.color'] = "white"
-
 for boxes in box['boxes']:
-	if sys.argv[1] != "outputs/scatter_mean_stretch_all_workloads.csv":
-		# ~ boxes.set(color='white', linewidth=1)
-		# ~ boxes.set_edgecolor(color="black")
-		# ~ boxes.set_hatch('/')
-		
-		# ~ boxes.set(color='black', linewidth=2)
-		# change fill color
-		# ~ boxes.set(facecolor = 'green')
-		# change hatch
-		# ~ boxes.set(hatch = '/', color='white')
+	if (mode == "BF"):
 		boxes.set(hatch = '/', color="white")
-		# ~ boxes.set(edgecolor = 'black')
-		# ~ boxes.set(hatch = '/', color='white')
-		# ~ boxes.set(color='blue', linewidth=2)
-	# ~ else:
-		# ~ boxes.set_edgecolor(color="black")
 		
 for median in box['medians']:
-    # ~ median.set_color('green')
     median.set_color(c)
     median.set_linewidth(1.9)
-    # ~ print(median)
 for mean in box['means']:
-    # ~ mean.set_color('green')
     mean.set_color(c)
     mean.set_linewidth(1.9)
-    # ~ print(mean)
-
-
-print([item.get_ydata()[1] for item in box['whiskers']])
-# ~ print([item.get_ydata()[1] for item in box['boxes']])
-# ~ print(box['boxes'][0].get_ydata()[1])
-# ~ print(median)
-# ~ print(mean)
 
 
 
-if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
+if (mode == "NO_BF"):
 	plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
 else:
 	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
@@ -86,36 +75,29 @@ else:
 plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 
-# ~ plt.axhline(y = 1.35, color = 'black')
-# ~ plt.axhline(y = 0.85, color = 'black')
-
 # Max Y
-# ~ ax.set_ylim(0, 2.5)
-# ~ ax.set_ylim(0, 3.15)
-plt.ylim(0, 3.15)
-plt.yticks(fontsize=font_size)
+# ~ plt.ylim(0, 3.15)
+plt.ylim(0, 10)
 
+
+plt.yticks(fontsize=font_size)
 plt.rcParams['hatch.linewidth'] = 9
 
-if sys.argv[1] != "outputs/scatter_mean_stretch_all_workloads.csv":
+if (mode == "BF"):
 	for patch, color in zip(box['boxes'], colors):
 		patch.set_facecolor("white")
 		patch.set_edgecolor(color)
 else:
 	for patch, color in zip(box['boxes'], colors):
 		patch.set_facecolor(color)
-		# ~ patch.set_edgecolor(color)
 		
-if sys.argv[1] == "outputs/scatter_mean_stretch_all_workloads.csv":
-	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf"
+
+if (mode == "NO_BF"):
+	filename = "plot/Boxplot/box_plot_mean_stretch_" + date1 + "-" + date2 + ".pdf"
 	plt.ylabel('Stretch\'s improvement from FCFS', fontsize=font_size)
 else:
-	filename = "plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf"
+	filename = "plot/Boxplot/box_plot_mean_stretch_bf_" + date1 + "-" + date2 + ".pdf"
 	plt.ylabel('Stretch\'s improvement from FCFS-BF', fontsize=font_size)
-# ~ plt.legend(loc ="upper left")
 
-# ~ fig.subplots_adjust(left=0, bottom=-1, right=1, top=1, wspace=0, hspace=0)
-# ~ fig.subplots_adjust(hspace=0, wspace=0)
 
 plt.savefig(filename, bbox_inches='tight')
-
