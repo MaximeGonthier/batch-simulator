@@ -1,6 +1,9 @@
 Data_aware_batch_scheduling.pdf
-/Batsim/batsched-Maxime/expe-out/
+Batsim/batsched-Maxime/expe-out/
 MBSS/inputs/workloads/raw
+MBSS/0*
+MBSS/1*
+MBSS/2*
 MBSS/outputs/
 Slides/ipdps.pdf
 MBSS/src/__pycache__
