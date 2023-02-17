@@ -1,8 +1,11 @@
 #!/bin/bash
 
-main_day=$1
+# bash call_generate_workload_from_one_date.sh date mode("jour" ou "semaine")
 
-#~ echo "Evaluated day is ${main_day}"
+main_day=$1
+mode=$2
+
+echo "Evaluated day is ${main_day}"
 
 #~ echo "Year is ${main_day::-6}"
 year=${main_day::-6}
@@ -54,7 +57,12 @@ echo "Day0 is ${day0}"
 echo "Month0 is ${month0}"
 echo "Year0 is ${year0}"
 
-call="Generate_workload_from_rackham.sh inputs/workloads/raw/${year0}-${month0}-${day0} start inputs/workloads/raw/${main_day} end inputs/workloads/raw/${year}-"
+if [ model == "jour" ]; then
+	call="Generate_workload_from_rackham.sh inputs/workloads/raw/${year0}-${month0}-${day0} start inputs/workloads/raw/${main_day} end inputs/workloads/raw/${year}-"
+else
+	call="Generate_workload_from_rackham.sh inputs/workloads/raw/${year0}-${month0}-${day0} start inputs/workloads/raw/${main_day} inputs/workloads/raw/${year}-"
+	#~ call="Generate_workload_from_rackham.sh start inputs/workloads/raw/${main_day} inputs/workloads/raw/${year}-"
+fi
 
 if [ ${month} = "04" ] || [ ${month} = "06" ] || [ ${month} = "09" ] || [ ${month} = "11" ]; then
 	if [ ${day} = "30" ]; then
@@ -115,81 +123,289 @@ fi
 echo "Day2 is ${day2}"
 echo "Month2 is ${month2}"
 
-call="${call}${month2}-${day2} collection"
-
+if [ model == "jour" ]; then
+	call="${call}${month2}-${day2} collection"
+else
+	call="${call}${month2}-${day2}"
+fi
 
 lastday=${day2}
 lastmonth=${month2}
-for ((i=0; i<$((14-3)); i++))
-#~ for ((i=0; i<$((14-8)); i++))
-do
-	if [ ${lastmonth} = "04" ] || [ ${lastmonth} = "06" ] || [ ${lastmonth} = "09" ] || [ ${lastmonth} = "11" ]; then
-		if [ ${lastday} = "30" ]; then
-			nextday="01"
-			nextmonth=$((lastmonth+1))
-			if [ $((nextmonth)) -lt 10 ]; then
-				nextmonth="0"$((nextmonth))
+
+if [ model == "jour" ]; then
+	for ((i=0; i<$((14-3)); i++))
+	do
+		if [ ${lastmonth} = "04" ] || [ ${lastmonth} = "06" ] || [ ${lastmonth} = "09" ] || [ ${lastmonth} = "11" ]; then
+			if [ ${lastday} = "30" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
+			fi
+		elif [ ${lastmonth} = "02" ]; then
+			if [ ${lastday} = "28" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
 			fi
 		else
-			if [ ${lastday} = "08" ]; then
-				nextday="09"
-			elif [ ${lastday} = "09" ]; then
-				nextday="10"
-			else
-				nextday=$((lastday+1))
-				if [ $((nextday)) -lt 10 ]; then
-					nextday="0"$((nextday))
+			if [ ${lastday} = "31" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
 				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
 			fi
-			nextmonth=${lastmonth}
 		fi
-	elif [ ${lastmonth} = "02" ]; then
-		if [ ${lastday} = "28" ]; then
-			nextday="01"
-			nextmonth=$((lastmonth+1))
-			if [ $((nextmonth)) -lt 10 ]; then
-				nextmonth="0"$((nextmonth))
+		call="${call} inputs/workloads/raw/${year}-${nextmonth}-${nextday}"
+		lastday=${nextday}
+		lastmonth=${nextmonth}
+	done
+else
+	for ((i=0; i<$((5)); i++))
+	do
+		if [ ${lastmonth} = "04" ] || [ ${lastmonth} = "06" ] || [ ${lastmonth} = "09" ] || [ ${lastmonth} = "11" ]; then
+			if [ ${lastday} = "30" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
+			fi
+		elif [ ${lastmonth} = "02" ]; then
+			if [ ${lastday} = "28" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
 			fi
 		else
-			if [ ${lastday} = "08" ]; then
-				nextday="09"
-			elif [ ${lastday} = "09" ]; then
-				nextday="10"
-			else
-				nextday=$((lastday+1))
-				if [ $((nextday)) -lt 10 ]; then
-					nextday="0"$((nextday))
+			if [ ${lastday} = "31" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
 				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
 			fi
-			nextmonth=${lastmonth}
 		fi
-	else
-		if [ ${lastday} = "31" ]; then
-			nextday="01"
-			nextmonth=$((lastmonth+1))
-			if [ $((nextmonth)) -lt 10 ]; then
-				nextmonth="0"$((nextmonth))
+		call="${call} inputs/workloads/raw/${year}-${nextmonth}-${nextday}"
+		lastday=${nextday}
+		c=${nextmonth}
+	done
+	call="${call} end"
+	lastdayforanonymize=${lastday}
+	lastmonthforanonymize=${lastmonth}
+	for ((i=0; i<$((1)); i++))
+	do
+		if [ ${lastmonth} = "04" ] || [ ${lastmonth} = "06" ] || [ ${lastmonth} = "09" ] || [ ${lastmonth} = "11" ]; then
+			if [ ${lastday} = "30" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
+			fi
+		elif [ ${lastmonth} = "02" ]; then
+			if [ ${lastday} = "28" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
 			fi
 		else
-			if [ ${lastday} = "08" ]; then
-				nextday="09"
-			elif [ ${lastday} = "09" ]; then
-				nextday="10"
-			else
-				nextday=$((lastday+1))
-				if [ $((nextday)) -lt 10 ]; then
-					nextday="0"$((nextday))
+			if [ ${lastday} = "31" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
 				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
 			fi
-			nextmonth=${lastmonth}
 		fi
-	fi
-	#~ echo "Nextday is ${nextday}"
-	#~ echo "Nextmonth is ${nextmonth}"
-	call="${call} inputs/workloads/raw/${year}-${nextmonth}-${nextday}"
-	lastday=${nextday}
-	lastmonth=${nextmonth}
-done
+		call="${call} inputs/workloads/raw/${year}-${nextmonth}-${nextday} collection"
+		lastday=${nextday}
+		lastmonth=${nextmonth}
+	done
+	for ((i=0; i<$((1)); i++))
+	do
+		if [ ${lastmonth} = "04" ] || [ ${lastmonth} = "06" ] || [ ${lastmonth} = "09" ] || [ ${lastmonth} = "11" ]; then
+			if [ ${lastday} = "30" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
+			fi
+		elif [ ${lastmonth} = "02" ]; then
+			if [ ${lastday} = "28" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
+			fi
+		else
+			if [ ${lastday} = "31" ]; then
+				nextday="01"
+				nextmonth=$((lastmonth+1))
+				if [ $((nextmonth)) -lt 10 ]; then
+					nextmonth="0"$((nextmonth))
+				fi
+			else
+				if [ ${lastday} = "08" ]; then
+					nextday="09"
+				elif [ ${lastday} = "09" ]; then
+					nextday="10"
+				else
+					nextday=$((lastday+1))
+					if [ $((nextday)) -lt 10 ]; then
+						nextday="0"$((nextday))
+					fi
+				fi
+				nextmonth=${lastmonth}
+			fi
+		fi
+		call="${call} inputs/workloads/raw/${year}-${nextmonth}-${nextday}"
+		lastday=${nextday}
+		lastmonth=${nextmonth}
+	done
+fi
 
 echo "Will call ${call}"
 
@@ -198,5 +414,10 @@ bash ${call}
 #~ bash Stats_single_workload.sh inputs/workloads/converted/${main_day}-\>${main_day}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs
 
 # Anonymize
-python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>${main_day}_V10000
-rm inputs/workloads/converted/${main_day}-\>${main_day}_V10000
+if [ model == "jour" ]; then
+	python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>${main_day}_V10000
+	rm inputs/workloads/converted/${main_day}-\>${main_day}_V10000
+else
+	python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>2022-${lastmonthforanonymize}-${lastdayforanonymize}_V10000
+	rm inputs/workloads/converted/${main_day}-\>2022-${lastmonthforanonymize}-${lastdayforanonymize}_V10000
+fi

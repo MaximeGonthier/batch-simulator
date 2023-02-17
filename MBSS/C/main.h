@@ -18,6 +18,8 @@
 extern int first_node_size_to_choose_from;
 extern int last_node_size_to_choose_from;
 
+extern char* input_job_file;
+
 #ifdef NB_HOUR_MAX
 extern int nb_h_scheduled;
 #endif

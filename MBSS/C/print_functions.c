@@ -451,9 +451,33 @@ void print_csv(struct To_Print* head_to_print)
 	fclose(f_data_persistence_exploited);
 	#endif
 	
+	char* file_to_open = malloc(size_file_to_open*sizeof(char));
+	
+	char* day = malloc(22*sizeof(char));
+	
+	//~ inputs/workloads/converted/
+	int i = 0;
+	for (i = 0; i < 22; i++)
+	{
+		day[i] = input_job_file[i + 27];
+	}
+	
+	file_to_open = malloc(size_file_to_open*sizeof(char));
+	strcpy(file_to_open, "data/Stretch_times_");
+	strcat(file_to_open, day);
+	strcat(file_to_open, "_");
+	strcat(file_to_open, scheduler);
+	strcat(file_to_open, ".txt");
+	FILE* f_stretch = fopen(file_to_open, "w");
+	if (!f_stretch)
+	{
+		perror("Error opening file.\n");
+		exit(EXIT_FAILURE);
+	}
+	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	/* For distribution of flow and queue times on each job. */
-	char* file_to_open = malloc(size_file_to_open*sizeof(char));
+	//~ char* file_to_open = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open, "outputs/Queue_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
@@ -464,8 +488,10 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 	
+	
+	
 	file_to_open = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open, "outputs/Flow_times_");
+	strcpy(file_to_open, "data/Flow_times_");
 	strcat(file_to_open, scheduler);
 	strcat(file_to_open, ".txt");
 	FILE* f_flow = fopen(file_to_open, "w");
@@ -475,16 +501,16 @@ void print_csv(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 		
-	file_to_open = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open, "outputs/Stretch_times_");
-	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
-	FILE* f_stretch = fopen(file_to_open, "w");
-	if (!f_stretch)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
+	//~ file_to_open = malloc(size_file_to_open*sizeof(char));
+	//~ strcpy(file_to_open, "outputs/Stretch_times_");
+	//~ strcat(file_to_open, scheduler);
+	//~ strcat(file_to_open, ".txt");
+	//~ FILE* f_stretch = fopen(file_to_open, "w");
+	//~ if (!f_stretch)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
 	
 	file_to_open = malloc(size_file_to_open*sizeof(char));
 	strcpy(file_to_open, "outputs/Bounded_Stretch_times_");
@@ -630,13 +656,18 @@ void print_csv(struct To_Print* head_to_print)
 		{
 			makespan = head_to_print->job_end_time;
 		}
+		
 		#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 		/* For distribution of flow and queue times on each job to show VS curves */
 		fprintf(f_queue, "%d %d %d %d %d\n", head_to_print->job_unique_id, head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		fprintf(f_flow, "%d %d %d %d %d\n", head_to_print->job_unique_id, head_to_print->job_end_time - head_to_print->job_subtime, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
-		fprintf(f_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
+		//~ fprintf(f_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		fprintf(f_bounded_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		#endif
+		
+		/* Id Stretch Datatype Length Subtime */
+		fprintf(f_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
+
 		
 		head_to_print = head_to_print->next;
 	}
@@ -651,11 +682,12 @@ void print_csv(struct To_Print* head_to_print)
 		printf("verify_nb_job_to_evaluate %d == nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate);
 	}
 	
+	fclose(f_stretch);
 	
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	fclose(f_queue);
 	fclose(f_flow);
-	fclose(f_stretch);
+	//~ fclose(f_stretch);
 	fclose(f_bounded_stretch);
 	#endif
 	

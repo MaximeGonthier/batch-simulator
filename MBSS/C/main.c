@@ -29,6 +29,8 @@
 int first_node_size_to_choose_from;
 int last_node_size_to_choose_from;
 
+char* input_job_file;
+
 int planned_or_ratio; /* O = planned, 1 = ratio */
 int constraint_on_sizes;
 int nb_cores;
@@ -188,7 +190,7 @@ int main(int argc, char *argv[])
 	int old_finished_jobs = 0;
 	
 	/** Args **/
-	char* input_job_file = argv[1];
+	input_job_file = argv[1];
 	char* input_node_file = argv[2];
 	scheduler = argv[3]; /* malloc ? */
 	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. 3 for constraint and you can only execute on your specific size. */
