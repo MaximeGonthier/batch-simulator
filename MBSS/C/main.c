@@ -87,8 +87,8 @@ int nb_h_scheduled;
 int main(int argc, char *argv[])
 {
 	#ifdef NB_HOUR_MAX
-	//~ nb_h_scheduled = 1;
-	nb_h_scheduled = 10;
+	nb_h_scheduled = 1;
+	//~ nb_h_scheduled = 10;
 	#endif
 	
 	nb_data_reuse = 0;

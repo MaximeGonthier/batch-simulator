@@ -285,6 +285,7 @@ void print_csv(struct To_Print* head_to_print)
 {
 	int size_file_to_open = 300;
 
+	/* Stretch times for boxplots on all jobs */
 	char* file_to_open = malloc(size_file_to_open*sizeof(char));
 	char* day = malloc(22*sizeof(char));
 	int i = 0;
@@ -470,28 +471,7 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f_data_persistence_exploited, "%s: %d\n", scheduler, data_persistence_exploited);
 	fclose(f_data_persistence_exploited);
 	#endif
-	
-	//~ char* file_to_open = malloc(size_file_to_open*sizeof(char));
-	//~ char* day = malloc(22*sizeof(char));
-	//~ int i = 0;
-	//~ for (i = 0; i < 22; i++)
-	//~ {
-		//~ day[i] = input_job_file[i + 27];
-	//~ }
-	
-	//~ file_to_open = malloc(size_file_to_open*sizeof(char));
-	//~ strcpy(file_to_open, "data/Stretch_times_");
-	//~ strcat(file_to_open, day);
-	//~ strcat(file_to_open, "_");
-	//~ strcat(file_to_open, scheduler);
-	//~ strcat(file_to_open, ".txt");
-	//~ FILE* f_stretch = fopen(file_to_open, "w");
-	//~ if (!f_stretch)
-	//~ {
-		//~ perror("Error opening file.\n");
-		//~ exit(EXIT_FAILURE);
-	//~ }
-	
+		
 	#ifdef PRINT_DISTRIBUTION_QUEUE_TIMES
 	/* For distribution of flow and queue times on each job. */
 	//~ char* file_to_open = malloc(size_file_to_open*sizeof(char));
@@ -682,8 +662,8 @@ void print_csv(struct To_Print* head_to_print)
 		fprintf(f_bounded_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		#endif
 		
-		/* Id Stretch Datatype Length Subtime */
-		fprintf(f_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
+		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime */
+		fprintf(f_stretch, "%d %f %d %d %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time);
 
 		
 		head_to_print = head_to_print->next;

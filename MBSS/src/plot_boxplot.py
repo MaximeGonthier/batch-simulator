@@ -49,7 +49,8 @@ size_extremity = 12.5 # Octile
 # ~ size_extremity = 3.125 # 32-tile
 # ~ size_extremity = 1 # Percentile
 
-box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[size_extremity, 100 - size_extremity])
+# ~ box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[size_extremity, 100 - size_extremity])
+box = plt.boxplot(columns, patch_artist=True, whis=[size_extremity, 100 - size_extremity], showfliers=False)
 
 
 c="#095228"
@@ -77,8 +78,9 @@ plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 # Max Y
 # ~ plt.ylim(0, 3.15)
-plt.ylim(0, 10)
+# ~ plt.ylim(0, 10)
 
+# ~ print("Mean:", box['means'], "Media:", median)
 
 plt.yticks(fontsize=font_size)
 plt.rcParams['hatch.linewidth'] = 9
