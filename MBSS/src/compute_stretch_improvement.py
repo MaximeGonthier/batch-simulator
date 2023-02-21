@@ -29,7 +29,7 @@ file_fcfs = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs.txt"
 with open(file_fcfs) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5= line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_reference.append(j)
 		line = f.readline()
@@ -43,7 +43,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -65,7 +65,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -87,7 +87,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -109,7 +109,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -132,7 +132,7 @@ file_fcfs = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_cons
 with open(file_fcfs) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5= line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_reference.append(j)
 		line = f.readline()
@@ -146,7 +146,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -168,7 +168,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -190,7 +190,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()
@@ -212,7 +212,7 @@ f_output = open(file_output, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
-		r1, r2, r3, r4, r5 = line.split() 
+		r1, r2, r3, r4, r5, r6, r7 = line.split() 
 		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
 		job_list_algo_compare.append(j)
 		line = f.readline()

@@ -50,21 +50,23 @@ size_extremity = 12.5 # Octile
 # ~ size_extremity = 1 # Percentile
 
 # ~ box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[size_extremity, 100 - size_extremity])
-box = plt.boxplot(columns, patch_artist=True, whis=[size_extremity, 100 - size_extremity], showfliers=False)
+# ~ box = plt.boxplot(columns, patch_artist=True, whis=[size_extremity, 100 - size_extremity], showfliers=False)
+
+box = plt.violinplot(columns, showmedians=True, showmeans=True)
 
 
 c="#095228"
 
-for boxes in box['boxes']:
-	if (mode == "BF"):
-		boxes.set(hatch = '/', color="white")
+# ~ for boxes in box['boxes']:
+	# ~ if (mode == "BF"):
+		# ~ boxes.set(hatch = '/', color="white")
 		
-for median in box['medians']:
-    median.set_color(c)
-    median.set_linewidth(1.9)
-for mean in box['means']:
-    mean.set_color(c)
-    mean.set_linewidth(1.9)
+# ~ for median in box['medians']:
+    # ~ median.set_color(c)
+    # ~ median.set_linewidth(1.9)
+# ~ for mean in box['means']:
+    # ~ mean.set_color(c)
+    # ~ mean.set_linewidth(1.9)
 
 
 
@@ -78,20 +80,18 @@ plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 # Max Y
 # ~ plt.ylim(0, 3.15)
-# ~ plt.ylim(0, 10)
-
-# ~ print("Mean:", box['means'], "Media:", median)
+plt.ylim(0, 10)
 
 plt.yticks(fontsize=font_size)
 plt.rcParams['hatch.linewidth'] = 9
 
-if (mode == "BF"):
-	for patch, color in zip(box['boxes'], colors):
-		patch.set_facecolor("white")
-		patch.set_edgecolor(color)
-else:
-	for patch, color in zip(box['boxes'], colors):
-		patch.set_facecolor(color)
+# ~ if (mode == "BF"):
+	# ~ for patch, color in zip(box['boxes'], colors):
+		# ~ patch.set_facecolor("white")
+		# ~ patch.set_edgecolor(color)
+# ~ else:
+	# ~ for patch, color in zip(box['boxes'], colors):
+		# ~ patch.set_facecolor(color)
 		
 
 if (mode == "NO_BF"):
