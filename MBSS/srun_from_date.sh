@@ -4,8 +4,8 @@
 
 # srun -t 30:00:00 ./C/main inputs/workloads/converted/2022-01-31-\>2022-01-31_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_conservativebf_x500_x1_x0_x0 0 data/Results_FCFS_Score_Backfill_2022-01-31-\>2022-01-31_V10000_anonymous_rackham_450_128_32_256_4_1024_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.csv 2 80 > 01-31_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt &
 
-if [ "$#" -ne 4 ]; then
-    echo "Usage is bash srun_from_date.sh WALLTIME date_debut date_fin mode(srun or local)"
+if [ "$#" -ne 5 ]; then
+    echo "Usage is bash srun_from_date.sh WALLTIME date_debut date_fin mode(srun or local) compilation(normal ou opti t+1h)"
     exit
 fi
 
@@ -14,6 +14,7 @@ DATE1=$2
 DATE2=$3
 WALLTIME=$1
 MODE=$4
+COMPILATION=$5
 WORKLOAD="inputs/workloads/converted/2022-${DATE1}-\\>2022-${DATE2}_V10000_anonymous"
 WORKLOAD_TP=${WORKLOAD:27}
 CLUSTER="inputs/clusters/rackham_450_128_32_256_4_1024.txt"
@@ -22,7 +23,11 @@ CLUSTER_TP=${CLUSTER_TP::-4}
 CONTRAINTES_TAILLES=0
 BUSY_CLUSTER_THRESHOLD=80
 
-make -C C/
+if [ ${MODE} == "nb_heure_max" ]; then
+	make -C C/ nb_heure_max
+else
+	make -C C/
+fi
 
 SCHEDULER="Fcfs"; BACKFILL_MODE=0
 OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv

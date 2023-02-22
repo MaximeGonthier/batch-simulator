@@ -9,7 +9,9 @@ ou
 bash call_generate_workload_from_one_date.sh 2022-02-01 jour
 
 2. Lancer les tests en local ou sur PlaFRIM
-bash srun_from_date.sh 25:00:00 02-01 02-07 srun
+bash srun_from_date.sh 25:00:00 02-01 02-07 srun normal
+ou
+bash srun_from_date.sh 25:00:00 02-01 02-07 srun nb_heure_max
 ou
 bash srun_from_date.sh 25:00:00 02-01 02-07 local
 
@@ -29,16 +31,22 @@ python3 src/plot_boxplot.py 02-01 02-07 BF
 (Pour tuer un job en local: k sur htop. Sur PlaFRIM scancel id)
 ------------------------------------------------------------------------------------------
 
+
 Semaine testé: 
 02-01 au 02-07 (semaine du mercredi au mercredi :/)
 02-20 02-26
 02-27 03-05
-En cours:
-bash srun_from_date.sh 70:00:00 02-13 02-19 srun (50h n'ont pas suffit arrêt à 43598/81309 | All jobs: 50000/98061)
-bash srun_from_date.sh 70:00:00 03-06 03-12 srun
-bash srun_from_date.sh 70:00:00 03-13 03-19 srun
+03-13 03-19
 
-Plafrim: srun -t 02:00:00 ./C/main inputs/workloads/converted/2022-01-01-\>2022-01-01_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs 0 data/Results_FCFS_Score_Backfill_2022-01-01-\>2022-01-01_V10000_anonymous_450_128_32_256_4_1024_Fcfs.csv 0 80 > test.txt &
+En cours:
+bash srun_from_date.sh 70:00:00 03-06 03-12
+bash srun_from_date.sh 70:00:00 02-13 02-19 srun (50h n'ont pas suffit arrêt à 43598/81309 | All jobs: 50000/98061)
+03-20 03-26
+03-27 04-02
+
+
+
+
 
 Avec l'optimisation de t + 1h:
 2022

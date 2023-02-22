@@ -15,18 +15,50 @@ if (mode == "NO_BF"):
 	file_to_open_lea = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x500_x1_x0_x0.txt"
 	file_to_open_leo = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0.txt"
 	file_to_open_lem = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt"
-else:
+elif (mode == "BF"):
 	file_to_open_eft = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x1_x0_x0_x0.txt"
 	file_to_open_lea = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt"
 	file_to_open_leo = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
 	file_to_open_lem = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
+elif (mode == "NO_BF_TRANSFER"):
+	file_to_open_eft = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x1_x0_x0_x0.txt"
+	file_to_open_lea = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt"
+	file_to_open_leo = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
+	file_to_open_lem = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
 
+if (mode == "NO_BF_TRANSFER"):
+	with open(file_to_open_eft, 'r') as fp:
+		for count, line in enumerate(fp):
+			pass
+	print('Total Lines', count + 1)
+	line_eft = count+1
+	fp.close()
+	with open(file_to_open_lea, 'r') as fp:
+		for count, line in enumerate(fp):
+			pass
+	print('Total Lines', count + 1)
+	line_lea = count+1
+	fp.close()
+	with open(file_to_open_leo, 'r') as fp:
+		for count, line in enumerate(fp):
+			pass
+	print('Total Lines', count + 1)
+	line_leo = count+1
+	fp.close()
+	with open(file_to_open_lem, 'r') as fp:
+		for count, line in enumerate(fp):
+			pass
+	print('Total Lines', count + 1)
+	line_lem = count+1
+	fp.close()
+else:
+	with open(file_to_open_eft, 'r') as fp:
+		for count, line in enumerate(fp):
+			pass
+	print('Total Lines', count + 1)
+	fp.close()
 
 df_eft = pd.read_csv(file_to_open_eft)
-# ~ print("Opening file", file_to_open_eft)
-
-# ~ exit(1)
-
 df_lea = pd.read_csv(file_to_open_lea)
 df_leo = pd.read_csv(file_to_open_leo)
 df_lem = pd.read_csv(file_to_open_lem)
@@ -72,8 +104,10 @@ c="#095228"
 
 if (mode == "NO_BF"):
 	plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
-else:
+elif (mode == "BF"):
 	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
+elif (mode == "NO_BF_TRANSFER"):
+	plt.xticks([1, 2, 3, 4], ["EFT-" + str(line_eft), "LEA-" + str(line_lea), "LEO-" + str(line_leo), "LEM-" + str(line_lem)], fontsize=font_size)
 	
 plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
@@ -95,10 +129,13 @@ plt.rcParams['hatch.linewidth'] = 9
 		
 
 if (mode == "NO_BF"):
-	filename = "plot/Boxplot/box_plot_mean_stretch_" + date1 + "-" + date2 + ".pdf"
+	filename = "plot/Boxplot/box_plot_" + str(count + 1) + "_" + date1 + "-" + date2 + ".pdf"
 	plt.ylabel('Stretch\'s improvement from FCFS', fontsize=font_size)
-else:
-	filename = "plot/Boxplot/box_plot_mean_stretch_bf_" + date1 + "-" + date2 + ".pdf"
+elif (mode == "NO_BF"):
+	filename = "plot/Boxplot/box_plot_bf_" + str(count + 1) + "_" + date1 + "-" + date2 + ".pdf"
+	plt.ylabel('Stretch\'s improvement from FCFS-BF', fontsize=font_size)
+elif (mode == "NO_BF_TRANSFER"):
+	filename = "plot/Boxplot/box_plot_transfer_" + date1 + "-" + date2 + ".pdf"
 	plt.ylabel('Stretch\'s improvement from FCFS-BF', fontsize=font_size)
 
 

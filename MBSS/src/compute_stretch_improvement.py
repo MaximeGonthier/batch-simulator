@@ -14,6 +14,8 @@ class Job:
     data_type: int
     size: int
     subtime: int
+    cores: int
+    transfertime: int
 
 x = []
 y = []
@@ -30,7 +32,7 @@ with open(file_fcfs) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_reference.append(j)
 		line = f.readline()
 f.close()
@@ -39,12 +41,14 @@ job_list_algo_reference.sort(key = operator.attrgetter("unique_id"))
 # EFT
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x1_x0_x0_x0.txt"
 file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x1_x0_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x1_x0_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -55,18 +59,23 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
 # LEA
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x500_x1_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x500_x1_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x500_x1_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -77,18 +86,23 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
 # LEO
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -99,18 +113,23 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
 # LEM
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -121,6 +140,10 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
@@ -133,7 +156,7 @@ with open(file_fcfs) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_reference.append(j)
 		line = f.readline()
 f.close()
@@ -141,13 +164,14 @@ job_list_algo_reference.sort(key = operator.attrgetter("unique_id"))
 
 # EFT BF
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x1_x0_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x1_x0_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x1_x0_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -158,18 +182,23 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
 # LEA BF
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -180,18 +209,23 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
 # LEO BF
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -202,18 +236,23 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
 # LEM BF
 file_input = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
-file_output = "data/Stretch_improvement_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
+file_output_if_transfer_reduction = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
 f_output = open(file_output, "w")
+f_output_transfer_reduction = open(file_output_if_transfer_reduction, "w")
 with open(file_input) as f:
 	line = f.readline()
 	while line:
 		r1, r2, r3, r4, r5, r6, r7 = line.split() 
-		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5))
+		j = Job(int(r1), float(r2), int(r3), int(r4), int(r5), int(r6), int(r7))
 		job_list_algo_compare.append(j)
 		line = f.readline()
 f.close()
@@ -224,6 +263,10 @@ for i in range (0, len(job_list_algo_compare)):
 		exit
 	f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 	f_output.write("\n")
+	if (job_list_algo_compare[i].transfertime < job_list_algo_compare[i].cores*64):
+		f_output_transfer_reduction.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
+		f_output_transfer_reduction.write("\n")
+f_output_transfer_reduction.close()
 f_output.close()
 job_list_algo_compare.clear()
 
