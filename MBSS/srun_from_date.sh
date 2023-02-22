@@ -23,7 +23,7 @@ CLUSTER_TP=${CLUSTER_TP::-4}
 CONTRAINTES_TAILLES=0
 BUSY_CLUSTER_THRESHOLD=80
 
-if [ ${MODE} == "nb_heure_max" ]; then
+if [ ${COMPILATION} == "nb_heure_max" ]; then
 	make -C C/ nb_heure_max
 else
 	make -C C/
