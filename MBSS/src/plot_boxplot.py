@@ -113,7 +113,8 @@ plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 
 # Max Y
-# ~ plt.ylim(0, 3.15)
+# ~ plt.ylim(0.95, 1.05)
+# ~ plt.ylim(0, 2)
 plt.ylim(0, 10)
 
 plt.yticks(fontsize=font_size)
