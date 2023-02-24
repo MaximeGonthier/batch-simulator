@@ -60,18 +60,20 @@ else:
 
 df_eft = pd.read_csv(file_to_open_eft)
 df_lea = pd.read_csv(file_to_open_lea)
-df_leo = pd.read_csv(file_to_open_leo)
+# ~ df_leo = pd.read_csv(file_to_open_leo)
 df_lem = pd.read_csv(file_to_open_lem)
 
 font_size = 14
 
 eft = list(df_eft.iloc[:, 0])
 score = list(df_lea.iloc[:, 0])
-opportunistic = list(df_leo.iloc[:, 0])
+# ~ opportunistic = list(df_leo.iloc[:, 0])
 eft_score = list(df_lem.iloc[:, 0])
 
-columns = [eft, score, opportunistic, eft_score]
-colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
+# ~ columns = [eft, score, opportunistic, eft_score]
+columns = [eft, score, eft_score]
+# ~ colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
+colors=["#E50000","#00bfff","#91a3b0"]
 fig, ax = plt.subplots()
 
 
@@ -103,7 +105,8 @@ c="#095228"
 
 
 if (mode == "NO_BF"):
-	plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
+	# ~ plt.xticks([1, 2, 3, 4], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
+	plt.xticks([1, 2, 3], ["EFT", "LEA", "LEM"], fontsize=font_size)
 elif (mode == "BF"):
 	plt.xticks([1, 2, 3, 4], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
 elif (mode == "NO_BF_TRANSFER"):
@@ -114,8 +117,8 @@ plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=4)
 
 # Max Y
 # ~ plt.ylim(0.95, 1.05)
-# ~ plt.ylim(0, 2)
-plt.ylim(0, 10)
+plt.ylim(0, 2)
+# ~ plt.ylim(0, 10)
 
 plt.yticks(fontsize=font_size)
 plt.rcParams['hatch.linewidth'] = 9

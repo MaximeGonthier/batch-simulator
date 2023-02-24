@@ -649,11 +649,11 @@ int main(int argc, char *argv[])
 	//~ busy_cluster_threshold = 100;
 	busy_cluster_threshold = atoi(argv[7]);
 	
-	if (busy_cluster_threshold != 80)
-	{
-		printf("Exit, busy_cluster_threshold is not %d.\n", 80); fflush(stdout);
-		exit(1);
-	}	
+	//~ if (busy_cluster_threshold != 80)
+	//~ {
+		//~ printf("Exit, busy_cluster_threshold is not %d.\n", 80); fflush(stdout);
+		//~ exit(1);
+	//~ }	
 
 	int division_by_planned_area = 0;
 	
