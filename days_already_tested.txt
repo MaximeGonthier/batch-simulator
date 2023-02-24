@@ -37,13 +37,13 @@ Semaine testé:
 02-20 02-26
 02-27 03-05
 03-13 03-19
+02-27 03-05 avec opti
 
 En cours:
 bash srun_from_date.sh 70:00:00 03-06 03-12
 bash srun_from_date.sh 70:00:00 02-13 02-19 srun (50h n'ont pas suffit arrêt à 43598/81309 | All jobs: 50000/98061)
 03-20 03-26
 03-27 04-02
-
 
 
 
