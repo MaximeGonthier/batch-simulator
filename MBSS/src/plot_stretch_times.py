@@ -114,6 +114,10 @@ ax.scatter(x, y, color=color_choosen, s=2, alpha=0.3)
 # ~ line3 = Line2D([], [], color=color_choosen, marker='o', markersize=(sqrt(1000)/2)/4, markerfacecolor=color_choosen, alpha=0.3, linestyle="None")
 # ~ plt.legend((line1, line2, line3), ('20000 sec', '5000 sec', '1000 sec'), loc='upper right', fontsize=font_size)
 
+if axex == "size":
+	plt.xlim(0, 15000)
+	
+ax.set_yscale('log')
 
 # ~ plt.legend(handles=circles, loc='upper right')
 

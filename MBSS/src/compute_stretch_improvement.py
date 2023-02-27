@@ -65,6 +65,7 @@ for i in range (0, 4):
 			print("error 0")
 			exit
 		f_output.write(str(job_list_algo_compare[i].unique_id) + " " + str(job_list_algo_reference[i].time/job_list_algo_compare[i].time) + " " + str(job_list_algo_compare[i].size) + " " + str(job_list_algo_compare[i].subtime) + " " + str(job_list_algo_compare[i].cores) + " " + str(job_list_algo_compare[i].transfertime))
+		# ~ f_output.write(str(job_list_algo_reference[i].time/job_list_algo_compare[i].time))
 		f_output.write("\n")
 	f_output.close()
 	job_list_algo_compare.clear()

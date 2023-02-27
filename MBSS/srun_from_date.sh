@@ -4,6 +4,10 @@
 
 # srun -t 30:00:00 ./C/main inputs/workloads/converted/2022-01-31-\>2022-01-31_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_conservativebf_x500_x1_x0_x0 0 data/Results_FCFS_Score_Backfill_2022-01-31-\>2022-01-31_V10000_anonymous_rackham_450_128_32_256_4_1024_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.csv 2 80 > 01-31_Fcfs_with_a_score_conservativebf_x500_x1_x0_x0.txt &
 
+#~ srun -t 60:00:00 ./C/main inputs/workloads/converted/2022-02-20-\>2022-02-26_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 data/Results_FCFS_Score_Backfill_2022-02-20-\>2022-02-26_V10000_anonymous_450_128_32_256_4_1024_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.csv 0 100 > 02-20_02-26_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt &
+
+#~ srun -t 60:00:00 ./C/main inputs/workloads/converted/2022-02-27-\>2022-03-05_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 data/Results_FCFS_Score_Backfill_2022-02-27-\>2022-03-05_V10000_anonymous_450_128_32_256_4_1024_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.csv 0 100 > 02-27_03-05_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt &
+
 if [ "$#" -ne 5 ]; then
     echo "Usage is bash srun_from_date.sh WALLTIME date_debut date_fin mode(srun or local) compilation(normal ou opti t+1h)"
     exit
@@ -21,7 +25,7 @@ CLUSTER="inputs/clusters/rackham_450_128_32_256_4_1024.txt"
 CLUSTER_TP=${CLUSTER:24}
 CLUSTER_TP=${CLUSTER_TP::-4}
 CONTRAINTES_TAILLES=0
-BUSY_CLUSTER_THRESHOLD=80
+BUSY_CLUSTER_THRESHOLD=100
 
 if [ ${COMPILATION} == "nb_heure_max" ]; then
 	make -C C/ nb_heure_max
