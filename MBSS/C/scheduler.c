@@ -1171,7 +1171,6 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 			
 			if (mixed_strategy == 1)
 			{
-				//~ if (temp_running_nodes < 486)
 				if ((temp_running_nodes*100)/486 < busy_cluster_threshold)
 				{
 					multiplier_file_to_load = 1;
@@ -1184,12 +1183,17 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 					multiplier_file_evicted = temp_multiplier_file_evicted;
 					multiplier_nb_copy = temp_multiplier_nb_copy;
 				}
+				
 				#ifdef PRINT
-				//~ if (finished_jobs % 15 == 0)
-				//~ {
-					printf("At time %d, running nodes is %d. Multiplier are %d %d %d.\n", t, temp_running_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
-				//~ }
+				printf("At time %d, running nodes is %d. Multiplier are %d %d %d.\n", t, temp_running_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 				#endif
+				
+				if (j->cores*64 >= j->walltime)
+				{
+					multiplier_file_to_load = 1;
+					multiplier_file_evicted = 0;
+					multiplier_nb_copy = 0;
+				}
 			}
 			
 			/* 2. Choose a node. */		

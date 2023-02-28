@@ -86,7 +86,7 @@ size_extremity = 12.5 # Octile
 # ~ box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[size_extremity, 100 - size_extremity])
 # ~ box = plt.boxplot(columns, patch_artist=True, whis=[size_extremity, 100 - size_extremity], showfliers=False)
 
-box = plt.violinplot(columns, showmedians=True, showmeans=True)
+box = plt.violinplot(columns, showmedians=True, showmeans=True, quantiles=[0.25,0.75])
 
 
 c="#095228"

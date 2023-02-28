@@ -96,15 +96,9 @@
 %%
 \RRauthor{% les auteurs
  % Premier auteur, avec une note
-Maxime Gonthier
-  % note partag\'ee (optionnelle)
-  \thanks[sfn]{LIP, CNRS, ENS de Lyon, Inria \& Université Claude-Bernard Lyon 1}%
- % \and entre chaque auteur s'il y en a plusieurs
-  \and
-Loris Marchal
- % r\'ef\'erence \`a la note partag\'ee
-\thanksref{sfn}
- % liste longue pour tests de mise en page
+Maxime Gonthier\thanks[sfn]{LIP, CNRS, ENS de Lyon, Inria \& Université Claude-Bernard Lyon 1}
+\and
+Loris Marchal\thanksref{sfn}
 \and Samuel Thibault\thanks{LaBRI, Université de Bordeaux, CNRS, Inria Bordeaux – Sud-Ouest} 
 \and Elisabeth Larsson\thanks[sfn2]{Department of Information Technology, Division of Scientific Computing, Uppsala University} 
 \and Carl Nettelblad\thanksref{sfn2}
@@ -130,20 +124,19 @@ Loris Marchal
   l'utilisation des ressources et la satisfaction des utilisateurs
   (réduire le temps d'attente). Cependant, ces ordonnanceurs ne 
   sont pas conscients des travaux partageant des fichiers d'entrée volumineux.
-  %~ Cela peut survenir dans les situations intense en données d'entrée.
-  Dans cetaines situations, la quantité de tel travaux peut être importante.
+  Dans certaines situations, la quantité de tels travaux peut être importante.
   Le même fichier d'entrée peut être chargé plusieurs fois,
-  menant à une perte de ressources.
+  menant à une perte de ressources.	
   
   Nous étudions la création d'un \textit{ordonnanceur de travaux utilisant la localité
   des données} capable de garder de larges fichiers d'entrées sur les
   nœuds de calculs tout en préservant les autres besoins en mémoire,
-  et également capable de ré-utiliser des fichiers déjà chargés afin de \textit{limiter
+  et également capable de réutiliser des fichiers déjà chargés afin de \textit{limiter
   les transferts de données et ainsi réduire le temps d'attente
   des travaux}.
    
-  Nous présentons trois ordonnanceurs capable de distribuer la 
-  charge entre les nœuds de calculs ainsi que de ré-utiliser 
+  Nous présentons trois ordonnanceurs capables de distribuer la 
+  charge entre les nœuds de calculs ainsi que de réutiliser 
   le plus possible
   les fichiers d'entrées déjà chargés en mémoire de certains nœuds.
   
@@ -151,7 +144,7 @@ Loris Marchal
   d'une vraie plateforme de calcul afin de comparer nos algorithmes à 
   des ordonnanceurs classiques. Les résultats montrent que garder 
   des données en mémoire entre des travaux successifs et utiliser 
-  la localité des données pour ordonner les travaux permet une réduction
+  la localité des données pour ordonner les travaux permettent une réduction
   du temps d'attente des travaux et une diminution drastique de
   la quantité de transferts de données. 
 }
@@ -209,13 +202,15 @@ High Performance Data Analytics}
 %% \RCNancy % Nancy - Grand Est
 %% \RCRennes % Rennes - Bretagne Atlantique
 %~ \RCSophia % Sophia Antipolis M\'editerran\'ee
-
 %%
 \begin{document}
 %%
 \makeRR   % cas d'un rapport de recherche
 %% \makeRT % cas d'un rapport technique.
 %% a partir d'ici, chacun fait comme il le souhaite
+
+\tableofcontents
+\newpage
 
 \section{Introduction}\label{sec.introduction}
 

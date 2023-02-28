@@ -115,7 +115,10 @@ ax.scatter(x, y, color=color_choosen, s=2, alpha=0.3)
 # ~ plt.legend((line1, line2, line3), ('20000 sec', '5000 sec', '1000 sec'), loc='upper right', fontsize=font_size)
 
 if axex == "size":
-	plt.xlim(0, 15000)
+	plt.xlim(0, 2000)
+	# ~ plt.xlim(0, 8000)
+# ~ elif axex == "subtime":
+	# ~ plt.xlim(900000, 1000000)
 	
 ax.set_yscale('log')
 
