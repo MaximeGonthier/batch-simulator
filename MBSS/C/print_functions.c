@@ -302,7 +302,7 @@ void print_csv(struct To_Print* head_to_print)
 	strcat(file_to_open, day);
 	strcat(file_to_open, "_");
 	strcat(file_to_open, scheduler);
-	strcat(file_to_open, ".txt");
+	strcat(file_to_open, ".csv");
 	FILE* f_stretch = fopen(file_to_open, "w");
 	if (!f_stretch)
 	{
@@ -667,7 +667,7 @@ void print_csv(struct To_Print* head_to_print)
 		#endif
 		
 		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, input_file, core_time_used */
-		fprintf(f_stretch, "%d %f %d %d %d %d %d %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores);
+		fprintf(f_stretch, "%d,%f,%d,%d,%d,%d,%d,%d,%d,%d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores);
 
 		
 		head_to_print = head_to_print->next;
