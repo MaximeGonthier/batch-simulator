@@ -181,11 +181,17 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     char start_time_from_history[100];
     char start_node_from_history[100];
     
+    int user_id = 0;
+    char* current_user = malloc(sizeof(char)*9);
+    char* last_user = malloc(sizeof(char)*9);
+    //~ current_user = "";
+    //~ last_user = "";
+    
     //~ /** For mixed decreasing strategy **/
     //~ struct Data* d = data_list->head;
     //~ /** For mixed decreasing strategy **/
     
-    while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, s, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
+    while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
 	{
 		total_number_jobs += 1;
 		
@@ -202,6 +208,18 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->workload = atoi(workload);
 		new->start_time_from_history = atoi(start_time_from_history);
 		new->node_from_history = atoi(start_node_from_history);
+		
+		//~ printf("%s\n", current_user); fflush(stdout);
+		if (strcmp(current_user, last_user) == 0)
+		{
+			new->user = user_id;
+		}
+		else
+		{
+			strcpy(last_user, current_user);
+			user_id++;
+			new->user = user_id;
+		}
 		
 		//~ /** For mixed decreasing strategy **/
 		//~ /* Need to create the data if it does not exist. 
@@ -334,6 +352,9 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		//~ printf("Added job %d.\n", new->unique_id); fflush(stdout);
 	}
 	fclose(f);
+	
+	free(current_user);
+	free(last_user);
 }
 
 int get_nb_job_to_evaluate(struct Job* l)

@@ -659,6 +659,8 @@ void copy_delete_insert_job_list(struct Job_List* to_delete_from, struct Job_Lis
 	new->node_used = (struct Node*) malloc(sizeof(struct Node));
 	new->node_used = j->node_used;
 	
+	new->user = j->user;
+	
 	/* OLD */
 	//~ new->cores_used = malloc(new->cores*sizeof(int));
 	//~ new->cores_used = j->cores_used;
@@ -713,7 +715,7 @@ void copy_delete_insert_job_list_sorted_by_file_size(struct Job_List* to_delete_
 	
 	new->cores_used = malloc(new->cores*sizeof(int));
 	new->cores_used = j->cores_used;
-
+new->user = j->user;
 	/* Delete */
 	delete_job_linked_list(to_delete_from, j->unique_id);
 	

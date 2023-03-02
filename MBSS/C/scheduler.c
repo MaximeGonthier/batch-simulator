@@ -1188,12 +1188,12 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 				printf("At time %d, running nodes is %d. Multiplier are %d %d %d.\n", t, temp_running_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy);
 				#endif
 				
-				if (j->cores*64 >= j->walltime)
-				{
-					multiplier_file_to_load = 1;
-					multiplier_file_evicted = 0;
-					multiplier_nb_copy = 0;
-				}
+				//~ if (j->cores*64 >= j->walltime)
+				//~ {
+					//~ multiplier_file_to_load = 1;
+					//~ multiplier_file_evicted = 0;
+					//~ multiplier_nb_copy = 0;
+				//~ }
 			}
 			
 			/* 2. Choose a node. */		

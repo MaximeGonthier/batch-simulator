@@ -150,6 +150,7 @@ struct Job {
     int last_choosen_method;
     #endif
     
+    int user;
 };
 
 struct Node {
@@ -243,6 +244,8 @@ struct To_Print {
     int data_type;
     float job_data_size;
     int upgraded; /* Was it on bigger nodes ? 0 or 1 */
+    int user;
+    int input_file;
 };
 
 struct Interval_List {

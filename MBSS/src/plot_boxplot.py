@@ -26,6 +26,7 @@ elif (mode == "NO_BF_TRANSFER"):
 	file_to_open_leo = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0.txt"
 	file_to_open_lem = "data/Stretch_improvement_if_transfer_reduction_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.txt"
 
+count=0
 if (mode == "NO_BF_TRANSFER"):
 	with open(file_to_open_eft, 'r') as fp:
 		for count, line in enumerate(fp):
@@ -86,7 +87,7 @@ size_extremity = 12.5 # Octile
 # ~ box = plt.boxplot(columns, patch_artist=True, meanline=True, showmeans=True, whis=[size_extremity, 100 - size_extremity])
 # ~ box = plt.boxplot(columns, patch_artist=True, whis=[size_extremity, 100 - size_extremity], showfliers=False)
 
-box = plt.violinplot(columns, showmedians=True, showmeans=True, quantiles=[0.25,0.75])
+box = plt.violinplot(columns, showmedians=True, showmeans=True)
 
 
 c="#095228"

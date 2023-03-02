@@ -188,6 +188,10 @@ void to_print_job_csv(struct Job* job, int time)
 		new->empty_cluster_time = job->delay + (job->data_size)/0.1;
 		new->data_type = job->index_node_list;
 		new->job_data_size = job->data_size;
+		
+		new->user = job->user;
+		new->input_file = job->data;
+		
 		if (job->node_used->index_node_list > job->index_node_list)
 		{
 			new->upgraded = 1;
@@ -662,8 +666,8 @@ void print_csv(struct To_Print* head_to_print)
 		fprintf(f_bounded_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		#endif
 		
-		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime */
-		fprintf(f_stretch, "%d %f %d %d %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time);
+		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, input_file, core_time_used */
+		fprintf(f_stretch, "%d %f %d %d %d %d %d %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores);
 
 		
 		head_to_print = head_to_print->next;
