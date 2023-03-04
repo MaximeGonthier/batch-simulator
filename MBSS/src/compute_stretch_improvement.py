@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from math import *
 
 @dataclass
-class Job:
+class Job: # Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, input_file, core_time_used
     unique_id: int
     time: float # stretch
     data_type: int # 0
@@ -16,6 +16,9 @@ class Job:
     subtime: int 
     cores: int # 1-20
     transfertime: int # 64 par core
+    user: int
+    input_file: int
+    core_time_used: int
 
 x = []
 y = []
@@ -38,7 +41,7 @@ with open(file_fcfs) as f:
 f.close()
 job_list_algo_reference.sort(key = operator.attrgetter("unique_id"))
 
-
+# Sans BF
 for i in range (0, 4):
 	if i == 0:
 		algo = "Fcfs_with_a_score_x1_x0_x0_x0"
