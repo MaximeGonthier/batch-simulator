@@ -1,7 +1,20 @@
+------------------------------------------------------------------------------------------
+Listes de commandes à lancer pour faire mes stats:
 
+1. Avoir déjà des fichiers Stretch_times de produits
+
+2. Calculer le pourcentage d'amélioration des stretch 1 à 1:
+python3 src/compute_stretch_improvement.py 02-20 02-26
+
+3. Plotter l'amélioration selon différents axe X:
+python3 src/plot_stretch_times.py 02-20 02-26 Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 subtime
+python3 src/plot_stretch_times.py 02-20 02-26 Fcfs_with_a_score_x500_mixed_strategy_x1_x0_x0 cores
+python3 src/plot_stretch_times.py 02-20 02-26 Fcfs_with_a_score_x500_mixed_strategy_x1_x0_x0 size
+python3 src/plot_stretch_times.py 02-20 02-26 Fcfs_with_a_score_x500_mixed_strategy_x1_x0_x0 transfertime
+------------------------------------------------------------------------------------------
 
 ------------------------------------------------------------------------------------------
-Listes de commandes à lancer pour faire mes test:
+Listes de commandes à lancer pour faire mes test (depuis MBSS/):
 
 1. Générer les inputs convertis
 bash call_generate_workload_from_one_date.sh 2022-02-01 semaine
@@ -23,16 +36,31 @@ Utile uniquement pour faire les barplots)
 
 4. Calculer le pourcentage d'amélioration des stretch 1 à 1:
 python3 src/compute_stretch_improvement.py 02-01 02-07
+ou directement
+python3 src/plot_boxplot.py 02-01 02-07 bybatch NO_BF 
 
 5. Plot les barplots correspondant:
-python3 src/plot_boxplot.py 02-01 02-07 NO_BF 
-python3 src/plot_boxplot.py 02-01 02-07 BF 
+python3 src/plot_boxplot.py 02-01 02-07 byjob NO_BF 
+python3 src/plot_boxplot.py 02-01 02-07 byjob BF 
 
 (Pour tuer un job en local: k sur htop. Sur PlaFRIM scancel id)
 ------------------------------------------------------------------------------------------
 
+Relancé avec stat compléte:
+Deja plot:
+02-01 02-07
+Pas encore plot:
+02-20 02-26
+02-27 03-05
+03-13 03-19
+04-03->2022-04-09
 
-Semaine testé: 
+Avec LEM100
+02-20 02-26
+02-27 03-05
+02-01 au 02-07
+
+Semaine testé:
 02-01 au 02-07 (semaine du mercredi au mercredi :/)
 02-20 02-26
 02-27 03-05
@@ -40,10 +68,12 @@ Semaine testé:
 02-27 03-05 avec opti
 
 En cours:
-bash srun_from_date.sh 70:00:00 03-06 03-12
-bash srun_from_date.sh 70:00:00 02-13 02-19 srun (50h n'ont pas suffit arrêt à 43598/81309 | All jobs: 50000/98061)
-03-20 03-26
-03-27 04-02
+LEM pour threshold 100 sur 02 27 03 05 et 02 20 02 26
+
+bash srun_from_date.sh 70:00:00 03-06 03-12 manque LEO et LEO BF
+bash srun_from_date.sh 70:00:00 02-13 02-19 srun pas fini en 70h
+03-20 03-26 pas fini en 70h
+03-27 04-02 pas fini en 70h
 
 
 
