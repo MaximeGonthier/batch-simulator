@@ -37,7 +37,8 @@ Utile uniquement pour faire les barplots)
 4. Calculer le pourcentage d'amélioration des stretch 1 à 1:
 python3 src/compute_stretch_improvement.py 02-01 02-07
 ou directement
-python3 src/plot_boxplot.py 02-01 02-07 bybatch NO_BF 
+python3 src/plot_boxplot.py 02-01 02-07 bybatch NO_BF core_time 0
+python3 src/plot_boxplot.py 02-01 02-07 bybatch NO_BF stretch 0
 
 5. Plot les barplots correspondant:
 python3 src/plot_boxplot.py 02-01 02-07 byjob NO_BF 
@@ -46,13 +47,13 @@ python3 src/plot_boxplot.py 02-01 02-07 byjob BF
 (Pour tuer un job en local: k sur htop. Sur PlaFRIM scancel id)
 ------------------------------------------------------------------------------------------
 
-Relancé avec stat compléte:
+Relancé avec stat complète:
 Deja plot:
 02-01 02-07
+03-13 03-19
 Pas encore plot:
 02-20 02-26
 02-27 03-05
-03-13 03-19
 04-03->2022-04-09
 
 Avec LEM100

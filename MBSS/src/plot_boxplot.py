@@ -1,4 +1,4 @@
-# python3 src/plot_boxplot.py date1 date2 mode1(byuser or byjob or bybatch) mode2(NO_BF or BF or NO_BF_TRANSFER) detail(core_time,stretch)
+# python3 src/plot_boxplot.py date1 date2 mode1(byuser or byjob or bybatch) mode2(NO_BF or BF or NO_BF_TRANSFER) detail(core_time,stretch) count_improvement_equal_at_1(0 or 1)
 
 # Import libraries
 import matplotlib.pyplot as plt
@@ -30,11 +30,13 @@ class Job: # Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, inp
 date1 = sys.argv[1]
 date2 = sys.argv[2]
 mode1 = sys.argv[3]
-mode2 = sys.argv[4]
-detail = sys.argv[5]
 font_size = 14
 
 if mode1 == "bybatch" or mode1 == "byuser":
+	mode2 = sys.argv[4]
+	detail = sys.argv[5]
+	count_improvement_equal_at_1 = int(sys.argv[6])
+
 	if (mode2 == "NO_BF"):
 		file_to_open_fcfs = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs.csv"
 		file_to_open_eft = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs_with_a_score_x1_x0_x0_x0.csv"
@@ -102,31 +104,58 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		list_of_core_time_used = []
 		list_of_core_time_used_reference = []
 		
-		for i in range (0, len(job_list_algo_compare)):
-			if last_data != job_list_algo_compare[i].input_file:
-				last_data = job_list_algo_compare[i].input_file
-				if i != 0:
-					list_of_core_time_used.append(sum_of_core_time_used)
-					list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
-				if detail == "core_time":
-					sum_of_core_time_used = job_list_algo_compare[i].core_time_used
-					sum_of_core_time_used_reference = job_list_algo_reference[i].core_time_used
-				elif detail == "stretch":
-					sum_of_core_time_used = job_list_algo_compare[i].time
-					sum_of_core_time_used_reference = job_list_algo_reference[i].time
-				if i == len(job_list_algo_compare) - 1:
-					list_of_core_time_used.append(sum_of_core_time_used)
-					list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
-			else:
-				if detail == "core_time":
-					sum_of_core_time_used += job_list_algo_compare[i].core_time_used
-					sum_of_core_time_used_reference += job_list_algo_reference[i].core_time_used
-				elif detail == "stretch":
-					sum_of_core_time_used += job_list_algo_compare[i].time
-					sum_of_core_time_used_reference += job_list_algo_reference[i].time
-				if i == len(job_list_algo_compare) - 1:
-					list_of_core_time_used.append(sum_of_core_time_used)
-					list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
+		if mode1 == "bybatch":
+			for i in range (0, len(job_list_algo_compare)):
+				if last_data != job_list_algo_compare[i].input_file:
+					last_data = job_list_algo_compare[i].input_file
+					if i != 0:
+						list_of_core_time_used.append(sum_of_core_time_used)
+						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
+					if detail == "core_time":
+						sum_of_core_time_used = job_list_algo_compare[i].core_time_used
+						sum_of_core_time_used_reference = job_list_algo_reference[i].core_time_used
+					elif detail == "stretch":
+						sum_of_core_time_used = job_list_algo_compare[i].time
+						sum_of_core_time_used_reference = job_list_algo_reference[i].time
+					if i == len(job_list_algo_compare) - 1:
+						list_of_core_time_used.append(sum_of_core_time_used)
+						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
+				else:
+					if detail == "core_time":
+						sum_of_core_time_used += job_list_algo_compare[i].core_time_used
+						sum_of_core_time_used_reference += job_list_algo_reference[i].core_time_used
+					elif detail == "stretch":
+						sum_of_core_time_used += job_list_algo_compare[i].time
+						sum_of_core_time_used_reference += job_list_algo_reference[i].time
+					if i == len(job_list_algo_compare) - 1:
+						list_of_core_time_used.append(sum_of_core_time_used)
+						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
+		elif mode1 == "byuser":
+			for i in range (0, len(job_list_algo_compare)):
+				if last_data != job_list_algo_compare[i].user:
+					last_data = job_list_algo_compare[i].user
+					if i != 0:
+						list_of_core_time_used.append(sum_of_core_time_used)
+						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
+					if detail == "core_time":
+						sum_of_core_time_used = job_list_algo_compare[i].core_time_used
+						sum_of_core_time_used_reference = job_list_algo_reference[i].core_time_used
+					elif detail == "stretch":
+						sum_of_core_time_used = job_list_algo_compare[i].time
+						sum_of_core_time_used_reference = job_list_algo_reference[i].time
+					if i == len(job_list_algo_compare) - 1:
+						list_of_core_time_used.append(sum_of_core_time_used)
+						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
+				else:
+					if detail == "core_time":
+						sum_of_core_time_used += job_list_algo_compare[i].core_time_used
+						sum_of_core_time_used_reference += job_list_algo_reference[i].core_time_used
+					elif detail == "stretch":
+						sum_of_core_time_used += job_list_algo_compare[i].time
+						sum_of_core_time_used_reference += job_list_algo_reference[i].time
+					if i == len(job_list_algo_compare) - 1:
+						list_of_core_time_used.append(sum_of_core_time_used)
+						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
 		
 		count_total = 0
 		count_different_from_1 = 0
@@ -135,7 +164,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 			# if == 0 ?
 			improvement = list_of_core_time_used_reference[i]/list_of_core_time_used[i]
 			
-			if improvement != 1:
+			if count_improvement_equal_at_1 == 1 or improvement != 1:
 				core_time_used_improvement.append(improvement)
 				count_different_from_1+=1
 			count_total+=1
@@ -165,7 +194,6 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		list_of_core_time_used.clear()
 		list_of_core_time_used_reference.clear()
 		core_time_used_improvement.clear()
-	# ~ exit(1)
 	
 	columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
 	# ~ core_time_used_improvement_eft.clear()
@@ -182,10 +210,16 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	# ~ fig.show()
 	# ~ box = plt.violinplot(columns, showmedians=True, showmeans=True)
 
-	if (mode2 == "NO_BF"):
-		plt.xticks([0, 1, 2, 3], ["EFT_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
-	elif (mode2 == "BF"):
-		plt.xticks([0, 1, 2, 3], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
+	if (count_improvement_equal_at_1 == 0):
+		if (mode2 == "NO_BF"):
+			plt.xticks([0, 1, 2, 3], ["EFT_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
+		elif (mode2 == "BF"):
+			plt.xticks([0, 1, 2, 3], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
+	else:
+		if (mode2 == "NO_BF"):
+			plt.xticks([0, 1, 2, 3], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
+		elif (mode2 == "BF"):
+			plt.xticks([0, 1, 2, 3], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
 	plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
 
 	# Max Y
@@ -197,10 +231,10 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	# ~ plt.rcParams['hatch.linewidth'] = 9	
 	
 	if (mode2 == "NO_BF"):
-		filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
 		plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
 	elif (mode2 == "NO_BF"):
-		filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + ".pdf"
+		filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
 		plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
 	plt.savefig(filename, bbox_inches='tight')
 		
