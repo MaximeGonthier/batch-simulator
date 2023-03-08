@@ -1,4 +1,4 @@
-# python3 src/plot_boxplot.py date1 date2 mode1(byuser or byjob or bybatch) mode2(NO_BF or BF or NO_BF_TRANSFER) detail(core_time,stretch) count_improvement_equal_at_1(0 or 1)
+# python3 src/plot_boxplot.py date1 date2 mode1(byuser or byjob or bybatch) mode2(NO_BF or BF or NO_BF_TRANSFER) detail(core_time,stretch) count_improvement_equal_at_1(0 or 1) boxplot_or_hist(boxplot or hist)
 
 # Import libraries
 import matplotlib.pyplot as plt
@@ -36,6 +36,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	mode2 = sys.argv[4]
 	detail = sys.argv[5]
 	count_improvement_equal_at_1 = int(sys.argv[6])
+	boxplot_or_hist = sys.argv[7]
 
 	if (mode2 == "NO_BF"):
 		file_to_open_fcfs = "data/Stretch_times_2022-" + date1 + "->2022-" + date2 + "_Fcfs.csv"
@@ -157,85 +158,110 @@ if mode1 == "bybatch" or mode1 == "byuser":
 						list_of_core_time_used.append(sum_of_core_time_used)
 						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
 		
-		count_total = 0
-		count_different_from_1 = 0
-		core_time_used_improvement = []
-		for i in range (0, len(list_of_core_time_used_reference)):
-			# if == 0 ?
-			improvement = list_of_core_time_used_reference[i]/list_of_core_time_used[i]
+		if boxplot_or_hist == "boxplot":
+			count_total = 0
+			count_different_from_1 = 0
+			core_time_used_improvement = []
+			for i in range (0, len(list_of_core_time_used_reference)):
+				improvement = list_of_core_time_used_reference[i]/list_of_core_time_used[i]
+				
+				# Pour ne pas plot les job dont la différence est de strictement moins de 1%
+				if count_improvement_equal_at_1 == 1 or improvement <= 0.99 or improvement >= 1.01:
+					core_time_used_improvement.append(improvement)
+					count_different_from_1 += 1
+				count_total+=1
 			
-			if count_improvement_equal_at_1 == 1 or improvement != 1:
-				core_time_used_improvement.append(improvement)
-				count_different_from_1+=1
-			count_total+=1
-		
-		if k == 0:
-			core_time_used_improvement_eft = []
-			for i in range (0, len(core_time_used_improvement)):
-				core_time_used_improvement_eft.append(core_time_used_improvement[i])
-			pourcentage_plot_eft = (count_different_from_1*100)/count_total
-		elif k == 1:
-			core_time_used_improvement_lea = []
-			for i in range (0, len(core_time_used_improvement)):
-				core_time_used_improvement_lea.append(core_time_used_improvement[i])
-			pourcentage_plot_lea = (count_different_from_1*100)/count_total
-		elif k == 2:
-			core_time_used_improvement_leo = []
-			for i in range (0, len(core_time_used_improvement)):
-				core_time_used_improvement_leo.append(core_time_used_improvement[i])
-			pourcentage_plot_leo = (count_different_from_1*100)/count_total
-		elif k == 3:
-			core_time_used_improvement_lem = []
-			for i in range (0, len(core_time_used_improvement)):
-				core_time_used_improvement_lem.append(core_time_used_improvement[i])
-			pourcentage_plot_lem = (count_different_from_1*100)/count_total
-			
+			if k == 0:
+				core_time_used_improvement_eft = []
+				for i in range (0, len(core_time_used_improvement)):
+					core_time_used_improvement_eft.append(core_time_used_improvement[i])
+				pourcentage_plot_eft = (count_different_from_1*100)/count_total
+			elif k == 1:
+				core_time_used_improvement_lea = []
+				for i in range (0, len(core_time_used_improvement)):
+					core_time_used_improvement_lea.append(core_time_used_improvement[i])
+				pourcentage_plot_lea = (count_different_from_1*100)/count_total
+			elif k == 2:
+				core_time_used_improvement_leo = []
+				for i in range (0, len(core_time_used_improvement)):
+					core_time_used_improvement_leo.append(core_time_used_improvement[i])
+				pourcentage_plot_leo = (count_different_from_1*100)/count_total
+			elif k == 3:
+				core_time_used_improvement_lem = []
+				for i in range (0, len(core_time_used_improvement)):
+					core_time_used_improvement_lem.append(core_time_used_improvement[i])
+				pourcentage_plot_lem = (count_different_from_1*100)/count_total
+		else: # Cas hist
+			total_core_time_used = 0
+			for i in range (0, len(list_of_core_time_used_reference)):
+				total_core_time_used += list_of_core_time_used[i]
+			if k == 0:
+				total_core_time_used_eft = total_core_time_used
+				total_core_time_used_fcfs = 0
+				for i in range (0, len(list_of_core_time_used_reference)):
+					total_core_time_used_fcfs += list_of_core_time_used_reference[i]
+			elif k ==1:
+				total_core_time_used_lea = total_core_time_used	
+			elif k ==2:
+				total_core_time_used_leo = total_core_time_used	
+			elif k ==3:
+				total_core_time_used_lem = total_core_time_used	
+				
 		job_list_algo_compare.clear()
 		list_of_core_time_used.clear()
 		list_of_core_time_used_reference.clear()
-		core_time_used_improvement.clear()
+		if boxplot_or_hist == "boxplot":
+			core_time_used_improvement.clear()
 	
-	columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
-	# ~ core_time_used_improvement_eft.clear()
-	# ~ core_time_used_improvement_eft.append("EFT")
-	# ~ core_time_used_improvement_eft.append(1)
-	# ~ core_time_used_improvement_eft.append(2)
-	# ~ print(core_time_used_improvement_eft)
-	# ~ columns = [core_time_used_improvement_eft]
-	# ~ print(colusmns)
-	colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
+	if boxplot_or_hist == "boxplot":
+		columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
+		colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
+	else:
+		columns = [total_core_time_used_fcfs/(60*60), total_core_time_used_eft/(60*60), total_core_time_used_lea/(60*60), total_core_time_used_leo/(60*60), total_core_time_used_lem/(60*60)]
+		colors=["#4c0000", "#E50000","#00bfff","#ff9b15","#91a3b0"]
+		print(columns)	
+		
 	fig, ax = plt.subplots()
-	fig = sns.boxplot(data=columns, whis=[12.5, 100 - 12.5])
-	
-	# ~ fig.show()
-	# ~ box = plt.violinplot(columns, showmedians=True, showmeans=True)
-
-	if (count_improvement_equal_at_1 == 0):
-		if (mode2 == "NO_BF"):
-			plt.xticks([0, 1, 2, 3], ["EFT_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
-		elif (mode2 == "BF"):
-			plt.xticks([0, 1, 2, 3], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
+	if boxplot_or_hist == "boxplot":
+		fig = sns.boxplot(data=columns, whis=[12.5, 100 - 12.5], palette=colors)
 	else:
 		if (mode2 == "NO_BF"):
-			plt.xticks([0, 1, 2, 3], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
-		elif (mode2 == "BF"):
-			plt.xticks([0, 1, 2, 3], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
-	plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
-
-	# Max Y
-	# ~ plt.ylim(0.95, 1.05)
-	plt.ylim(0.5, 2)
-	# ~ plt.ylim(0, 2)
-	# ~ plt.ylim(0, 10)
-	# ~ plt.yticks(fontsize=font_size)
-	# ~ plt.rcParams['hatch.linewidth'] = 9	
+			fig = plt.bar(["FCFS", "EFT", "LEA", "LEO", "LEM"], columns, color=colors)
+		else:
+			fig = plt.bar(["FCFS-BF", "EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], columns, color=colors)
 	
-	if (mode2 == "NO_BF"):
-		filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
-		plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
-	elif (mode2 == "NO_BF"):
-		filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
-		plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
+	# box = plt.violinplot(columns, showmedians=True, showmeans=True)
+
+	if boxplot_or_hist == "boxplot":
+		if (count_improvement_equal_at_1 == 0):
+			if (mode2 == "NO_BF"):
+				plt.xticks([0, 1, 2, 3], ["EFT_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
+			elif (mode2 == "BF"):
+				plt.xticks([0, 1, 2, 3], ["EFT-BF_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA-BF_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO-BF_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM-BF_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
+		else:
+			if (mode2 == "NO_BF"):
+				plt.xticks([0, 1, 2, 3], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
+			elif (mode2 == "BF"):
+				plt.xticks([0, 1, 2, 3], ["EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], fontsize=font_size)
+		plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
+
+		# Max Y
+		plt.ylim(0.5, 2)
+	
+		if (mode2 == "NO_BF"):
+			filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
+			plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
+		elif (mode2 == "BF"):
+			filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
+			plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
+	else:
+		plt.ylim(700000,740000)
+		if (mode2 == "NO_BF"):
+			filename = "plot/Boxplot/" + mode1 + "/hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		else:
+			filename = "plot/Boxplot/" + mode1 + "/hist_bf_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		plt.ylabel('Total core time (hours)', fontsize=font_size)
+			
 	plt.savefig(filename, bbox_inches='tight')
 		
 
