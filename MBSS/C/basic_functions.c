@@ -75,6 +75,8 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 		{
 			earliest_available_time = n->cores[j->cores - 1]->available_time;
 			
+			//~ if (j->unique_id == 9396) { printf("EAT on node %d is %d\n", n->unique_id, earliest_available_time); fflush(stdout); }
+			
 			#ifdef NB_HOUR_MAX
 			/* Test complexité réduite */
 			if (earliest_available_time > t + 3600*nb_h_scheduled)
@@ -134,6 +136,17 @@ int schedule_job_on_earliest_available_cores(struct Job* j, struct Node_List** h
 	{
 		j->start_time = -1;
 	}
+	
+	//~ if (on_a_resume == 1) { print_decision_in_scheduler(j); }
+	//~ if (j->unique_id == 5701) {
+		//~ print_decision_in_scheduler(j); 
+		//~ struct Node* n1 = head_node[0]->head;
+		//~ print_cores_in_specific_node(n1);
+		//~ n1 = n1->next;
+		//~ print_cores_in_specific_node(n1);
+		//~ printf("EXIT\n"); fflush(stdout);
+		//~ exit(1);
+	//~ }
 	
 	return nb_non_available_cores;
 }
@@ -2283,7 +2296,7 @@ void end_jobs(struct Job* job_list_head, int t)
 					running_nodes_workload_1 -= 1;
 				}
 				j->node_used->nb_jobs_workload_1 -= 1;
-							running_cores_from_workload_1 -= j->cores;
+				running_cores_from_workload_1 -= j->cores;
 			}
 			
 			#endif

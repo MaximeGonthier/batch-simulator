@@ -61,7 +61,6 @@ if [ model == "jour" ]; then
 	call="Generate_workload_from_rackham.sh inputs/workloads/raw/${year0}-${month0}-${day0} start inputs/workloads/raw/${main_day} end inputs/workloads/raw/${year}-"
 else
 	call="Generate_workload_from_rackham.sh inputs/workloads/raw/${year0}-${month0}-${day0} start inputs/workloads/raw/${main_day} inputs/workloads/raw/${year}-"
-	#~ call="Generate_workload_from_rackham.sh start inputs/workloads/raw/${main_day} inputs/workloads/raw/${year}-"
 fi
 
 if [ ${month} = "04" ] || [ ${month} = "06" ] || [ ${month} = "09" ] || [ ${month} = "11" ]; then

@@ -84,6 +84,10 @@ int busy_cluster_threshold;
 int nb_h_scheduled;
 #endif
 
+
+int on_a_resume = 0;
+
+
 int main(int argc, char *argv[])
 {
 	#ifdef NB_HOUR_MAX
@@ -92,17 +96,16 @@ int main(int argc, char *argv[])
 	#endif
 	
 	nb_data_reuse = 0;
-	
 	if (argc != 8 && argc != 9 && argc != 10)
 	{
 		printf("Error: args must be 8, 9 or 10!\n");
 		exit(EXIT_FAILURE);
 	}
 	
+	bool need_to_resume_state = false;
 	#ifdef SAVE
 	/* By default I don't save/resume */
 	bool need_to_save_state = false;
-	bool need_to_resume_state = false;
 	int time_to_save = 0;
 			
 	/* If you add save or resume as the last argument */
@@ -110,25 +113,25 @@ int main(int argc, char *argv[])
 	{
 		// T = 1406544 pour le save state de fcfs with a score mai 21-22
 		// T = 2237306 pour le save state de fcfs with a score mars 15 16 data persistence
-		if (strcmp(argv[8], "save") == 0)
+		if (strcmp(argv[8], "save") == 0) 
 		{
 			need_to_save_state = true;
 			time_to_save = atoi(argv[9]);
-			printf("Time to save is %d.\n", time_to_save);
+			printf("Save after %d jobs.\n", time_to_save); fflush(stdout);
 		}
 		else if (strcmp(argv[8], "save_and_resume") == 0)
 		{
 			need_to_resume_state = true;
 			need_to_save_state = true;
 			time_to_save = atoi(argv[9]);
-			printf("Time to save_and_resume is %d.\n", time_to_save);
+			printf("Time to save_and_resume is %d.\n", time_to_save); fflush(stdout);
 		}
 		else if (strcmp(argv[8], "resume") == 0)
 		{
 			need_to_resume_state = true;
 			if (argc > 9)
 			{
-				printf("Error: no arg must be after resume.\n");
+				printf("Error: no arg must be after resume.\n"); fflush(stdout);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -247,23 +250,26 @@ int main(int argc, char *argv[])
 	}
 	
 	/* Read cluster */
-	#ifndef SAVE
-	read_cluster(input_node_file);
-	#endif
+	//~ #ifndef SAVE
+	if (need_to_resume_state == false)
+	{
+		read_cluster(input_node_file);
+	}
+	//~ #endif
 
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
 	
 	/* Read workload */
-	#ifndef SAVE
-	//~ if (need_to_resume_state == false)
-	//~ {
+	//~ #ifndef SAVE
+	if (need_to_resume_state == false)
+	{
 		read_workload(input_job_file, constraint_on_sizes);	
 		nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 		first_subtime_day_0 = get_first_time_day_0(job_list->head);
-	//~ }
-	#endif
+	}
+	//~ #endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
@@ -273,14 +279,15 @@ int main(int argc, char *argv[])
 	int t = first_subtime_day_0;
 
 	/* First start jobs from rackham's history. First need to sort it by start time */
-	#ifndef SAVE
-	//~ {
+	//~ #ifndef SAVE
+	if (need_to_resume_state == false) 
+	{
 		if (job_list_to_start_from_history->head != NULL)
 		{
 			get_state_before_day_0_scheduler(job_list_to_start_from_history->head, node_list, t);
 		}
-	//~ }
-	#endif
+	}
+	//~ #endif
 
 	#ifdef PRINT
 	printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
@@ -288,8 +295,8 @@ int main(int argc, char *argv[])
 	#endif
 
 	/* getting the number of jobs we need to schedule */
-	#ifndef SAVE
-	//~ {
+	//~ #ifndef SAVE
+	if (need_to_resume_state == false) {
 		job_pointer = scheduled_job_list->head;
 		nb_job_to_schedule = 0;
 		nb_cores_to_schedule = 0;
@@ -308,8 +315,8 @@ int main(int argc, char *argv[])
 			start_jobs(t, scheduled_job_list->head);
 		}
 		//~ printf("Start jobs before day 0 done.\n");
-	//~ }
-	#endif
+	}
+	//~ #endif
 	
 	#ifdef PRINT
 	printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
@@ -854,12 +861,28 @@ int main(int argc, char *argv[])
 	
 	
 	#ifdef SAVE
-	//~ {
+	if (need_to_resume_state == true)
+	{
+		//~ printf("T = %d\n", t); fflush(stdout);
 		need_to_resume_state = false;
 		resume_state(&t, &old_finished_jobs, &next_submit_time, input_job_file);
+		//~ printf("next end = %d\n", end_times->head->time); fflush(stdout);
+		//~ printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started); fflush(stdout);
 		
-		//~ printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started);
-	//~ }
+		//~ end_jobs(running_jobs->head, t);
+		//~ start_jobs(t, scheduled_job_list->head);
+		on_a_resume = 1;
+		//~ /* Reset all cores and jobs. */
+		//~ reset_cores(node_list, t);
+		//~ struct Node* n = node_list[i]->head;
+		//~ n = n->next;
+		//~ n = n->next;
+		//~ print_cores_in_specific_node(n);
+		//~ n = n->next;
+		//~ exit(1);
+		//~ /* Reset planned starting times. */
+		//~ free_next_time_linked_list(&start_times->head);
+	}
 	#endif
 	
 	//~ #ifdef PRINT_CLUSTER_USAGE
@@ -876,10 +899,13 @@ int main(int argc, char *argv[])
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
 	#endif
 	{
+		//~ if (finished_jobs >= 5001) { printf("next end = %d new_jobs: %d\n", end_times->head->time, new_jobs); fflush(stdout); exit(1); }
 		#ifdef SAVE
-		/* Test pour save l'état et recommencer */
-		if (need_to_save_state == true && t >= time_to_save)
+		//~ /* Test pour save l'état et recommencer */
+		// if (need_to_save_state == true && t >= time_to_save) /* Avec le temps */
+		if (need_to_save_state == true && finished_jobs >= time_to_save) /* Avec le nb de jobs terminés */
 		{
+			//~ printf("T = %d\n", t); fflush(stdout);
 			#ifdef PLOT_SATS
 			printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");
 			exit(1);
@@ -887,8 +913,12 @@ int main(int argc, char *argv[])
 			save_state(t, old_finished_jobs, next_submit_time, input_job_file);
 			exit(1);
 		}
-		printf("la\n");
 		#endif
+		
+		//~ if (finished_jobs >= 5001)
+		//~ {
+			//~ print_cores_in_specific_node(node_list[0]->head); exit(1);
+		//~ }
 				
 		/* Get ended job. */
 		old_finished_jobs = finished_jobs;
@@ -1065,9 +1095,7 @@ int main(int argc, char *argv[])
 						
 		#ifdef PRINT_CLUSTER_USAGE
 		get_length_job_list(scheduled_job_list->head, &nb_jobs_in_queue, &nb_cores_in_queue, &nb_cores_from_workload_1_in_queue);
-		
-		//~ printf("%d.\n", running_cores_from_workload_1);
-		
+				
 		get_nb_nodes_and_cores_loading_a_file(node_list, t, &nodes_loading_a_file, &cores_loading_a_file);
 		
 		fprintf(f_stats, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n", t, running_cores, running_nodes*20, nb_jobs_in_queue, running_nodes_workload_1*20, nb_cores_in_queue + 486*20, nb_cores_from_workload_1_in_queue + 486*20, nodes_loading_a_file*20, running_cores_from_workload_1, cores_loading_a_file);		
@@ -1081,6 +1109,17 @@ int main(int argc, char *argv[])
 		
 		/* Time is advancing. */
 		t += 1;
+		
+		//~ if (need_to_save_state == true && finished_jobs >= time_to_save) /* Avec le nb de jobs terminés */
+		//~ {
+			//~ printf("T = %d\n", t); fflush(stdout);
+			//~ #ifdef PLOT_SATS
+			//~ printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");
+			//~ exit(1);
+			//~ #endif
+			//~ save_state(t, old_finished_jobs, next_submit_time, input_job_file);
+			//~ exit(1);
+		//~ }
 		
 		/* Je dépasse les int max ? */
 		//~ if (t > 2000000000)
