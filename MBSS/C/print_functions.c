@@ -855,8 +855,9 @@ void print_holes_specific_node(struct Node* n)
  * Manque les intervalles **/
 void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_job_file)
 {
-	//~ reset_cores(node_list, t);
-	char* to_open = malloc(65*sizeof(char));
+	// reset_cores(node_list, t); //A ne pas utiliser c'est ca qui cassait tout :((
+
+	char* to_open = malloc(120*sizeof(char));
 	strcpy(to_open, "outputs/saved_state_");
 	strncat(to_open, input_job_file + 32, 5);
 	strcat(to_open, "-");
@@ -1052,7 +1053,7 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
 		
-	char* to_open = malloc(65*sizeof(char));
+	char* to_open = malloc(120*sizeof(char));
 	strcpy(to_open, "outputs/saved_state_");
 	strncat(to_open, input_job_file + 32, 5);
 	strcat(to_open, "-");
@@ -1313,6 +1314,9 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 				exit(EXIT_FAILURE);
 			}
 			#endif
+			
+			new_data->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
+			new_data->intervals->head = NULL;
 			
 			insert_tail_data_list(new_node->data, new_data);
 			if(!fscanf(f, "%s", str))

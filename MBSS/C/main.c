@@ -85,7 +85,7 @@ int nb_h_scheduled;
 #endif
 
 
-int on_a_resume = 0;
+//~ int on_a_resume = 0;
 
 
 int main(int argc, char *argv[])
@@ -871,7 +871,7 @@ int main(int argc, char *argv[])
 		
 		//~ end_jobs(running_jobs->head, t);
 		//~ start_jobs(t, scheduled_job_list->head);
-		on_a_resume = 1;
+		//~ on_a_resume = 1;
 		//~ /* Reset all cores and jobs. */
 		//~ reset_cores(node_list, t);
 		//~ struct Node* n = node_list[i]->head;
@@ -944,7 +944,7 @@ int main(int argc, char *argv[])
 		//~ {
 			//~ busy_cluster = 0;
 		//~ }
-		
+		//~ printf("t = %d\n", t); fflush(stdout);
 		new_jobs = false;
 		/* Get the set of available jobs at time t */
 		/* Jobs are already sorted by subtime so I can simply stop with a break */

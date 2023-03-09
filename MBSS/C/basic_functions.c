@@ -1623,7 +1623,8 @@ void get_current_intervals(struct Node_List** head_node, int t)
 				
 					//~ struct Interval* current = *head_ref;
 					   struct Interval* next;
-					 
+					//~ if (d->intervals->head != NULL) 
+					//~ {
 					   while (d->intervals->head != NULL)
 					   {
 						   next = d->intervals->head->next;
@@ -1631,6 +1632,7 @@ void get_current_intervals(struct Node_List** head_node, int t)
 						   d->intervals->head = next;
 					   }
 					   free(d->intervals);
+				   //~ }
 									
 					/* OLD */
 					d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));	
