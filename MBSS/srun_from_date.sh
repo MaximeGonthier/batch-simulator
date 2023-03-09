@@ -8,10 +8,10 @@
 
 #~ srun -t 60:00:00 ./C/main inputs/workloads/converted/2022-02-27-\>2022-03-05_V10000_anonymous inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0 0 data/Results_FCFS_Score_Backfill_2022-02-27-\>2022-03-05_V10000_anonymous_450_128_32_256_4_1024_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.csv 0 100 > 02-27_03-05_Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0.txt &
 
-if [ "$#" -ne 6 ]; then
-    echo "Usage is bash srun_from_date.sh WALLTIME date_debut date_fin mode(srun or local) compilation(normal ou opti t+1h) save_after_X_jobs(no_save or a number or resume)"
-    exit
-fi
+#~ if [ "$#" -ne 6 ]; then
+    #~ echo "Usage is bash srun_from_date.sh WALLTIME date_debut date_fin mode(srun or local) compilation(normal ou opti t+1h) save_after_X_jobs(no_save or a number or resume)"
+    #~ exit
+#~ fi
 
 # Get arguments
 DATE1=$2
