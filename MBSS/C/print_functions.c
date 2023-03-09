@@ -1029,7 +1029,7 @@ void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_
 	
 	fprintf(f, "\nend_of_file\n");
 
-	printf("Successfully saved state at time %d.\n", t);
+	printf("Successfully saved state.\n"); fflush(stdout);
 	fclose(f);
 }
 
@@ -1763,6 +1763,6 @@ void resume_state(int* t, int* old_finished_jobs, int* next_submit_time, char* i
 	printf("\n");
 	#endif
 	
-	//~ printf("Successfully read state.\n");
+	printf("Successfully read state.\n"); fflush(stdout);
 	fclose(f);
 }

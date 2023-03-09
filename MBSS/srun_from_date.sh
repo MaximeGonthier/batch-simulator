@@ -28,9 +28,9 @@ CONTRAINTES_TAILLES=0
 BUSY_CLUSTER_THRESHOLD=100
 
 if [ ${COMPILATION} == "nb_heure_max" ]; then
-	make -C C/ nb_heure_max
+	make save -C C/ nb_heure_max
 else
-	make -C C/
+	make save -C C/
 fi
 
 SCHEDULER="Fcfs"; BACKFILL_MODE=0
