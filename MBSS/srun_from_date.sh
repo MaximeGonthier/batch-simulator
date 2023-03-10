@@ -234,6 +234,107 @@ elif [ ${SAVE} == "resume" ]; then # Resume
 	fi
 	echo "call: ${call}"
 	eval ${call}
+elif [ ${SAVE} == "save_and_resume" ]; then # Resume
+	SAVE_TIME=$7
+	SCHEDULER="Fcfs"; BACKFILL_MODE=0
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_conservativebf"; BACKFILL_MODE=2
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_x1_x0_x0_x0"; BACKFILL_MODE=0
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_conservativebf_x1_x0_x0_x0"; BACKFILL_MODE=2
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_x500_x1_x0_x0"; BACKFILL_MODE=0
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_x500_x1_x0_x0"; BACKFILL_MODE=0
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_adaptative_multiplier_if_EAT_is_t_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_mixed_strategy_x500_x1_x0_x0"; BACKFILL_MODE=0
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
+
+	SCHEDULER="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0"; BACKFILL_MODE=2
+	OUTPUT_FILE=data/Results_FCFS_Score_Backfill_${WORKLOAD_TP}_${CLUSTER_TP}_${SCHEDULER}.csv
+	if [ ${MODE} == "srun" ]; then
+		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	else
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+	fi
+	echo "call: ${call}"
+	eval ${call}
 else # save has a number need to save
 	SAVE_TIME=$7
 	SCHEDULER="Fcfs"; BACKFILL_MODE=0
