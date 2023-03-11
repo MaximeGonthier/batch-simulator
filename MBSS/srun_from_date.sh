@@ -241,7 +241,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -251,7 +251,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -261,7 +261,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -271,7 +271,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -281,7 +281,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -291,7 +291,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -301,7 +301,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -311,7 +311,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -321,7 +321,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
@@ -331,7 +331,7 @@ elif [ ${SAVE} == "save_and_resume" ]; then # Resume
 	if [ ${MODE} == "srun" ]; then
 		call="srun -t ${WALLTIME} ./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > ${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	else
-		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) resume > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
+		call="./C/main ${WORKLOAD} ${CLUSTER} ${SCHEDULER} $((CONTRAINTES_TAILLES)) ${OUTPUT_FILE} $((BACKFILL_MODE)) $((BUSY_CLUSTER_THRESHOLD)) save_and_resume $((SAVE_TIME)) > outputs/${DATE1}_${DATE2}_${SCHEDULER}.txt &"
 	fi
 	echo "call: ${call}"
 	eval ${call}
