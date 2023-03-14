@@ -255,7 +255,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
 			plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
 	else:
-		plt.ylim(700000,740000)
+		# ~ plt.ylim(700000,740000)
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
 		else:
