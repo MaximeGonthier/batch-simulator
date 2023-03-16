@@ -9,27 +9,37 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 	struct Core_in_a_hole* c = n->cores_in_a_hole->head;
 	
 	#ifdef PRINT
-	printf("Can we backfill job %d on node %d?\n", j->unique_id, n->unique_id);
+	printf("Can we backfill job %d on node %d?\n", j->unique_id, n->unique_id); fflush(stdout);
 	#endif
 	
-	if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t)) /* Il y a un trou et je peux rentrer dedans ou au moins en utiliser une partie! */
+	//~ if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t)) /* Il y a un trou et je peux rentrer dedans ou au moins en utiliser une partie! */
+	if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t) && n->cores_in_a_hole-> head != NULL) /* Il y a un trou et je peux rentrer dedans ou au moins en utiliser une partie! */
 	{
 		#ifdef PRINT
-		printf("It could maybe fit or partially fit in the %d cores composing the hole of node %d.\n", n->number_cores_in_a_hole, n->unique_id);
+		printf("It could maybe fit or partially fit in the %d cores composing the hole of node %d.\n", n->number_cores_in_a_hole, n->unique_id); fflush(stdout);
 		#endif
-		//~ print_holes_specific_node(n);
+		
+		//~ printf("Before affecting c\n"); fflush(stdout);
+		
 		c = n->cores_in_a_hole->head;
+				
 		for (k = 0; k < n->number_cores_in_a_hole; k++)
 		{
 			//~ printf("Checking core %d next start time %d.\n", c->unique_id, c->start_time_of_the_hole); fflush(stdout);
+			
 			if (t + j->walltime <= c->start_time_of_the_hole)
 			{
 				*nb_cores_from_hole += 1;
 			}
-			//~ printf("%d.\n", *nb_cores_from_hole);  fflush(stdout);
+			
 			//~ if (c->next != NULL)
 			//~ {
+			//~ printf("next\n"); fflush(stdout);
+			
 			c = c->next;
+			
+			//~ printf("next done\n"); fflush(stdout);
+			
 			//~ }
 			//~ else
 			//~ {
@@ -37,7 +47,7 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 			//~ }
 			if (j->cores == *nb_cores_from_hole)
 			{
-				//~ printf("break\n");  fflush(stdout);
+				//~ printf("break\n"); fflush(stdout);
 				break;
 			}
 		}
@@ -53,7 +63,7 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 			//~ nb_cores_from_outside = nb_cores_from_outside;
 		
 			#ifdef PRINT
-			printf("Number of cores from the hole/outside: %d/%d.\n", *nb_cores_from_hole, *nb_cores_from_outside);
+			printf("Number of cores from the hole/outside: %d/%d.\n", *nb_cores_from_hole, *nb_cores_from_outside); fflush(stdout);
 			#endif
 						
 			//~ k = 0;
@@ -68,7 +78,7 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 				//~ else
 				//~ {
 					#ifdef PRINT
-					printf("Could not fit in the hole because outside cores don't match. Return false.\n");
+					printf("Could not fit in the hole because outside cores don't match. Return false.\n"); fflush(stdout);
 					#endif
 					
 					return false;
@@ -81,7 +91,7 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 			{
 				/* On break et on met à vrai le booleen pour dire que le remplissage des cores sera différent et qu'il faut pas sort les cores de la node et qu'il faut mettre à jour le nombre de cores dans un trou de la node et mettre à jour le nb de non available cores. */
 				#ifdef PRINT
-				printf("Can fit in the hole and start at time t = %d. Return true.\n", t);
+				printf("Can fit in the hole and start at time t = %d. Return true.\n", t); fflush(stdout);
 				#endif
 				
 				//~ backfilled_job = true;	
@@ -94,7 +104,7 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 		}
 	}
 	#ifdef PRINT
-	printf("Could not fit or times not available. Return false.\n");
+	printf("Could not fit or times not available. Return false.\n"); fflush(stdout);
 	#endif
 	return false;
 }							
