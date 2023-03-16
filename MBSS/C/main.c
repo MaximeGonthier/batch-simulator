@@ -257,9 +257,9 @@ int main(int argc, char *argv[])
 	}
 	//~ #endif
 
-	#ifdef PRINT
-	print_node_list(node_list);
-	#endif
+	//~ #ifdef PRINT
+	//~ print_node_list(node_list);
+	//~ #endif
 	
 	/* Read workload */
 	//~ #ifndef SAVE
@@ -289,10 +289,10 @@ int main(int argc, char *argv[])
 	}
 	//~ #endif
 
-	#ifdef PRINT
-	printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
-	print_job_list(scheduled_job_list->head);
-	#endif
+	//~ #ifdef PRINT
+	//~ printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
+	//~ print_job_list(scheduled_job_list->head);
+	//~ #endif
 
 	/* getting the number of jobs we need to schedule */
 	//~ #ifndef SAVE
@@ -318,10 +318,10 @@ int main(int argc, char *argv[])
 	}
 	//~ #endif
 	
-	#ifdef PRINT
-	printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
-	print_job_list(scheduled_job_list->head);
-	#endif
+	//~ #ifdef PRINT
+	//~ printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
+	//~ print_job_list(scheduled_job_list->head);
+	//~ #endif
 
 	#ifdef PRINT_SCORES_DATA
 	FILE* f_fcfs_score = fopen("outputs/Scores_data.txt", "w");
@@ -882,8 +882,35 @@ int main(int argc, char *argv[])
 		//~ exit(1);
 		//~ /* Reset planned starting times. */
 		//~ free_next_time_linked_list(&start_times->head);
+
+//~ for (i = 0; i < 3; i++)
+//~ {
+//~ struct Node* n = node_list[i]->head;
+//~ for (int k = 0; k < 20; k++)
+//~ {
+//~ if (n->cores[k]->available_time <= t && j->start_time > t)
+					//~ {						
+						//~ struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
+						//~ new->unique_id = n->cores[k]->unique_id;
+						//~ new->start_time_of_the_hole = j->start_time;
+						//~ new->next = NULL;
+							//~ if (backfill_mode == 2) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
+							//~ {
+								//~ insert_cores_in_a_hole_list_sorted_increasing_order(n->cores_in_a_hole, new);
+							//~ }
+							//~ else
+							//~ {
+								//~ insert_cores_in_a_hole_list_sorted_decreasing_order(n->cores_in_a_hole, new);
+							//~ }
+					//~ }
+				//~ }
+				//~ n = n->next;
+			//~ }
+
 	}
 	#endif
+	
+	//~ print_node_list(node_list);
 	
 	//~ #ifdef PRINT_CLUSTER_USAGE
 	//~ int time_all_job_workload_1_started = -1;

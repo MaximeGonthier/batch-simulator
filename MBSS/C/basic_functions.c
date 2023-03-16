@@ -1779,6 +1779,8 @@ void schedule_job_specific_node_at_earliest_available_time(struct Job* j, struct
 
 void add_data_in_node (int data_unique_id, float data_size, struct Node* node_used, int t, int end_time, int* transfer_time, int* waiting_for_a_load_time, int delay, int walltime, int start_time, int cores)
 {
+	//~ printf("1.\n"); fflush(stdout);
+	//~ printf("%d\n", node_used->unique_id); fflush(stdout);
 	#ifdef PRINT
 	printf("\nChecking data %d on node %d at time %d.\n", data_unique_id, node_used->unique_id, t); fflush(stdout);
 	#endif
@@ -1789,8 +1791,10 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 	d = node_used->data->head;
 	while (d != NULL)
 	{
+		//~ printf("check data %d\n", d->unique_id); fflush(stdout);
 		if (data_unique_id == d->unique_id) /* It is already on node */
 		{
+			//~ printf("On node\n"); fflush(stdout);
 			#ifdef DATA_PERSISTENCE
 			//~ if (d->nb_task_using_it > 0 || d->end_time == t) /* And is still valid! */
 			//~ {
@@ -1870,11 +1874,11 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 		}
 		d = d->next;
 	}
-
+	//~ printf("is it on node: %d\n", data_is_on_node); fflush(stdout);
 	if (data_is_on_node == false) /* Need to load it */
 	{
 		#ifdef PRINT
-		printf("*transfer_time %f = data_size %f /node_used->bandwidth %f\n", data_size/node_used->bandwidth, data_size, node_used->bandwidth);
+		printf("*transfer_time %f = data_size %f /node_used->bandwidth %f\n", data_size/node_used->bandwidth, data_size, node_used->bandwidth); fflush(stdout);
 		#endif
 		
 		*transfer_time = data_size/node_used->bandwidth;
@@ -1963,8 +1967,9 @@ void add_data_in_node (int data_unique_id, float data_size, struct Node* node_us
 	#ifdef PRINT
 	printf("After checking data, occupation is %d.\n", node_used->data_occupation);
 	#endif
-	
 	#endif
+	
+	//~ printf("End\n"); fflush(stdout);
 }
 
 /* Pas utile en cas data persistence */
@@ -2042,6 +2047,7 @@ void start_jobs(int t, struct Job* head)
 				/* Let's look if a data transfer is needed */
 				add_data_in_node(j->data, j->data_size, j->node_used, t, j->end_time, &transfer_time, &waiting_for_a_load_time, j->delay, j->walltime, j->start_time, j->cores);
 			}
+			//~ printf("la\n"); fflush(stdout);
 			
 			j->transfer_time = transfer_time;
 			j->waiting_for_a_load_time = waiting_for_a_load_time;

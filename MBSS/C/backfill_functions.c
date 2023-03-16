@@ -12,8 +12,10 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 	printf("Can we backfill job %d on node %d?\n", j->unique_id, n->unique_id); fflush(stdout);
 	#endif
 	
-	//~ if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t)) /* Il y a un trou et je peux rentrer dedans ou au moins en utiliser une partie! */
-	if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t) && n->cores_in_a_hole-> head != NULL) /* Il y a un trou et je peux rentrer dedans ou au moins en utiliser une partie! */
+	//~ print_single_node(n);
+	
+	if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t)) /* Il y a un trou et je peux rentrer dedans ou au moins en utiliser une partie! */
+	//~ if (n->number_cores_in_a_hole != 0 && (j->cores <= n->number_cores_in_a_hole || n->cores[j->cores - 1 - n->number_cores_in_a_hole]->available_time <= t) && n->cores_in_a_hole-> head != NULL) /* Car était NULL dans certains cas mais fais que evitter le pb de ma node cassé */
 	{
 		#ifdef PRINT
 		printf("It could maybe fit or partially fit in the %d cores composing the hole of node %d.\n", n->number_cores_in_a_hole, n->unique_id); fflush(stdout);
@@ -22,6 +24,8 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 		//~ printf("Before affecting c\n"); fflush(stdout);
 		
 		c = n->cores_in_a_hole->head;
+		
+		//~ printf("After affecting c\n"); fflush(stdout);
 				
 		for (k = 0; k < n->number_cores_in_a_hole; k++)
 		{
