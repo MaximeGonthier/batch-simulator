@@ -22,17 +22,17 @@ print(nums[0:10]) # <- List of 10 unique random numbers
 # 41:	10-10 10-16 - 135431 jobs - save 70000 lancé le 12 à 18h30 (<11h) - resume lancé le 13 à 10h51 - Crash - en local fais: FCFS - FCFS BF - EFT - EFT BF en cours sur plafrim: LEA - LEA BF - LEO - LEO BF - LEM - LEM BF - lancé le 15 à 00h10 - fini (<48h en tout) - résultats très positifs
 
 
-# 2:	01-10 01-16 - 227636 jobs - save 70000 lancé le 13 à 10h57 (<24h) - save_and_resume 150000 le 14 mars à 13h48 (<48h) - save_and_resume 200000 le 15 mars à 20h58
+# 2:	01-10 01-16 - 227636 jobs - save 70000 lancé le 13 à 10h57 (<24h) - save_and_resume 150000 le 14 mars à 13h48 (<48h) - save_and_resume 200000 le 15 mars à 20h58 - a recommencer - save 70000 le 16 à 14h30
 
-# 6:	02-07 02-13 - 82740 jobs - lancé le 12 à 18h36 sans save (a pu en lancer que 8 pb de plafrim) - FCFS - FCFS BF - EFT - EFT BF fini (<12h) - le reste lancé en local avec save 10000
+# 6:	02-07 02-13 - 82740 jobs - lancé le 12 à 18h36 sans save (a pu en lancer que 8 pb de plafrim) - FCFS - FCFS BF - EFT - EFT BF fini (<12h) - le reste lancé en local avec save 10000 - a recommencer - en local -
 
-# 13:	03-28 04-03 - 150014 jobs - Lancé avec save 60000 (60h) - save_and_resume 120000 le 12 mars à 12h - fini que pour FCFS - LEA - FCFS BF - EFT
+# 13:	03-28 04-03 - 150014 jobs - Lancé avec save 60000 (60h) - save_and_resume 120000 le 12 mars à 12h - fini que pour FCFS - LEA - FCFS BF - EFT - a recommencer - save 60000 le 16 à 14h32
 
-# 42:	10-17 10-23 - 184502 jobs - save 70000 lancé le 12 à 18h30 - fini que pour 5 - relancé en save 30000 le 15 à 21h10
+# 42:	10-17 10-23 - 184502 jobs - save 70000 lancé le 12 à 18h30 - fini que pour 5 - relancé en save 30000 le 15 à 21h10 - a recommencer - save 20000 le 16 à 14h34 - save_and_resume 60000 le 16 à 15h57
 
-# 43:	10-24 10-30 - 214089 jobs - save 100000 lancé le 12 à 12h35 - fini que pour 3 - relancé en save 50000 le 15 à 21h12
+# 43:	10-24 10-30 - 214089 jobs - save 100000 lancé le 12 à 12h35 - fini que pour 3 - relancé en save 50000 le 15 à 21h12 - a recommencer - save 50000 le 16 à 15h59
 
-# 50:	12-12 12-18 - 156916 jobs - save 70000 lancé le 13 à 10h56 - fini que pour 2 - relancé en save 20000 le 15 à 21h13
+# 50:	12-12 12-18 - 156916 jobs - save 70000 lancé le 13 à 10h56 - fini que pour 2 - relancé en save 20000 le 15 à 21h13 - a recommencer - save 20000 le 16 à 16h00 - save_and_resume 50000 le 16 à 16h23
 
 
 # ~ Il faut ls -lta et voir les save time
