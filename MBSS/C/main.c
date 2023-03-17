@@ -867,22 +867,36 @@ int main(int argc, char *argv[])
 		need_to_resume_state = false;
 		resume_state(&t, &old_finished_jobs, &next_submit_time, input_job_file);
 		//~ printf("next end = %d\n", end_times->head->time); fflush(stdout);
-		//~ printf("nb_job_to_evaluate: %d nb_job_to_evaluate_started: %d\n", nb_job_to_evaluate, nb_job_to_evaluate_started); fflush(stdout);
-		
-		//~ end_jobs(running_jobs->head, t);
-		//~ start_jobs(t, scheduled_job_list->head);
-		//~ on_a_resume = 1;
-		//~ /* Reset all cores and jobs. */
-		//~ reset_cores(node_list, t);
-		//~ struct Node* n = node_list[i]->head;
-		//~ n = n->next;
-		//~ n = n->next;
-		//~ print_cores_in_specific_node(n);
-		//~ n = n->next;
-		//~ exit(1);
-		//~ /* Reset planned starting times. */
-		//~ free_next_time_linked_list(&start_times->head);
+				old_finished_jobs = finished_jobs;
+		if (end_times->head != NULL && end_times->head->time == t)
+		{
+			end_jobs(running_jobs->head, t);
+		}
 
+		
+			reset_cores(node_list, t);
+			
+			/* Reset planned starting times. */
+			free_next_time_linked_list(&start_times->head);
+						
+			#ifdef PRINT
+			printf("Reschedule.\n");
+			#endif
+			
+			call_scheduler(scheduler, scheduled_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode, mixed_strategy);
+							
+			#ifdef PRINT	
+			printf("End of reschedule.\n");
+			#endif
+			
+			/* Get started jobs. */
+			if (start_times->head != NULL)
+			{
+				if (start_times->head->time == t)
+				{
+					start_jobs(t, scheduled_job_list->head);
+				}
+			}
 //~ for (i = 0; i < 3; i++)
 //~ {
 //~ struct Node* n = node_list[i]->head;
