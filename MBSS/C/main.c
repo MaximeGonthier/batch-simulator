@@ -941,12 +941,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		#endif
-		
-		//~ if (finished_jobs >= 5001)
-		//~ {
-			//~ print_cores_in_specific_node(node_list[0]->head); exit(1);
-		//~ }
-				
+						
 		/* Get ended job. */
 		old_finished_jobs = finished_jobs;
 		if (end_times->head != NULL && end_times->head->time == t)
@@ -1046,10 +1041,9 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		/* ) && scheduled_job_list->head != NULL est extrèùeent utile, car certain scheduler comme ceux de easy bf ne boucle pas tant que head_job != NULL et peuevnt donc commencer avec un job qui vaut nul (pour j1 de easy bf par xempe. Donc à arder au mons pour easy bf et peut etre d'autres. */
-		//~ if ((old_finished_jobs < finished_jobs || new_jobs == true) && scheduled_job_list->head != NULL)
-		//~ if (old_finished_jobs < finished_jobs || new_jobs == true)
-		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* Avec new job list */
+		/* ) && scheduled_job_list->head != NULL est très utile, car certain scheduler comme ceux de easy bf ne boucle pas tant que head_job != NULL et peuevnt donc commencer avec un job qui vaut nul (pour j1 de easy bf par xempe. Donc à arder au mons pour easy bf et peut etre d'autres. */
+		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* Vrai version */
+		//~ if (old_finished_jobs < finished_jobs - 1000 && scheduled_job_list->head != NULL)
 		{
 			#ifdef PRINT
 			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);

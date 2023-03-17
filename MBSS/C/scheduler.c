@@ -307,10 +307,9 @@ void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Nod
 	struct Job* j = head_job;
 	
 	while (j != NULL)
-	{
-		//~ printf("At time %d there are %d running nodes. busy is %d. %d %d %d\n", t, temp_running_nodes, busy_cluster_threshold, multiplier_file_to_load, multiplier_file_evicted, mixed_strategy);
-		
-		if (nb_non_available_cores < nb_cores)
+	{		
+		//~ if (nb_non_available_cores < nb_cores) /* Vrai version */
+		if (j->cores <= nb_cores - nb_non_available_cores)
 		{
 			#ifdef PRINT
 			printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
@@ -1154,7 +1153,9 @@ void fcfs_with_a_score_scheduler(struct Job* head_job, struct Node_List** head_n
 	{		
 		/* Test complexité réduite */
 		//~ if (nb_non_available_cores < nb_cores && nb_non_cores_rescheduled < 486*2)
-		if (nb_non_available_cores < nb_cores)
+		//~ printf("%d\n", nb_cores - nb_non_available_cores); fflush(stdout);
+		//~ if (nb_non_available_cores < nb_cores) /* Vrai version */
+		if (j->cores <= nb_cores - nb_non_available_cores)
 		{
 			#ifdef PRINT
 			printf("\nNeed to schedule job %d using file %d. T = %d\n", j->unique_id, j->data, t); fflush(stdout);

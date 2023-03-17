@@ -857,6 +857,7 @@ void print_holes_specific_node(struct Node* n)
  * Manque les intervalles **/
 void save_state(int t, int old_finished_jobs, int next_submit_time, char* input_job_file)
 {
+	printf("Saving the state of the execution..\n"); fflush(stdout);
 	// reset_cores(node_list, t); //A ne pas utiliser c'est ca qui cassait tout :((
 
 	char* to_open = malloc(120*sizeof(char));
