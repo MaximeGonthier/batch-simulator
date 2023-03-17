@@ -73,6 +73,9 @@ extern int nb_data_reuse;
 extern int busy_cluster_threshold;
 //~ extern int on_a_resume;
 
+extern int nb_call_finished_jobs;
+extern int nb_call_new_jobs;
+
 /* For area_filling. This is the allocated area updated in start jobs. It corresponds to the area of jobs of size x that
  * were started on nodes of size x+y, y>0. I use it as a global variable to update it in start_jobs. In the schedule of
  * area flling I use a temp tab at the beggining of the schedule that copy the values of this global variable

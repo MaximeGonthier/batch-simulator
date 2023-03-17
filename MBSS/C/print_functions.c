@@ -289,6 +289,8 @@ void to_print_job_csv(struct Job* job, int time)
 /** Print in a file the final results. Only called once at the end of the simulation. **/
 void print_csv(struct To_Print* head_to_print)
 {
+	printf("nb_call_finished_jobs: %d - nb_call_new_jobs: %d\n", nb_call_finished_jobs, nb_call_new_jobs); fflush(stdout);
+	
 	int size_file_to_open = 300;
 
 	/* Stretch times for boxplots on all jobs */
@@ -592,12 +594,14 @@ void print_csv(struct To_Print* head_to_print)
 
 		/* Bounded flow stretch */
 		if (head_to_print->empty_cluster_time > 300)
+		//~ if (head_to_print->empty_cluster_time > 60)
 		{
 			denominator_bounded_stretch = head_to_print->empty_cluster_time;
 		}
 		else
 		{
 			denominator_bounded_stretch = 300;
+			//~ denominator_bounded_stretch = 60;
 		}
 		total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
 		if (head_to_print->job_data_size <= 128)
@@ -668,8 +672,9 @@ void print_csv(struct To_Print* head_to_print)
 		fprintf(f_bounded_stretch, "%d %f %d %d %d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime);
 		#endif
 		
-		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, input_file, core_time_used */
-		fprintf(f_stretch, "%d,%f,%d,%d,%d,%d,%d,%d,%d,%d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores);
+		/* Ce que j'utilise pour les boxplots */
+		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, input_file, core_time_used, bounded stretch 1min */
+		fprintf(f_stretch, "%d,%f,%d,%d,%d,%d,%d,%d,%d,%d,%f\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch);
 		
 		//~ printf("%d,%f ((%d - %d)/%f),%d,%d,%d,%d,%d,%d,%d,%d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->job_end_time, head_to_print->job_subtime, head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores); fflush(stdout);
 

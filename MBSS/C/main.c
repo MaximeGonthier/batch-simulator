@@ -84,6 +84,8 @@ int busy_cluster_threshold;
 int nb_h_scheduled;
 #endif
 
+int nb_call_finished_jobs;
+int nb_call_new_jobs;
 
 //~ int on_a_resume = 0;
 
@@ -933,6 +935,12 @@ int main(int argc, char *argv[])
 	/** START OF SIMULATION **/
 	//~ printf("Start simulation.\n"); fflush(stdout);
 	
+	/* TODO : a suppr */
+	nb_call_finished_jobs = 0;
+	nb_call_new_jobs = 0;
+	
+	int last_scheduler_call = t;
+	
 	#ifdef PRINT_CLUSTER_USAGE
 	while (finished_jobs != total_number_jobs)
 	//~ while (finished_jobs != 50000)
@@ -1054,11 +1062,34 @@ int main(int argc, char *argv[])
 				next_submit_time = -1;
 			}
 		}
+		
+//~ nb_call_finished_jobs: 31668 - nb_call_new_jobs: 17018
+//~ verify_nb_job_to_evaluate 128019 == nb_job_to_evaluate 128019
+//~ Scheduler: FCFS, Number of jobs evaluated: 128019, Max queue time: 30084.000000, Mean queue time: 889.451050, Total queue time: 113866632.000000, Max flow: 652861.000000, Mean flow: 5197.834473, Total flow: 665421568.000000, Transfer time: 11400960.000000, Makespan: 9943481.000000, Core time: 2087357824.000000, Waiting for a load time: 6484510.000000, Transfer + waiting time: 17885576.000000, Mean flow stretch: 2.377227, Mean bounded flow stretch: 2.377227, Max flow stretch: 131.589188, Max bounded flow stretch: 131.589188, Nb of upgraded jobs: 0, Nb large queue times (>25000): 19, Mean flow stretch 128 256 1024: 2.377227 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 2.377227 0.000000 0.000000, Number of data reuse: 100113
 
+
+//~ nb_call_finished_jobs: 21246 - nb_call_new_jobs: 16852
+//~ Mean flow stretch: 1.616340, Mean bounded flow stretch: 1.509908, Max flow stretch: 29.345179, Max bounded flow stretch: 25.890625, Nb of upgraded jobs: 0, Nb large queue times (>25000): 133, Mean flow stretch 128 256 1024: 1.616340 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 1.509908 0.000000 0.000000, Number of data reuse: 36758
+
+//~ nb_call_finished_jobs: 2913 - nb_call_new_jobs: 1822
+//~ Mean flow stretch: 2.823004, Mean bounded flow stretch: 2.582104, Max flow stretch: 52.269035, Max bounded flow stretch: 34.323334, Nb of upgraded jobs: 0, Nb large queue times (>25000): 85, Mean flow stretch 128 256 1024: 2.823004 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 2.582104 0.000000 0.000000, Number of data reuse: 34409
+
+//~ Computing and writing results...
+//~ Mean flow stretch: 4.822287, Mean bounded flow stretch: 4.316780, Max flow stretch: 184.655914, Max bounded flow stretch: 119.583336, Nb of upgraded jobs: 0, Nb large queue times (>25000): 826, Mean flow stretch 128 256 1024: 4.822287 0.000000 0.000000, Mean flow stretch with a minimum 128 256 1024: 4.316780 0.000000 0.000000, Number of data reuse: 34283
+
+
+		//~ if (last_scheduler_call <= t) /* Version ou j'attends X secondes avant de re schedule */
+		if (last_scheduler_call <= t - 10) /* Version ou j'attends X secondes avant de re schedule */
+		//~ if (last_scheduler_call <= t - 30) /* Version ou j'attends X secondes avant de re schedule */
+		{
+		last_scheduler_call = t;
+		
 		/* ) && scheduled_job_list->head != NULL est très utile, car certain scheduler comme ceux de easy bf ne boucle pas tant que head_job != NULL et peuevnt donc commencer avec un job qui vaut nul (pour j1 de easy bf par xempe. Donc à arder au mons pour easy bf et peut etre d'autres. */
 		if (old_finished_jobs < finished_jobs && scheduled_job_list->head != NULL) /* Vrai version */
-		//~ if (old_finished_jobs < finished_jobs - 1000 && scheduled_job_list->head != NULL)
+		//~ if (old_finished_jobs < finished_jobs - 1000 && scheduled_job_list->head != NULL) /* Version ou j'attrends X jobs */
 		{
+			//~ nb_call_finished_jobs++;
+			
 			#ifdef PRINT
 			printf("Core(s) liberated. Need to free them.\n"); fflush(stdout);
 			#endif
@@ -1090,6 +1121,8 @@ int main(int argc, char *argv[])
 		}
 		else if (new_jobs == true) /* Pas de jobs fini mais des nouveaux jobs à schedule. */
 		{
+			//~ nb_call_new_jobs++;
+			
 			#ifdef PRINT
 			printf("Schedule only new jobs.\n");
 			#endif
@@ -1126,6 +1159,8 @@ int main(int argc, char *argv[])
 					start_jobs(t, scheduled_job_list->head);
 				}
 			}
+		}
+		
 		}
 						
 		#ifdef PRINT_CLUSTER_USAGE
