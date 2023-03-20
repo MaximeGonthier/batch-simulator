@@ -1079,8 +1079,9 @@ int main(int argc, char *argv[])
 
 
 		//~ if (last_scheduler_call <= t) /* Version ou j'attends X secondes avant de re schedule */
-		if (last_scheduler_call <= t - 10) /* Version ou j'attends X secondes avant de re schedule */
-		//~ if (last_scheduler_call <= t - 30) /* Version ou j'attends X secondes avant de re schedule */
+		//~ if (last_scheduler_call <= t - 10) /* Version ou j'attends X secondes avant de re schedule */
+		if (last_scheduler_call <= t - 30) /* Version ou j'attends X secondes avant de re schedule */
+		//~ if (last_scheduler_call <= t - 300) /* Version ou j'attends X secondes avant de re schedule */
 		{
 		last_scheduler_call = t;
 		
