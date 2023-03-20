@@ -310,7 +310,7 @@ void print_csv(struct To_Print* head_to_print)
 	FILE* f_stretch = fopen(file_to_open, "w");
 	if (!f_stretch)
 	{
-		perror("Error opening file.\n");
+		perror("Error opening file.\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 
@@ -588,7 +588,7 @@ void print_csv(struct To_Print* head_to_print)
 		}
 		else
 		{
-			printf("error print csv data type %f.\n", head_to_print->job_data_size);
+			printf("error print csv data type %f.\n", head_to_print->job_data_size); fflush(stdout);
 			exit(EXIT_FAILURE);
 		}
 
@@ -603,6 +603,13 @@ void print_csv(struct To_Print* head_to_print)
 			denominator_bounded_stretch = 300;
 			//~ denominator_bounded_stretch = 60;
 		}
+		
+		if (denominator_bounded_stretch == 0)
+		{
+			printf("error denomitaro == 0\n"); fflush(stdout);
+			exit(EXIT_FAILURE);
+		}
+		
 		total_flow_stretch_with_a_minimum += (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch;
 		if (head_to_print->job_data_size <= 128)
 		{
@@ -618,7 +625,7 @@ void print_csv(struct To_Print* head_to_print)
 		}
 		else
 		{
-			printf("error print csv data type %f.\n", head_to_print->job_data_size);
+			printf("error print csv data type %f.\n", head_to_print->job_data_size); fflush(stdout);
 			exit(EXIT_FAILURE);
 		}
 
@@ -636,7 +643,7 @@ void print_csv(struct To_Print* head_to_print)
 
 		if (head_to_print->job_start_time - head_to_print->job_subtime < 0)
 		{
-			printf("Error queue time is %d for job %d.\n", head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->job_unique_id);
+			printf("Error queue time is %d for job %d.\n", head_to_print->job_start_time - head_to_print->job_subtime, head_to_print->job_unique_id); fflush(stdout);
 			exit(EXIT_FAILURE);
 		}
 		
@@ -674,7 +681,7 @@ void print_csv(struct To_Print* head_to_print)
 		
 		/* Ce que j'utilise pour les boxplots */
 		/* Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, input_file, core_time_used, bounded stretch 1min */
-		fprintf(f_stretch, "%d,%f,%d,%d,%d,%d,%d,%d,%d,%d,%f\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch);
+		fprintf(f_stretch, "%d,%f,%d,%d,%d,%d,%d,%d,%d,%d,%f\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores, (head_to_print->job_end_time - head_to_print->job_subtime)/denominator_bounded_stretch); fflush(stdout);
 		
 		//~ printf("%d,%f ((%d - %d)/%f),%d,%d,%d,%d,%d,%d,%d,%d\n", head_to_print->job_unique_id, (head_to_print->job_end_time - head_to_print->job_subtime)/head_to_print->empty_cluster_time, head_to_print->job_end_time, head_to_print->job_subtime, head_to_print->empty_cluster_time, head_to_print->data_type, head_to_print->job_end_time - head_to_print->job_start_time, head_to_print->job_subtime, head_to_print->job_cores, head_to_print->transfer_time + head_to_print->waiting_for_a_load_time, head_to_print->user, head_to_print->input_file, head_to_print->time_used*head_to_print->job_cores); fflush(stdout);
 
@@ -684,12 +691,12 @@ void print_csv(struct To_Print* head_to_print)
 	
 	if (verify_nb_job_to_evaluate != nb_job_to_evaluate)
 	{
-		printf("Error verify_nb_job_to_evaluate %d != nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate);
+		printf("Error verify_nb_job_to_evaluate %d != nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 	else
 	{
-		printf("verify_nb_job_to_evaluate %d == nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate);
+		printf("verify_nb_job_to_evaluate %d == nb_job_to_evaluate %d\n", verify_nb_job_to_evaluate, nb_job_to_evaluate); fflush(stdout);
 	}
 	
 	fclose(f_stretch);
@@ -729,90 +736,91 @@ void print_csv(struct To_Print* head_to_print)
 	fprintf(f, "%s,%d,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%d,%d,%f,%f,%f,%f,%f,%f,%d\n", scheduler, nb_job_to_evaluate, max_queue_time, mean_queue_time, total_queue_time, max_flow, mean_flow, total_flow, total_transfer_time, makespan, core_time_used, total_waiting_for_a_load_time, total_waiting_for_a_load_time_and_transfer_time, mean_flow_stretch, mean_flow_stretch_with_a_minimum, max_flow_stretch, max_flow_stretch_with_a_minimum, nb_upgraded_jobs, nb_large_queue_times, mean_flow_stretch_128, mean_flow_stretch_256,mean_flow_stretch_1024, mean_flow_stretch_with_a_minimum_128, mean_flow_stretch_with_a_minimum_256, mean_flow_stretch_with_a_minimum_1024, nb_data_reuse);
 	fclose(f);
 
-	/* For flow stretch heat map */
-	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open_2, "outputs/Stretch_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".txt");
-	f = fopen(file_to_open_2, "w");
-	if (!f)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
-	fprintf(f, "%f", mean_flow_stretch);
-	fclose(f);
+	//~ /* For flow stretch heat map */
+	//~ file_to_open_2 = malloc(size_file_to_open_2*sizeof(char));
+	//~ strcpy(file_to_open_2, "outputs/Stretch_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".txt");
+	//~ f = fopen(file_to_open_2, "w");
+	//~ if (!f)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	//~ fprintf(f, "%f", mean_flow_stretch);
+	//~ fclose(f);
 	
-	/* For max flow stretch heat map */
-	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open_2, "outputs/Max_Stretch_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".txt");
-	f = fopen(file_to_open_2, "w");
-	if (!f)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
-	fprintf(f, "%f", max_flow_stretch);
-	fclose(f);
+	//~ /* For max flow stretch heat map */
+	//~ file_to_open_2 = malloc(size_file_to_open_2*sizeof(char));
+	//~ strcpy(file_to_open_2, "outputs/Max_Stretch_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".txt");
+	//~ f = fopen(file_to_open_2, "w");
+	//~ if (!f)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	//~ fprintf(f, "%f", max_flow_stretch);
+	//~ fclose(f);
 	
-	/* For flow stretch with a minimum heat map */
-	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open_2, "outputs/Stretch_with_a_minimum_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".txt");
-	FILE* f_bounded_stretch2 = fopen(file_to_open_2, "w");
-	if (!f_bounded_stretch2)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
-	fprintf(f_bounded_stretch2, "%f", mean_flow_stretch_with_a_minimum);
-	fclose(f_bounded_stretch2);
+	//~ /* For flow stretch with a minimum heat map */
+	//~ file_to_open_2 = malloc(size_file_to_open_2*sizeof(char));
+	//~ strcpy(file_to_open_2, "outputs/Stretch_with_a_minimum_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".txt");
+	//~ FILE* f_bounded_stretch2 = fopen(file_to_open_2, "w");
+	//~ if (!f_bounded_stretch2)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	//~ fprintf(f_bounded_stretch2, "%f", mean_flow_stretch_with_a_minimum);
+	//~ fclose(f_bounded_stretch2);
 	
-	/* For max flow stretch with a minimum heat map */
-	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open_2, "outputs/Max_Stretch_with_a_minimum_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".txt");
-	f = fopen(file_to_open_2, "w");
-	if (!f)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
-	fprintf(f, "%f", max_flow_stretch_with_a_minimum);
-	fclose(f);
+	//~ /* For max flow stretch with a minimum heat map */
+	//~ file_to_open_2 = malloc(size_file_to_open*sizeof(char));
+	//~ strcpy(file_to_open_2, "outputs/Max_Stretch_with_a_minimum_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".txt");
+	//~ f = fopen(file_to_open_2, "w");
+	//~ if (!f)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	//~ fprintf(f, "%f", max_flow_stretch_with_a_minimum);
+	//~ fclose(f);
 
-	/* For total flow heat map */
-	file_to_open_2 = malloc(size_file_to_open*sizeof(char));
-	strcpy(file_to_open_2, "outputs/Total_flow_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".txt");
-	f = fopen(file_to_open_2, "w");
-	if (!f)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
-	fprintf(f, "%f", total_flow);
-	fclose(f);
+	//~ /* For total flow heat map */
+	//~ file_to_open_2 = malloc(size_file_to_open*sizeof(char));
+	//~ strcpy(file_to_open_2, "outputs/Total_flow_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".txt");
+	//~ f = fopen(file_to_open_2, "w");
+	//~ if (!f)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	//~ fprintf(f, "%f", total_flow);
+	//~ fclose(f);
 	
-	/* For max flow heat map */
-	file_to_open_2 = malloc(size_file_to_open*sizeof(char));	
-	strcpy(file_to_open_2, "outputs/Max_flow_");
-	strcat(file_to_open_2, scheduler);
-	strcat(file_to_open_2, ".txt");
-	f = fopen(file_to_open_2, "w");
-	if (!f)
-	{
-		perror("Error opening file.\n");
-		exit(EXIT_FAILURE);
-	}
-	fprintf(f, "%f", max_flow);
-	fclose(f);
+	//~ /* For max flow heat map */
+	//~ file_to_open_2 = malloc(size_file_to_open*sizeof(char));	
+	//~ strcpy(file_to_open_2, "outputs/Max_flow_");
+	//~ strcat(file_to_open_2, scheduler);
+	//~ strcat(file_to_open_2, ".txt");
+	//~ f = fopen(file_to_open_2, "w");
+	//~ if (!f)
+	//~ {
+		//~ perror("Error opening file.\n");
+		//~ exit(EXIT_FAILURE);
+	//~ }
+	//~ fprintf(f, "%f", max_flow);
+	//~ fclose(f);
 	
+	free(file_to_open);
 	free(file_to_open_2);
 }
 
