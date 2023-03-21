@@ -26,6 +26,7 @@ class Job: # Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, inp
     user: int # Attention unique id ne trie pas par user! uique id c'est par endtime donc faut que je recolleles morceaux en récupérant les users qui ont les memes fichiers et meme user pour by batch
     input_file: int
     core_time_used: int
+    bounded_stretch: float
 
 date1 = sys.argv[1]
 date2 = sys.argv[2]
@@ -64,8 +65,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	user = list(df.iloc[:, 7])
 	input_file = list(df.iloc[:, 8])
 	core_time_used = list(df.iloc[:, 9])
+	bounded_stretch = list(df.iloc[:, 10])
 	for i in range(0, len(unique_id)):
-		j = Job(unique_id[i], time[i], data_type[i], size[i], subtime[i], cores[i], transfertime[i], user[i], input_file[i], core_time_used[i])
+		j = Job(unique_id[i], time[i], data_type[i], size[i], subtime[i], cores[i], transfertime[i], user[i], input_file[i], core_time_used[i], bounded_stretch[i])
 		job_list_algo_reference.append(j)
 	job_list_algo_reference.sort(key = operator.attrgetter("input_file"))
 	
@@ -92,11 +94,12 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		user = list(df.iloc[:, 7])
 		input_file = list(df.iloc[:, 8])
 		core_time_used = list(df.iloc[:, 9])
+		bounded_stretch = list(df.iloc[:, 10])
 		
 		total_nb_of_jobs = len(unique_id)
 
 		for i in range(0, len(unique_id)):
-			j = Job(unique_id[i], time[i], data_type[i], size[i], subtime[i], cores[i], transfertime[i], user[i], input_file[i], core_time_used[i])
+			j = Job(unique_id[i], time[i], data_type[i], size[i], subtime[i], cores[i], transfertime[i], user[i], input_file[i], core_time_used[i], bounded_stretch[i])
 			job_list_algo_compare.append(j)
 		job_list_algo_compare.sort(key = operator.attrgetter("input_file"))
 		
@@ -120,6 +123,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 					elif detail == "stretch":
 						sum_of_core_time_used = job_list_algo_compare[i].time
 						sum_of_core_time_used_reference = job_list_algo_reference[i].time
+					elif detail == "bounded_stretch":
+						sum_of_core_time_used = job_list_algo_compare[i].bounded_stretch
+						sum_of_core_time_used_reference = job_list_algo_reference[i].bounded_stretch
 					elif detail == "transfer_time":
 						sum_of_core_time_used = job_list_algo_compare[i].transfertime
 						sum_of_core_time_used_reference = job_list_algo_reference[i].transfertime
@@ -133,6 +139,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 					elif detail == "stretch":
 						sum_of_core_time_used += job_list_algo_compare[i].time
 						sum_of_core_time_used_reference += job_list_algo_reference[i].time
+					elif detail == "bounded_stretch":
+						sum_of_core_time_used += job_list_algo_compare[i].bounded_stretch
+						sum_of_core_time_used_reference += job_list_algo_reference[i].bounded_stretch
 					elif detail == "transfer_time":
 						sum_of_core_time_used += job_list_algo_compare[i].transfertime
 						sum_of_core_time_used_reference += job_list_algo_reference[i].transfertime
@@ -152,6 +161,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 					elif detail == "stretch":
 						sum_of_core_time_used = job_list_algo_compare[i].time
 						sum_of_core_time_used_reference = job_list_algo_reference[i].time
+					elif detail == "bounded_stretch":
+						sum_of_core_time_used = job_list_algo_compare[i].bounded_stretch
+						sum_of_core_time_used_reference = job_list_algo_reference[i].bounded_stretch
 					elif detail == "transfer_time":
 						sum_of_core_time_used = job_list_algo_compare[i].transfertime
 						sum_of_core_time_used_reference = job_list_algo_reference[i].transfertime
@@ -165,6 +177,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 					elif detail == "stretch":
 						sum_of_core_time_used += job_list_algo_compare[i].time
 						sum_of_core_time_used_reference += job_list_algo_reference[i].time
+					elif detail == "bounded_stretch":
+						sum_of_core_time_used += job_list_algo_compare[i].bounded_stretch
+						sum_of_core_time_used_reference += job_list_algo_reference[i].bounded_stretch
 					elif detail == "transfer_time":
 						sum_of_core_time_used += job_list_algo_compare[i].transfertime
 						sum_of_core_time_used_reference += job_list_algo_reference[i].transfertime
@@ -269,7 +284,12 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
-			plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
+			if detail == "stretch":
+				plt.ylabel('Stretch time\'s improvement from FCFS', fontsize=font_size)
+			elif detail == "bounded_stretch":
+				plt.ylabel('Bounded stretch time\'s improvement from FCFS', fontsize=font_size)
+			elif detail == "core_time":
+				plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
 		elif (mode2 == "BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
 			plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)

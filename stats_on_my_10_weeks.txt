@@ -1,0 +1,21 @@
+Reading inputs/workloads/converted/2022-02-21->2022-02-27_V10000
+Reading inputs/workloads/converted/2022-07-11->2022-07-17_V10000
+Reading inputs/workloads/converted/2022-09-05->2022-09-11_V10000
+Reading inputs/workloads/converted/2022-10-10->2022-10-16_V10000
+Reading inputs/workloads/converted/2022-01-10->2022-01-16_V10000
+Reading inputs/workloads/converted/2022-02-07->2022-02-13_V10000
+Reading inputs/workloads/converted/2022-03-28->2022-04-03_V10000
+Reading inputs/workloads/converted/2022-10-17->2022-10-23_V10000
+Reading inputs/workloads/converted/2022-10-24->2022-10-30_V10000
+Reading inputs/workloads/converted/2022-12-12->2022-12-18_V10000
+
+##### Stats #####:
+Nb of jobs started before the evaluated week: 13065
+Nb of jobs submitted before the evaluated week: 3611
+Nb of scheduled jobs before the evaluated week: 157107
+Nb of evaluated jobs: 1126498
+Nb of scheduled jobs after the evaluated week: 196684
+Total number of jobs: 1496965
+Number of distinct users: 1056
+Number of batch of users: 103259
+
