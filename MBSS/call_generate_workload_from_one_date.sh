@@ -413,10 +413,10 @@ bash ${call}
 #~ bash Stats_single_workload.sh inputs/workloads/converted/${main_day}-\>${main_day}_V10000 inputs/clusters/rackham_450_128_32_256_4_1024.txt Fcfs
 
 # Anonymize
-#~ if [ model == "jour" ]; then
-	#~ python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>${main_day}_V10000
-	#~ rm inputs/workloads/converted/${main_day}-\>${main_day}_V10000
-#~ else
-	#~ python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>2022-${lastmonthforanonymize}-${lastdayforanonymize}_V10000
+if [ model == "jour" ]; then
+	python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>${main_day}_V10000
+	rm inputs/workloads/converted/${main_day}-\>${main_day}_V10000
+else
+	python3 src/anonymize_converted_workload.py inputs/workloads/converted/${main_day}-\>2022-${lastmonthforanonymize}-${lastdayforanonymize}_V10000
 	#~ rm inputs/workloads/converted/${main_day}-\>2022-${lastmonthforanonymize}-${lastdayforanonymize}_V10000
-#~ fi
+fi
