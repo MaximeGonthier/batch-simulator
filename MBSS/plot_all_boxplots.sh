@@ -15,7 +15,7 @@ lem_bf="Fcfs_with_a_score_mixed_strategy_conservativebf_x500_x1_x0_x0.csv"
 # First day I erase the file
 day1="02-21"
 day2="02-27"
-echo ${day1} ${day2}
+echo "Week 1:" ${day1} ${day2}
 cat ${common_input}${day1}${year}${day2}_${fcfs} > ${common_output}${fcfs}
 cat ${common_input}${day1}${year}${day2}_${eft} > ${common_output}${eft}
 cat ${common_input}${day1}${year}${day2}_${lea} > ${common_output}${lea}
@@ -28,7 +28,7 @@ cat ${common_input}${day1}${year}${day2}_${leo_bf} > ${common_output}${leo_bf}
 cat ${common_input}${day1}${year}${day2}_${lem_bf} > ${common_output}${lem_bf}
 
 # N-1 next day I append the file
-ndays=10
+ndays=12
 for ((i=1; i<=$((ndays-1)); i++))
 do
 	if [ $((i)) == 1 ]; then
@@ -58,8 +58,14 @@ do
 	elif [ $((i)) == 9 ]; then
 		day1="12-12"
 		day2="12-18"
+	elif [ $((i)) == 10 ]; then
+		day1="10-03"
+		day2="10-09"
+	elif [ $((i)) == 11 ]; then
+		day1="01-03"
+		day2="01-09"
 	fi
-	echo ${day1} ${day2}
+	echo "Week "$((i+1))":" ${day1} ${day2}
 	cat ${common_input}${day1}${year}${day2}_${fcfs} >> ${common_output}${fcfs}
 	cat ${common_input}${day1}${year}${day2}_${eft} >> ${common_output}${eft}
 	cat ${common_input}${day1}${year}${day2}_${lea} >> ${common_output}${lea}

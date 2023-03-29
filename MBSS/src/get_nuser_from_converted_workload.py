@@ -37,6 +37,8 @@ file_list.append("inputs/workloads/converted/2022-03-28->2022-04-03_V10000")
 file_list.append("inputs/workloads/converted/2022-10-17->2022-10-23_V10000")
 file_list.append("inputs/workloads/converted/2022-10-24->2022-10-30_V10000")
 file_list.append("inputs/workloads/converted/2022-12-12->2022-12-18_V10000")
+file_list.append("inputs/workloads/converted/2022-01-03->2022-01-09_V10000")
+file_list.append("inputs/workloads/converted/2022-10-03->2022-10-09_V10000")
 
 nb_job_workload_minus_2 = 0
 nb_job_workload_minus_1 = 0

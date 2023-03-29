@@ -1,4 +1,4 @@
-# python3 src/plot_running_cores.py input_file title
+# python3 src/plot_stats_one_execution.py input_file title
 # importing package
 # plot stats on cluster usage
 import matplotlib.pyplot as plt
@@ -21,6 +21,7 @@ day = sys.argv[11]
 month = sys.argv[12]
 year = sys.argv[13]
 precision_mode = sys.argv[14]
+n_evaluated_days = int(sys.argv[15])
 print("Opening", sys.argv[1], "precision mode is", precision_mode)
 
 font_size = 14
@@ -69,7 +70,7 @@ elif (comparaison == "Used_nodes"):
 	elif (cluster == "675_128_48_256_6_1024"):
 		line = 729
 	else:
-		print("error")
+		print("error cluster")
 		exit(1)
 	plt.axhline(y = line, color = 'black', linestyle = '-', label = "Total number of nodes")
 	plt.gca().set_ylim(bottom=0)
@@ -158,17 +159,17 @@ else:
 			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
 	elif (precision_mode == "core_by_core"):
 		if (mode == 0): # mode full
+			print("Mode full")
 			axs[1].plot(used_cores, 'b-', label='All jobs')
-			axs[0].plot(cores_in_queue, 'b-', label='All jobs', linestyle = "dashed")
-			axs[0].plot(cores_in_queue_evaluated_jobs, 'r-', label='Evaluated jobs', linestyle = "dashed")
+			axs[0].plot(cores_in_queue, 'b-', linestyle = "solid")
+			axs[0].plot(cores_in_queue_evaluated_jobs, 'r-', linestyle = "solid")
 			axs[1].plot(used_cores_evaluated_jobs, "r-", label='Evaluated jobs')
 			axs[1].plot(cores_loading_a_file, "gray", label='Waiting for a file')
-			str_day_list = [str(int(day)-1) + "/" + month + "/" + year, day + "/" + month + "/" + year, str(int(day)+1) + "/" + month + "/" + year]
+			str_day_list = [str(int(day)) + "/" + month + "/" + year, str(int(day)+n_evaluated_days-1) + "/" + month + "/" + year]
 		else: # mode reduced
+			print("Mode reduced")
 			axs[1].plot(used_cores[:84600*3], 'b-', label='All jobs')
-			# ~ axs[0].plot(cores_in_queue[:84600*3], 'b-', label='All jobs', linestyle = "dashed")
 			axs[0].plot(cores_in_queue[:84600*3], 'b-', linestyle = "solid")
-			# ~ axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', label='Evaluated jobs', linestyle = "dashed")
 			axs[0].plot(cores_in_queue_evaluated_jobs[:84600*3], 'r-', linestyle = "solid")
 			axs[1].plot(used_cores_evaluated_jobs[:84600*3], "r-", label='Evaluated jobs')
 			axs[1].plot(cores_loading_a_file[:84600*3], "gray", label='Waiting for a file')
@@ -179,12 +180,13 @@ else:
 	
 	axs[0].set_ylabel("In queue", fontsize=font_size)
 	axs[1].set_ylabel("Running", fontsize=font_size)
-	axs[0].set_xticks([0, 86400, 86400*2])
+	axs[0].set_xticks([86400, 86400*(n_evaluated_days+1)])
 	axs[0].set_xticklabels(str_day_list, rotation = 90)
+	
 	axs[0].axvline(x = 86400, color = 'orange', linestyle = "dotted", lw=3)
-	axs[0].axvline(x = 86400*2, color = 'orange', linestyle = "dotted", lw=3)
+	axs[0].axvline(x = 86400*(n_evaluated_days+1), color = 'orange', linestyle = "dotted", lw=3)
 	axs[1].axvline(x = 86400, color = 'orange', linestyle = "dotted", lw=3)
-	axs[1].axvline(x = 86400*2, color = 'orange', linestyle = "dotted", lw=3)
+	axs[1].axvline(x = 86400*(n_evaluated_days+1), color = 'orange', linestyle = "dotted", lw=3)
 	
 	axs[1].tick_params(labelsize=font_size)
 	
@@ -231,7 +233,6 @@ else:
 	lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
 	
 	if (workload == "2022-09-09->2022-09-09_V10000" or workload == "2022-03-26->2022-03-26_V10000"):
-		# ~ print("no legend")
 		labels = ["All jobs", "Ev. jobs", "Waiting"]
 		fig.legend(lines, labels, loc="upper right", bbox_to_anchor = (0.125, -0.12, 0.78, 1.01), fontsize=font_size)
 	else:

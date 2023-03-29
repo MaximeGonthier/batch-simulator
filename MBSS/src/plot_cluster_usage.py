@@ -40,7 +40,7 @@ node_used_workload_total = []
 t = 0
 f2 = open("outputs/Nodes_usage.csv", "w")
 
-while t != 11001:
+while t != 11001: # ?
 	with open("outputs/Results_for_cluster_usage.txt") as f:
 		line = f.readline()
 		while line:

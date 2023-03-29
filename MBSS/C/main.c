@@ -941,12 +941,12 @@ int main(int argc, char *argv[])
 	
 	int last_scheduler_call = t;
 	
-	#ifdef PRINT_CLUSTER_USAGE
-	while (finished_jobs != total_number_jobs)
+	//~ #ifdef PRINT_CLUSTER_USAGE
+	//~ while (finished_jobs != total_number_jobs)
 	//~ while (finished_jobs != 50000)
-	#else
+	//~ #else
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
-	#endif
+	//~ #endif
 	{
 		//~ if (finished_jobs >= 5001) { printf("next end = %d new_jobs: %d\n", end_times->head->time, new_jobs); fflush(stdout); exit(1); }
 		#ifdef SAVE

@@ -83,11 +83,12 @@ elif (workload == "2022-07-16->2022-07-16_V10000"):
 	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2"], fontsize=font_size)
 	ax.set_ylim(0,2)
 else:
-	print("not dealt with")
-	exit()
+	ax.set_yticks([0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5])
+	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2", "2.5", "3", "3.5"], fontsize=font_size)
+	ax.set_ylim(0.1,4)
 
-ax.set_xticks([job_list_algo_reference[0].subtime, job_list_algo_reference[0].subtime + 21600, job_list_algo_reference[0].subtime + 21600*2, job_list_algo_reference[0].subtime + 21600*3, job_list_algo_reference[len(job_list_algo_reference)-1].subtime])
-ax.set_xticklabels(["00:00", "06:00", "12:00", "18:00", "00:00"], fontsize=font_size)
+ax.set_xticks([job_list_algo_reference[0].subtime, job_list_algo_reference[0].subtime + 86400, job_list_algo_reference[0].subtime + 86400*2, job_list_algo_reference[0].subtime + 86400*3, job_list_algo_reference[0].subtime + 86400*4, job_list_algo_reference[0].subtime + 86400*5, job_list_algo_reference[0].subtime + 86400*6])
+ax.set_xticklabels(["03/10", "04/10", "05/10", "06/10", "07/10", "08/10", "09/10"], fontsize=font_size)
 
 ax.axhline(y = 1, color = 'black', linestyle = '-', alpha=0.2)
 
@@ -125,7 +126,7 @@ plt.legend((line1, line2, line3), ('20000 sec', '5000 sec', '1000 sec'), loc='up
 
 # ~ plt.legend(handles=circles, loc='upper right')
 
-plt.xlabel("Submission times (sec)", fontsize=font_size)
+plt.xlabel("Submission times (days)", fontsize=font_size)
 if sys.argv[3] == "stretch":
 	plt.ylabel("Stretch\'s improvement from FCFS", fontsize=font_size)
 elif sys.argv[3] == "queue":

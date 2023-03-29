@@ -11,7 +11,7 @@ nums = list(range(1, 52)) # List of integers from 1 to 51
 
 random.shuffle(nums)
 
-print(nums[0:10]) # <- List of 10 unique random numbers
+print(nums[0:12]) # <- List of 10 unique random numbers
 
 # The produce numbers are [28, 13, 43, 41, 42, 8, 6, 36, 2, 50]
 # Which corresponds to the weeks (format is month-day):
@@ -28,9 +28,8 @@ print(nums[0:10]) # <- List of 10 unique random numbers
 # 43:	10-24 10-30 - 214089 jobs - save 100000 lancé le 12 à 12h35 - fini que pour 3 - relancé en save 50000 le 15 à 21h12 - a recommencer - save 50000 le 16 à 15h59 - save 90000 le 21 à 01:04 - save_and_resume 15000 le 21 à 11:27 - resume lancé le 21 à 15:54 - fini
 # 42:	10-17 10-23 - 184502 jobs - save 70000 lancé le 12 à 18h30 - fini que pour 5 - relancé en save 30000 le 15 à 21h10 - a recommencer - save 20000 le 16 à 14h34 - save_and_resume 60000 le 16 à 15h57 - a l'air d'avoir fini mais n'a pas écris - save 90000 le 21 à 01:02 - save_and_resume 160000 le 21 à 11:15 - certains ont fini et d'autres ont save, a trier - lea et lea bf lancé en  resume les autres ont fini - fini
 # 50:	12-12 12-18 - 156916 jobs - save 70000 lancé le 13 à 10h56 - fini que pour 2 - relancé en save 20000 le 15 à 21h13 - a recommencer - save 20000 le 16 à 16h00 - save_and_resume 50000 le 16 à 16h23 - save 90000 le 21 à 01:05 - save_and_resume 130000 le 21 à 11:28 - les 4 premiers ont bien save - 4 premiers bien fini les autres ont bus error - Attention pour EFT-BF il faut prendre le bon - Le reste lancé en save 110000, attention le printf est dans outputs/ lancé le 21 à 23h24 - save_and_resume 130000 le 22 à 09:28 - save 150000 le 22 à 23:59 - fini
-
-40
-1
+# 40 10-03
+# 1 01-03
 
 # Remonter au 17 mars si je veux récupérer les Stretch_times avant modif 30s
 

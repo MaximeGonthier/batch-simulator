@@ -4,6 +4,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import sys
+from statsmodels.distributions.empirical_distribution import ECDF
 
 # ~ import plotly.graph_objects as go
 # ~ import plotly.express as px
@@ -103,6 +104,13 @@ if mode1 == "bybatch" or mode1 == "byuser":
 			job_list_algo_compare.append(j)
 		job_list_algo_compare.sort(key = operator.attrgetter("input_file"))
 		
+		# ~ size_points = []
+		# ~ subtime_points = []
+		# ~ if boxplot_or_hist == "points":
+			# ~ for i in range(0, len(unique_id)):
+				# ~ subtime_points = size_points.append(job_list_algo_compare.subtime)
+				# ~ size_points = size_points.append(job_list_algo_compare.size)
+				
 		last_data = -1
 		
 		sum_of_core_time_used = 0
@@ -187,7 +195,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 						list_of_core_time_used.append(sum_of_core_time_used)
 						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
 		
-		if boxplot_or_hist == "boxplot":
+		if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points":
 			count_total = 0
 			count_different_from_1 = 0
 			core_time_used_improvement = []
@@ -199,6 +207,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 					core_time_used_improvement.append(improvement)
 					count_different_from_1 += 1
 				count_total+=1
+				
+				# ~ if boxplot_or_hist == "points":
+					# ~ size_points.append()
 			
 			if mode1 == "byuser":
 				print("Total number of users:", count_total, "| Total number of jobs:", total_nb_of_jobs)
@@ -225,7 +236,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 				for i in range (0, len(core_time_used_improvement)):
 					core_time_used_improvement_lem.append(core_time_used_improvement[i])
 				pourcentage_plot_lem = (count_different_from_1*100)/count_total
-		else: # Cas hist
+		elif boxplot_or_hist == "hist": # Cas hist
 			total_core_time_used = 0
 			for i in range (0, len(list_of_core_time_used_reference)):
 				total_core_time_used += list_of_core_time_used[i]
@@ -239,7 +250,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 			elif k ==2:
 				total_core_time_used_leo = total_core_time_used	
 			elif k ==3:
-				total_core_time_used_lem = total_core_time_used	
+				total_core_time_used_lem = total_core_time_used				
 				
 		job_list_algo_compare.clear()
 		list_of_core_time_used.clear()
@@ -247,31 +258,56 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		if boxplot_or_hist == "boxplot":
 			core_time_used_improvement.clear()
 	
-	if boxplot_or_hist == "boxplot":
+	if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points":
 		columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
 		colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
 	else:
 		columns = [total_core_time_used_fcfs/(60*60), total_core_time_used_eft/(60*60), total_core_time_used_lea/(60*60), total_core_time_used_leo/(60*60), total_core_time_used_lem/(60*60)]
 		colors=["#4c0000", "#E50000","#00bfff","#ff9b15","#91a3b0"]
-		print(columns)	
+		print(detail + " in hours are:")
+		print(columns)
+		print("Percentages of reductions from FCFS for " + detail + " mode " + mode2 + " are " + " EFT: " + str(((total_core_time_used_fcfs - total_core_time_used_eft)*100)/total_core_time_used_fcfs) + " LEA: " + str(((total_core_time_used_fcfs - total_core_time_used_lea)*100)/total_core_time_used_fcfs) + " LEO: " + str(((total_core_time_used_fcfs - total_core_time_used_leo)*100)/total_core_time_used_fcfs) + " LEM: " + str(((total_core_time_used_fcfs - total_core_time_used_lem)*100)/total_core_time_used_fcfs))
 		
 	fig, ax = plt.subplots()
 	if boxplot_or_hist == "boxplot":
-		fig = sns.boxplot(data=columns, whis=[12.5, 100 - 12.5], palette=colors)
-	else:
+		fig = sns.boxplot(data=columns, whis=[12.5, 100 - 12.5], palette=colors, showmeans = True, showfliers = False)
+	elif boxplot_or_hist == "hist":
 		if (mode2 == "NO_BF"):
 			fig = plt.bar(["FCFS", "EFT", "LEA", "LEO", "LEM"], columns, color=colors)
 		else:
 			fig = plt.bar(["FCFS-BF", "EFT-BF", "LEA-BF", "LEO-BF", "LEM-BF"], columns, color=colors)
+	elif boxplot_or_hist == "ecdf":
+		min_ecdf = 0.4
+		max_ecdf = 3
+		if mode2 == "NO_BF":
+			linestyle="solid"
+		else:
+			linestyle="dashed"
+		x = np.linspace(min_ecdf, max_ecdf)
+		ecdf = ECDF(columns[0])
+		y = ecdf(x)
+		plt.step(x, y, label = "EFT", color = colors[0], linewidth=2, linestyle=linestyle)
+		ecdf = ECDF(columns[1])
+		y = ecdf(x)
+		plt.step(x, y, label = "LEA", color = colors[1], linewidth=2, linestyle=linestyle)
+		ecdf = ECDF(columns[2])
+		y = ecdf(x)
+		plt.step(x, y, label = "LEO", color = colors[2], linewidth=2, linestyle=linestyle)
+		ecdf = ECDF(columns[3])
+		y = ecdf(x)
+		plt.step(x, y, label = "LEM", color = colors[3], linewidth=2, linestyle=linestyle)
+		plt.axvline(x = 1, linestyle = "dotted", color = "black", linewidth=4)
+		plt.legend(fontsize=font_size, loc="lower right")
+	# ~ elif boxplot_or_hist == "points":
 	
 	# box = plt.violinplot(columns, showmedians=True, showmeans=True)
 
 	if boxplot_or_hist == "boxplot":
 		if (count_improvement_equal_at_1 == 0):
 			if (mode2 == "NO_BF"):
-				plt.xticks([0, 1, 2, 3], ["EFT_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
+				plt.xticks([0, 1, 2, 3], ["EFT " + str(pourcentage_plot_eft)[0:2] + "%", "LEA " + str(pourcentage_plot_lea)[0:2] + "%", "LEO " + str(pourcentage_plot_leo)[0:2] + "%", "LEM " + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
 			elif (mode2 == "BF"):
-				plt.xticks([0, 1, 2, 3], ["EFT-BF_" + str(pourcentage_plot_eft)[0:2] + "%", "LEA-BF_" + str(pourcentage_plot_lea)[0:2] + "%", "LEO-BF_" + str(pourcentage_plot_leo)[0:2] + "%", "LEM-BF_" + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
+				plt.xticks([0, 1, 2, 3], ["EFT-BF " + str(pourcentage_plot_eft)[0:2] + "%", "LEA-BF " + str(pourcentage_plot_lea)[0:2] + "%", "LEO-BF " + str(pourcentage_plot_leo)[0:2] + "%", "LEM-BF " + str(pourcentage_plot_lem)[0:2] + "%"], fontsize=font_size)
 		else:
 			if (mode2 == "NO_BF"):
 				plt.xticks([0, 1, 2, 3], ["EFT", "LEA", "LEO", "LEM"], fontsize=font_size)
@@ -280,7 +316,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
 
 		# Max Y
-		plt.ylim(0.5, 2)
+		plt.ylim(0.3, 2)
 	
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
@@ -292,8 +328,13 @@ if mode1 == "bybatch" or mode1 == "byuser":
 				plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
 		elif (mode2 == "BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
-			plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
-	else:
+			if detail == "stretch":
+				plt.ylabel('Stretch time\'s improvement from FCFS-BF', fontsize=font_size)
+			elif detail == "bounded_stretch":
+				plt.ylabel('Bounded stretch time\'s improvement from FCFS-BF', fontsize=font_size)
+			elif detail == "core_time":
+				plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
+	elif boxplot_or_hist == "hist":
 		# ~ plt.ylim(700000,740000)
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
@@ -303,6 +344,13 @@ if mode1 == "bybatch" or mode1 == "byuser":
 			plt.ylabel('Total core time (hours)', fontsize=font_size)
 		elif detail == "transfer_time":
 			plt.ylabel('Total transfer time (hours)', fontsize=font_size)
+	elif boxplot_or_hist == "ecdf":		
+		if (mode2 == "NO_BF"):
+			filename = "plot/ECDF/" + mode1 + "/ecdf_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		else:
+			filename = "plot/ECDF/" + mode1 + "/ecdf_bf_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		plt.ylabel('Cumulative probability', fontsize=font_size)
+		plt.xlabel('Stretch\'s improvement from FCFS', fontsize=font_size)
 			
 	plt.savefig(filename, bbox_inches='tight')
 		
