@@ -694,6 +694,11 @@ Actual workloads at HPC resources shared by a great number of users with diverse
 that are non-trivial to replicate in a fully artificial simulated job pattern. We believe that this is especially
 true for data-dependent patterns, where a project might launch a burst of jobs using the same file just a few thousand
 core hours in length, then be quiet for a long time processing the results, and then launch another such burst.
+\rev{We observed such behavior on the platform we extracted the logs from. The cluster is often used
+for taxonomic identification of DNA fragments. To perform such identification, the kraken2 tool \url{https://github.com/DerrickWood/kraken2/tree/master/src} is often used together with an input database of multiple gygabytes (see \url{https://benlangmead.github.io/aws-indexes/k2}. Those data base vary in size, 
+from a few gigabyte up to 800GB.
+We also observed users using the Hierarcchicakl aligmenet tool for genome alignement (see \url{https://github.com/ComparativeGenomicsToolkit/hal}) that uses databases of MAF is a text format used at UCSC to store genome alignment (see \url{https://ftp.ensembl.org/pub/release-107/maf/ensembl-compara/multiple_alignments/10_primates.epo/} to download multiple genome files). 
+}
 However, changing the scheduling strategy of a production cluster for
 scheduling research would disrupt the community using this cluster.
 
@@ -705,15 +710,34 @@ All strategies as well as the two baselines have been implemented on
 a simulator that we developed\footnote{See code and anonymized logs at: \url{https://github.com/userccgrid/Locality-aware-batch-scheduling}}.
 
 
+\subsection{\rev{Platform description}}
+\rev{
+We use a university cluster shared between several research laboratories. As mentioned above, a variety of applications including genomics analysis are performed on this cluster.
+Our cluster contains 9720 cores spread over 486 nodes. Each node has two 10-core Intel Xeon V4 CPU at 2.20 GHz/core.
+Most of the nodes have 128GB of RAM, and a few are larger.
+To avoid an additional constraint, while maintaining a model close to real clusters,
+we consider that the platform is made of 486 homogeneous nodes of size $\memory = 128GB$.
+From this platform we extract historical workloads containing the following information.}
+
 \subsection{Usage of real cluster logs}
 \label{sec.working}
 \todo[inline]{Max: Re-write this section to answer the reviewers}
-The logs we use contain historical data on jobs, namely their exact submission time,
-size, stated walltime, and actual duration.
+\rev{The logs we use contain historical data on jobs:
+\begin{itemize}
+	\item The exact submission time
+	\item The stated walltime
+	\item The actual duration of the jobs
+	\item The number of required cores
+	\item The user's name
+\end{itemize} 
+}
+\todo[inline]{Reviewer 1: "Does it also give number of required threads or will nb threads be dynamically decided based on available cores - if so, the runtime on different machines will be different"}
+
 Since explicit data dependencies are not encoded in SLURM job
 specifications, we do not have access to the actual input files of
 these jobs. We thus create an artificial data dependency pattern that
 replicates user behaviors.
+\rev{Each job uses exactly one input file.}
 We consider two jobs $J_i$ and $J_j$. These jobs are considered to
 share their input file if they match the three following requirements:
 \begin{enumerate}
@@ -723,17 +747,17 @@ share their input file if they match the three following requirements:
           time frame. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
 \end{enumerate}
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files. 
+\rev{Two users could use the same file but it is very unlikely. Since users are using subsets 
+of large multi-GB databases and are subitting jobs at different times among thousands of other jobs, 
+it is very unlikely that two users using the same file submit jobs at the same time.}
 % 
-The platform where the logs have been extracted
-consists of 486 nodes with 20 cores each, with most of them
-having 128GB of RAM, and a few larger nodes.
-To avoid an additional constraint, while maintaining a model close to real clusters,
-we consider that the platform is made of 486 homogeneous nodes of size $\memory = 128GB$.
-
 We consider that these jobs are dedicated to processing their input
 file. Hence, the more cores the job requests, 
 the larger its input file. This allows to compute the size of files as follows:
 $$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
+\rev{A node can thus contain multiple different files. Thus the scheduling strategy cannot be 
+simplified to assign a node per user's session. Moreover, you must maximize locality while avoiding starvation.}
+\todo[inline]{Reviewer 1: "Is there a reference that demonstrates that file size is directly proportional to processing time for HPC applications?" I think he meant number of cores. Dire que si t'as 1 cores et 128 gb tu bloque les 19 autres coeurs de toute facon donc autant en prendre un chiffre proportionel: a voir si on le garde car pas forcément utile}
 
 The utilization levels in the log of the platform are typically high ($>90\%$), but
 not fully consistently so. The vast majority of jobs on these
@@ -770,11 +794,10 @@ of the real usage from an actual user community including, but not exclusively c
     \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\week} (1.2*6*\x-0.03, 1);
   \end{tikzpicture}
 }
-\caption{Methodology followed to schedule and evaluate jobs from a specific day while avoiding edge effects.}\label{fig.workload}
+\caption{\rev{Methodology followed to schedule and evaluate jobs from a specific day while avoiding edge effects.}}\label{fig.workload}
 \label{fig.ex}
 \end{figure}
 
-\todo[inline]{Max: re write this paragraph to talk about weeks}
 In order to avoid simulating the whole workload (one year) but to
 target different scenarios, we randomly select a number of days (44 days) and
 extract the jobs corresponding to these days from the logs. However,
@@ -785,6 +808,13 @@ under consideration. More precisely, we proceed as illustrated in Figure~\ref{fi
 We evaluate the mean stretch and the total amount of time spent waiting for a file to be available.
 Our main competitors on these metrics are FCFS and EFT, with and without backfilling.
 
+\subsection{\rev{Simulator description}}
+\rev{assign
+All strategies as well as the two baselines have been implemented
+on a simulator that we developed.
+En python, mesure ca et ca et pas basé je recalcule, Pk pas utilisé un truc qui exsite ? Car fonctionalité manquante 
+\todo[inline]{Put url for simulator here and modiy paragraph about it earlier in the section.}
+}
 
 \subsection{\rev{Performance on an underutilized cluster}}\label{sec.underutilized}
 
@@ -825,8 +855,8 @@ file re-use, which explains why the total time spent waiting for a load is lower
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-10-09->2022-_V10000_anonymous_Fcfs_Used_nodes_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of week 40 with FCFS.}\label{40_cluster_usage_fcfs}\end{figure}
 
-\begin{figure}[t]\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{subfigure}
-\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{subfigure}\caption{Stretch times of each job compared to FCFS on the workload of week 40.}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{figure}
 
 \paragraph{Understanding LEA's poor performance \rev{on an underutilized cluster}}
 \todo[inline]{Max: Re write this section}
