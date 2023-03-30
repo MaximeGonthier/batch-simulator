@@ -208,8 +208,6 @@ if mode1 == "bybatch" or mode1 == "byuser":
 					count_different_from_1 += 1
 				count_total+=1
 				
-				# ~ if boxplot_or_hist == "points":
-					# ~ size_points.append()
 			
 			if mode1 == "byuser":
 				print("Total number of users:", count_total, "| Total number of jobs:", total_nb_of_jobs)

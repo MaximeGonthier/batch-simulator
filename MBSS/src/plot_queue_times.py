@@ -137,4 +137,5 @@ else:
 	print("Error type")
 	exit(1)
 
-plt.savefig("plot/Stretch_times/Stretch_times_FCFS_" + algo + "_" + workload + "_450_128_32_256_4_1024.pdf")
+# ~ plt.savefig("plot/Stretch_times/Stretch_times_FCFS_" + algo + "_" + workload + "_450_128_32_256_4_1024.pdf")
+plt.savefig("plot/Stretch_times/Stretch_times_FCFS_" + algo + "_" + workload + "_450_128_32_256_4_1024.png")

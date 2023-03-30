@@ -825,10 +825,11 @@ file re-use, which explains why the total time spent waiting for a load is lower
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-10-09->2022-_V10000_anonymous_Fcfs_Used_nodes_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of week 40 with FCFS.}\label{40_cluster_usage_fcfs}\end{figure}
 
-\begin{figure}[t]\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.pdf}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{subfigure}
-\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.pdf}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{subfigure}\caption{Stretch times of each job compared to FCFS on the workload of week 40.}\end{figure}
+\begin{figure}[t]\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{With LEA.}\label{07_16_fcfs_vs_lea}\end{subfigure}
+\begin{subfigure}[b]{0.49\linewidth}\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{With LEM.}\label{07_16_fcfs_vs_lem}\end{subfigure}\caption{Stretch times of each job compared to FCFS on the workload of week 40.}\end{figure}
 
-\paragraph{Understanding LEA's poor performance}
+\paragraph{Understanding LEA's poor performance \rev{on an underutilized cluster}}
+\todo[inline]{Max: Re write this section}
 To understand the issues LEA encounters on this workload, we need to study the cluster's usage over time.
 Figure~\ref{07_16_cluster_usage_fcfs} shows the cluster usage over time when using FCFS.
 The vertical axis represents the number of requested cores either running on a
@@ -920,10 +921,11 @@ achieve performance identical to EFT.
 
 \subsection{Results on a saturated cluster}\label{sec.03-26}
 
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-03-26->2022-03-26_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on March 26.}\label{stretch.03-26}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-03-26->2022-03-26_V10000_Fcfs_Used_nodes_Reduced_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of March 26 with FCFS.}\label{cluster_usage.03-26_fcfs}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-03-26->2022-03-26_V10000_450_128_32_256_4_1024.pdf}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March 26.}\label{vs_fcfs_lem_03-26}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-24-10-30_0.pdf}\caption{Average stretch of all jobs evaluated and total load time on March 26.}\label{stretch.03-26}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-10-24->2022-10-30_V10000_anonymous_Fcfs_Used_nodes_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload on week 43.}\label{cluster_usage.03-26_fcfs}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-24->2022-10-30_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each job of LEM compared to FCFS on the workload of March 26.}\label{vs_fcfs_lem_03-26}\end{figure}
 
+\todo[inline]{Max: Put transfers and re write this section}
 The workload presented here saturates the cluster with FCFS. 
 Indeed, as we can see on Figure~\ref{cluster_usage.03-26_fcfs}, there is
 a queue of several thousands requested cores
@@ -949,29 +951,30 @@ We can observe this, job by job, on Figure~\ref{vs_fcfs_lem_03-26}: very few job
 have a worse stretch than FCFS and a large amount of jobs are above an improvement of 2. 
 % The columns of circles are set of jobs using the same file, that all saved time on the loading phase. 
 
-\subsection{A cluster saturated with small jobs, the best case scenario for LEA and LEM}\label{sec.08-16}
+%~ \subsection{A cluster saturated with small jobs, the best case scenario for LEA and LEM}\label{sec.08-16}
 
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on August 16.}\label{stretch.08-16}\end{figure}
+%~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Results_FCFS_Score_Backfill_2022-08-16->2022-08-16_V10000_Mean_Stretch_Total_waiting_for_a_load_time_and_transfer_time_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated and total load time on August 16.}\label{stretch.08-16}\end{figure}
 
-From Figure~\ref{stretch.08-16}a, we observe that LEA has a stretch 33 times smaller than
-its competitors. LEM is about 7 times smaller. This drastic diminution is explained
-by the two particularities of this workload.
-Firstly, it is a workload that heavily saturates the cluster.
-% as you can see in Figure~\ref{cluster_usage.08-16_fcfs}
-% (note that the Y axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
-So, for the same reasons as in Section~\ref{sec.03-26}, LEA and LEM largely reduce load times.
-Secondly, it is a workload largely composed of jobs that are short and using less than five cores.
-% The size of a file is always between 6.4 and 128GB.
-On shorter jobs, the proportion of the duration spent on the file transfer is very high. 
-Thus, reducing the transfer time of small jobs has a much greater effect on the stretch, resulting in this 
-drastic reduction for LEA and LEM.
+%~ From Figure~\ref{stretch.08-16}a, we observe that LEA has a stretch 33 times smaller than
+%~ its competitors. LEM is about 7 times smaller. This drastic diminution is explained
+%~ by the two particularities of this workload.
+%~ Firstly, it is a workload that heavily saturates the cluster.
+%~ % as you can see in Figure~\ref{cluster_usage.08-16_fcfs}
+%~ % (note that the Y axis of the top half is modified here to denote the large amount of requested cores compared to the total amount of cores).
+%~ So, for the same reasons as in Section~\ref{sec.03-26}, LEA and LEM largely reduce load times.
+%~ Secondly, it is a workload largely composed of jobs that are short and using less than five cores.
+%~ % The size of a file is always between 6.4 and 128GB.
+%~ On shorter jobs, the proportion of the duration spent on the file transfer is very high. 
+%~ Thus, reducing the transfer time of small jobs has a much greater effect on the stretch, resulting in this 
+%~ drastic reduction for LEA and LEM.
 
 \subsection{Aggregated results on 44 different evaluated workloads}
 
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads.pdf}\caption{Mean stretch's improvement from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean. 6 outliers for LEA and LEM (with maximum value at 33.5) are not depicted for better readability.}\label{boxplot.all}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/ECDF/ecdf_mean_stretch_all_workloads.pdf}\caption{Empirical distribution function of the mean stretch's improvement from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with (circles) and without (crosses) backfilling.\todo[inline]{Max: Do you want to keep this or I put the old one with bars and hashed bars for backfilling? LM: put the same cross for non-BF strategy, and a different symbol (circle) for those with BF}}\label{stretch.01-28}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/box_plot_mean_stretch_all_workloads_bf.pdf}\caption{Mean stretch's improvement from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
+\todo[inline]{Max: Put transfers and re write this section as well. Say that here on boxplots it's ALL the jobs}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_all-all_1.pdf}\caption{Mean stretch's improvement from FCFS on all evaluated workloads. The whiskers are the octiles. The solid green line represent the median and the dashed one the mean. 6 outliers for LEA and LEM (with maximum value at 33.5) are not depicted for better readability.}\label{boxplot.all}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/ECDF/byuser/ecdf_stretch_all-all.pdf}\caption{Empirical distribution function of the mean stretch's improvement from FCFS on all evaluated workloads.}\label{ecdf}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/BF_AND_NON_BF_Results_FCFS_Score_Backfill_2022-01-28->2022-01-28_V10000_Mean_Stretch_450_128_32_256_4_1024.pdf}\caption{Average stretch of all jobs evaluated on January 28 with (circles) and without (crosses) backfilling.}\label{stretch.01-28}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_bf_stretch_all-all_1.pdf}\caption{Mean stretch's improvement from FCFS-BF on all evaluated workloads.}\label{boxplot.all_bf}\end{figure}
 
 We evaluated our 5 schedulers on 44 different days.
 Figure~\ref{boxplot.all} represents with box-plots the aggregated
@@ -1002,7 +1005,6 @@ LEM is a more versatile strategy and offers higher sustained performance on non-
 of fewer extreme improvements on heavily saturated clusters.
 
 
-\todo[inline]{LM: I think if we need space, we could remove the empirical distribution (Figure~\ref{ecdf}) as well as the following paragraph.}
 From the same data shown on Figure~\ref{boxplot.all}, we plot an empirical distribution function on Figure~\ref{ecdf}.
 EFT's low variance is clearly visible in the sudden jump in probability around an improvement of 1.
 It is interesting to note that for LEA and LEM, 20\% of the results are above an improvement of 300\%.
@@ -1056,9 +1058,6 @@ Among the slow-downs, only 25\% are superior to 0.15.
 %\todo[inline]{LM: should we say somewhere that we tested with stronger data persistence and it did not really helps?}
 
 \section{Conclusion}\label{sec.conclusion}
-
-%\todo[inline]{Max: - Results of LEA, LEO and LEM - Fairness - Advance reservation - Tune LEM - Improve locality of LEO - Tune BF for LEA, LEO and LEM - Talk about the genericity of our problem?}
-%\todo[inline]{Max: Proposition for a conclusion. It's a draft, please do not hesitate to completely modify it.}
 
 Batch schedulers are key components of computing clusters, and aim at
 improving resource utilization as well as decreasing jobs' response
