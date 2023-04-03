@@ -18,6 +18,7 @@ first_job_day_0 = int(sys.argv[7])
 first_job_day_1 = int(sys.argv[8])
 first_job_day_2 = int(sys.argv[9])
 day = sys.argv[11]
+print(day)
 month = sys.argv[12]
 year = sys.argv[13]
 precision_mode = sys.argv[14]
@@ -194,15 +195,18 @@ else:
 		# ~ plt.axhline(y = 486*20, color = 'black', linestyle = "dotted", label = "Total number of cores")
 		# ~ axs[0].set_xlabel('Time in seconds')
 		
-		axs[0].set_yticks([2000, 4000, 6000, 8000, 10000])
+		axs[0].set_yticks([20000, 40000, 60000, 80000])
+		# ~ axs[0].set_yticks([2000, 4000, 6000, 8000, 10000])
 		axs[1].set_yticks([0, 2000, 4000, 6000, 8000])
-		axs[0].set_yticklabels(["2000", "4000", "6000", "8000", "10000"], fontsize=font_size)
+		axs[0].set_yticklabels(["20000", "40000", "60000", "80000"], fontsize=font_size)
+		# ~ axs[0].set_yticklabels(["2000", "4000", "6000", "8000", "10000"], fontsize=font_size)
 		axs[1].set_yticklabels(["0", "2000", "4000", "6000", "8000"], fontsize=font_size)
 		
 		fig.text(-0.0235, 0.465, '$\downarrow$10000', fontsize=font_size)
 		fig.text(0.065, 0.5, '$\u2191$0', fontsize=font_size)
 		
-		axs[0].set_ylim(0, 10000)
+		axs[0].set_ylim(0, 80000)
+		# ~ axs[0].set_ylim(0, 10000)
 		axs[1].set_ylim(0, 10000)
 		
 		fig.text(-0.07, 0.5, 'Number of requested cores', va='center', rotation='vertical', fontsize=font_size)
@@ -236,8 +240,9 @@ else:
 		labels = ["All jobs", "Ev. jobs", "Waiting"]
 		fig.legend(lines, labels, loc="upper right", bbox_to_anchor = (0.125, -0.12, 0.78, 1.01), fontsize=font_size)
 	else:
-		fig.legend(lines, labels, loc="upper left", bbox_to_anchor = (0.125, -0.12, 1, 1), fontsize=font_size)
-	
+		fig.legend(lines, labels, loc="lower center", bbox_to_anchor = (0.5,-0.05), fontsize=font_size, ncol=3)
+		# ~ fig.legend(bbox_to_anchor =(0.5,-0.27), loc='lower center', ncol=6)
+		
 filename = "plot/Cluster_usage/" + title + "_" + precision_mode + ".pdf"
 
 plt.savefig(filename, bbox_inches='tight')

@@ -1,0 +1,23 @@
+gonthier@gonthier-Precision-3551:~/data-aware-batch-scheduling/MBSS$ python3 src/get_nuser_from_converted_workload.py 
+Reading inputs/workloads/converted/2022-02-21->2022-02-27_V10000
+Reading inputs/workloads/converted/2022-07-11->2022-07-17_V10000
+Reading inputs/workloads/converted/2022-09-05->2022-09-11_V10000
+Reading inputs/workloads/converted/2022-10-10->2022-10-16_V10000
+Reading inputs/workloads/converted/2022-01-10->2022-01-16_V10000
+Reading inputs/workloads/converted/2022-02-07->2022-02-13_V10000
+Reading inputs/workloads/converted/2022-03-28->2022-04-03_V10000
+Reading inputs/workloads/converted/2022-10-17->2022-10-23_V10000
+Reading inputs/workloads/converted/2022-10-24->2022-10-30_V10000
+Reading inputs/workloads/converted/2022-12-12->2022-12-18_V10000
+Reading inputs/workloads/converted/2022-01-03->2022-01-09_V10000
+Reading inputs/workloads/converted/2022-10-03->2022-10-09_V10000
+
+##### Stats #####:
+Nb of jobs started before the evaluated week: 14921
+Nb of jobs submitted before the evaluated week: 7276
+Nb of scheduled jobs before the evaluated week: 218537
+Nb of evaluated jobs: 1493151
+Nb of scheduled jobs after the evaluated week: 252611
+Total number of jobs: 1986496
+Number of distinct users: 1083
+Number of batch of users: 136404

@@ -1,4 +1,4 @@
-all: clean paper.pdf
+all: clean batch-scheduling-paper.pdf
 
 abstract:
 	pdflatex abstract.tex
