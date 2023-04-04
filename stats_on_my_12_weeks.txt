@@ -18,6 +18,6 @@ Nb of jobs submitted before the evaluated week: 7276
 Nb of scheduled jobs before the evaluated week: 218537
 Nb of evaluated jobs: 1493151
 Nb of scheduled jobs after the evaluated week: 252611
-Total number of jobs: 1986496
+Total number of jobs: 1.986.496
 Number of distinct users: 1083
 Number of batch of users: 136404
