@@ -50,13 +50,13 @@
 \newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
 \newcommand{\nbloads}{\ensuremath{\mathit{\mathit{Loads}}}\xspace}
 \newcommand{\live}{\ensuremath{L}\xspace}
-\newcommand{\us}{\ensuremath{\mathit{user's~session}}\xspace}
+\newcommand{\us}{\ensuremath{\mathit{user~session}}\xspace}
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 
 \begin{document}
 
-\title{Locality-aware batch scheduling of I/O intensive workloads\todo[inline]{Max: Same title?}}
+\title{Locality-aware batch scheduling of I/O intensive workloads}
 
 \begin{abstract}
   Clusters make use of workload schedulers such as
@@ -83,7 +83,7 @@
   keeping data in local memory between successive jobs and using data
   locality information to schedule jobs allows a reduction in job
   waiting time and a drastic decrease in the amount of data transfers.
-\todo[inline]{Max: Can we keep the same abstract?}
+
   %%%% Longer version below:
   %   Clusters and supercomputers make use of workload schedulers such as
   % the Slurm Workload Manager or OAR to allocate computing jobs onto nodes. These schedulers
@@ -404,7 +404,7 @@ The stretch represents the slow-down of a job due to sharing the
 platform with other jobs. Considering the stretch
 allows to better aggregate performance from small and large jobs.
 
-\todo[inline]{Max: I define \us here (do we want a macro like that for it?):}
+\todo[inline]{Max: Do we want the macro \us for user sessions?}
 \rev{
 Finally, what is important for a user is that all the jobs he has submitted at once
 are finished as soon as possible. Thus we introduce the notion of \us. A \us is the sum of the stretch of jobs submitted by a user over a short period of time. It is the stretch of each \us that will be used in the Figures of Section~\ref{sec.evaluations}.
@@ -755,7 +755,7 @@ it is very unlikely that two users using the same file submit jobs at the same t
 
 We consider that these jobs are dedicated to processing their input
 file. Hence, the more cores the job requests, 
-the larger its input file. This allows to compute the size of files as follows:
+the larger its input file. This allows to estimate the size of files as follows:
 $$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
 \rev{Indeed, if a user needs 128GB of memory for example, but only requests 1 core out of the 20 available, he is blocking the machine for all the other users. Consequently, it's more efficient for a user who needs all the memory of a machine to reserves all the cores of the machine. And similarly if a user needs a fraction of the memory, he can reserves a fraction of the machine's cores. 
 A node can thus contain multiple different files. Thus the scheduling strategy cannot be 

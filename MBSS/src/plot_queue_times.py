@@ -88,8 +88,14 @@ else:
 	ax.set_ylim(0.1,4)
 
 ax.set_xticks([job_list_algo_reference[0].subtime, job_list_algo_reference[0].subtime + 86400, job_list_algo_reference[0].subtime + 86400*2, job_list_algo_reference[0].subtime + 86400*3, job_list_algo_reference[0].subtime + 86400*4, job_list_algo_reference[0].subtime + 86400*5, job_list_algo_reference[0].subtime + 86400*6])
-ax.set_xticklabels(["03/10", "04/10", "05/10", "06/10", "07/10", "08/10", "09/10"], fontsize=font_size)
 
+if sys.argv[5] == "2022-10-24->2022-10-30_V10000_anonymous":
+	ax.set_xticklabels(["24/10", "25/10", "26/10", "27/10", "28/10", "29/10", "30/10"], fontsize=font_size)
+elif sys.argv[5] == "2022-10-03->2022-10-09_V10000_anonymous":
+	ax.set_xticklabels(["03/10", "04/10", "05/10", "06/10", "07/10", "08/10", "09/10"], fontsize=font_size)
+else:
+	ax.set_xticklabels(["/", "/", "/", "/", "/", "/", "/", "/", "/", "/"], fontsize=font_size)
+	
 ax.axhline(y = 1, color = 'black', linestyle = '-', alpha=0.2)
 
 # Couleur en fonction de la stratégie
@@ -111,7 +117,7 @@ else:
 # ~ ax.scatter(x, y, c=data_size, s=sizes, alpha=0.3)
 
 # Couleur en fonction de la stratégie
-ax.scatter(x, y, color=color_choosen, s=sizes, alpha=0.3)
+ax.scatter(x, y, color=color_choosen, s=sizes, alpha=0.06)
 # ~ print(sizes)
 
 # ~ circles = [Line2D([0], [0], marker='o', color=color_choosen, label='20000 sec', markerfacecolor=color_choosen, markersize=(sqrt(20000)/2)/4, alpha=0.3, linestyle="None"),
