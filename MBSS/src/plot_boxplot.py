@@ -342,8 +342,9 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
 		
 		# Max Y
-		plt.ylim(0.3, 5)
-	
+		plt.ylim(0.3, 2.4)
+		# ~ plt.ylim(0.3, 5) # Pour 10-24 10-30
+		
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
 			if detail == "stretch":

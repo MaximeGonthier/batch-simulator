@@ -21,3 +21,13 @@ Nb of scheduled jobs after the evaluated week: 252611
 Total number of jobs: 1.986.496
 Number of distinct users: 1083
 Number of batch of users: 136404
+
+%~ Core hours MAX possible is 19595520
+%~ core_time in hours are:
+%~ 13282427.83638889, 13280544.279722223, 13233141.786944445, 13280172.383611111, 13268665.10111111
+%~ Percentages of reductions from FCFS for core_time mode NO_BF are  EFT: 0.01418081611184384 LEA: 0.37106205319948427 LEO: 0.016980726758391865 LEM: 0.10361611180806136
+%~ Nb d'heures de diff pour LEA: 49286,049444445 
+%~ and for transfer time:
+%~ transfer_time in hours are:
+%~ 76053.51472222223, 75398.39972222222, 63084.8275, 75348.51444444444, 70665.11944444444
+%~ Percentages of reductions from FCFS for transfer_time mode NO_BF are  EFT: 0.8613868831608129 LEA: 17.052055081989362 LEO: 0.9269792202933947 LEM: 7.0850049435037254
