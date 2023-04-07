@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 from statsmodels.distributions.empirical_distribution import ECDF
+# Import statistics Library
+import statistics
 
 # ~ import plotly.graph_objects as go
 # ~ import plotly.express as px
@@ -274,6 +276,13 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		if boxplot_or_hist == "boxplot":
 			core_time_used_improvement.clear()
 	
+	print("Median EFT:", statistics.median(core_time_used_improvement_eft))
+	print("Median LEA:", statistics.median(core_time_used_improvement_lea))
+	print("Median LEO:", statistics.median(core_time_used_improvement_leo))
+	print("Median LEM:", statistics.median(core_time_used_improvement_lem))
+	# ~ exit
+
+	
 	if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points":
 		columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
 		colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
@@ -344,6 +353,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		# Max Y
 		plt.ylim(0.3, 2.4)
 		# ~ plt.ylim(0.3, 5) # Pour 10-24 10-30
+		
 		
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"

@@ -79,10 +79,11 @@
   in the memory of some node as much as possible.
   
   We perform simulations using real cluster usage traces to compare
-  them to classical job schedulers.  The results show that
+  them to classical job schedulers. The results show that
   keeping data in local memory between successive jobs and using data
   locality information to schedule jobs allows a reduction in job
-  waiting time and a drastic decrease in the amount of data transfers.
+  waiting time \rev{(7.5\% improvement in stretch compared to a widely used scheduler: FCFS)
+  and a decrease (7\%)} in the amount of data transfers.
 
   %%%% Longer version below:
   %   Clusters and supercomputers make use of workload schedulers such as
