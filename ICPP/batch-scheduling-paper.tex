@@ -59,31 +59,31 @@
 \title{Locality-aware batch scheduling of I/O intensive workloads}
 
 \begin{abstract}
-  Clusters make use of workload schedulers such as
+  Clusters employ workload schedulers such as
   the Slurm Workload Manager to allocate computing jobs onto
   nodes. These schedulers usually aim at a good trade-off between
   increasing resource utilization and user satisfaction (decreasing
   job waiting time). However, these schedulers are typically unaware
   of jobs sharing large input files, which may happen in data
-  intensive scenarios. The same input files may be loaded several
+  intensive scenarios. The same input files may end up being loaded several
   times, leading to a waste of resources.
    
   We study how to design a \textit{data-aware job scheduler} that is
   able to keep large input files on the computing nodes, without
-  impacting other memory needs, and can use previously loaded files to
-  \textit{limit data transfers in order to reduce the waiting times of
-    jobs}.
+  impacting other memory needs, and can benefit from previously-loaded files to
+  \textit{decrease data transfers in order to reduce the waiting times of jobs}.
 
   We present three schedulers capable of distributing the load between
-  the computing nodes as well as re-using an input file already loaded
+  the computing nodes as well as re-using input files already loaded
   in the memory of some node as much as possible.
   
-  We perform simulations using real cluster usage traces to compare
+  We perform simulations using traces of real cluster usage, to compare
   them to classical job schedulers. The results show that
-  keeping data in local memory between successive jobs and using data
-  locality information to schedule jobs allows a reduction in job
-  waiting time \rev{(a 7.5\% improvement in stretch compared to a widely used scheduler: FCFS)
-  and a decrease (7\%)} in the amount of data transfers.
+  keeping data in local memory between successive jobs and using data-locality
+  information to schedule jobs allows \rev{improves performance compared
+  to a widely used scheduler (FCFS)}: a reduction in job waiting time
+  \rev{(a 7.5\% improvement in stretch), and a decrease} in the
+  amount of data transfers \rev{(7\%)}.
 
   %%%% Longer version below:
   %   Clusters and supercomputers make use of workload schedulers such as
