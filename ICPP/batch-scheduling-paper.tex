@@ -145,7 +145,8 @@ some users rather than others.
 
 Computation jobs however need data input which, more often than not, can
 be very large, notably for many subfields of life science with highly
-data-dependent workflows \rev{like taxonomic identification of DNA fragments, genome alignments or ancestral reconstructions}.
+data-dependent workflows \rev{like taxonomic identification of DNA fragments, genome alignments or ancestral reconstructions. It is a frequent use pattern for users of such communities to submit
+large batch of jobs using the same input files.}
 Loading such data input from the storage
 nodes may consume a significant part of the job duration. This load
 penalty can however be avoided altogether when the data was actually
@@ -181,6 +182,7 @@ We thus present the following contributions in this paper:
     benefits much more from our strategies which results
     considerable reduction in the job waiting times \rev{as well as the total core hours}.
 \end{itemize}
+\rev{We used simulations to avoid dirupting users on a production cluster, but our strategies could be implemented on the Slurm workload by asking the users to flag the input file they are using.}
 
 \section{Related work}\label{sec.related_work}
 
@@ -221,7 +223,7 @@ Distributed file systems are a solution to ease the access to
 shared input files. They facilitate the execution of I/O-intensive batch
 jobs by selecting appropriate storage policies.
 
-Batch-Aware Distributed File System~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
+\rev{BDFS}~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
 is designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
 HDFS~\cite{hdfs} (Hadoop Distributed File System)
 incorporates storage-aware scheduling. 
@@ -235,9 +237,9 @@ These solutions are mainly storage systems that uses a history of file locations
 In our scenario, we copy the data from an already-redundant system (an online database for example)
 and store it locally on the node in an ephemeral way.
 Thus, in the event of a crash, we do not manage the data which is already redundant, it simply results in an aborted job.
-Secondly, the scheduling can cause issues. Weets et al. describe some problems from
-MapReduce~\cite{issue_with_hdfs}, the programming model used in HDFS, in detail.
-By not using HDFS or any distributed file system, we avoid these problems altogether. 
+\rev{Secondly, the scheduling can cause issues (notably MapReduce, used in HDFS), as described by Weets et al.
+~\cite{issue_with_hdfs}.}
+By not using HDFS or any distributed file system, we avoid these problems altogether.
 Lastly, file systems are particularly efficient when the input data used are identical over time.
 In our case, between users, the inputs will be largely different, making distributed file systems less efficient.
 
@@ -392,7 +394,7 @@ $$
 In the following, we want to consider aggregated performance metrics on
 job flows, such as average flow. However, the duration
 of a job significantly impacts its flow time. Jobs with the same
-flow but very different durations do not experience the same quality
+flow but very different \rev{duration} do not experience the same quality
 of service. To avoid this, the \emph{stretch} metric has been
 introduced that compares the actual flow of a job to the one it would
 experience on an empty cluster:
@@ -404,14 +406,7 @@ The stretch represents the slow-down of a job due to sharing the
 platform with other jobs. Considering the stretch
 allows to better aggregate performance from small and large jobs.
 
-\todo[inline]{Max: Do we want the macro \us for user sessions? And write it like that everywhere in the paper?}
-\rev{
-Finally, what is important for a user is that all the jobs he has submitted at once are finished as soon as possible.
-Thus we introduce the notion of \us.
-A \us is the sum of the stretch of jobs submitted by a user in a 5-minute window.
-It is the stretch of each \us that is used in the figures of Section~\ref{sec.evaluations}.
-}
-
+\todo[inline]{Max: I moved the introduction of \us in the expe section.}
 
 \section{Job scheduling with input files}\label{sec.schedulers}
 
@@ -658,7 +653,7 @@ otherwise the EFT strategy is used.
 \subsection{Adding backfilling to all strategies}
 
 As mentioned above, backfilling has been proposed to increase the
-performance of job schedulers, by allowing jobs with lower priority to be
+performance of job schedulers, by allowing jobs with lower prioproduction clusterrity to be
 scheduled before jobs with higher priority. In our setting, the
 priority is directly linked to the submission order: if $J_i$ is
 submitted before $J_j$, then $J_i$ has a higher priority than $J_j$.
@@ -792,6 +787,10 @@ To target different scenarios but avoid scheduling the whole year,
 we randomly selected\footnote{We used the random from python3.6.9 with random.seed(0), nums = list(range(1, 52)) and random.shuffle(nums) which produce the order [28, 13, 43, 41, 42, 8, 6, 36, 2, 50, 40, 1] for the first twelve numbers, that matches the week number on the calendar.} 12 weeks and
 extracted the jobs submitted within these weeks from the logs. 
 Over these 12 weeks of workloads, we scheduled 1\,986\,496 jobs and evaluated 1\,493\,151 of them.
+The most important for a user is that all the jobs that have been submitted at once are finished as soon as possible.
+Thus we introduce the notion of \us.
+A \us is the sum of the stretch of jobs submitted by a user in a 5-minute window.
+It is the stretch of each \us that will be shown in this Section.
 There have been 1083 distinct users and 136\,404 \us.
 
 To simulate these jobs in a realistic, steady-state operation of the
@@ -835,7 +834,7 @@ Our main competitors on these metrics are FCFS and EFT, with and without backfil
 \subsection{\rev{Simulator description}}
 \rev{
 All strategies as well as the two baselines have been implemented
-on a simulator that we developed\footnote{You can find the code and the anonymized logs of the workloads at: \url{https://github.com/userccgrid/Locality-aware-batch-scheduling}}.
+on a simulator that we developed\footnote{You can find the code and the anonymized logs of the workloads at: \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
 
 The simulator is made in python and follows these principles:
 \begin{itemize}
