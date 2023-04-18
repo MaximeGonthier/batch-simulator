@@ -721,11 +721,12 @@ we consider that the platform is made of 486 homogeneous nodes of size $\memory 
 The platform is managed by the SLURM scheduler, and as mentioned above, we observed the submission of I/O intensive jobs.
 The cluster is often used for taxonomic identification of DNA fragments. 
 To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}} is often used together with an input database, whose size vary from a few GB up to 800GB.
-We also noticed users genome alignment tools that require to store text large files, and it is likely that they need to load multiple of them, resulting in high I/O demands. 
+We also noticed the use of genome alignment tools that require to store text large files, and it is likely that they need to load multiple of them, resulting in high I/O demands.
 % To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}} is often used together with an input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2} for example}. Those database vary in size, from a few GB up to 800GB.
 % We also observed users using the Hierarchical alignment tool for genome alignment\footnote{\url{https://github.com/ComparativeGenomicsToolkit/hal}} 
 % that uses MAF files. MAF is a text format used to store genome alignment\footnote{For example, for primates, you will have: \url{https://ftp.ensembl.org/pub/release-107/maf/ensembl-compara/multiple_alignments/10_primates.epo/}} and users might need to load multiple of them to work on their project, resulting in high I/O demands.
-\todo[inline]{LM: I feel the previous version had too much details and too many footnotes. I propose above a shorter and more compact version, but feel free to revert to the previous one.}
+\todo[inline]{LM: I feel the previous version had too much details and too many footnotes. I propose above a shorter and more compact version, but feel free to revert to the previous one.
+Max: I agree. If we have space, it might be good to give more details like one reference database ?}
 %
 From this platform we extract historical workloads containing the following information.
 }
@@ -783,7 +784,9 @@ of the real usage from an actual user community including, but not exclusively c
 In our experiments we evaluate our schedulers week by week.
 Our workload is constituted of 51 weeks, ranging from January the 3rd 2022 to December the 25th 2022.
 To target different scenarios but avoid scheduling the whole year, 
-we randomly selected\footnote{We used the random from python3.6.9 with random.seed(0), nums = list(range(1, 52)) and random.shuffle(nums) which produce the order [28, 13, 43, 41, 42, 8, 6, 36, 2, 50, 40, 1] for the first twelve numbers, that matches the week number on the calendar.} \todo[inline]{LM: the footnote is not necessary, these details need to go in the artifact only}
+we randomly selected
+%~ \footnote{We used the random from python3.6.9 with random.seed(0), nums = list(range(1, 52)) and random.shuffle(nums) which produce the order [28, 13, 43, 41, 42, 8, 6, 36, 2, 50, 40, 1] for the first twelve numbers, that matches the week number on the calendar.}
+\todo[inline]{LM: the footnote is not necessary, these details need to go in the artifact only. Max Okay I removed it and updated the footnote of the artifact if it's ok ?}
 12 weeks and
 extracted the jobs submitted within these weeks from the logs. 
 Over these 12 weeks of workloads, we scheduled 1\,986\,496 jobs and evaluated 1\,493\,151 of them.
@@ -833,7 +836,7 @@ We evaluate the proposed scheduler on these metrics and compared them to FCFS an
 \subsection{\rev{Simulator description}}
 \rev{
 All strategies as well as the two baselines have been implemented
-on a simulator that we developed\footnote{Code and anonymized logs are available for reproducibility:  \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
+on a simulator that we developed\footnote{Code, anonymized logs and the methodology followed to randomly select our evaluated weeks are available for reproducibility: \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
 
 The simulator is a simple event-based simulator focusing on data locality. It follows these principles:
 is made in python and follows these principles:
