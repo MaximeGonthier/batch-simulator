@@ -57,16 +57,26 @@ for i in range (0, len(job_list_algo_compare)):
 	elif  job_list_algo_reference[i].time == 0: 
 		percentage_difference = 0
 	else:
-		percentage_difference =job_list_algo_reference[i].time/job_list_algo_compare[i].time
+		percentage_difference=job_list_algo_reference[i].time/job_list_algo_compare[i].time
 		
 	
 	# ~ print("Job:", job_list_algo_reference[i].unique_id, "FCFS:", job_list_algo_reference[i].time, "Algo1:", job_list_algo_compare[i].time, "%:", percentage_difference, "Delay:", job_list_algo_reference[i].size)
 	
 	job_list_algo_reference[i].time = percentage_difference
-	
+
+max_stretch = 0
+min_stretch = 1000000
+
 for i in range (0, len(job_list_algo_compare)):
 	x.append(job_list_algo_reference[i].subtime)
 	y.append(job_list_algo_reference[i].time)
+	
+	if max_stretch < job_list_algo_reference[i].time:
+		max_stretch = job_list_algo_reference[i].time
+	
+	if min_stretch > job_list_algo_reference[i].time:
+		min_stretch = job_list_algo_reference[i].time
+	
 	data_size.append(job_list_algo_reference[i].data_type)	
 	# ~ sizes.append(job_list_algo_reference[i].size/1000)	
 	sizes.append(sqrt(job_list_algo_reference[i].size)/2)
@@ -74,6 +84,9 @@ for i in range (0, len(job_list_algo_compare)):
 fig, ax = plt.subplots()
 
 workload = sys.argv[5]
+
+print("Max:", max_stretch)
+print("Min:", min_stretch)
 
 if (workload == "2022-03-26->2022-03-26_V10000"):
 	ax.set_yticks([1, 10, 20, 30, 40])
@@ -83,9 +96,11 @@ elif (workload == "2022-07-16->2022-07-16_V10000"):
 	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2"], fontsize=font_size)
 	ax.set_ylim(0,2)
 else:
-	ax.set_yticks([0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5])
-	ax.set_yticklabels(["0", "0.5", "1", "1.5", "2", "2.5", "3", "3.5"], fontsize=font_size)
-	ax.set_ylim(0.1,4)
+	ax.set_yscale("log") #the log transformation
+	ax.set_yticks([0, 0.5, 1, 2, 3, 4])
+	ax.set_yticklabels(["0", "0.5", "1", "2", "3", "4"], fontsize=font_size)
+	ax.set_ylim(0.3, 5)
+	# ~ ax.set_ylim(0.01, 5)
 
 ax.set_xticks([job_list_algo_reference[0].subtime, job_list_algo_reference[0].subtime + 86400, job_list_algo_reference[0].subtime + 86400*2, job_list_algo_reference[0].subtime + 86400*3, job_list_algo_reference[0].subtime + 86400*4, job_list_algo_reference[0].subtime + 86400*5, job_list_algo_reference[0].subtime + 86400*6])
 
@@ -129,6 +144,7 @@ line2 = Line2D([], [], color=color_choosen, marker='o', markersize=(sqrt(5000)/2
 line3 = Line2D([], [], color=color_choosen, marker='o', markersize=(sqrt(1000)/2)/4, markerfacecolor=color_choosen, alpha=0.3, linestyle="None")
 plt.legend((line1, line2, line3), ('20000 sec', '5000 sec', '1000 sec'), loc='upper right', fontsize=font_size)
 
+# Log scale
 
 # ~ plt.legend(handles=circles, loc='upper right')
 

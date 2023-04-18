@@ -173,7 +173,7 @@ underuse), most working set samples largely benefit from our heuristics,
 leading to interesting benefit overall.
 
 We thus present the following contributions in this paper:
-\begin{itemize}
+\begin{compactenum}
 	\item We formalize our model of scheduling data-intensive jobs sharing input files on a cluster (Section~\ref{sec.framework}).
 	\item We propose three new schedulers focusing on re-using input files while minimizing evictions and avoiding starvation (Section~\ref{sec.schedulers}).
 	\item We extract job information from historical logs of a cluster to build workloads that correspond to the needs and behaviors of real users (Section~\ref{sec.working}).
@@ -182,7 +182,7 @@ We thus present the following contributions in this paper:
 	We show that workloads that heavily saturate the cluster
     benefits much more from our strategies which results
     considerable reduction in the job waiting times \rev{as well as the total core hours}.
-\end{itemize}
+\end{compactenum}
 \rev{We used simulations to avoid dirupting users on a production cluster, but our strategies could be implemented on the Slurm workload by asking the users to flag the input file they are using.}
 
 \section{Related work}\label{sec.related_work}
@@ -407,7 +407,7 @@ The stretch represents the slow-down of a job due to sharing the
 platform with other jobs. Considering the stretch
 allows to better aggregate performance from small and large jobs.
 
-\todo[inline]{Max: I moved the introduction of \us in the expe section.}
+%~ \todo[inline]{Max: I moved the introduction of \us in the expe section.}
 
 \section{Job scheduling with input files}\label{sec.schedulers}
 
@@ -918,11 +918,11 @@ Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under \rev{100\% more than half the time}, so LEM behaves similarly to EFT.
 On the contrary, LEA favors data re-use over an early start time for a job.
 \begin{table}
-\begin{tabular}{ l c >{\columncolor{green!85}}c c c }
+\begin{tabular}{ l c c c c }
   \toprule
-  Schedulers & EFT & LEA & LEO & LEM \\
+  Schedulers & EFT & \textbf{LEA} & LEO & LEM \\
   \midrule
-  Reduction from FCFS & 0.0\% & 14.8\% & 0.8\% & 3.8\% \\ % +0.03 for EFT
+  Reduction from FCFS & 0.0\% & \textbf{14.8}\% & 0.8\% & 3.8\% \\ % +0.03 for EFT
   \bottomrule
 \end{tabular}
 \caption{Percentage reduction in time spent waiting for a file to be ready before starting the computation, relative to the total wait time of FCFS.}\label{tab.40}
@@ -934,14 +934,16 @@ relative to the total waiting time of FCFS.
 In this case, LEA is the only strategy that decreases this waiting time by re-using input files.
 It will create queue of jobs that already have a valid copy of their file loaded on a node, waiting to be able to re-use their input.}
 On an underused cluster, this increases starvation.
-The benefit of scheduling these jobs immediately on another node and loading the file appears
-inferior to waiting for a file re-use for LEA and thus creates this queue of jobs that does not exist for \rev{the other schedulers}.
-\todo[inline]{LM: the previous sentence is obscure to me}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEA compared to FCFS.}\label{40_fcfs_vs_lea}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEM compared to FCFS.}\label{40_fcfs_vs_lem}\end{figure}
+%~ The benefit of scheduling jobs immediately on another node and loading the file appears
+%~ inferior to waiting for a file re-use for LEA and thus creates this queue of jobs that does not exist for \rev{the other schedulers}.
+\rev{LEA favors re-using a file over starting immediately a job on another node.
+When there are not enough jobs, it can create a starvation for certain nodes.}
+\todo[inline]{LM: the previous sentence is obscure to me. Max: Okay I modified it.}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEA compared to FCFS. Cropped at 0.3 and 5. The max and min values are 543 and 0.03.\todo[inline]{Max: Ajout de crop et min max}}\label{40_fcfs_vs_lea}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEM compared to FCFS. Cropped at 0.3 and 5.}\label{40_fcfs_vs_lem}\end{figure}
 The consequences for the stretch are immediately distinguishable on Figure~\ref{40_fcfs_vs_lea}.
 This plot shows for each \rev{\us}, the ratio of its stretch with LEA over its stretch with FCFS (hence a value above~1 means LEA improves the stretch).
-\todo[inline]{LM: I think figure  Figure~\ref{40_fcfs_vs_lea} and  Figure~\ref{40_fcfs_vs_lem} should use a log scale on the Y axes, to that 2 and 0.5 (twice better or twice worse) is at the same distance from 1 (same for Figure~\ref{vs_fcfs_lea_43})}
+\todo[inline]{LM: I think figure  Figure~\ref{40_fcfs_vs_lea} and  Figure~\ref{40_fcfs_vs_lem} should use a log scale on the Y axes, to that 2 and 0.5 (twice better or twice worse) is at the same distance from 1 (same for Figure~\ref{vs_fcfs_lea_43}). Max: Okay done and I added the max min in the legend.}
 The size of a circle is proportional to the \rev{\us's} duration.
 On the workload of week~40, we observe several ``columns'' of jobs submitted at the same time (hence sharing the same file with large probability)
 with a ratio lower than~1, hence a worst performance with LEA.
@@ -967,13 +969,13 @@ for the whole duration of the evaluated \rev{week}.
 In this situation, re-using files has a significant impact
 on the queue times.
 \rev{
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-24-10-30_1.pdf}\caption{Stretch's improvement from FCFS on week 43}\label{stretch.43}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-24-10-30_1.pdf}\caption{Stretch's improvement from FCFS on week 43. The upper whisker of LEA extends up to 11.\todo[inline]{Max: Ajout ici aussi}}\label{stretch.43}\end{figure}
 \begin{table}
-\begin{tabular}{ l c >{\columncolor{green!85}}c c c }
+\begin{tabular}{ l c c c c }
   \toprule
-  Schedulers & EFT & LEA & LEO & LEM \\
+  Schedulers & EFT & \textbf{LEA} & LEO & LEM \\
   \midrule
-  Reduction from FCFS & 0.4\% & 20.8\% & 1.0\% & 11.4\% \\
+  Reduction from FCFS & 0.4\% & \textbf{20.8}\% & 1.0\% & 11.4\% \\
   \bottomrule
 \end{tabular}
 \caption{Percentage of reduction from the amount of time spent 
@@ -992,7 +994,7 @@ queue times of all subsequent jobs.
 Moreover, the queue contains enough jobs to fill all the nodes even when grouping them by input file.
 We thus avoid the pathological cases outlined in \rev{Section~\ref{sec.40}}.
 In this case, LEA's strategy, also found in LEM, allows to greatly reduce the stretch of each \us.
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-24->2022-10-30_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 43 using LEA compared to FCFS.}\label{vs_fcfs_lea_43}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-24->2022-10-30_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 43 using LEA compared to FCFS. Cropped at 0.3 and 5.}\label{vs_fcfs_lea_43}\end{figure}
 This is confirmed by Figure~\ref{vs_fcfs_lea_43}: very few jobs 
 have a worse stretch than FCFS and a large amount of jobs display an improvement above~2.
 
@@ -1016,20 +1018,20 @@ results of the ratio of \rev{each 136\,404 \us stretch over 12 weeks and 1\,986\
 
 \paragraph{\rev{Results without backfilling}}
 
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_all-all_1.pdf}\caption{Stretch's improvement from FCFS on all evaluated weeks.}\label{boxplot.all}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_all-all_1.pdf}\caption{Stretch's improvement from FCFS on all evaluated weeks. The upper whisker of LEA extends up to 5.\todo[inline]{Max: Ajout ici aussi}}\label{boxplot.all}\end{figure}
 As in the previous results, we observe on Figure~\ref{boxplot.all} that EFT does not bring any real improvement compared to FCFS.
 \rev{
 \begin{table}
-\begin{tabular}{ l c >{\columncolor{green!85}}c c c }
+\begin{tabular}{ l c c c c }
   \toprule
-  Schedulers & EFT & LEA & LEO & LEM \\
+  Schedulers & EFT & \textbf{LEA} & LEO & LEM \\
   \midrule
-  Reduction from FCFS & 0.9\% & 17.1\% & 0.9\% & 7.1\% \\
+  Reduction from FCFS & 0.9\% & \textbf{17.1}\% & 0.9\% & 7.1\% \\
   \bottomrule
 \end{tabular}
 \caption{Percentage of reduction from the amount of time spent 
 waiting for a file to be ready before starting the computation,
-relative to the total waiting time of FCFS on all workloads.\todo[inline]{Max: Do we want to put green on the best one? It's always LEA on our tables.\\LM: put in in bold face, it is sufficient and quite common.}}\label{tab.all}
+relative to the total waiting time of FCFS on all workloads.\todo[inline]{Max: Do we want to put green on the best one? It's always LEA on our tables. LM: put in in bold face, it is sufficient and quite common.}}\label{tab.all}
 \end{table}
 % For LEA, LEO and LEM, the medians are respectively 1.12, 1.03 and 1.13. 
 % However the mean values are much higher at 2.26, 1.21 and 1.76.
@@ -1051,11 +1053,11 @@ of fewer extreme improvements on heavily saturated clusters.
 %~ }
 \rev{
 \begin{table}
-\begin{tabular}{ l c >{\columncolor{green!85}}c c c }
+\begin{tabular}{ l c c c c }
   \toprule
-  Schedulers & EFT & LEA & LEO & LEM \\
+  Schedulers & EFT & \textbf{LEA} & LEO & LEM \\
   \midrule
-  Reduction from FCFS & 0.01\% & 0.37\% & 0.02\% & 0.10\% \\
+  Reduction from FCFS & 0.01\% & \textbf{0.37}\% & 0.02\% & 0.10\% \\
   \bottomrule
 \end{tabular}
 \caption{Percentage of reduction of the total core time used on all workloads.}\label{tab_core.all}
@@ -1076,16 +1078,15 @@ performance losses on the left of the black line.
 % We can also learn from this figure that LEO is in every respect a better version of EFT \rev{as it's always under EFT after the vertical line, meaning it has more important improvements}.
 %LM: not convinced by this remark: you can be statistically better but worse on particular jobs.
 
-Thus, \rev{LEA} is the strategy that least to more significant improvements: it is able to compute jobs between~1 and~2 times faster in 50\% of the cases and between~2 and~6 times faster in 25\%.
+Thus, \rev{LEA} is the strategy that leads to more significant improvements: it is able to compute jobs between~1 and~2 times faster in 50\% of the cases and between~2 and~6 times faster in 25\%.
 It is slower in only~25\% of the workloads, and~12.5\% of those are within a~0.15 slow-down.
 LEO is a more sustained strategy with~87.5\% of its results with an improvement compared to FCFS, which shows that our opportunistic
 strategy is much more consistent, while still having great improvements in some cases.
-\rev{LEM achieves similar improvements}.
-
-\todo[inline]{LM: we should conclude here by saying something better about LEM, saying it is more versatile, right ?}
+\rev{LEM is more versatile. It leads to an improvement in ~87.5\% of the results, with a speed-up of at least 7.5\% in 50\% of the results.}
+\todo[inline]{LM: we should conclude here by saying something better about LEM, saying it is more versatile, right ? Max: Okay done.}
 
 \paragraph{\rev{Results with backfilling}}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_bf_stretch_all-all_1.pdf}\caption{Stretch's improvement from FCFS with backfilling on all evaluated weeks.}\label{boxplot.all_bf}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_bf_stretch_all-all_1.pdf}\caption{Stretch's improvement from FCFS with backfilling on all evaluated weeks. The upper whisker of LEA extends up to 4.\todo[inline]{Max: Ajout ici aussi}}\label{boxplot.all_bf}\end{figure}
 Figure~\ref{boxplot.all_bf} shows the results with the backfilling version of our
 schedulers and compared to FCFS with backfilling (FCFS-BF) on all workloads.
 We notice that our schedulers have smaller improvements with backfilling.
@@ -1131,8 +1132,9 @@ waiting time of a job, especially
 when the cluster is under a high computing demand.
 Without backfilling, \rev{LEA} is better than our baseline in 75\% of the
 cases (50\% of the cases with backfilling).
-\rev{Our strategy called LEM is the best compromise. It's better than the baseline in more than 75\% of the cases with or without backfilling.}
-\todo[inline]{LM: also give some figure about median improvement here: 7\% ?}
+\rev{Our strategy called LEM is the best compromise. It's better than the baseline in more than 75\% of the cases with or without backfilling
+(with a median improvement of 7.5\% compared to our baseline without backfilling).}
+\todo[inline]{LM: also give some figure about median improvement here: 7\% ? Max: Yes 7.5 for the stretch but only without backfilling.}
 
 This work opens several exciting future directions.
 Firstly, LEM can be tuned to better adapt to the utilization rate of the cluster.
