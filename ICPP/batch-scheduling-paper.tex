@@ -6,7 +6,7 @@
     Bib\TeX}}}
 
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath, amssymb, amsfonts, colortbl, xspace, paralist, multirow, hyperref, pgfplots, booktabs, multirow}
+\usepackage{amsmath, amsfonts, colortbl, xspace, paralist, multirow, hyperref, pgfplots, booktabs, multirow}
 \pgfplotsset{compat=newest}
 \hypersetup{
    colorlinks=false,
@@ -18,7 +18,7 @@
 \newcommand{\rev}[1]{{\color{blue}{#1}}}
 
 %~ \usepackage[english]{babel}
-\usepackage{graphicx, color, amssymb, url, xcolor, tikz, pgf, float, subcaption, algorithm,  tabularx}
+\usepackage{graphicx, color,  url, xcolor, tikz, pgf, float, subcaption, algorithm,  tabularx}
 \usepackage[noend]{algpseudocode}
 \usetikzlibrary{trees, shapes, calc, external, fit, arrows, decorations, decorations.pathreplacing, patterns, automata, positioning, arrows.meta, intersections, calligraphy}
 
@@ -307,9 +307,9 @@ $c^i_1,\ldots,c^i_m$ sharing a memory of size $\memory$.
 
 Each job depends on an input file noted $\file(J_i)$, which is
 initially stored in the main shared file system.  During the
-processing of a job $J_i$ on $\Node{k}$, file $\file(J_i)$ must be in
+processing of a job $J_i$ on $\Node{k}$, $\file(J_i)$ must be in
 the memory of $\Node{k}$. If this is not the case before starting
-computation of job $J_i$, then file $\file(J_i)$ is loaded into the
+computation of job $J_i$, then $\file(J_i)$ is loaded into the
 memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_n\}$ the set
 of distinct input files, whose size is denoted by $\size(F_i)$. Each
 job runs on a single node, but on different numbers of cores.
@@ -717,26 +717,25 @@ Most of the nodes have 128GB of RAM, and a few are larger.
 To avoid an additional constraint, while maintaining a model close to the real cluster,
 we consider that the platform is made of 486 homogeneous nodes of size $\memory = 128GB$.
 
-As mentioned above, we observed the submission of IO intensive jobs on the platform we extracted the logs from. The cluster is often used
-for taxonomic identification of DNA fragments. To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}} is often used together with an input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2} for example}. Those database vary in size, from a few GB up to 800GB.
-We also observed users using the Hierarchical alignment tool for genome alignment\footnote{\url{https://github.com/ComparativeGenomicsToolkit/hal}} 
-that uses MAF files. MAF is a text format used to store genome alignment\footnote{For example, for primates, you will have: \url{https://ftp.ensembl.org/pub/release-107/maf/ensembl-compara/multiple_alignments/10_primates.epo/}} and users might need to load multiple of them to work on their project, resulting in high IO demands.
 
+The platform is managed by the SLURM scheduler, and as mentioned above, we observed the submission of I/O intensive jobs.
+The cluster is often used for taxonomic identification of DNA fragments. 
+To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}} is often used together with an input database, whose size vary from a few GB up to 800GB.
+We also noticed users genome alignment tools that require to store text large files, and it is likely that they need to load multiple of them, resulting in high I/O demands. 
+% To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}} is often used together with an input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2} for example}. Those database vary in size, from a few GB up to 800GB.
+% We also observed users using the Hierarchical alignment tool for genome alignment\footnote{\url{https://github.com/ComparativeGenomicsToolkit/hal}} 
+% that uses MAF files. MAF is a text format used to store genome alignment\footnote{For example, for primates, you will have: \url{https://ftp.ensembl.org/pub/release-107/maf/ensembl-compara/multiple_alignments/10_primates.epo/}} and users might need to load multiple of them to work on their project, resulting in high I/O demands.
+\todo[inline]{LM: I feel the previous version had too much details and too many footnotes. I propose above a shorter and more compact version, but feel free to revert to the previous one.}
+%
 From this platform we extract historical workloads containing the following information.
 }
 
 \subsection{Usage of real cluster logs}
 \label{sec.working}
-\rev{The logs we use contain historical data on jobs:
-\begin{itemize}
-	\item The exact submission time
-	\item The stated walltime
-	\item The actual duration of the jobs
-	\item The number of required cores
-	\item The user's name
-\end{itemize} 
+\rev{The logs we use contain historical data on jobs, namely their
+ exact submission time, their requested walltime, their actual duration, the number of cores they required and the corresponding user's name. 
 }
-
+%
 Since explicit data dependencies are not encoded in SLURM job
 specifications, we do not have access to the actual input files of
 these jobs. We thus create an artificial data dependency pattern that
@@ -745,17 +744,16 @@ replicates user behaviors.
 We consider two jobs $J_i$ and $J_j$. These jobs are considered to
 share their input file if they match the three following requirements:
 \begin{enumerate}
-	\item $\core(J_i) = \core(J_j)$, i.e., they are requesting the same number of cores.
-	\item $J_i$ and $J_j$ were submitted by the same user.
-	\item $J_i$ and $J_j$ were submitted within an 800 seconds
+	\item $\core(J_i) = \core(J_j)$, i.e., they request the same number of cores;
+	\item $J_i$ and $J_j$ are submitted by the same user;
+	\item $J_i$ and $J_j$ are submitted within an 800 seconds
           time frame. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
 \end{enumerate}
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files. 
 \rev{
-Theoretically, two users could share the same file. 
+In theory, two users could share the same file. 
 However, because they are using subsets of different databases, it is very unlikely that two
-users would work on the same project using the same databases.
-So we ignore this possibility.
+users would work on the same project using the same databases, therefore we ignore this possibility.
 }
 
 We consider that these jobs are dedicated to processing their input
@@ -763,11 +761,12 @@ file. Hence, the more cores the job requests,
 the larger its input file. This allows to estimate the size of files as follows:
 $$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
 \rev{
-For example, if a user needs 128GB of memory but only requests 1 of the 20 available cores, that user blocks the machine for all other users.
-Consequently, it is more efficient for a user who needs all of a machine's memory to reserve all of the machine's cores.
-Similarly, if a user needs a fraction of the memory, he can reserve a fraction of the cores on the machine. 
-A node can therefore contain several different files.
-Thus, the scheduling strategy cannot be simplified to allocating one node per user, because the scheduler can maximize locality among multiple nodes while avoiding starvation.
+For example, if a user need 128GB of memory but would only request 1 of the 20 available cores, that user would block the node for all other users.
+Consequently, it is more efficient for a user who need the whole memory of a node to reserve all its cores. 
+%Similarly, if a user needs a fraction of the memory, he can reserve a fraction of the cores on the machine. 
+% The memory of a node can therefore contain several files.
+% Thus, the scheduling strategy cannot be simplified to allocating one node per user, because the scheduler can maximize locality among multiple nodes while avoiding starvation.
+% LM: I commented the above two lines: I feel this is rather confusing the reader, not helping.
 }
 
 The utilization levels in the log of the platform are typically high ($>90\%$), but
@@ -784,19 +783,19 @@ of the real usage from an actual user community including, but not exclusively c
 In our experiments we evaluate our schedulers week by week.
 Our workload is constituted of 51 weeks, ranging from January the 3rd 2022 to December the 25th 2022.
 To target different scenarios but avoid scheduling the whole year, 
-we randomly selected\footnote{We used the random from python3.6.9 with random.seed(0), nums = list(range(1, 52)) and random.shuffle(nums) which produce the order [28, 13, 43, 41, 42, 8, 6, 36, 2, 50, 40, 1] for the first twelve numbers, that matches the week number on the calendar.} 12 weeks and
+we randomly selected\footnote{We used the random from python3.6.9 with random.seed(0), nums = list(range(1, 52)) and random.shuffle(nums) which produce the order [28, 13, 43, 41, 42, 8, 6, 36, 2, 50, 40, 1] for the first twelve numbers, that matches the week number on the calendar.} \todo[inline]{LM: the footnote is not necessary, these details need to go in the artifact only}
+12 weeks and
 extracted the jobs submitted within these weeks from the logs. 
 Over these 12 weeks of workloads, we scheduled 1\,986\,496 jobs and evaluated 1\,493\,151 of them.
 The most important for a user is that all the jobs that have been submitted at once are finished as soon as possible.
 Thus we introduce the notion of \us.
-A \us is the sum of the stretch of jobs submitted by a user in a 5-minute window.
-It is the stretch of each \us that will be shown in this Section.
+We define the stretch of a \us as the sum of the stretch of jobs submitted by a user in a 5-minute window, and we concentrate on this value when reporting results.
 There have been 1083 distinct users and 136\,404 \us.
 
 To simulate these jobs in a realistic, steady-state operation of the
 platform, we consider both jobs submitted before and after the week
 under consideration. More precisely, we proceed as illustrated in Figure~\ref{fig.workload}.
-\todo[inline]{Max: Or do we want to avoid talking about the one year of workloads?}
+\todo[inline]{Max: Or do we want to avoid talking about the one year of workloads?\\LM: good like this for me}
 
 \begin{figure}[tb]
 \definecolor{blue}{rgb}{0.38, 0.51, 0.71} %glaucous, 97,130,181, #6182B5
@@ -818,7 +817,7 @@ under consideration. More precisely, we proceed as illustrated in Figure~\ref{fi
     \draw[color=black, fill=blue] (1.2*3*\x+0.03, 0.7) rectangle (1.2*4*\x-0.03, -0.1) node[midway] {\textit{Day 0}}; 
     \draw[color=black, fill=red] (1.2*4*\x+0.03, 0.7) rectangle (1.2*6*\x-0.03, -0.1) node[midway] {\textit{Day 1 -> Day 7}};
     \draw[color=black, fill=blue] (1.2*6*\x+0.03, 0.7) rectangle (1.2*7*\x-0.03, -0.1) node[midway] {\textit{Day 8}}; 
-    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*0*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled from logs} (1.2*3*\x-0.03, 1);
+    \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*0*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled as in the log} (1.2*3*\x-0.03, 1);
     \draw [pen colour={blue},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*3*\x+0.03, 2.4) -- node[pos=0.5,above=2pt,black,align=center]{Jobs scheduled with\\the desired scheduler} (1.2*7*\x-0.03, 2.4);
     \draw [pen colour={red},decorate,line width=2pt,decoration = {calligraphic brace,raise=-2pt,amplitude=5pt}] (1.2*4*\x+0.03, 1) -- node[pos=0.5,above=2pt,black,align=center]{Evaluated\\week} (1.2*6*\x-0.03, 1);
   \end{tikzpicture}
@@ -827,38 +826,40 @@ under consideration. More precisely, we proceed as illustrated in Figure~\ref{fi
 \label{fig.ex}
 \end{figure}
 
-Our evaluation is based on three factors: the stretch of each \us, the total time spent waiting for a file to become available, as well as the total core time.
+Our evaluation is based on three metrics: the stretch of each \us, the total time spent waiting for a file to become available, as well as the total core time.
 }
-Our main competitors on these metrics are FCFS and EFT, with and without backfilling.
+We evaluate the proposed scheduler on these metrics and compared them to FCFS and EFT, with and without backfilling.
 
 \subsection{\rev{Simulator description}}
 \rev{
 All strategies as well as the two baselines have been implemented
-on a simulator that we developed\footnote{You can find the code and the anonymized logs of the workloads at: \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
+on a simulator that we developed\footnote{Code and anonymized logs are available for reproducibility:  \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
 
-The simulator is made in python and follows these principles:
+The simulator is a simple event-based simulator focusing on data locality. It follows these principles:
+is made in python and follows these principles:
 \begin{itemize}
-	\item The schedule is re-done entirely each time a new job is submitted or a core is liberated.
-	\item The scheduler only knows the jobs whose submission time are superior or equal to the current time.
-	\item The scheduler only knows the submission time, requested walltime, number of cores required and input file name of the jobs.
-	\item After a schedule, each available job is associated with a start time, a node, and as many cores on that node as requested.
+\item As in real systems, the schedule is re-computed entirely at each unpredicted event (job submission or job termination before the walltime);
+\item The scheduler is aware only of jobs that have be submitted before the current time;
+\item When a job is submitted, the scheduler  knows its submission time, requested walltime, number of cores required and input file name of the jobs;
+\item Scheduling a job consists in providing to the job a start time, a node, and as many cores on that node as requested.
 \end{itemize}
 
-We didn't use an existing batch simulator like Batsim because it lacked some key elements for us, especially the ability to add a loading time for input files before starting a job or to reuse an input file already loaded on a node to skip this loading time.
+% We didn't use an existing batch simulator like Batsim because it lacked some key elements for us, especially the ability to add a loading time for input files before starting a job or to reuse an input file already loaded on a node to skip this loading time.
+% LM: this is dangerous, as we could have chosen to enhance batsim (or other schedulers) with data locality, and batsim can very well simulate data transfer time 
 
-We evaluated our schedulers on 12 distinct randomly selected weeks.
-Among those weeks, different workload conditions can be found.
-First, we study the behavior on an under-loaded cluster.
+% We evaluated our schedulers on 12 distinct randomly selected weeks.
+% Among those weeks, different workload conditions can be found.
+% First, we study the behavior on an under-loaded cluster.
 }
 
 \subsection{\rev{Performance on an underutilized cluster}}\label{sec.40}
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-03-10-09_0.pdf}\caption{Stretch's improvement from FCFS on week 40.}\label{stretch.40}\end{figure}
 
+\rev{Among the 12 randomly selected weeks, different workload conditions arise. We first concentrate on a low utilization.
 Figure~\ref{stretch.40} depicts 
-\rev{
 the distribution of each \us stretch's improvement compared to FCFS obtained by each strategy on week 40.
-In other words it's for each \us and for each scheduler: $\frac{Stretch\_FCFS}{Stretch\_Scheduler}$.
+In other words we plot $\mathit{Stretch\_FCFS}/\mathit{Stretch\_Scheduler}$ for each \us and each scheduler.
 In this figure, the horizontal black dotted line corresponds to no improvements from FCFS, which
 is the situation where the sum of the queue time and transfer time of the \us is the same as with FCFS.
 You can see percentages next to the scheduler names.
