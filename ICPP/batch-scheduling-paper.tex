@@ -939,8 +939,8 @@ On an underused cluster, this increases starvation.
 \rev{LEA favors re-using a file over starting immediately a job on another node.
 When there are not enough jobs, it can create a starvation for certain nodes.}
 \todo[inline]{LM: the previous sentence is obscure to me. Max: Okay I modified it.}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEA compared to FCFS. Cropped at 0.3 and 5. The max and min values are 543 and 0.03.\todo[inline]{Max: Ajout de crop et min max}}\label{40_fcfs_vs_lea}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEM compared to FCFS. Cropped at 0.3 and 5.}\label{40_fcfs_vs_lem}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEA compared to FCFS. Cropped at 0.3 and 5. The max and min values are 543 and 0.003.\todo[inline]{Max: Ajout de crop et min max}}\label{40_fcfs_vs_lea}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEM_2022-10-03->2022-10-09_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 40 using LEM compared to FCFS. Cropped at 0.3 and 5. The max and min values are 543 and 0.007.}\label{40_fcfs_vs_lem}\end{figure}
 The consequences for the stretch are immediately distinguishable on Figure~\ref{40_fcfs_vs_lea}.
 This plot shows for each \rev{\us}, the ratio of its stretch with LEA over its stretch with FCFS (hence a value above~1 means LEA improves the stretch).
 \todo[inline]{LM: I think figure  Figure~\ref{40_fcfs_vs_lea} and  Figure~\ref{40_fcfs_vs_lem} should use a log scale on the Y axes, to that 2 and 0.5 (twice better or twice worse) is at the same distance from 1 (same for Figure~\ref{vs_fcfs_lea_43}). Max: Okay done and I added the max min in the legend.}
@@ -994,7 +994,7 @@ queue times of all subsequent jobs.
 Moreover, the queue contains enough jobs to fill all the nodes even when grouping them by input file.
 We thus avoid the pathological cases outlined in \rev{Section~\ref{sec.40}}.
 In this case, LEA's strategy, also found in LEM, allows to greatly reduce the stretch of each \us.
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-24->2022-10-30_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 43 using LEA compared to FCFS. Cropped at 0.3 and 5.}\label{vs_fcfs_lea_43}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-24->2022-10-30_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 43 using LEA compared to FCFS. Cropped at 0.3 and 5. The max and min values are 314 and 0.006.}\label{vs_fcfs_lea_43}\end{figure}
 This is confirmed by Figure~\ref{vs_fcfs_lea_43}: very few jobs 
 have a worse stretch than FCFS and a large amount of jobs display an improvement above~2.
 
@@ -1134,7 +1134,7 @@ Without backfilling, \rev{LEA} is better than our baseline in 75\% of the
 cases (50\% of the cases with backfilling).
 \rev{Our strategy called LEM is the best compromise. It's better than the baseline in more than 75\% of the cases with or without backfilling
 (with a median improvement of 7.5\% compared to our baseline without backfilling).}
-\todo[inline]{LM: also give some figure about median improvement here: 7\% ? Max: Yes 7.5 for the stretch but only without backfilling.}
+\todo[inline]{LM: also give some figure about median improvement here: 7\% ? Max: Yes 7.5 for the stretch but only without backfilling. Is it correct to write "with a median impro" ?}
 
 This work opens several exciting future directions.
 Firstly, LEM can be tuned to better adapt to the utilization rate of the cluster.
