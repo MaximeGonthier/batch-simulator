@@ -47,8 +47,11 @@
 \newcommand{\allocatednode}{\ensuremath\mathit{\sigma}\xspace}
 \newcommand{\allocatedcores}{\ensuremath\mathit{\gamma}\xspace}
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
+\newcommand{\filenum}{\ensuremath{\mathcal{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
+\newcommand{\jobnum}{\ensuremath{\mathcal{J}}\xspace}
 \newcommand{\nodeset}{\ensuremath{\mathbb{N}}\xspace}
+\newcommand{\nodenum}{\ensuremath{\mathcal{N}}\xspace}
 \newcommand{\evict}{\ensuremath{\mathcal{V}}\xspace}
 \newcommand{\nbloads}{\ensuremath{\mathit{\mathit{Loads}}}\xspace}
 \newcommand{\live}{\ensuremath{L}\xspace}
@@ -303,9 +306,10 @@ set of identical nodes.
 
 \section{Framework}\label{sec.framework}
 
-We consider the problem of scheduling a set of $N$ independent jobs,
-denoted $\jobset = \{J_1, J_2, \ldots, J_N\}$ on a set of $P$ nodes:
-$\nodeset = \{\Node{1}, \Node{2}, \\ \ldots, \Node{P}\}$.
+We consider the problem of scheduling a set of $\jobnum$ independent jobs,
+denoted $\jobset = \{J_1, J_2, \ldots, J_\jobnum\}$ on a set of
+$\nodenum$ nodes:
+$\nodeset = \{\Node{1}, \Node{2}, \\ \ldots, \Node{\nodenum}\}$.
 %% LM: to be merged later:
 Each node $\Node{i}$ is equipped with $m$ cores noted:
 $c^i_1,\ldots,c^i_m$ sharing a memory of size $\memory$.
@@ -315,7 +319,7 @@ initially stored in the main shared file system.  During the
 processing of a job $J_i$ on $\Node{k}$, $\file(J_i)$ must be in
 the memory of $\Node{k}$. If this is not the case before starting
 computation of job $J_i$, then $\file(J_i)$ is loaded into the
-memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_n\}$ the set
+memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_\filenum\}$ the set
 of distinct input files, whose size is denoted by $\size(F_i)$. Each
 job runs on a single node, but on different numbers of cores.
 
@@ -333,7 +337,7 @@ Each job $J_i$ has the following attributes:
 \end{itemize}
 
 We do not consider the data output of jobs.
-Each of the $N$ jobs must be processed on one of the $P$ nodes.  As
+Each of the $\jobnum$ jobs must be processed on one of the $\nodenum$ nodes.  As
 stated earlier, the shared file system initially contains all files
 in $\fileset$.  Each node is connected to the file system with a link
 of limited bandwidth, denoted by $\bandwidth$: transferring a data of
