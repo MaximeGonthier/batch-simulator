@@ -314,14 +314,15 @@ $\nodeset = \{\Node{1}, \Node{2}, \\ \ldots, \Node{\nodenum}\}$.
 Each node $\Node{i}$ is equipped with $m$ cores noted:
 $c^i_1,\ldots,c^i_m$ sharing a memory of size $\memory$.
 
-Each job depends on an input file noted $\file(J_i)$, which is
+Each job $J_i$ depends on an input file noted $\file(J_i)$, which is
 initially stored in the main shared file system.  During the
 processing of a job $J_i$ on $\Node{k}$, $\file(J_i)$ must be in
 the memory of $\Node{k}$. If this is not the case before starting
 computation of job $J_i$, then $\file(J_i)$ is loaded into the
 memory.  We denote by $\fileset = \{F_1, F_2, \ldots, F_\filenum\}$ the set
 of distinct input files, whose size is denoted by $\size(F_i)$. Each
-job runs on a single node, but on different numbers of cores.
+job runs on a single node, but they can make use of a different number
+of cores.
 
 
 
@@ -348,17 +349,18 @@ as well as the large file sizes are the reasons why we aim at
 restricting the amount of data movement.
 
 We consider that the memory of a node, denoted by
-$\memory$ is only used by the jobs' input files, since all other data are
+$\memory$, is only used by the jobs' input files, since all other data are
 negligible compared with the input files. We assume that jobs are
 devoted a fraction of the memory proportional to the number of
 requested cores, so that jobs willing to process large input files
 must request large number of cores. This way, we make sure that the
 memory of a node is large enough to accommodate all input files of running jobs.
-A file stored in the memory of a node can be shared by two jobs $J_i$ and $J_j$ only in the following situations:
+A file stored in the memory of a node can be shared by two jobs $J_i$
+and $J_j$ only in either of the following situations:
 \begin{enumerate}
 	\item $J_i$ and $J_j$ are computed in parallel on the same node.
 	\item $J_i$ and $J_j$ are computed on the same node
-          consecutively (i.e., no job is started on this node before the
+          consecutively (i.e., no job is started on this node between the
           completion of $J_i$ and the start of $J_j$).
 \end{enumerate}
 This can hold true if the file data is accessed through I/O (traditional or memory-mapped),
@@ -388,7 +390,7 @@ that later jobs are not delayed.  The scheduler must also make sure
 that no two jobs are executed simultaneously on the same cores.
 
 It is important to note that the file transfer is done before the computation and cannot be overlapped.
-Jobs are non-preemptible: when started, a job is executed through its completion.
+Jobs are non-preemptible: when started, a job is executed throughout its completion.
 
 Our objective is to reach an efficient usage of the platform and to
 limit job waiting times. Each
@@ -403,12 +405,12 @@ $$
 In the following, we want to consider aggregated performance metrics on
 job flows, such as average flow. However, the duration
 of a job significantly impacts its flow time. Jobs with the same
-flow but very different \rev{duration} do not experience the same quality
+flow but very different \rev{durations} do not experience the same quality
 of service. To avoid this, the \emph{stretch} metric has been
 introduced that compares the actual flow of a job to the one it would
 experience on an empty cluster:
 \begin{eqnarray*}
-\emptyflow(J_i) &=& \duration(J_i) + \frac{\size(\file(J_i))}{\bandwidth}\\
+\emptyflow(J_i) &=& \frac{\size(\file(J_i))}{\bandwidth} + \duration(J_i)\\
 \mathit{stretch}(J_i) &=& \frac{\mathit{Flow}(J_i)}{\emptyflow(J_i)}.
 \end{eqnarray*}
 The stretch represents the slow-down of a job due to sharing the
