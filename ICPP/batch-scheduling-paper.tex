@@ -47,6 +47,7 @@
 \newcommand{\allocatednode}{\ensuremath\mathit{\sigma}\xspace}
 \newcommand{\allocatedcores}{\ensuremath\mathit{\gamma}\xspace}
 \newcommand{\fileset}{\ensuremath{\mathbb{F}}\xspace}
+\newcommand{\filesubset}{\ensuremath{\mathfrak{F}}\xspace}
 \newcommand{\filenum}{\ensuremath{\mathcal{F}}\xspace}
 \newcommand{\jobset}{\ensuremath{\mathbb{J}}\xspace}
 \newcommand{\jobnum}{\ensuremath{\mathcal{J}}\xspace}
@@ -547,8 +548,8 @@ strategies that attempt to take data locality into account in a better way to re
 % When the platform is fully loaded, favoring data reuse helps reducing the number of file
 % copies and hence reduces queue time in the long run.
 
-The first proposed algorithm called Locality and Eviction Aware (LEA)
-and detailed in Algorithm~\ref{algo.lea} aims at a good balance
+The first proposed algorithm, called Locality and Eviction Aware (LEA)
+and detailed in Algorithm~\ref{algo.lea}, aims at a good balance
 between node availability and data locality.  We consider three
 quantities to rank nodes:
 \begin{itemize}
@@ -587,8 +588,9 @@ tie-break in case of equality of the first two criteria.
 			\State Find time $t_k'\geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
 %			\State Let $\mathit{sub\_J}$ be the subset of jobs that ends right before time $t_k$ on $\Node{k}$
-                        \State Let $\mathcal{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
-			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
+                        \State Let $\filesubset$ be the set of files in the memory of node \Node{k} at time $t_k$
+			\State $\mathit{EvictionPenalty} \gets
+			(\sum_{F_j\in\filesubset}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
 			\State $score_{\Node{k}} \gets t_k + W \times \mathit{LoadOverhead} + \mathit{EvictionPenalty}$
 		\EndFor
                 \State Select \Node{k} with the smallest $score_{\Node{k}}$
@@ -604,7 +606,7 @@ The LEA strategy puts a dramatic importance on data loads. Hence, it
 is very useful when the platform is fully loaded and  some jobs
 can safely be delayed to favor data reuse and avoid
 unnecessary loads. However, when the platform is not fully loaded,
-delaying jobs can be detrimental, as it can increases the response
+delaying jobs can be detrimental, as it can increase the response
 time for some jobs, without any benefit for other jobs. Our second proposed strategy,
 named Locality and Eviction Opportunistic (LEO) and described in Algorithm~\ref{algo.leo}, tries to adapt based
 on the current cluster load: if we find some nodes that can process the job
@@ -622,8 +624,9 @@ fully loaded and we apply the previous LEA strategy, to favor data reuse.
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k'\geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$
 			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
-                        \State Let $\mathcal{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
-			\State $\mathit{EvictionPenalty} \gets (\sum_{F_j\in\mathcal{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
+                        \State Let $\mathfrak{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
+			\State $\mathit{EvictionPenalty} \gets
+			(\sum_{F_j\in\mathfrak{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
 			\If{$t_k = \mathit{current\_time}$}
 				\State $score_{\Node{k}} \gets t'_k$
 			\Else
