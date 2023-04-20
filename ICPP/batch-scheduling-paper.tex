@@ -623,13 +623,13 @@ fully loaded and we apply the previous LEA strategy, to favor data reuse.
 			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available
 			% \State Find smallest time $t_k$ such that $\core(J_i)$ cores are available until at least time $t_k + \walltime(J_i)$ on cores $c_1, ..., c_{\core(J_i)}$ of $\Node{k}$
 			\State Find time $t_k'\geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$
-			\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
-                        \State Let $\mathfrak{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
-			\State $\mathit{EvictionPenalty} \gets
-			(\sum_{F_j\in\mathfrak{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
 			\If{$t_k = \mathit{current\_time}$}
 				\State $score_{\Node{k}} \gets t'_k$
 			\Else
+				\State $\mathit{LoadOverhead} \gets t_k' - t_k$ %\Comment{It thus gets the load's duration}
+				\State Let $\mathfrak{F}$ be the set of files in the memory of node \Node{k} at time $t_k$
+				\State $\mathit{EvictionPenalty} \gets
+				(\sum_{F_j\in\mathfrak{F}}\size(F_j) \times \size(\file(J_i))/\memory)/\bandwidth$
 			         \State $score_{\Node{k}} \gets t_k + W \times \mathit{LoadOverhead} + \mathit{EvictionPenalty}$
 			\EndIf
 		\EndFor
