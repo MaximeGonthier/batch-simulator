@@ -508,7 +508,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 % Under our model, a fair baseline would be a scheduler capable
 % of reducing file transfers while keeping the First-Come-First-Serve
 % principle. This scheduler is Earliest-Finish-Time (or EFT).
-% It's an enhanced version of FCFS which chooses to schedule a job
+% It is an enhanced version of FCFS which chooses to schedule a job
 % on the node with the earliest available finish time, thus considering
 % the time to load the file, and consequently choosing nodes where a file will
 % be re-used. 
@@ -807,7 +807,9 @@ Our workload is constituted of 51 weeks, ranging from January the 3rd 2022 to De
 To target different scenarios but avoid scheduling the whole year, 
 we randomly selected
 %~ \footnote{We used the random from python3.6.9 with random.seed(0), nums = list(range(1, 52)) and random.shuffle(nums) which produce the order [28, 13, 43, 41, 42, 8, 6, 36, 2, 50, 40, 1] for the first twelve numbers, that matches the week number on the calendar.}
-%~ \todo[inline]{LM: the footnote is not necessary, these details need to go in the artifact only. Max Okay I removed it and updated the footnote of the artifact if it's ok ?}
+%~ \todo[inline]{LM: the footnote is not necessary, these details need
+%to go in the artifact only. Max Okay I removed it and updated the
+%footnote of the artifact if it is ok ?}
 12 weeks and
 extracted the jobs submitted within these weeks from the logs. 
 Over these 12 weeks of workloads, we scheduled 1\,986\,496 jobs and evaluated 1\,493\,151 of them.
@@ -859,13 +861,13 @@ We evaluate the proposed schedulers on these metrics and compare them to FCFS an
 All strategies as well as the two baselines have been implemented
 on a simulator that we developed\footnote{Code, anonymized logs and the methodology followed to randomly select our evaluated weeks are available for reproducibility: \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
 
-The simulator is a simple event-based simulator focusing on data locality. It follows these principles:
-is made in python and follows these principles:
+The simulator is a simple event-based simulator focusing on data locality.
+it is made in python and follows these principles:
 \begin{itemize}
 \item As in real systems, the schedule is re-computed entirely at each unpredicted event (job submission or job termination before the walltime);
 \item The scheduler is aware only of jobs that have be submitted before the current time;
 \item When a job is submitted, the scheduler  knows its submission time, requested walltime, number of cores required and input file name of the jobs;
-\item Scheduling a job consists in providing to the job a start time, a node, and as many cores on that node as requested.
+\item Scheduling a job consists in assigning to the job a start time, a node, and as many cores on that node as requested.
 \end{itemize}
 
 % We didn't use an existing batch simulator like Batsim because it lacked some key elements for us, especially the ability to add a loading time for input files before starting a job or to reuse an input file already loaded on a node to skip this loading time.
@@ -880,32 +882,34 @@ is made in python and follows these principles:
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-03-10-09_0.pdf}\caption{Stretch's improvement from FCFS on week 40.}\label{stretch.40}\end{figure}
 
-\rev{Among the 12 randomly selected weeks, different workload conditions arise. We first concentrate on a low utilization.
+\rev{Among the 12 randomly-selected weeks, different workload conditions
+arise. We first concentrate on a low utilization case.
 Figure~\ref{stretch.40} depicts 
-the distribution of each \us stretch's improvement compared to FCFS obtained by each strategy on week 40.
-In other words we plot $\mathit{Stretch\_FCFS}/\mathit{Stretch\_Scheduler}$ for each \us and each scheduler.
+the distribution of the improvement of each \us stretch, compared to FCFS, obtained by each strategy on week 40.
+In other words we represent $\mathit{Stretch\_FCFS}/\mathit{Stretch\_Scheduler}$ for each \us and each scheduler.
 In this figure, the horizontal black dotted line corresponds to no improvements from FCFS, which
 is the situation where the sum of the queue time and transfer time of the \us is the same as with FCFS.
 The percentages next to the scheduler names denotes the fraction of
 \uss where the improvement was at least 1\% different from 1: only
-these \uss are depicted on this figure, for the sake of clarity. 
-The solid line is the median and the triangles represent mean
-improvement. Because outliers bring a huge improvement, the means are urually higher than the medians.
+these \uss are depicted on this figure, for the sake of readability. 
+The solid lines are the median and the triangles are the average
+improvements. Because outliers bring a huge improvement, the averages are usually higher than the medians.
 Because of such extreme outliers, we are more interested in median values.
 An improvement above 1 is a speed-up. An improvement at 0.5 means that
 the sum of the queue times and transfer times for this \us was two
-times larger with the scheduler than with to FCFS.
+times larger with the scheduler than with FCFS.
 For all boxplots shown in this paper, the box contains results within
-the [25\%,75\%] range while whiskers extend to 12.5\% and 87.5\%.
+the [25\%,75\%] range, while whiskers are drawn at 12.5\% and 87.5\%.
 
 
 %~ As the cluster is not very loaded in this scenario, EFT, LEO and LEM have most of their improvements close to 1. When the cluster is under-loaded, a First-Come First-Serve strategy is usually efficient because using all nodes is usually more important than re-using an input file as the duration of a job is larger than the loading time. EFT, LEO and LEM all have attributes that allows to do this.
 %~ EFT takes into consideration the earliest available time, LEO changes is stratgey is the earliest available time of a node is the current time and LEM switch to EFT if all nodes are not occupied.
-%~ However LEA greatly suffer from this wokload as we can see that more than 50\% of it's improvement are below 1.
+%~ However LEA greatly suffer from this wokload as we can see that more than 50\% of its improvement are below 1.
 
 Figure~\ref{stretch.40} shows that on this workload, all schedulers
-results in almost no improvement, nor degradation of the \us stretch,
-apart from LEA that degrades the performance more than 50\% of it's results.
+result in almost no improvement, nor degradation of the \us stretch,
+apart from LEA that degrades performance for significantly more than
+50\% of \uss.
 }
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-10-03->2022-10-09_V10000_anonymous_Fcfs_Used_nodes_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of week 40 with FCFS.}\label{40_cluster_usage_fcfs}\end{figure}
@@ -932,11 +936,12 @@ In this situation, FCFS and EFT are very efficient. The earliest available node 
 most cases a node that can start the job immediately, explaining the mean stretch close to 1 in Figure~\ref{stretch.40}.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
 that puts a large weight on transfer time
-or weigh equally $t_k$, the transfer and eviction duration. 
+or weigh equally $t_k$, the transfer and eviction duration, or like EFT. 
 Thus, on underused clusters, LEO has a behavior close to EFT, while trying to minimize evictions.
 Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under \rev{100\% more than half the time}, so LEM behaves similarly to EFT.
 On the contrary, LEA favors data re-use over an early start time for a job.
+
 \begin{table}
 \begin{tabular}{ l c c c c }
   \toprule
@@ -948,11 +953,12 @@ On the contrary, LEA favors data re-use over an early start time for a job.
 \caption{Percentage reduction in time spent waiting for a file to be ready before starting the computation, relative to the total wait time of FCFS.}\label{tab.40}
 %~ \todo[inline]{LM: I changed all negative numbers into positive ones (the percentage reduction should be positive, otherwise it is an increase in waiting time!}
 \end{table}
+
 \rev{Table~\ref{tab.40} shows the reduction of the amount of time spent 
 waiting for a file to be ready before starting the computation,
 relative to the total waiting time of FCFS.
 In this case, LEA is the only strategy that decreases this waiting time by re-using input files.
-It will create queue of jobs that already have a valid copy of their file loaded on a node, waiting to be able to re-use their input.
+It will create a queue of jobs that already have a valid copy of their file loaded on a node, waiting to be able to re-use their input.
 On an underutilized cluster, this creates situations where some nodes are idle while submitted jobs wait in a queue,
 %~ The benefit of scheduling jobs immediately on another node and loading the file appears
 %~ inferior to waiting for a file re-use for LEA and thus creates this queue of jobs that does not exist for \rev{the other schedulers}.
@@ -1086,7 +1092,7 @@ of fewer extreme improvements on heavily saturated clusters.
 %~ LEO behave similarly to EFT.
 Table~\ref{tab_core.all} shows the reduction in terms of total core time (i.e. the core time on each core of each node over the 12 weeks). 
 LEA reduces the total core time used by 49\,000 core hours over the 12 weeks (approximately 5h of the whole platform).
-Although it's a small percentage reduction, it can be of interest on large scale clusters that are highly demanding in terms of electrical resources.
+Although it is a small percentage reduction, it can be of interest on large scale clusters that are highly demanding in terms of electrical resources.
 }
 
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/ECDF/byuser/ecdf_stretch_all-all.pdf}\caption{Empirical distribution function of the stretch's improvement from FCFS on all evaluated weeks.}\label{ecdf}\end{figure}
