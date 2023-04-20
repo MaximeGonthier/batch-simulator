@@ -668,7 +668,7 @@ otherwise the EFT strategy is used.
 \subsection{Adding backfilling to all strategies}
 
 As mentioned above, backfilling has been proposed to increase the
-performance of job schedulers, by allowing jobs with lower prioproduction clusterrity to be
+performance of production cluster job schedulers, by allowing jobs with lower priority to be
 scheduled before jobs with higher priority. In our setting, the
 priority is directly linked to the submission order: if $J_i$ is
 submitted before $J_j$, then $J_i$ has a higher priority than $J_j$.
@@ -690,7 +690,7 @@ backfilling, Algorithms~\ref{algo.fcfs}, \ref{algo.eft},
 choice of the earliest time when resources are available for a job
 (Line~\ref{fcfs.ln.find}). Instead of considering the time at which
 cores are (indefinitely) available, we look for an availability time
-window starting at $t_k$ long enough to hold the
+window starting at $t_k$ that is long enough to hold the
 job. Specifically, we change Line~\ref{fcfs.ln.find} into:
 \begin{algorithmic}[0]
   \State $\ref{fcfs.ln.find}'$: Find smallest time $t_k$ such that $\core(J_i)$ cores are
