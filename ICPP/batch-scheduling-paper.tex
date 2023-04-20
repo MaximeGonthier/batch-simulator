@@ -770,7 +770,7 @@ share their input file if they match the three following requirements:
           time frame. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
 \end{enumerate}
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files. 
-\rev{
+\rev{%
 In theory, two users could share the same file. 
 However, because they are using subsets of different databases, it is very unlikely that two
 users would work on the same project using the same databases, therefore we ignore this possibility.
@@ -779,10 +779,12 @@ users would work on the same project using the same databases, therefore we igno
 We consider that these jobs are dedicated to processing their input
 file. Hence, the more cores the job requests, 
 the larger its input file. This allows to estimate the size of files as follows:
-$$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128GB$$
-\rev{
-For example, if a user need 128GB of memory but would only request 1 of the 20 available cores, that user would block the node for all other users.
-Consequently, it is more efficient for a user who need the whole memory of a node to reserve all its cores. 
+$$\size(\file(i)) =\frac{\core(J_i)}{20} \times 128\,GB$$
+\rev{%
+Indeed, if a user needs 128\,GB of memory but would request only 1 of
+the 20 available cores, that user would block the node for all other
+users, for lack of remaining memory.
+Consequently, a user who needs the whole memory of a node will reserve all its cores. 
 %Similarly, if a user needs a fraction of the memory, he can reserve a fraction of the cores on the machine. 
 % The memory of a node can therefore contain several files.
 % Thus, the scheduling strategy cannot be simplified to allocating one node per user, because the scheduler can maximize locality among multiple nodes while avoiding starvation.
@@ -795,7 +797,7 @@ resources are single-node jobs and thus fit in our framework.
 The few multi-nodes jobs are not representative of the typical usage
 of the platform, and are replaced by as many single-node jobs as necessary to represent the same workload.
 We notice that jobs
-duration extend up to 10 days, while some jobs only last a few
+durations extend up to 10 days, while some jobs only last a few
 minutes. Even if the workload is not homogeneous, it is representative
 of the real usage from an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
@@ -812,7 +814,7 @@ Over these 12 weeks of workloads, we scheduled 1\,986\,496 jobs and evaluated 1\
 The most important for a user is that all the jobs that have been submitted at once are finished as soon as possible.
 Thus we introduce the notion of \us.
 We define the stretch of a \us as the sum of the stretch of jobs submitted by a user in a 5-minute window, and we concentrate on this value when reporting results.
-There have been 1083 distinct users and 136\,404 \us.
+There have been 1083 distinct users and 136\,404 \uss.
 
 To simulate these jobs in a realistic, steady-state operation of the
 platform, we consider both jobs submitted before and after the week
@@ -849,8 +851,8 @@ under consideration. More precisely, we proceed as illustrated in Figure~\ref{fi
 \end{figure}
 
 Our evaluation is based on three metrics: the stretch of each \us, the total time spent waiting for a file to become available, as well as the total core time.
-}
-We evaluate the proposed scheduler on these metrics and compared them to FCFS and EFT, with and without backfilling.
+}%
+We evaluate the proposed schedulers on these metrics and compare them to FCFS and EFT, with and without backfilling.
 
 \subsection{\rev{Simulator description}}
 \rev{
@@ -1161,7 +1163,7 @@ Switching between a locality first and distribution first strategy could be done
 gradually.
 %~ LEO could be improved to make better locality decision and bring significant improvements.
 %~ \rev{Thirdly,} we could improve the pairing of backfilling and file re-use.
-\rev{
+\rev{%
 An extension towards workflow scheduling where tasks depend on the output of a previous task would be very useful.
 Indeed the output file in memory would be re-used for other jobs, which is a 
 new opportunity for locality-aware schedulers.
