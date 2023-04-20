@@ -655,9 +655,9 @@ otherwise the EFT strategy is used.
 		%~ \State $\mathit{load} \gets$ percentage of nodes running at least one job at current time
 		%~ \If{$\mathit{load} < 80$}
 		\If{\rev{each node is running at least one job at $\mathit{current\_time}$}}
-			\State $LEA(\jobset,\nodeset)$
+			\State $LEA(J_i,\nodeset)$
 		\Else
-			\State $EFT(\jobset,\nodeset)$
+			\State $EFT(J_i,\nodeset)$
 		\EndIf
 	\EndFor
 \end{algorithmic}
