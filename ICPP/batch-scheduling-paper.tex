@@ -727,17 +727,19 @@ these logs as well as the results of the corresponding simulations.
 \subsection{\rev{Platform description}}
 \rev{
 We use a university cluster shared between several research laboratories. As mentioned above, a variety of applications including genomics analysis are performed on this cluster.
-Our cluster contains 9720 cores spread over 486 nodes. Each node has two 10-core Intel Xeon V4 CPU at 2.20 GHz/core.
-Most of the nodes have 128GB of RAM, and a few are larger.
+Our cluster contains 9720 cores spread over 486 nodes. Each node has two
+10-core Intel Xeon V4 CPU at 2.20\,GHz/core.
+Most of the nodes have 128\,GB of RAM, and a few are larger.
 To avoid an additional constraint, while maintaining a model close to the real cluster,
-we consider that the platform is made of 486 homogeneous nodes of size $\memory = 128GB$.
+we consider that the platform is made of 486 homogeneous nodes of size
+$\memory = 128\,GB$.
 
 
-The platform is managed by the SLURM scheduler, and as mentioned above, we observed the submission of I/O intensive jobs.
+The platform is managed by the SLURM scheduler, and as mentioned above, we observed the submission of I/O-intensive jobs.
 The cluster is often used for taxonomic identification of DNA fragments. 
 To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}}
 is often used together with an input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2}},
-whose size vary from a few GB up to 800GB.
+whose size vary from a few GB up to 800\,GB.
 We also noticed the use of genome alignment tools that require to store large text files\footnote{For example: \url{https://ftp.ensembl.org/pub/release-107/maf/ensembl-compara/multiple_alignments/10_primates.epo/}}, and it is likely that they need to load multiple of them, resulting in high I/O demands.
 % To perform such identification, the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}} is often used together with an input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2} for example}. Those database vary in size, from a few GB up to 800GB.
 % We also observed users using the Hierarchical alignment tool for genome alignment\footnote{\url{https://github.com/ComparativeGenomicsToolkit/hal}} 
@@ -764,7 +766,7 @@ share their input file if they match the three following requirements:
 \begin{enumerate}
 	\item $\core(J_i) = \core(J_j)$, i.e., they request the same number of cores;
 	\item $J_i$ and $J_j$ are submitted by the same user;
-	\item $J_i$ and $J_j$ are submitted within an 800 seconds
+	\item $J_i$ and $J_j$ are submitted within an 800\,seconds
           time frame. We consider this timeframe to be a reasonable amount of time for a user to submit all of their jobs using the same input file.
 \end{enumerate}
 Otherwise, we consider that $J_i$ and $J_j$ are using distinct input files. 
