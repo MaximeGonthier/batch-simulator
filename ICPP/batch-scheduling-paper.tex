@@ -427,7 +427,8 @@ computing resources. We start with two reference schedulers (FCFS and EFT)
 and then move to proposing three locality-aware job schedulers (named
 LEA, LEO and LEM). Each of these five schedulers can be used both
 without or with backfilling. For the sake of clarity, we first present
-the simpler version, without backfilling, before detailing the modifications needed to including backfilling.
+the simpler version, without backfilling, before detailing the
+modifications needed to include backfilling.
 
 As presented above, the task of the scheduler is to allocate a set of
 cores of one node
@@ -481,7 +482,7 @@ for job scheduling. However, it is not aware of the capability of the
 system to keep a large data file in the memory of a node between the execution of
 two consecutive jobs.
 A first step towards a locality-aware scheduler
-is to select a node for each job not based on the cores' availability
+is to select a node for each job not only based on the cores' availability
 time, but also using the file availability time, based on the file
 transfer time. This is the purpose of the Earliest-Finish-Time (or
 EFT) scheduler, described in Algorithm~\ref{algo.eft}: by selecting
@@ -490,9 +491,9 @@ minimizes the job completion time. There are three scenarios to compute the
 time $t'_k$ at which the input file of a job $J_i$ is available on
 \Node{k}:
 \begin{enumerate}
-\item A job started before $J_i$ on \Node{k} uses the same input
+\item A job started before $t_k$ on \Node{k} uses the same input
   file and it is already in memory, thus $t'_k=t_k$;
-\item The input file of $J_i$ is not in memory and
+\item The input file of $J_i$ is not in memory, thus
   $t'_k=t_k+\frac{\size(\file(J_i))}{\bandwidth}$;
 \item The input file of $J_i$ is partially loaded on \Node{k}: this
   happens when some
