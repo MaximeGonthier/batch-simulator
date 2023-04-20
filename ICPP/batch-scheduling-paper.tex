@@ -83,7 +83,7 @@
   We perform simulations using traces of real cluster usage, to compare
   them to classical job schedulers. The results show that
   keeping data in local memory between successive jobs and using data-locality
-  information to schedule jobs allows \rev{improves performance compared
+  information to schedule jobs \rev{improves performance compared
   to a widely used scheduler (FCFS)}: a reduction in job waiting time
   \rev{(a 7.5\% improvement in stretch), and a decrease} in the
   amount of data transfers \rev{(7\%)}.
@@ -180,19 +180,21 @@ We thus present the following contributions in this paper:
 	\item We propose three new schedulers focusing on re-using input files while minimizing evictions and avoiding starvation (Section~\ref{sec.schedulers}).
 	\item We extract job information from historical logs of a cluster to build workloads that correspond to the needs and behaviors of real users (Section~\ref{sec.working}).
 	\item We implement all three heuristics as well as two state-of-the-art schedulers on a simulator and study the performance (mean stretch, amount of time spent waiting for a file to be loaded \rev{and number of core hours}) obtained \rev{after scheduling almost 2 millions jobs} (Section~\ref{sec.evaluations}).
-	Our evaluation demonstrate that our heuristics in most cases surpass the state of the art schedulers.
+	Our evaluation demonstrates that our heuristics in most cases surpass the state-of-the-art schedulers.
 	We show that workloads that heavily saturate the cluster
-    benefits much more from our strategies which results
+    benefit much more from our strategies, which results in
     considerable reduction in the job waiting times \rev{as well as the total core hours}.
 \end{compactenum}
-\rev{We used simulations to avoid dirupting users on a production cluster, but our strategies could be implemented on the Slurm workload by asking the users to flag the input file they are using.}
+\rev{We used simulations to avoid dirupting users on a production
+cluster, but our strategies could be implemented on the Slurm workload
+by asking the users to flag the input files they are using.}
 
 \section{Related work}\label{sec.related_work}
 
 \subsection{Scheduling jobs on large clusters}
 
 A various number of workloads managers have emerged 
-as a way to meet the rising numbers of high performance computing clusters.
+as a way to meet the rising numbers of high-performance computing clusters.
 Workload managers like Slurm~\cite{SLURM}, OAR~\cite{oar},
 TORQUE~\cite{torque}, LoadLeveler~\cite{loadleveler},
 Portable Batch System~\cite{pbs}, SunGrid~\cite{sungrid}
@@ -202,10 +204,10 @@ various scheduling strategies.
 The First-Come-First-Served (FCFS) algorithm is the prevalent default
 scheduler on most of these solutions~\cite{survey_workload_manager_and_scheduler}.
 Moreover, Slurm is used on most of the TOP500 supercomputers and its default strategy is FCFS~\cite{slurm_website_scheduling} as well.
-A backfilling strategy is known to increase
+A backfilling strategy is known to improve
 the use of supercomputer resources~\cite{maui}~\cite{New_Backfill}. 
-The most commonly used backfilling strategy, called conservative 
-backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based} follows
+The most commonly-used backfilling strategy, called conservative 
+backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based}, follows
 a simple paradigm: "a job can only be backfilled if it does not
 delay a job of higher priority".
 We can then safely assume that comparing ourselves to FCFS with and without conservative backfilling can 
@@ -215,8 +217,8 @@ Other scheduling strategies exist like
 Maui~\cite{Maui_Scheduler}, Gang scheduling~\cite{gang_scheduling}, 
 RASA~\cite{rasa} that use the advantages of both Min-min and Max-min algorithms,
 RSDC~\cite{rsdc} that divides large jobs in sub jobs for a more refined scheduling,
-or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are a priority-based schedulers; 
-however these heuristics do not consider the impact
+or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that are priority-based schedulers; 
+however these heuristics do not consider the impact that
 input re-use could have on data-intensive workloads.
 We aim at resolving this issue in this paper.
 
@@ -236,7 +238,7 @@ located, rather than moving the data to where the application is
 running, in order to reduce communication.
 %~ HDFS is mainly a storage system, thus it uses an historic on files locations to serve as a backup. 
 
-These solutions are mainly storage systems that uses a history of file locations to serve as a backup.
+These solutions are mainly storage systems that use a history of file locations to serve as a backup.
 In our scenario, we copy the data from an already-redundant system (an online database for example)
 and store it locally on the node in an ephemeral way.
 Thus, in the event of a crash, we do not manage the data which is already redundant, it simply results in an aborted job.
@@ -274,10 +276,10 @@ and will thus naturally limit thrashing.
 Agrawal et al.~\cite{Scheduling_Shared_Scans_of_Large_Data_Files}
 propose to schedule jobs not sharing a file first
 and to use a stochastic model of job arrivals for each input file to maximize re-use.
-This work is aimed at the Map-Reduce model and allows to predict future jobs arrivals, two prerequisites that we do not consider. 
+That work is aimed at the Map-Reduce model and allows to predict future jobs arrivals, two prerequisites that we do not consider. 
 %
-Equipping each node with a scheduler that follows a work
-stealing strategy in order to manage both data locality 
+Equipping each node with a scheduler that follows a work-stealing
+strategy in order to manage both data locality 
 and load balancing is also a solution to reduce data transfers~\cite{Optimizing_load_balancing_and_data_locality_with_data_aware_scheduling}. 
 %
 Selvarani et al. propose an improved activity-based costing scheduler~\cite{Improved_cost_based_algorithm}
