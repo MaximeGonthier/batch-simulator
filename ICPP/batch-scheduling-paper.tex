@@ -189,7 +189,7 @@ We thus present the following contributions in this paper:
     benefit much more from our strategies, which results in
     considerable reduction in the job waiting times \rev{as well as the total core hours}.
 \end{compactenum}
-\rev{We used simulations to avoid dirupting users on a production
+\rev{We used simulations to avoid disrupting users on a production
 cluster, but our strategies could be implemented on the Slurm workload
 by asking the users to flag the input files they are using.}
 
@@ -385,7 +385,7 @@ are allocated to the job, as well as a starting time $t_k$ for $J_i$. Job
 $J_i$ is thus allocated a time window from $t_k$ to
 $t_k+\walltime(J_i)$ devoted to (i) possibly loading the input file
 $\file(J_i)$ in the memory (if it is not already present at time
-$t_k$) and (ii) executing job $J(i)$. If the job has not completed at
+$t_k$) and (ii) executing job $J(i)$. If the job is not completed at
 time $t_k+\walltime(J_i)$, it is killed by the scheduler to ensure
 that later jobs are not delayed.  The scheduler must also make sure
 that no two jobs are executed simultaneously on the same cores.
@@ -499,7 +499,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 \item The input file of $J_i$ is partially loaded on \Node{k}: this
   happens when some
   job $J_j$ using the same input file has been scheduled on other cores of
-  the same node at time $\start(J_j)<t_k$ but the file transfer has not
+  the same node at time $\start(J_j)<t_k$ but the file transfer has not been
   completed at time $t_k$. Then the file will be available at time:
   $t'_k = \start(J_j)+\frac{\size(\file(J_i))}{\bandwidth}.$
 \end{enumerate}
@@ -675,7 +675,7 @@ submitted before $J_j$, then $J_i$ has a higher priority than $J_j$.
 In order to avoid jobs
 being perpetually delayed, bounds have to be set on how already-scheduled
 jobs can be affected by backfilling. As discussed above,
-Conservative Backfilling is the most restrictive version and one of
+conservative backfilling is the most restrictive version and one of
 the most commonly-used strategies to improve cluster utilization. It
 forbids any modification on the resource
 reservations of high-priority jobs: a job may be scheduled
@@ -862,11 +862,11 @@ All strategies as well as the two baselines have been implemented
 on a simulator that we developed\footnote{Code, anonymized logs and the methodology followed to randomly select our evaluated weeks are available for reproducibility: \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
 
 The simulator is a simple event-based simulator focusing on data locality.
-it is made in python and follows these principles:
+It is made in Python and follows these principles:
 \begin{itemize}
 \item As in real systems, the schedule is re-computed entirely at each unpredicted event (job submission or job termination before the walltime);
 \item The scheduler is aware only of jobs that have be submitted before the current time;
-\item When a job is submitted, the scheduler  knows its submission time, requested walltime, number of cores required and input file name of the jobs;
+\item When a job is submitted, the scheduler  knows its submission time, requested walltime, number of cores required and input file name of the job;
 \item Scheduling a job consists in assigning to the job a start time, a node, and as many cores on that node as requested.
 \end{itemize}
 
@@ -939,7 +939,7 @@ In this situation, FCFS and EFT are very efficient. The earliest available node 
 most cases a node that can start the job immediately, explaining the mean stretch close to 1 in Figure~\ref{stretch.40}.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
 that puts a large weight on transfer time
-or weigh equally $t_k$, the transfer and eviction duration, or like EFT. 
+or weigh equally $t_k$, the transfer and eviction duration. 
 Thus, on underused clusters, LEO has a behavior close to EFT, while trying to minimize evictions.
 Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under \rev{100\% more than half the time}, so LEM behaves similarly to EFT.
@@ -991,12 +991,11 @@ to their flexibility, achieve performance close to EFT.
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Cluster_usage/2022-10-24->2022-10-30_V10000_anonymous_Fcfs_Used_nodes_450_128_32_256_4_1024_core_by_core.pdf}\caption{Visualization of the utilization rate of the cluster on the workload of week 43 with FCFS.}\label{cluster_usage.43}\end{figure}
 
 We concentrate here on week 43, which we identify as a workload  saturating the cluster.
-Indeed,  Figure~\ref{cluster_usage.43} shows 
+Indeed, Figure~\ref{cluster_usage.43} shows 
 a queue of several thousands requested cores
 for the whole duration of the evaluated \rev{week}.
 In this situation, re-using files has a significant impact
 on the queue times.
-\rev{
 \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-24-10-30_1.pdf}\caption{Stretch's improvement from FCFS on week 43. The upper whisker of LEA extends up to 11.}\label{stretch.43}\end{figure}
 \begin{table}
 \begin{tabular}{ l c c c c }
@@ -1011,7 +1010,6 @@ waiting for a file to be ready before starting the computation,
 relative to the total waiting time of FCFS on week 43.}\label{tab.43}
 \end{table}
 As you can see on Table~\ref{tab.43}, LEA and LEM greatly reduces the transfer time.
-}
 This is confirmed by Figure~\ref{stretch.43}:
 more data re-use is associated with \rev{better improvement} for LEA and LEM.
 On a saturated cluster, filling all cores with the first jobs of the queue, like FCFS does, is not crucial.
@@ -1123,7 +1121,7 @@ Figure~\ref{boxplot.all_bf} shows the results with the backfilling version of ou
 schedulers and compared to FCFS with backfilling (FCFS-BF) on all workloads.
 We notice that our schedulers have smaller improvements with
 backfilling, because FCFS-BF already performs much better than FCFS.
-\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/byuser/Mean_stretch_with_and_without_bf_all-all.pdf}\caption{Average stretch of all jobs evaluated on all 12 weeks by \us with (circles) and without (crosses) backfilling.}\label{bf_vs_non_bf}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/byuser/Mean_stretch_with_and_without_bf_all-all.pdf}\caption{Average stretch of all jobs evaluated on all 12 weeks by \us with (circles) and without (crosses) backfilling. Cropped at 200.}\label{bf_vs_non_bf}\end{figure}
 Figure~\ref{bf_vs_non_bf} shows that
 with backfilling (circles),
 the \rev{difference of performance with or without backfilling is much higher} for FCFS-BF and EFT-BF. 
