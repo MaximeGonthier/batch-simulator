@@ -1,0 +1,27 @@
+
+
+Simple formatting can be achieved in the questions below using LaTeX. Blocks using LaTeX formatting must be wrapped in "%START_LATEX" and "%STOP_LATEX" comment lines. For example:
+%START_LATEX
+\begin{enumerate}
+\item Your formatted text can go here.
+\item Simple things like bold or italics will work.
+\end{enumerate}
+%STOP_LATEX
+
+The Artifact Description is an optional step. Authors can provide descriptions of their artifacts. By filling in this form, the Artifact Description (AD) Appendix will be auto-generated from author responses to a standard form embedded in the online submission system. It must include the following aspects:
+
+
+Artifact Identification
+
+It includes:
+(i) an abstract describing the main contributions of the article and the role of the computational artifact(s) in these contributions.
+(ii) the abstract may include a software architecture or data models and its description to help the readers understand the computational artifact(s) and
+(iii) a clear description on to what extent the computational artifact(s) contribute(s) to the reproducibility of the experiments in the article.
+
+Reproducibility of Experiments
+
+It includes:
+(i) a complete description of the experiment workflow that the computational artifact(s) can execute
+(ii) an estimation of the execution time to execute the experiment workflow.
+(iii) a complete description of the expected results and an evaluation of them, and most importantly.
+(iv) how the expected results from the experiment workflow relate to the results found in the article. Best practices indicate that, to facilitate the understanding of the scope of the reproducibility, the expected results from the artifact should be in the same format as the ones in the article. For instance, when the results in the article are depicted in a graph figure, ideally, the execution of the code should provide a (similar) figure (there are open-source tools that can be used for that purpose such as gnuplot). It is critical that authors devote their efforts on these aspects of the reproducibility of experiments to minimize the time needed for their understanding and verification.
