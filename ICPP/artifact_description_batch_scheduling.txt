@@ -23,23 +23,23 @@ Such schedulers seek a good compromise between increasing resource utilization
 and user satisfaction, but they do not take into account jobs that share large
 input files, which can happen in data-intensive scenarios.
 In this paper, we study how to design a data-aware job scheduler that can take
-advantage of previously loaded files to reduce data transfers and thus reduce job wait times.
+advantage of previously-loaded files to reduce data transfers and thus reduce job wait times.
 We present three new schedulers that are able to distribute the load between the
 computing nodes as well as to reuse the input files already loaded in the memory of
-some node and we compare them with the existing strategy: FCFS and EFT.
+some node and we compare them with the most commonly-used strategies: FCFS and EFT.
 The results show that keeping data in local memory between successive jobs and
 using data-locality information to schedule jobs improves performance compared
 to FCFS in two ways: a reduction in job waiting time and a reduction in
 the amount of data transfers.
   
-We evaluate the stretch (flow of a job compared to the one it would
-experience on an empty cluster) of each user session (jobs submitted
+We evaluate the stretch (time between the job submission and the job completion,
+divided by the execution time of the job) of each user session (jobs submitted
 by a user in a 5-minute window).
 The workloads used are extracted from real logs from a university cluster
 shared by several research laboratories.
 We perform the experiments on 12 different workloads, each containing 7 days of logs.
 
-The computational artifacts contain everything needed to reproduce the experiments.
+The computational artifacts contain everything needed to reproduce the experiments exactly.
 It includes the workloads used, our simulator, the platform description,
 the schedulers, and the script used to launch the experiments and draw the resulting figures.
 
@@ -56,7 +56,7 @@ Notre soumission:
 The computational artifact runs a simulation of the 12 evaluated workloads
 using the batch scheduler simulator we implemented.
 For each week, a workload is associated in the form of a text file containing the job's id,
-submission time, number of cores requested, walltime, input file, and actual duration.
+submission time, number of requested cores, input file, expected duration, and actual duration.
 The simulator processes the workload using each scheduler.
 The output is the stretch of each user session.
 After simulating the 12 weeks, a script produces the results:
