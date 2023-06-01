@@ -1,0 +1,52 @@
+% 587 mots
+
+We would like to thank the reviewers and begin by highlighting
+four major limitations that were rightly raised:
+
+- Simplified model:
+	Our model makes two major simplifications:
+	- We do not consider multi-node jobs. 
+	Only considering single-node jobs first is a necessary first step before building a scheduler that can handle multi-node jobs.
+	A multi-node job would replicate its input data over multiple nodes.
+	Our schedulers can naturally manage to reuse such input data.
+	The only additional constraint is to be able to optimize the placement of such large jobs.
+	However the locality strategies employed would be the same.
+	- We do not consider I/O contention.
+	We agree that I/O bandwidth is not constant when transferring inputs on a node.
+	However, this is something very complex to replicate in a simulated model.
+	A first step to consider would be to test our strategies with different values of bandwidth.
+	We still expect our scheduler to show improvements, but they would be smaller if the bandwidth is faster.
+	Another step would be to divide the bandwidth by the number of concurrent data transfers.
+	- Input files are always loaded at the start of a job.
+	This is something we observe in the range of applications that constitute our motivation.
+	
+- Motivation:
+	We agree that the assumption that no data is written to the node's memory may be incorrect for some application scenarios.
+	For our schedulers to be efficient, an application must both reuse input data across multiple jobs and not generate a lot of writes that would overflow the node's memory.
+	Due to space limitations, we only briefly introduced an application scenario where this is the case in Section 5.1.
+	We would like to describe in more detail such application in our framework, namely DNA reconstruction.
+	Some scientists reconstruct damaged genomes to build potential migration routes. 
+	These DNA sequences are large and need to be loaded onto the nodes of the cluster to perform such analysis.
+	The writes are much smaller compared to the input sizes.
+	Our scheduler would therefore bring significant improvements to such an application.
+	One can also cite taxonomic identification of DNA fragments that have similar requirements.
+
+- Lack of competitors and references:
+	In addition to FCFS, we also use the EFT scheduler to evaluate our strategies.
+	We should detail with more attention as to why it is a good competitor and use it as our main point of comparison.
+	Suggested papers to compare ourselves to are of great interest.
+	However, they mostly optimize IO contention, while we focus more on data locality.
+	For example, one of them trains a neural network model to predict I/O patterns and then delays a job to avoid IO contention.
+	Comparing such different approaches on fair grounds would be difficult, in addition to being challenging to implement.
+	We agree that we lack more recent references, which we plan to correct.
+
+- Simulated experiments:
+	We agree with the reviewers that simulated results have less impact.
+	However, our goal is to integrate our heuristics into a real system.
+	This is a long term project as perturbing a research cluster is not trivial.
+	We also agree that our simulator should be described in more detail to emphasize how it can be trusted.
+	
+To answer reviewer 3, we mentionned why we do not use a distributed file systems in the related works.
+Node-local burst buffers are an intersting solution but our approach is different: we rely on data reuse.
+
+To answer reviewer 5, yes stretch used as a metric, and we can provide references.

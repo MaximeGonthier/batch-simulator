@@ -1,0 +1,217 @@
+Reviewer 1	top
+
+Paper summary
+
+    
+    The authors propose a data-aware job scheduler that is able to keep large input files on the computing nodes without impacting other memory needs and can benefit from previously-loaded files to decrease data transfers in order to reduce the waiting times of jobs. The authors show that keeping data in local memory between successive jobs and using data-locality information to schedule jobs improves performance.
+
+
+Paper strengths
+
+    
+    
+
+        It is an important topic in modern schedulers.
+        The paper is well presented.
+
+
+Paper weaknesses
+
+    
+    
+
+        The use cases where the assumptions hold are unclear. This makes the motivation of the work unclear.
+        state of the art task-data co-scheduling are not considered in this work.
+
+
+Detailed comments
+
+    
+    
+
+        There are data-aware scheduling done which try to schedule tasks based on data dependency. The authors should compare their work against these solutions
+
+        Herbein, Stephen, Dong H. Ahn, Don Lipari, Thomas RW Scogland, Marc Stearman, Mark Grondona, Jim Garlick, Becky Springmeyer, and Michela Taufer. "Scalable I/O-aware job scheduling for burst buffer enabled HPC clusters." In Proceedings of the 25th ACM International Symposium on High-Performance Parallel and Distributed Computing, pp. 69-80. 2016.
+        Wyatt, Michael R., Stephen Herbein, Todd Gamblin, and Michela Taufer. "AI4IO: A suite of AI-based tools for IO-aware scheduling." The International Journal of High Performance Computing Applications 36, no. 3 (2022): 370-387.
+        Wu, Kaiyue, Jianwen Wei, and James Lin. "SchedP: I/O-aware Job Scheduling in Large-Scale Production HPC Systems." In Network and Parallel Computing: 19th IFIP WG 10.3 International Conference, NPC 2022, Jinan, China, September 24–25, 2022, Proceedings, pp. 315-326. Cham: Springer Nature Switzerland, 2022.
+
+        The assumption that "This way, we make sure that the memory of a node is large enough to accommodate all input files" seems impractical. In most applications, the data is distributed among multiple processes (and thus nodes) to maximize the bandwidth of the shared filesystem. Localizing the dataset not only would greatly limit I/O performance but is also memory-prohibitive for the application.
+        Also the assumption that "since all other data are negligible compared with the input files." is often not true. For most scientific domains such as WRF, Cosmology, Particle physics all create a lot of intermediate data (in the form of checkpoints or simulation results) to converge to a final solution. The authors should highlight specific application cases where they think this is applicable as it is not very clear in the manuscript.
+
+
+Questions for rebuttal
+
+    
+    See detailed comments.
+    
+    
+Reviewer 2	top
+
+Paper summary
+
+    
+    This paper proposes three locality-aware schedulers to distribute workloads in the clusters, in order to maximize the input data reuse between successive jobs while considering load-balance.
+
+
+Paper strengths
+
+    
+    The studied problem is an important and typical problem for cluster management.
+
+
+Paper weaknesses
+
+    
+    
+
+        References are outdated.
+        The technical contribution of this work is low.
+        The experiments are not solid.
+
+
+Detailed comments
+
+    
+    Cluster scheduling is widely studied for many years. However, the references in this paper are very old. Out of the 27 references, only two are later than 2020. Authors should better study the related field.
+
+    Technically, the proposed framework is too simple. The motivation of this paper is not clear.
+
+    Experiments are only based on simulation and the compared solution is the very baseline FCFS algorithm.
+
+    Overall, I don't think this paper is ready for publication.
+
+
+Questions for rebuttal
+
+    
+    Explain the main technical contribution of this work.
+
+
+
+Reviewer 3	top
+
+Paper summary
+
+    
+    The authors developed a locality-aware scheduling algorithm for batch jobs with several GB of input files. Simulations using logs from a real cluster showed performance improvements compared to FCFS, including reduced job latency (7.5% improvement in stretch) and reduced data transfer volume (7%).
+
+
+Paper strengths
+
+    
+    The goal of the algorithm is to achieve a balance between input file loading and early job termination.
+
+
+Paper weaknesses
+
+    
+    The authors propose a locality-aware scheduling algorithm that increases the priority to a node whose files are loaded into the node, but this is not novel.
+
+    The evaluation is based on a simulator, not on actual equipment. However, the description of the simulator is not detailed enough, and it is unclear whether the evaluation is effective or not.
+
+
+Detailed comments
+
+    
+    The target application in this study is not general but a specific application characterized by the fact that multiple jobs use the same input file. If a specific application is the subject of this study, it should provide specific processing details and specifications for that application.
+
+    The target system in this study is an inefficient system that assumes that input files are always loaded at the start of a job. Various modern methods have been developed to handle large data, such as distributed file systems and node-local burst buffers, but these are not mentioned at all in this paper.
+
+    The description of loading a file into memory is not clear. It should be specifically described whether it is a cache or node-local storage using memory.
+
+
+Questions for rebuttal
+
+    None
+
+
+
+Reviewer 4	top
+
+Paper summary
+
+    
+    This paper proposes three schedulers, LEA, LEO, and LEM, to schedule jobs with considering data reuse.
+    The evaluation results show that it is not always better to use all cores with the jobs in a queue (FCFS), and a group of jobs using the same input files should be scheduled while considering data reuse. In the evaluation, LEA shows the most significant performance improvement in the overall evaluation, thus clearly showing the importance of considering data locality.
+
+
+Paper strengths
+
+    
+    
+
+        This work discusses an interesting problem of data-locality-aware job scheduling, and the poposed schedulers are reasonable.
+
+
+Paper weaknesses
+
+    
+    
+
+        This paper assumes only a job running on a single node, considering data analysis workloads.
+        This paper assumes that the file I/O bandwidth is constant, although it could change depending on varoius factors such as the file size and background traffic.
+
+
+Detailed comments
+
+    
+    This paper is well organized and easy to follow.
+
+    It is unclear if the proposed scheduler is applicable to scheduling a job of using multiple nodes. It is unclear how jobs of using multiple nodes are handlded if submitted. Is it acceptable to assume only single-node jobs in practice?
+
+    One concern is about the assumption that the performance gain by data reuse can be estimated in advance. The gain would strongly depend on the effective file I/O bandwidth that could vary drastically over time.
+
+
+Questions for rebuttal
+
+    
+    Each job uses only a single node, so two jobs on the same node or two consecutive nodes can share data already loaded into the memory. But in reality, most HPC workloads require multiple nodes. Is it possible to extend this work to more practical situations of scheduling multi-node jobs as well as single-node jobs?
+
+    File I/O bandwidth is not constant and significantly varies. Is it possible to calculate t'_k so accurately in practice?
+
+
+
+Reviewer 5	top
+
+Paper summary
+
+    
+    The topic of this paper deals with developing job scheduling approaches that take the staging costs of input files resp. their subsequent location on the cluster into account. It introduces multiple algorithms with the ultimate goal being minimizing the number of times input files need to be moved to compute nodes into account, and trying to assign jobs to compute nodes that hold a required input file already.
+
+    The algorithms are evaluated using job log file from a cluster, and shows overall good performance benefits.
+
+
+Paper strengths
+
+    
+    
+
+        the paper is overall well written
+
+        the algorithms are intuitive
+
+
+Paper weaknesses
+
+    
+    
+
+        it is unclear whether the paper tackles an actual problem. The paper does not present any evidence that file reuse across jobs is occurring on a scale that would warrant our attention. In fact, since the logs used for the evaluation do not contain any information on whether (or how many) input files are reused across jobs, an artificial dependency is generated for the evaluation.
+
+
+Detailed comments
+
+    
+    
+    I do not have too many additional comments, since I said in the previous paragraphs, the paper is overall well written, the algorithms presented are intuitive and clear. My main problem is whether the paper solves an actual problem.
+
+        page 3 line 274: is 'stretch' an actual metric used in the scheduling community? If yes, it would bee good to add a reference. Otherwise, it would be good to refer to and use the metrics typically used in the community.
+
+        page 5, section 5.2: many of the assumptions made to create the file dependencies across jobs are not straight-forward and clear. Many jobs do not use exactly 1 input file. The file size is not necessarily correlated to the amount of memory on the node or the number of cores used. If some assumptions are made, it might make sense to use these as parameters of the evaluation.
+
+        along the same lines, the bandwidth to download a data file might be very different on different clusters and where the data is coming from (e.g. from stable storage vs. internet download). It might make sense to explore the sensitivity of the algorithms to the bandwidth value assumed, since it might have a significant impact on whether its worthwhile introducing specialized algorithms to deal with the problem.
+
+
+Questions for rebuttal
+
+    None
