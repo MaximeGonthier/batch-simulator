@@ -1,4 +1,4 @@
-% current version: 404 words --- maximum 500
+% current version: 471 words --- maximum 500
 
 We thank the reviewers and comment on the four major limitations they
 identify: 
@@ -31,7 +31,7 @@ better organize unavoidable IOs. Considering both steps
 simultaneously would much likely make the model too complex and
 intractable.
 
-	
+
 Lack of competitors and references:
 
 We thank the reviewers for proposing new references, and will include
@@ -52,11 +52,16 @@ simulations. Note that we enroll in the artifact evaluation proposed
 by ICPP, and will give much detail on the simulator in the artifact description.
 	
 	
+Reviewer 2: The main technical contribution of this work is to study the effect of locality techniques applied to batch scheduling.
+
 Reviewer 3: We mentionned why we do not use a distributed
-file systems in the related works.  Node-local burst buffers are an
+file systems in the related works: they are mainly storage systems
+that use a history of files to serve as a backup. Crash are not in
+the scope of our study but, our algorithm could work in pairs with such systems.
+Node-local burst buffers are an
 intersting solution but simply offer a new storage space, our approach
 focusing on data reuse also make sense with such burst buffers.
-
+Loading a file correspond to having transferred from the file system to the node's cache.
 
 Reviewer 5: We will provide an appropriate reference for the
 stretch metric.
