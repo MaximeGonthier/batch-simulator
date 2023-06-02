@@ -1,4 +1,4 @@
-% current version: 471 words --- maximum 500
+% current version: 475 words --- maximum 500
 
 We thank the reviewers and comment on the four major limitations they
 identify: 
@@ -38,7 +38,7 @@ We thank the reviewers for proposing new references, and will include
 a subsection on IO optimization in the final version of the
 paper. However, we believe these studies are orthogonal to our work:
 they all consist in reducing IO contention (through IO pattern
-prediction, IO scheduling, etc.) where we try to reduce IO in the first
+prediction, IO scheduling, etc.) where we try to reduce IOs in the first
 place by optimizing job allocation.
 
 
@@ -52,16 +52,18 @@ simulations. Note that we enroll in the artifact evaluation proposed
 by ICPP, and will give much detail on the simulator in the artifact description.
 	
 	
-Reviewer 2: The main technical contribution of this work is to study the effect of locality techniques applied to batch scheduling.
+Reviewer 2: The main technical contribution of this work is to study
+the effect of data reuse techniques on batch scheduling.
 
-Reviewer 3: We mentionned why we do not use a distributed
-file systems in the related works: they are mainly storage systems
-that use a history of files to serve as a backup. Crash are not in
-the scope of our study but, our algorithm could work in pairs with such systems.
-Node-local burst buffers are an
-intersting solution but simply offer a new storage space, our approach
-focusing on data reuse also make sense with such burst buffers.
-Loading a file correspond to having transferred from the file system to the node's cache.
+Reviewer 3: We mentioned distributed file systems in our related
+work, but we do not consider them as a possible solution: as detailed
+above, we concentrate on very large data file that are manually loaded
+by applications. Distributed file systems also allow to avoid data
+losses in case of failures, which is out-of-scope of our study.
+Node-local burst buffers are an intersting solution but simply offer a
+new storage space, our approach focusing on data reuse also make sense
+with such burst buffers. Loading a file correspond to having
+transferred from the file system to the node's cache. 
 
 Reviewer 5: We will provide an appropriate reference for the
 stretch metric.
