@@ -1,4 +1,4 @@
-% current version: 475 words --- maximum 500
+% current version: 476 words --- maximum 500
 
 We thank the reviewers and comment on the four major limitations they
 identify: 
@@ -7,7 +7,7 @@ Motivation:
 
 Our study focuses on a specific setting with mostly genomic
 applications, where data is loaded before the computation. We agree
-that this may be suboptimal, but this pattern was clearly notices in
+that this may be suboptimal, but this pattern was clearly observed in
 the applications used on our platform. Besides, those applications
 have very scarce output data compared to the large genomes databases
 used as inputs. The study of the trace of the platform leads us to
@@ -60,10 +60,10 @@ work, but we do not consider them as a possible solution: as detailed
 above, we concentrate on very large data file that are manually loaded
 by applications. Distributed file systems also allow to avoid data
 losses in case of failures, which is out-of-scope of our study.
-Node-local burst buffers are an intersting solution but simply offer a
+Node-local burst buffers are an interesting solution but simply offer a
 new storage space, our approach focusing on data reuse also make sense
 with such burst buffers. Loading a file correspond to having
-transferred from the file system to the node's cache. 
+it transferred from the file system to the node's cache. 
 
 Reviewer 5: We will provide an appropriate reference for the
 stretch metric.
