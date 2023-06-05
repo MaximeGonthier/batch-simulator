@@ -1,4 +1,4 @@
-% current version: 476 words --- maximum 500
+% current version: 477 words --- maximum 500
 
 We thank the reviewers and comment on the four major limitations they
 identify: 
@@ -49,7 +49,7 @@ than a real implementation. However, it is not possible to deploy a
 new scheduling strategy on a real platform (used by numerous
 scientists) before demonstrating its usefulness through
 simulations. Note that we enroll in the artifact evaluation proposed
-by ICPP, and will all details on the simulator in the artifact description.
+by ICPP, and will include all details on the simulator in the artifact description.
 	
 	
 Reviewer 2: The main technical contribution of this work is to study
