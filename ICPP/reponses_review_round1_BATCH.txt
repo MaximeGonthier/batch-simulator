@@ -1,4 +1,4 @@
-% current version: 476 words --- maximum 500
+% current version: 477 words --- maximum 500
 
 We thank the reviewers and comment on the four major limitations they
 identify: 
@@ -16,10 +16,10 @@ make these two assumptions.
 
 Simplified model:
 
-- Our model only considers single node jobs, as they largely prevail
+- Our model only considers single-node jobs, as they largely prevail
 in the studied dataset. However, our scheduler could be extended to
 multi-node jobs: scheduling such jobs is a more complex tasks, as one
-need to find several nodes all holding the corresponding data. We
+needs to find several nodes all holding the corresponding data. We
 believe studying single-node jobs is a necessary first step, and leave
 multi-node jobs for future works.
 
@@ -49,7 +49,7 @@ than a real implementation. However, it is not possible to deploy a
 new scheduling strategy on a real platform (used by numerous
 scientists) before demonstrating its usefulness through
 simulations. Note that we enroll in the artifact evaluation proposed
-by ICPP, and will give much detail on the simulator in the artifact description.
+by ICPP, and will include all details on the simulator in the artifact description.
 	
 	
 Reviewer 2: The main technical contribution of this work is to study
@@ -57,12 +57,12 @@ the effect of data reuse techniques on batch scheduling.
 
 Reviewer 3: We mentioned distributed file systems in our related
 work, but we do not consider them as a possible solution: as detailed
-above, we concentrate on very large data file that are manually loaded
+above, we concentrate on very large data files that are manually loaded
 by applications. Distributed file systems also allow to avoid data
 losses in case of failures, which is out-of-scope of our study.
 Node-local burst buffers are an interesting solution but simply offer a
-new storage space, our approach focusing on data reuse also make sense
-with such burst buffers. Loading a file correspond to having
+new storage space, our approach focusing on data reuse also makes sense
+with such burst buffers. Loading a file corresponds to having
 it transferred from the file system to the node's cache. 
 
 Reviewer 5: We will provide an appropriate reference for the
