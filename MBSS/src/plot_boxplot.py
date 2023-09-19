@@ -201,7 +201,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 						list_of_core_time_used.append(sum_of_core_time_used)
 						list_of_core_time_used_reference.append(sum_of_core_time_used_reference)
 		
-		if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points":
+		if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points"or boxplot_or_hist == "small_hist":
 			count_total = 0
 			count_different_from_1 = 0
 			core_time_used_improvement = []
@@ -280,12 +280,80 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	print("Median LEA:", statistics.median(core_time_used_improvement_lea))
 	print("Median LEO:", statistics.median(core_time_used_improvement_leo))
 	print("Median LEM:", statistics.median(core_time_used_improvement_lem))
+	print("Mean EFT:", statistics.mean(core_time_used_improvement_eft))
+	print("Mean LEA:", statistics.mean(core_time_used_improvement_lea))
+	print("Mean LEO:", statistics.mean(core_time_used_improvement_leo))
+	print("Mean LEM:", statistics.mean(core_time_used_improvement_lem))
 	# ~ exit
-
+	
+	supp_1_all = 0
+	equal_1_all = 0
+	inf_1_all = 0
+	supp_1_eft = 0
+	equal_1_eft = 0
+	inf_1_eft = 0
+	for i in range (0, len(core_time_used_improvement_eft)):
+		if core_time_used_improvement_eft[i] > 1:
+			supp_1_eft = supp_1_eft + 1
+		elif core_time_used_improvement_eft[i] == 1:
+			equal_1_eft = equal_1_eft + 1
+		else:
+			inf_1_eft = inf_1_eft + 1
+	print("supp_1_eft =", supp_1_eft)
+	print("equal_1_eft =", equal_1_eft)
+	print("inf_1_eft =", inf_1_eft)
+	supp_1_lea = 0
+	equal_1_lea = 0
+	inf_1_lea = 0
+	for i in range (0, len(core_time_used_improvement_lea)):
+		if core_time_used_improvement_lea[i] > 1:
+			supp_1_lea = supp_1_lea + 1
+		elif core_time_used_improvement_lea[i] == 1:
+			equal_1_lea = equal_1_lea + 1
+		else:
+			inf_1_lea = inf_1_lea + 1
+	print("supp_1_lea =", supp_1_lea)
+	print("equal_1_lea =", equal_1_lea)
+	print("inf_1_lea =", inf_1_lea)
+	supp_1_leo = 0
+	equal_1_leo = 0
+	inf_1_leo = 0
+	for i in range (0, len(core_time_used_improvement_leo)):
+		if core_time_used_improvement_leo[i] > 1:
+			supp_1_leo = supp_1_leo + 1
+		elif core_time_used_improvement_leo[i] == 1:
+			equal_1_leo = equal_1_leo + 1
+		else:
+			inf_1_leo = inf_1_leo + 1
+	print("supp_1_leo =", supp_1_leo)
+	print("equal_1_leo =", equal_1_leo)
+	print("inf_1_leo =", inf_1_leo)
+	supp_1_lem = 0
+	equal_1_lem = 0
+	inf_1_lem = 0
+	for i in range (0, len(core_time_used_improvement_lem)):
+		if core_time_used_improvement_lem[i] > 1:
+			supp_1_lem = supp_1_lem + 1
+		elif core_time_used_improvement_lem[i] == 1:
+			equal_1_lem = equal_1_lem + 1
+		else:
+			inf_1_lem = inf_1_lem + 1
+	print("supp_1_lem =", supp_1_lem)
+	print("equal_1_lem =", equal_1_lem)
+	print("inf_1_lem =", inf_1_lem)
+	supp_1_all = [supp_1_eft, supp_1_lea, supp_1_leo, supp_1_lem]
+	equal_1_all = [equal_1_eft, equal_1_lea, equal_1_leo, equal_1_lem]
+	inf_1_all = [inf_1_eft, inf_1_lea, inf_1_leo, inf_1_lem]
 	
 	if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points":
 		columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
 		colors=["#E50000","#00bfff","#ff9b15","#91a3b0"]
+	elif boxplot_or_hist == "small_hist":
+		print("small_hist")
+		# ~ columns=[supp_1_eft, equal_1_eft, inf_1_eft, supp_1_lea, equal_1_lea, inf_1_lea, supp_1_leo, equal_1_leo, inf_1_leo, supp_1_lem, equal_1_lem, inf_1_lem]
+		# ~ columns=[supp_1_all, equal_1_all, inf_1_all]
+		# ~ colors=["#E50000","#E50000","#E50000","#00bfff","#00bfff","#00bfff","#ff9b15","#ff9b15","#ff9b15","#91a3b0","#91a3b0","#91a3b0"]
+		# ~ colors=["#00bfff","#ff9b15","#91a3b0"]
 	else:
 		columns = [total_core_time_used_fcfs/(60*60), total_core_time_used_eft/(60*60), total_core_time_used_lea/(60*60), total_core_time_used_leo/(60*60), total_core_time_used_lem/(60*60)]
 		colors=["#4c0000", "#E50000","#00bfff","#ff9b15","#91a3b0"]
@@ -296,6 +364,14 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	fig, ax = plt.subplots()
 	if boxplot_or_hist == "boxplot":
 		fig = sns.boxplot(data=columns, whis=[12.5, 100 - 12.5], palette=colors, showmeans = True, showfliers = False)
+	elif boxplot_or_hist == "small_hist":
+		x = np.arange(4)
+		plt.bar(x-0.2, supp_1_all, 0.2, color='green')
+		plt.bar(x, equal_1_all, 0.2, color='orange')
+		plt.bar(x+0.2, inf_1_all, 0.2, color='red')
+		plt.xticks(x, ['EFT', 'LEA', 'LEO', 'LEM'])
+		plt.ylabel("#user session")
+		plt.legend(["Faster", "Equal", "Slower"],loc=(1.04, 0))
 	elif boxplot_or_hist == "hist":
 		if (mode2 == "NO_BF"):
 			fig = plt.bar(["FCFS", "EFT", "LEA", "LEO", "LEM"], columns, color=colors)
@@ -371,8 +447,16 @@ if mode1 == "bybatch" or mode1 == "byuser":
 				plt.ylabel('Bounded stretch time\'s improvement from FCFS-BF', fontsize=font_size)
 			elif detail == "core_time":
 				plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
+	elif boxplot_or_hist == "small_hist":
+		if (mode2 == "NO_BF"):
+			filename = "plot/Boxplot/" + mode1 + "/small_hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		else:
+			filename = "plot/Boxplot/" + mode1 + "/small_hist_bf_" + detail +"_" + date1 + "-" + date2 + ".pdf"
+		if detail == "core_time":
+			plt.ylabel('Total core time (hours)', fontsize=font_size)
+		elif detail == "transfer_time":
+			plt.ylabel('Total transfer time (hours)', fontsize=font_size)
 	elif boxplot_or_hist == "hist":
-		# ~ plt.ylim(700000,740000)
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
 		else:
@@ -391,9 +475,11 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	# ~ elif boxplot_or_hist == "points_and_crosses":
 		# ~ plt.xticks([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], ["FCFS", "FCFS-BF", "EFT", "EFT-BF", "LEA", "LEA-BF", "LEO", "LEO-BF", "LEM", "LEM-BF"], fontsize=font_size)
 		# ~ filename = "plot/byuser/Mean_stretch_with_and_without_bf_" + date1 + "-" + date2 + ".pdf"
-				
+	
+	if boxplot_or_hist == "small_hist":	
+		fig.set_size_inches(6, 2)
+	
 	plt.savefig(filename, bbox_inches='tight')
-		
 
 elif mode1 == "byjob":
 	if (mode2 == "NO_BF"):

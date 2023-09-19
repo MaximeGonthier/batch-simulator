@@ -189,40 +189,18 @@ Y.append(total_stretch_lem_bf/n_user_session)
 X = ["FCFS", "FCFS-BF", "EFT", "EFT-BF", "LEA", "LEA-BF", "LEO", "LEO-BF", "LEM", "LEM-BF"]
 for i in range(len(X)):
 	fig = plt.scatter(X[i], Y[i], color=colors[i], s=200, marker=markers[i])
+	# ~ fig.set_size_inches(6, 3)
 	
 ax.set_xticklabels(X, rotation = 45, ha="right")
-# ~ plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
 		
 # Max Y
 # ~ plt.ylim(0.3, 2)
 	
-		# ~ if (mode2 == "NO_BF"):
-			# ~ filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
-			# ~ if detail == "stretch":
-				# ~ plt.ylabel('Stretch time\'s improvement from FCFS', fontsize=font_size)
-			# ~ elif detail == "bounded_stretch":
-				# ~ plt.ylabel('Bounded stretch time\'s improvement from FCFS', fontsize=font_size)
-			# ~ elif detail == "core_time":
-				# ~ plt.ylabel('Core time\'s improvement from FCFS', fontsize=font_size)
-		# ~ elif (mode2 == "BF"):
-			# ~ filename = "plot/Boxplot/" + mode1 + "/box_plot_bf_" + detail + "_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
-			# ~ if detail == "stretch":
-				# ~ plt.ylabel('Stretch time\'s improvement from FCFS-BF', fontsize=font_size)
-			# ~ elif detail == "bounded_stretch":
-				# ~ plt.ylabel('Bounded stretch time\'s improvement from FCFS-BF', fontsize=font_size)
-			# ~ elif detail == "core_time":
-				# ~ plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
-	# ~ elif boxplot_or_hist == "hist":
-		# ~ if (mode2 == "NO_BF"):
-			# ~ filename = "plot/Boxplot/" + mode1 + "/hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
-		# ~ else:
-			# ~ filename = "plot/Boxplot/" + mode1 + "/hist_bf_" + detail +"_" + date1 + "-" + date2 + ".pdf"
-		# ~ if detail == "core_time":
-			# ~ plt.ylabel('Total core time (hours)', fontsize=font_size)
-		# ~ elif detail == "transfer_time":
-			# ~ plt.ylabel('Total transfer time (hours)', fontsize=font_size)
 plt.ylabel('Mean stretch by user\'s session', fontsize=font_size)
 plt.xticks([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], ["FCFS", "FCFS-BF", "EFT", "EFT-BF", "LEA", "LEA-BF", "LEO", "LEO-BF", "LEM", "LEM-BF"], fontsize=font_size)
 filename = "plot/byuser/Mean_stretch_with_and_without_bf_" + date1 + "-" + date2 + ".pdf"
+
+# ~ fig.set_size_inches(6, 3)
+
 plt.savefig(filename, bbox_inches='tight')
 	

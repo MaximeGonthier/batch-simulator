@@ -24,11 +24,11 @@
 
 
 # Points
-python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt data/Stretch_times_SCORE_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt stretch LEA 2022-10-03-\>2022-10-09_V10000_anonymous
+#~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt data/Stretch_times_SCORE_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt stretch LEA 2022-10-03-\>2022-10-09_V10000_anonymous
 
-python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt data/Stretch_times_EFT-SCORE-MIX_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt stretch LEM 2022-10-03-\>2022-10-09_V10000_anonymous
+#~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt data/Stretch_times_EFT-SCORE-MIX_2022-10-03-\>2022-10-09_V10000_anonymous_450_128_32_256_4_1024.txt stretch LEM 2022-10-03-\>2022-10-09_V10000_anonymous
 
-python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-24-\>2022-10-30_V10000_anonymous_450_128_32_256_4_1024.txt data/Stretch_times_SCORE_2022-10-24-\>2022-10-30_V10000_anonymous_450_128_32_256_4_1024.txt stretch LEA 2022-10-24-\>2022-10-30_V10000_anonymous
+#~ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-24-\>2022-10-30_V10000_anonymous_450_128_32_256_4_1024.txt data/Stretch_times_SCORE_2022-10-24-\>2022-10-30_V10000_anonymous_450_128_32_256_4_1024.txt stretch LEA 2022-10-24-\>2022-10-30_V10000_anonymous
 
 
 #~ date1="10-03"
@@ -38,6 +38,8 @@ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-24-\>2022-10-30_
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF core_time 1 boxplot
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF core_time 1 hist
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 boxplot
+#~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 small_hist
+#~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 0 boxplot
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF bounded_stretch 1 boxplot
 
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser BF transfer_time 1 hist
@@ -55,6 +57,7 @@ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-24-\>2022-10-30_
 #~ date1="10-24"
 #~ date2="10-30"
 
+#~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 small_hist
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 boxplot
 
 # ECDF
@@ -63,14 +66,17 @@ python3 src/plot_queue_times.py data/Stretch_times_FCFS_2022-10-24-\>2022-10-30_
 # NO_BF VS BF
 #~ python3 src/plot_bf_vs_nobf.py ${date1} ${date2}
 
-#~ date1="all"
-#~ date2="all"
+# All
+date1="all"
+date2="all"
 
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 boxplot
 #~ python3 src/plot_boxplot.py ${date1} ${date2} byuser BF stretch 1 boxplot
+#~ python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 small_hist
+#~ python3 src/plot_boxplot.py ${date1} ${date2} byuser BF stretch 1 small_hist
 
 # ECDF
 # python3 src/plot_boxplot.py ${date1} ${date2} byuser NO_BF stretch 1 ecdf
 
 # NO_BF VS BF
-#~ python3 src/plot_bf_vs_nobf.py ${date1} ${date2}
+python3 src/plot_bf_vs_nobf.py ${date1} ${date2}
