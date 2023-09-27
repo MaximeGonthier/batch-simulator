@@ -202,5 +202,7 @@ filename = "plot/byuser/Mean_stretch_with_and_without_bf_" + date1 + "-" + date2
 
 # ~ fig.set_size_inches(6, 3)
 
+ax.figure.set_size_inches(6, 3)
+
 plt.savefig(filename, bbox_inches='tight')
 	

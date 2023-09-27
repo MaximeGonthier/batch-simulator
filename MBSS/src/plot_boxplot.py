@@ -34,7 +34,7 @@ class Job: # Id Stretch Datatype Length Subtime, Ncores, TransferTime, user, inp
 date1 = sys.argv[1]
 date2 = sys.argv[2]
 mode1 = sys.argv[3]
-font_size = 14
+font_size = 11
 
 if mode1 == "bybatch" or mode1 == "byuser":
 	mode2 = sys.argv[4]
@@ -478,14 +478,15 @@ if mode1 == "bybatch" or mode1 == "byuser":
 		plt.axhline(y = 1, color = 'black', linestyle = "dotted", linewidth=2)
 		
 		# Max Y
-		plt.ylim(0.3, 2.4)
+		# ~ plt.ylim(0.3, 2.4)
+		plt.ylim(0.6, 2.4)
 		# ~ plt.ylim(0.3, 5) # Pour 10-24 10-30
 		
 		
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/box_plot_" + detail +"_" + date1 + "-" + date2 + "_" + str(count_improvement_equal_at_1) + ".pdf"
 			if detail == "stretch":
-				plt.ylabel('Stretch time\'s improvement from FCFS', fontsize=font_size)
+				plt.ylabel('Stretch improvement from FCFS', fontsize=font_size)
 			elif detail == "bounded_stretch":
 				plt.ylabel('Bounded stretch time\'s improvement from FCFS', fontsize=font_size)
 			elif detail == "core_time":
@@ -498,6 +499,7 @@ if mode1 == "bybatch" or mode1 == "byuser":
 				plt.ylabel('Bounded stretch time\'s improvement from FCFS-BF', fontsize=font_size)
 			elif detail == "core_time":
 				plt.ylabel('Core time\'s improvement from FCFS-BF', fontsize=font_size)
+		ax.figure.set_size_inches(6, 4)
 	elif boxplot_or_hist == "small_hist":
 		if (mode2 == "NO_BF"):
 			filename = "plot/Boxplot/" + mode1 + "/small_hist_" + detail +"_" + date1 + "-" + date2 + ".pdf"
@@ -529,6 +531,8 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	
 	if boxplot_or_hist == "small_hist":	
 		fig.set_size_inches(6, 2)
+	# ~ if boxplot_or_hist == "boxplot":	
+		# ~ fig.set_size_inches(6, 4)
 	
 	plt.savefig(filename, bbox_inches='tight')
 
