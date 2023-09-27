@@ -292,58 +292,87 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	supp_1_eft = 0
 	equal_1_eft = 0
 	inf_1_eft = 0
+	total_faster_eft = 0
+	total_slower_eft = 0
 	for i in range (0, len(core_time_used_improvement_eft)):
-		if core_time_used_improvement_eft[i] > 1:
+		if core_time_used_improvement_eft[i] >= 1.01:
 			supp_1_eft = supp_1_eft + 1
-		elif core_time_used_improvement_eft[i] == 1:
-			equal_1_eft = equal_1_eft + 1
-		else:
+			total_faster_eft += core_time_used_improvement_eft[i]
+		elif core_time_used_improvement_eft[i] <= 0.99:
 			inf_1_eft = inf_1_eft + 1
+			total_slower_eft += core_time_used_improvement_eft[i]
+		else:
+			equal_1_eft = equal_1_eft + 1
 	print("supp_1_eft =", supp_1_eft)
 	print("equal_1_eft =", equal_1_eft)
 	print("inf_1_eft =", inf_1_eft)
+	
 	supp_1_lea = 0
 	equal_1_lea = 0
 	inf_1_lea = 0
+	total_faster_lea = 0
+	total_slower_lea = 0
 	for i in range (0, len(core_time_used_improvement_lea)):
-		if core_time_used_improvement_lea[i] > 1:
+		if core_time_used_improvement_lea[i] >= 1.01:
 			supp_1_lea = supp_1_lea + 1
-		elif core_time_used_improvement_lea[i] == 1:
-			equal_1_lea = equal_1_lea + 1
-		else:
+			total_faster_lea += core_time_used_improvement_lea[i]
+		elif core_time_used_improvement_lea[i] <= 0.99:
 			inf_1_lea = inf_1_lea + 1
+			total_slower_lea += core_time_used_improvement_lea[i]
+		else:
+			equal_1_lea = equal_1_lea + 1
 	print("supp_1_lea =", supp_1_lea)
 	print("equal_1_lea =", equal_1_lea)
 	print("inf_1_lea =", inf_1_lea)
+	
 	supp_1_leo = 0
 	equal_1_leo = 0
 	inf_1_leo = 0
+	total_faster_leo = 0
+	total_slower_leo = 0
 	for i in range (0, len(core_time_used_improvement_leo)):
-		if core_time_used_improvement_leo[i] > 1:
+		if core_time_used_improvement_leo[i] >= 1.01:
 			supp_1_leo = supp_1_leo + 1
-		elif core_time_used_improvement_leo[i] == 1:
-			equal_1_leo = equal_1_leo + 1
-		else:
+			total_faster_leo += core_time_used_improvement_leo[i]
+		elif core_time_used_improvement_leo[i] <= 0.99:
 			inf_1_leo = inf_1_leo + 1
+			total_slower_leo += core_time_used_improvement_leo[i]
+		else:
+			equal_1_leo = equal_1_leo + 1
 	print("supp_1_leo =", supp_1_leo)
 	print("equal_1_leo =", equal_1_leo)
 	print("inf_1_leo =", inf_1_leo)
+	
 	supp_1_lem = 0
 	equal_1_lem = 0
 	inf_1_lem = 0
+	total_faster_lem = 0
+	total_slower_lem = 0
 	for i in range (0, len(core_time_used_improvement_lem)):
-		if core_time_used_improvement_lem[i] > 1:
+		if core_time_used_improvement_lem[i] >= 1.01:
 			supp_1_lem = supp_1_lem + 1
-		elif core_time_used_improvement_lem[i] == 1:
-			equal_1_lem = equal_1_lem + 1
-		else:
+			total_faster_lem += core_time_used_improvement_lem[i]
+		elif core_time_used_improvement_lem[i] <= 0.99:
 			inf_1_lem = inf_1_lem + 1
+			total_slower_lem += core_time_used_improvement_lem[i]
+		else:
+			equal_1_lem = equal_1_lem + 1
 	print("supp_1_lem =", supp_1_lem)
 	print("equal_1_lem =", equal_1_lem)
 	print("inf_1_lem =", inf_1_lem)
+	
 	supp_1_all = [supp_1_eft, supp_1_lea, supp_1_leo, supp_1_lem]
 	equal_1_all = [equal_1_eft, equal_1_lea, equal_1_leo, equal_1_lem]
 	inf_1_all = [inf_1_eft, inf_1_lea, inf_1_leo, inf_1_lem]
+	
+	print("% of improvement for faster eft =", total_faster_eft/supp_1_eft)
+	print("% of improvement for faster lea =", total_faster_lea/supp_1_lea)
+	print("% of improvement for faster leo =", total_faster_leo/supp_1_leo)
+	print("% of improvement for faster lem =", total_faster_lem/supp_1_lem)
+	print("% of improvement for slower eft =", 1/(total_slower_eft/inf_1_eft))
+	print("% of improvement for slower lea =", 1/(total_slower_lea/inf_1_lea))
+	print("% of improvement for slower leo =", 1/(total_slower_leo/inf_1_leo))
+	print("% of improvement for slower lem =", 1/(total_slower_lem/inf_1_lem))
 	
 	if boxplot_or_hist == "boxplot" or boxplot_or_hist == "ecdf" or boxplot_or_hist == "points":
 		columns = [core_time_used_improvement_eft, core_time_used_improvement_lea, core_time_used_improvement_leo, core_time_used_improvement_lem]
@@ -365,12 +394,34 @@ if mode1 == "bybatch" or mode1 == "byuser":
 	if boxplot_or_hist == "boxplot":
 		fig = sns.boxplot(data=columns, whis=[12.5, 100 - 12.5], palette=colors, showmeans = True, showfliers = False)
 	elif boxplot_or_hist == "small_hist":
+		
+		above_text_faster_eft = supp_1_eft + 20
+		above_text_slower_eft = inf_1_eft + 20
+		plt.text(0-0.308, above_text_faster_eft, round(total_faster_eft/supp_1_eft,1), color='green', fontweight='bold')
+		plt.text(0+0.1, above_text_slower_eft, round(1/(total_slower_eft/inf_1_eft),1), color='red', fontweight='bold')
+	
+		above_text_faster_lea = supp_1_lea + 20
+		above_text_slower_lea = inf_1_lea + 20
+		plt.text(1-0.308, above_text_faster_lea, round(total_faster_lea/supp_1_lea,1), color='green', fontweight='bold')
+		plt.text(1+0.1, above_text_slower_lea, round(1/(total_slower_lea/inf_1_lea),1), color='red', fontweight='bold')
+		
+		above_text_faster_leo = supp_1_leo + 20
+		above_text_slower_leo = inf_1_leo + 20
+		plt.text(2-0.308, above_text_faster_leo, round(total_faster_leo/supp_1_leo,1), color='green', fontweight='bold')
+		plt.text(2+0.1, above_text_slower_leo, round(1/(total_slower_leo/inf_1_leo),1), color='red', fontweight='bold')
+		
+		above_text_faster_lem = supp_1_lem + 20
+		above_text_slower_lem = inf_1_lem + 20
+		plt.text(3-0.308, above_text_faster_lem, round(total_faster_lem/supp_1_lem,1), color='green', fontweight='bold')
+		plt.text(3+0.1, above_text_slower_lem, round(1/(total_slower_lem/inf_1_lem),1), color='red', fontweight='bold')
+		
 		x = np.arange(4)
 		plt.bar(x-0.2, supp_1_all, 0.2, color='green')
 		plt.bar(x, equal_1_all, 0.2, color='orange')
 		plt.bar(x+0.2, inf_1_all, 0.2, color='red')
 		plt.xticks(x, ['EFT', 'LEA', 'LEO', 'LEM'])
 		plt.ylabel("#user session")
+		plt.ylim(0,10300)
 		plt.legend(["Faster", "Equal", "Slower"],loc=(1.04, 0))
 	elif boxplot_or_hist == "hist":
 		if (mode2 == "NO_BF"):
