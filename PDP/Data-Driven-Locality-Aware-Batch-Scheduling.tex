@@ -873,8 +873,8 @@ several thousands requested cores for the whole duration of the evaluated week.
 %~ Indeed, Figure~\ref{cluster_usage.43} shows 
 %~ a queue of several thousands requested cores
 %~ for the whole duration of the evaluated \rev{week}.
-In this situation, re-using files has a significant impact
-on the queue times.
+%~ In this situation, re-using files has a significant impact
+%~ on the queue times.
 %~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Boxplot/byuser/box_plot_stretch_10-24-10-30_1.pdf}\caption{Stretch's improvement from FCFS on week 43. The upper whisker of LEA extends up to 11.}\label{stretch.43}\end{figure}
 
 %~ \begin{table}
@@ -891,8 +891,8 @@ on the queue times.
 %~ \end{table}
 
 %~ As you can see on Table~\ref{tab.43}, LEA and LEM greatly reduces the transfer time.
-LEA, LEO and LEM greatly reduces the transfer time thanks to locality.\mx{A re dire mieux}
-This result in Figure~\ref{smallhist.43} in better improvement.
+On this workload, LEA, LEO, and LEM reduce transfer time by 21, 1, and 11\%, respectively.
+This results in Figure~\ref{smallhist.43} in a majority of \us being faster than FCFS.
 On a saturated cluster, filling all cores with the first jobs of the queue, like FCFS does, is not crucial.
 It is more beneficial to group jobs using the same file.
 The first few jobs have a longer queue than with FCFS,
@@ -900,6 +900,7 @@ but, over time, re-using files causes a snowball effect that reduces the
 queue times of all subsequent jobs.
 Moreover, the queue contains enough jobs to fill all the nodes even when grouping them by input file.
 We thus avoid the pathological cases outlined in \rev{Section~\ref{sec.40}}.
+LEA focuses more on locality than LEO and LEM, which explains the average improvement of 6.5 compared to only ~2 for LEO and LEM.
 In this case, LEA's strategy, also found in LEO and LEM, allows to greatly reduce the stretch of each \us.
 %~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/Stretch_times/Stretch_times_FCFS_LEA_2022-10-24->2022-10-30_V10000_anonymous_450_128_32_256_4_1024.png}\caption{Stretch times of each user session from week 43 using LEA compared to FCFS. Cropped at 0.3 and 5. The max and min values are 314 and 0.006.}\label{vs_fcfs_lea_43}\end{figure}
 %~ This is confirmed by Figure~\ref{vs_fcfs_lea_43}
