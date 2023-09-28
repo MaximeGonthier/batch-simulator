@@ -747,7 +747,7 @@ We evaluate our proposed schedulers on these metrics and compare them to FCFS an
 All strategies as well as the two baselines have been implemented
 on a simulator that we developed\footnote{Code, anonymized logs and the methodology followed to randomly select our evaluated weeks are available for reproducibility: \url{https://github.com/userdoubleblind/Locality-aware-batch-scheduling}}.
 The simulator is an event-based simulator made in Python and focusing on data locality.
-As in real systems, the schedule is re-computed entirely at each unpredicted event (job submission or job termination before the walltime).
+As in real systems, the schedule is re-computed entirely at each unexpected event (job submission or job termination before the walltime).
 The scheduler is aware only of jobs that have been submitted before the current time and does not know the real duration of a job.
 %~ Scheduling a job consists in assigning to the job a start time, a node, and as many cores on that node as requested.
 %~ It is made in Python and follows these principles:
