@@ -30,10 +30,10 @@
 \newcommand{\duration}{\mathit{Duration}\xspace}
 \newcommand{\bandwidth}{\mathit{Bandwidth}\xspace}
 \newcommand{\core}{\mathit{Cores}\xspace}
-\newcommand{\submissiontime}{\mathit{SubTime}\xspace}
+\newcommand{\submissiontime}{\mathit{SubDate}\xspace}
 \newcommand{\emptyflow}{\mathit{ReferenceFlow}\xspace}
 \newcommand{\walltime}{\mathit{WallTime}\xspace}
-\newcommand{\completiontime}{\mathit{CompletionTime}\xspace}
+\newcommand{\completiontime}{\mathit{CompletionDate}\xspace}
 \newcommand{\start}{\mathit{StartTime}\xspace}
 \newcommand{\allocatednode}{\ensuremath\mathit{\sigma}\xspace}
 \newcommand{\allocatedcores}{\ensuremath\mathit{\gamma}\xspace}
@@ -115,7 +115,7 @@
   them to classical job schedulers. The results show that
   keeping data in local memory between successive jobs and using data-locality
   information to schedule jobs improves performance compared
-  to a widely used scheduler (FCFS): a reduction in job waiting time
+  to a widely-used scheduler (FCFS): a reduction in job waiting time
   (a 7.5\% improvement in stretch), and a decrease in the
   amount of data transfers (7\%).
 
@@ -144,7 +144,7 @@ some users rather than others.
 Computation jobs however need data input which, more often than not, can
 be very large, notably for many subfields of life science with highly
 data-dependent workflows like taxonomic identification of DNA fragments or ancestral reconstructions. It is a frequent use pattern for users of such communities to submit
-large batch of jobs using the same input files.
+large batchs of jobs using the same input files.
 Loading such data input from the storage
 nodes may consume a significant part of the job duration. This load
 penalty can however be avoided altogether when the data was actually
@@ -153,7 +153,7 @@ thus still immediately available on the node. Taking care of scheduling
 jobs that use the same data input one after the other thus allows to
 reduce the jobs completion times, leading to better platform usage
 efficiency. Unfortunately, classical job schedulers mostly do not take
-data input into account, and thus do not benefit from such data reuse ;
+data input into account, and thus do not benefit from such data reuse;
 most jobs always have to re-load their data input.
 
 In this paper, we propose to model the benefits of re-using data loads
@@ -200,7 +200,7 @@ various scheduling strategies.
 The First-Come-First-Served (FCFS) algorithm is the prevalent default
 scheduler on most of these solutions~\cite{survey_workload_manager_and_scheduler}.
 Moreover, Slurm is used on most of the TOP500 supercomputers and its default strategy is FCFS~\cite{slurm_website_scheduling} as well.
-A backfilling strategy is known to improve
+Backfilling strategies are known to improve
 the use of supercomputer resources~\cite{maui}. 
 The most commonly-used backfilling strategy, called conservative 
 backfilling~\cite{Characterization_of_Backfilling}~\cite{Introducing-New-Backfill-based}, follows
@@ -211,8 +211,8 @@ bring significant insights on what improvements can be achieved on data-intensiv
 
 Other scheduling strategies exist like 
 Maui~\cite{Maui_Scheduler}, Gang scheduling~\cite{gang_scheduling}, 
-RASA~\cite{rasa} that use the advantages of both Min-min and Max-min algorithms,
-RSDC~\cite{rsdc} that divides large jobs in sub jobs for a more refined scheduling,
+RASA~\cite{rasa}, that use the advantages of both Min-min and Max-min algorithms,
+RSDC~\cite{rsdc} that divides large jobs in sub-jobs for a more refined scheduling,
 %~ or PJSC~\cite{pjsc} and PSP+AC~\cite{PSP_AC} that  priority-based schedulers; 
 or PJSC~\cite{pjsc} that is a priority-based scheduler; 
 however these heuristics do not consider the impact that
@@ -225,7 +225,7 @@ Distributed file systems are a solution to ease the access to
 shared input files.
 They facilitate the execution of I/O-intensive batch
 jobs by selecting appropriate storage policies.
-BDFS~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System},
+BDFS~\cite{Explicit_Control_in_a_Batch-Aware_Distributed_File_System}
 is designed to orchestrate large, I/O-intensive batch workloads on remote computing clusters.
 HDFS~\cite{hdfs} (Hadoop Distributed File System)
 incorporates storage-aware scheduling. 
@@ -451,7 +451,7 @@ time $t'_k$ at which the input file of a job $J_i$ is available on
 \begin{algorithmic}[1]
 	\ForEach{$J_i \in$ the jobs queue}
 		\ForEach{$\Node{k} \in \nodeset$}
-			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available \Node{k}
+			\State Find smallest time $t_k$ such that $\core(J_i)$ cores are available on \Node{k}
 			\State Find time $t_k' \geq t_k$ at which $\file(J_i)$ is available on $\Node{k}$ 
 		\EndFor
                 \State Select \Node{k}  with the smallest $t'_k$
@@ -621,9 +621,9 @@ job. Specifically, we change Line~\ref{fcfs.ln.find} into:
 
 \section{Performance evaluation and analysis}\label{sec.evaluations}
 
-Actual workloads at HPC resources shared by a great number of users with diverse needs can contain 
+Actual workloads on HPC resources shared by a great number of users with diverse needs can contain 
 projects that might launch a burst of jobs using the same file just a few thousand
-core hours in length, then be quiet for a long time processing the results, and then launch another such burst.
+core.hours in length, then be quiet for a long time processing the results, and then launch another such burst.
 On our cluster, we have observed such behavior. %and present in this section how we replicate them.
 Changing the scheduling strategy of a production cluster for
 scheduling research would disrupt the community using this cluster.
@@ -645,7 +645,7 @@ The cluster is often used for taxonomic identification of DNA fragments.
 To perform such identification, 
 %~ the Kraken2 tool\footnote{See \url{https://github.com/DerrickWood/kraken2/tree/master/src}}
 %~ is often used together with an input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2}},
-input database\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2}}
+input databases\footnote{See \url{https://benlangmead.github.io/aws-indexes/k2}}
 are often used,
 whose size vary from a few GB up to 800\,GB.
 We also noticed the use of genome alignment tools that require to store large text files,
@@ -690,7 +690,7 @@ resources are single-node jobs and thus fit in our framework.
 The few multi-nodes jobs are not representative of the typical usage
 of the platform, and are replaced by as many single-node jobs as necessary to represent the same workload.
 We notice that jobs
-duration extend up to 10 days, while some jobs only last a few
+durations extend up to 10 days, while some jobs only last a few
 minutes. Even if the workload is not homogeneous, it is representative
 of the real usage from an actual user community including, but not exclusively consisting of, many subfields of the life sciences with highly data-dependent workflows.
 
@@ -766,8 +766,10 @@ The scheduler is aware only of jobs that have been submitted before the current 
 Among the 12 randomly-selected weeks, different workload conditions
 arise. We first concentrate on a low utilization case.
 Figure~\ref{smallhist.40} shows the number of \us stretches that were faster, slower, or equal (+/- 1\%) compared to FCFS.
-The number above the bars is the average speed-up (or slow-down) of the faster (or slower) \us.
-We observe that our schedulers mostly do not bring any improvement for most of the \us, except for LEA, which degrades the performance for more than a third of its \us.
+The number above the bars is the average speed-up (or slow-down) of the faster (or slower) \uss.
+We observe that our schedulers mostly do not bring any improvement for
+most of the \uss, except for LEA, which degrades the performance for
+more than a third of its \uss.
 
 % Explication boxplots
 %~ Figure~\ref{stretch.40} depicts 
@@ -819,10 +821,11 @@ We observe that our schedulers mostly do not bring any improvement for most of t
 %~ we understand that the job queue is empty for more than half of the evaluation window.
 With a workload that does not fully utilize the cluster, the job queue is empty most of the time.
 Consequently, FCFS and EFT are very efficient. The earliest available node is in
-most cases a node that can start the job immediately, explaining why most \us bring no improvement in Figure~\ref{smallhist.40}.
+most cases a node that can start the job immediately, explaining why
+most \uss get no improvement in Figure~\ref{smallhist.40}.
 LEO is a strategy that uses the earliest available time $t_k$ of a node to decide if it should compute a score like LEA,
-that puts a large weight on transfer time
-or weigh equally $t_k$, the transfer and eviction duration. 
+that puts a large weight on transfer time,
+or weigh equally $t_k$, the transfer and eviction durations. 
 Thus, on underused clusters, LEO has a behavior close to EFT, while trying to minimize evictions.
 Similarly, LEM switches between EFT and LEA depending on the cluster's usage.
 On this particular workload the cluster's usage is under 100\% more than half the time, so LEM behaves similarly to EFT.
@@ -921,7 +924,7 @@ The horizontal black dotted line corresponds to no improvements from FCFS, which
 is the situation where the sum of the queue time and transfer time of the \us is the same as with FCFS.
 The solid lines are the median and the triangles are the average
 improvements.
-Because outliers bring a huge improvement, the averages are usually higher than the medians.
+Because outliers get a huge improvement, the averages are usually higher than the medians.
 Because of such extreme outliers, we are more interested in median values.
 An improvement above 1 is a speed-up. An improvement at 0.5 means that
 the sum of the queue times and transfer times for this \us was two
@@ -959,14 +962,14 @@ queue time, the overall execution time would be lowered thanks to data re-use.
 \end{table}
 
 On the contrary, LEA has the largest median improvement.
-We can explain the larger median value for LEA from the good performance on heavily saturated clusters (see Section~\ref{sec.43}).
+We can explain the larger median value for LEA from the good performance on heavily-saturated clusters (see Section~\ref{sec.43}).
 Re-using the same files is not detrimental to the filling of all the nodes because there are enough jobs to cover all nodes.
 A large decrease (see Table~\ref{tab.all}) in the time spent waiting for a file greatly reduces the stretch of each job.
 
-LEM has a lower median,
-however, as can be seen on Figure~\ref{boxplot.all}, at least 87.5\% of its results are above 1, i.e., an improvement, whereas for LEA, only approximately 75\% of the results are above 1. 
+LEM has a lower median.
+However, as can be seen on Figure~\ref{boxplot.all}, at least 87.5\% of its results are above 1, i.e., an improvement, whereas for LEA, only approximately 75\% of the results are above 1. 
 LEM is a more versatile strategy and offers higher sustained performance on non-saturated cluster at the cost
-of fewer extreme improvements on heavily saturated clusters.
+of fewer extreme improvements on heavily-saturated clusters.
 
 \begin{table}
 \centering{
@@ -982,7 +985,7 @@ of fewer extreme improvements on heavily saturated clusters.
 \end{table}
 
 Table~\ref{tab_core.all} shows the reduction in terms of total core time (i.e. the core time on each core of each node over the 12 weeks). 
-LEA reduces the total core time used by 49\,000 core hours over the 12 weeks (approximately 5h of the whole platform).
+LEA reduces the total core time used by 49\,000 core.hours over the 12 weeks (approximately 5h of the whole platform).
 Although it is a small percentage reduction, it can be of interest on large scale clusters that are highly demanding in terms of electrical resources.
 
 %~ \begin{figure}[t]\centering\includegraphics[width=0.9\linewidth]{../MBSS/plot/ECDF/byuser/ecdf_stretch_all-all.pdf}\caption{Empirical distribution function of the stretch's improvement from FCFS on all evaluated weeks.}\label{ecdf}\end{figure}
@@ -1034,7 +1037,7 @@ Batch schedulers are key components of computing clusters, and aim at
 improving resource utilization as well as decreasing jobs' response
 time. We have studied how one may improve their performance by taking
 job input file into account: in clusters dedicated to data analysis,
-users commonly submit dozens jobs using the same multi-GB input
+users commonly submit dozens of jobs using the same multi-GB input
 file. Classical job schedulers are unaware of data locality and thus
 fail to re-use data on nodes. We have proposed three new locality-aware
 strategies, named LEA, LEO and LEM,
