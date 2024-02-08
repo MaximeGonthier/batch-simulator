@@ -1,0 +1,11 @@
+{ id: 0 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 1 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 2 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 3 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 4 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 5 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 6 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 7 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 8 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 9 memory: 128 bandwidth: 0.1 core: 1 }
+{ id: 10 memory: 128 bandwidth: 0.1 core: 1 }
