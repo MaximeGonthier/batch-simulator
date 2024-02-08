@@ -1,1 +1,0 @@
-batsched -v my_scheduler

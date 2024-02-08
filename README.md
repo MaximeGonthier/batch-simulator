@@ -1,28 +1,7 @@
-# Data Aware Batch Scheduling
+# batch simulator for energy incentive
 
-## Maxime GONTHIER - Carl NETTELBLAD - Elisabeth LARSSON - Samuel THIBAULT - Loris MARCHAL
+This repo is a copy of the repository https://gitlab.inria.fr/mgonthie/data-aware-batch-scheduling made on the 8 Feb 2024.
+It does not contain all of the things related to the project conducted in Uppsala.
 
-Assuming you are in the folder ~/data-aware-batch-scheduling for the following commands.
+This simulator aims at improving the one from https://gitlab.inria.fr/mgonthie/data-aware-batch-scheduling to include functionalitites like heterogeneous set of nodes, energy consumption of a job on a node, scheduling to incentivize users to be more energy efficient and simulate the behavior of users with set goals (speed, energy, mix of both).
 
-To compile Data_aware_batch_scheduling.pdf:
-```shell
-$ make
-```
-
-## Batsim
-
-### Draw Gantt charts
-
-Full credit to Yishu DU for the code used to produce the gantt charts.
-
-To create gantt charts you need the following packages:
-```shell
-$ sudo apt-get install python3
-$ pip3 install evalys
-```
-
-You can then draw with:
-```shell
-$ python3 Batsim/batsched-Maxime/gantt-chart-plot/main.py $PATH/input_file.csv
-```
-With input_file, the .csv job file produced by Batsim.

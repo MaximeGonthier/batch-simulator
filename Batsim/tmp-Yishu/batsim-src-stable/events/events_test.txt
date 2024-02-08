@@ -1,2 +1,0 @@
-{"type": "machine_unavailable", "resources": "2", "timestamp": 1}
-{"type": "machine_available", "resources": "2", "timestamp": 6}

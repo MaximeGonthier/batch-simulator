@@ -1,5 +1,0 @@
-job_id,workload_name,profile,submission_time,requested_number_of_resources,requested_time,success,final_state,starting_time,execution_time,finish_time,waiting_time,turnaround_time,stretch,allocated_resources,consumed_energy,metadata
-1,w0,delay.A.0,0.000000,1,15.000000,1,COMPLETED_SUCCESSFULLY,0.004200,5.000000,5.004200,0.004200,5.004200,1.000840,0,-1.000000,""
-3,w0,delay.A.2,0.000000,6,20.000000,1,COMPLETED_SUCCESSFULLY,0.005400,10.000000,10.005400,0.005400,10.005400,1.000540,2-7,-1.000000,""
-2,w0,delay.A.1,0.000000,1,25.000000,1,COMPLETED_SUCCESSFULLY,0.004800,15.000000,15.004800,0.004800,15.004800,1.000320,1,-1.000000,""
-4,w0,delay.A.2,0.000000,6,20.000000,1,COMPLETED_SUCCESSFULLY,10.007600,10.000000,20.007600,10.007600,20.007600,2.000760,0 2-6,-1.000000,""
