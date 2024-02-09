@@ -1,8 +1,0 @@
-Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch
-Fcfs_no_use_bigger_nodes,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828
-Fcfs,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828
-Fcfs_big_job_first,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828
-Fcfs_backfill_big_nodes_0,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828
-Fcfs_backfill_big_nodes_1,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828
-Fcfs_area_filling,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828
-Fcfs_area_filling_omniscient,3,0,0.0,0,10000,10000.0,30000,0,111280,600000,0,0,0.6954759447143828

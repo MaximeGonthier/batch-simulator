@@ -269,6 +269,29 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->node_used = (struct Node*) malloc(sizeof(struct Node));
 		new->node_used = NULL;
 		
+		/** START ENERGY INCENTIVE **/
+		if (strcmp(current_user, "credit") == 0)
+		{
+			new->user_behavior = 0;
+		}
+		else if (strcmp(current_user, "energy") == 0)
+		{
+			new->user_behavior = 1;
+		}
+		else if (strcmp(current_user, "runtime") == 0)
+		{
+			new->user_behavior = 2;
+		}
+		else if (strcmp(current_user, "random") == 0)
+		{
+			new->user_behavior = 3;
+		}
+		else
+		{
+			new->user_behavior = 0;
+		}
+		/** END ENERGY INCENTIVE **/
+		
 		/* OLD */
 		//~ new->cores_used = malloc(new->cores*sizeof(int));
 		/* NEW */

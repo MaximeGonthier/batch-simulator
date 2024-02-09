@@ -1,2 +1,0 @@
-Scheduler,Number of jobs,Maximum queue time,Mean queue time,Total queue time,Maximum flow,Mean flow,Total flow,Transfer time,Makespan,Core time used, Waiting for a load time, Total waiting for a load time and transfer time, Mean Stretch, Mean Stretch With a Minimum
-Fcfs_with_a_score_x0_x0_x0,18396,186702.000000,72983.664062,1342607488.000000,461116.000000,84804.414062,1560061952.000000,5835200.000000,1442769.000000,2142407936.000000,811895.000000,6647095.000000,66.296677,66.29734

@@ -833,11 +833,61 @@ int main(int argc, char *argv[])
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
 	
-	/* TODO : a suppr */
 	nb_call_finished_jobs = 0;
 	nb_call_new_jobs = 0;
 	
 	int last_scheduler_call = t;
+	
+	/** START ENERGY INCENTIVE **/
+	int nusers = 3; /* One red, one green, one blue */
+	double max_watt_hour = 0; /* Max watt-hour the machine can use */
+	
+	/* Credit of each user in watt-hours */
+	double credit_users[nusers];
+	for (i = 0; i < nusers; i++)
+	{
+		credit_users[i] = 2;
+	}
+	
+	/* Idle power in consumption watt of each machine that we add for each job. Data taken from ALok's table here. */
+	double idle_power[total_number_nodes];
+	idle_power[0] = 6.51;
+	idle_power[1] = 110;
+	idle_power[2] = 136;
+	idle_power[3] = 205;
+	
+	if (strcmp(scheduler, "no_schedule") == 0)
+	{
+		printf("Get association of each of the %d jobs runtime, energy and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
+		double tab_function_machine_energy[total_number_jobs][total_number_nodes];
+		double tab_function_machine_runtime[total_number_jobs][total_number_nodes];
+		double tab_function_machine_credit[total_number_jobs][total_number_nodes];
+		for (i = 0; i < total_number_jobs; i++)
+		{
+			for (j = 0; j < total_number_nodes; j++)
+			{
+				/* Filling the values for job i on endpoint j */
+				tab_function_machine_energy[i][j] = (77036846*0.000001)/3600; /* In micro joules that I convert to joule then divide by 3600 to get watt-hours */
+				tab_function_machine_runtime[i][j] = 100; /* Seconds */
+				max_watt_hour = tab_function_machine_energy[i][j] + 0.01; /* max watt-hour of the machine */
+				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2;
+				printf("Job %d on machine %d: %f Watt-hours - %f seconds - %f credit removed\n", i, j, tab_function_machine_energy[i][j], tab_function_machine_runtime[i][j], tab_function_machine_credit[i][j]);
+			}
+		}
+	}
+	
+	/* Assigning an endpoint to each job depending on his user's behavior */
+	job_pointer = job_list->head;
+	while (job_pointer != NULL)
+	{
+		printf("Job %d - user behavior %d\n", job_pointer->unique_id, job_pointer->user_behavior); fflush(stdout);
+		
+		select_endpoint(job_pointer->user_behavior, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[i][j]);
+		update_credit();
+		
+		job_pointer = job_pointer->next;
+	}
+	/** END ENERGY INCENTIVE **/
 	
 	//~ #ifdef PRINT_CLUSTER_USAGE
 	//~ while (finished_jobs != total_number_jobs)

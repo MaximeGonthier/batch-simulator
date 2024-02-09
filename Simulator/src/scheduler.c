@@ -4677,7 +4677,7 @@ void fcfs_with_a_score_backfill_big_nodes_gain_loss_tradeoff_scheduler(struct Jo
 	long long gain = 0;
 	long long loss = 0;
 	
-	long long* tab_min_score = malloc(sizeof(int)*3);
+	long long* tab_min_score = malloc(sizeof(long long)*3);
 	tab_min_score[0] = -1;
 	tab_min_score[1] = -1;
 	tab_min_score[2] = -1;

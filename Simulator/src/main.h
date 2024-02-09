@@ -155,6 +155,10 @@ struct Job {
     #endif
     
     int user;
+    
+    /** START ENERGY INCENTIVE **/
+    int user_behavior; /* 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random */
+    /** END ENERGY INCENTIVE **/
 };
 
 struct Node {
