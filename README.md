@@ -20,3 +20,6 @@ In the code, all the stuff I added or modified for our case is marked with /** E
 
 Added the number of cpu, idle power and cpu tdp ionto the info of the machines
 Added duration_on_machine: 100 120 34 59  in the workload data, much correspond to the number of machines!
+Same for energy_on_machine
+
+I put as ma,y thread on a node as it have core to offset the idle time cost

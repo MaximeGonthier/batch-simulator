@@ -144,7 +144,10 @@ int main(int argc, char *argv[])
 	nb_job_to_evaluate_started = 0;
 	total_queue_time = 0;
 	struct Job* job_pointer = (struct Job*) malloc(sizeof(struct Job));
+	
+	#ifndef ENERGY_INCENTIVE
 	struct Job* temp = (struct Job*) malloc(sizeof(struct Job));
+	#endif
 	
 	end_times = malloc(sizeof(*end_times));
 	end_times->head = NULL;
@@ -154,7 +157,9 @@ int main(int argc, char *argv[])
 	jobs_to_print_list->head = NULL;
 	jobs_to_print_list->tail = NULL;
 	
+	#ifndef ENERGY_INCENTIVE
 	int old_finished_jobs = 0;
+	#endif
 	
 	/** Args **/
 	input_job_file = argv[1];
@@ -215,8 +220,11 @@ int main(int argc, char *argv[])
 	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
 	#endif
-
+	
+	#ifndef ENERGY_INCENTIVE
 	int next_submit_time = first_subtime_day_0;
+	#endif
+	
 	int t = first_subtime_day_0;
 
 	/* First start jobs from rackham's history. First need to sort it by start time */
@@ -315,7 +323,11 @@ int main(int argc, char *argv[])
 	int adaptative_multiplier = 0; /* 0 = no, 1 = yes */
 	int penalty_on_job_sizes = 0; /* 0 = no, 1 = yes */
 	int backfill_big_node_mode = 0;
+	
+	#ifndef ENERGY_INCENTIVE
 	bool use_bigger_nodes = true;
+	#endif
+	
 	//~ long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	//~ (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
@@ -562,6 +574,7 @@ int main(int argc, char *argv[])
 	/* Récupération du pourcentage à partir duquel on est sur un cluster occupé. */
 	busy_cluster_threshold = atoi(argv[7]);
 	
+	#ifndef ENERGY_INCENTIVE
 	int division_by_planned_area = 0;
 	
 	if (strncmp(scheduler, "Fcfs_area_filling", 17) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_omniscient_planned_area_x", 60) == 0 || strncmp(scheduler, "Fcfs_with_a_score_area_factor_with_planned_area_x", 49) == 0)
@@ -710,11 +723,13 @@ int main(int argc, char *argv[])
 	{
 		use_bigger_nodes = false;
 	}
-	
+
 	bool new_jobs = false;
+	
 	/* For the schedulers dealing with size constraint I need to sort scheduled_job_list by file size (biggest to smallest) now but
 	 * also do it when new jobs are added to scheduled_job_list. */
 	bool sort_by_file_size = false;
+	
 	if (
 	(strcmp(scheduler, "Fcfs_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_0_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_backfill_big_nodes_1_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_with_ratio_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_omniscient_big_job_first") == 0) || (strcmp(scheduler, "Fcfs_area_filling_omniscient_with_ratio_big_job_first") == 0))
 	{
@@ -729,6 +744,7 @@ int main(int argc, char *argv[])
 		print_job_list(scheduled_job_list->head);
 		#endif
 	}
+	#endif
 
 	/* Besoin de calculer le nombre de nodes dans chaque catégorie pour certains algos. */
 	int number_node_size_128_and_more = 0;
@@ -836,76 +852,60 @@ int main(int argc, char *argv[])
 	nb_call_finished_jobs = 0;
 	nb_call_new_jobs = 0;
 	
+	#ifndef ENERGY_INCENTIVE
 	int last_scheduler_call = t;
+	#endif
 	
 	/** START ENERGY INCENTIVE **/
-	int nusers = 3; /* One red, one green, one blue */
+	#ifdef ENERGY_INCENTIVE
+	int nusers = 4; /* credit, energy, runtime, random */
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
 	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];
 	for (i = 0; i < nusers; i++)
 	{
-		credit_users[i] = 2;
+		credit_users[i] = 5;
 	}
-	
-	/* Runtime in seconds of each job depending of the machine. job_length[i][j] is the length of job i on machine j 
-	 * TODO: Change to something that corresponds to real values or at least that is heterogeneous */
-	double job_length[total_number_jobs][total_number_nodes];
+
+	printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
+	double** tab_function_machine_energy = (double**) malloc(total_number_jobs * sizeof(double*)); //hauteur
+	double** tab_function_machine_credit = (double**) malloc(total_number_jobs * sizeof(double*)); //hauteur
+	job_pointer = job_list->head;
 	for (i = 0; i < total_number_jobs; i++)
 	{
+		tab_function_machine_energy[i] = malloc(total_number_nodes * sizeof(double)); //largeur
+		tab_function_machine_credit[i] = malloc(total_number_nodes * sizeof(double)); //largeur
+		struct Node* n = node_list[0]->head;
 		for (j = 0; j < total_number_nodes; j++)
 		{
-			job_length[i][j] = 100;
+			/* Filling the values for job i on endpoint j */
+			tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*n->ncores + n->idle_power*(job_pointer->duration_on_machine[j]/3600); /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours + energy of the start up (idle power) but converted to the right duration */
+			max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
+			tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
+			printf("Job %d on machine %d: %f Watt-hours %f max - %f seconds - %f credit removed\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j]);
+			n = n->next;
 		}
-	}
-	
-	/* CPU max usage and number of CPU of each machine. */
-	int CPU_TDP[total_number_nodes];
-	int NCPU[total_number_nodes];
-	for (i = 0; i < total_number_nodes; i++)
-	{
-		CPU_TDP[i] = 100;
-	}
-	
-	/* Idle power in consumption watt of each machine that we add for each job. Data taken from Alok's table here. */
-	double idle_power[total_number_nodes];
-	idle_power[0] = 6.51;
-	idle_power[1] = 110;
-	idle_power[2] = 136;
-	idle_power[3] = 205;
-	
-	if (strcmp(scheduler, "no_schedule") == 0)
-	{
-		printf("Get association of each of the %d jobs runtime, energy and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
-		double tab_function_machine_energy[total_number_jobs][total_number_nodes];
-		double tab_function_machine_runtime[total_number_jobs][total_number_nodes];
-		double tab_function_machine_credit[total_number_jobs][total_number_nodes];
-		for (i = 0; i < total_number_jobs; i++)
-		{
-			for (j = 0; j < total_number_nodes; j++)
-			{
-				/* Filling the values for job i on endpoint j */
-				tab_function_machine_energy[i][j] = (77036846*0.000001)/3600; /* In micro joules that I convert to joule then divide by 3600 to get watt-hours */
-				tab_function_machine_runtime[i][j] = 100; /* Seconds */
-				max_watt_hour = CPU_TDP[j]*NCPU[j]*; /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on tyhe machine in hours */
-				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2;
-				printf("Job %d on machine %d: %f Watt-hours - %f seconds - %f credit removed\n", i, j, tab_function_machine_energy[i][j], tab_function_machine_runtime[i][j], tab_function_machine_credit[i][j]);
-			}
-		}
+		job_pointer = job_pointer->next;
 	}
 	
 	/* Assigning an endpoint to each job depending on his user's behavior */
+	printf("Assigning an endpoint to each job depending on his user's behavior\n");
 	job_pointer = job_list->head;
+	int selected_endpoint = 0;
 	while (job_pointer != NULL)
 	{
 		printf("Job %d - user behavior %d\n", job_pointer->unique_id, job_pointer->user_behavior); fflush(stdout);
 		
-		select_endpoint(job_pointer->user_behavior, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[i][j]);
-		update_credit();
+		selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine);
+		
+		printf("Credit to remove is %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+		update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+		printf("Credit is now %f\n", credit_users[job_pointer->user_behavior]);
 		
 		job_pointer = job_pointer->next;
 	}
+	#else
 	/** END ENERGY INCENTIVE **/
 	
 	//~ #ifdef PRINT_CLUSTER_USAGE
@@ -1176,6 +1176,6 @@ int main(int argc, char *argv[])
 	
 	printf("\nComputing and writing results...\n");
 	print_csv(jobs_to_print_list->head);
-
+	#endif /* endif du ifdef ENERGY_INCENTIVE */
 	return 1;
 }

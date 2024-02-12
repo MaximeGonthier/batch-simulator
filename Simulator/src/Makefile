@@ -1,6 +1,9 @@
 all: main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c scheduler_calling.c
 	gcc -std=c99 -Wall -O3 -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c scheduler_calling.c -I. -lm
 
+energy_incentive:
+	gcc -std=c99 -Wall -O3 -DENERGY_INCENTIVE -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c scheduler_calling.c energy_incentive_functions.c -I. -lm
+	
 nb_heure_max:
 	gcc -std=c99 -Wall -O3 -DNB_HOUR_MAX -o main main.c read_input_files.c print_functions.c basic_functions.c scheduler.c linked_list_functions.c backfill_functions.c scheduler_calling.c -I. -lm
 

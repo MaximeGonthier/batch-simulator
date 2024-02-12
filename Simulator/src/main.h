@@ -7,9 +7,10 @@
 #include <stdio.h>
 #include <string.h>
 //~ #include <stdint.h>
-//~ #include <limits.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <float.h>
 #include <math.h>
 #include <time.h>
 #include <limits.h>
@@ -157,7 +158,11 @@ struct Job {
     int user;
     
     /** START ENERGY INCENTIVE **/
+    #ifdef ENERGY_INCENTIVE
     int user_behavior; /* 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random */
+    double *duration_on_machine;
+    double *energy_on_machine;
+    #endif
     /** END ENERGY INCENTIVE **/
 };
 
@@ -188,7 +193,15 @@ struct Node {
     #endif
     
     int end_of_file_load;
-    //~ #endif
+
+    /** START ENERGY INCENTIVE **/
+    #ifdef ENERGY_INCENTIVE
+    int tdp;
+    int ncpu;
+    double idle_power;
+    int ncores;
+    #endif
+    /** END ENERGY INCENTIVE **/
 };
 
 struct Core_in_a_hole_List {
@@ -398,3 +411,7 @@ void get_new_biggest_hole(struct Node_List** head_node);
 
 /* from scheduler_calling.c */
 void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode, int mixed_strategy);
+
+/* From energy_incentive.c */
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine);
+void update_credit(int job_id, double* user_credit, double credit_to_remove);
