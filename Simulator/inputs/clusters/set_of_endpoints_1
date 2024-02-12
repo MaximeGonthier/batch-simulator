@@ -1,4 +1,4 @@
-{ id: 0 memory: 128 bandwidth: 0.1 core: 20 }
-{ id: 1 memory: 128 bandwidth: 0.1 core: 20 }
-{ id: 2 memory: 128 bandwidth: 0.1 core: 20 }
-{ id: 3 memory: 128 bandwidth: 0.1 core: 20 }
+{ id: 0 memory: 128 bandwidth: 0.1 core: 16 cpu_tdp: 65 ncpu: 1 idle_power: 6.51 }
+{ id: 1 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 215 ncpu: 1 idle_power: 110 }
+{ id: 2 memory: 128 bandwidth: 0.1 core: 48 cpu_tdp: 205 ncpu: 2 idle_power: 136 }
+{ id: 3 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 205 ncpu: 2 idle_power: 205 }

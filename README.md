@@ -17,3 +17,6 @@ This repo introduce the no_schedule "scheduler" which let user choose an endpoin
 We only have jobs that use all the nodes (as they are machines in our case)
 
 In the code, all the stuff I added or modified for our case is marked with /** ENERGY INCENTIVE **/
+
+Added the number of cpu, idle power and cpu tdp ionto the info of the machines
+Added duration_on_machine: 100 120 34 59  in the workload data, much correspond to the number of machines!

@@ -849,7 +849,26 @@ int main(int argc, char *argv[])
 		credit_users[i] = 2;
 	}
 	
-	/* Idle power in consumption watt of each machine that we add for each job. Data taken from ALok's table here. */
+	/* Runtime in seconds of each job depending of the machine. job_length[i][j] is the length of job i on machine j 
+	 * TODO: Change to something that corresponds to real values or at least that is heterogeneous */
+	double job_length[total_number_jobs][total_number_nodes];
+	for (i = 0; i < total_number_jobs; i++)
+	{
+		for (j = 0; j < total_number_nodes; j++)
+		{
+			job_length[i][j] = 100;
+		}
+	}
+	
+	/* CPU max usage and number of CPU of each machine. */
+	int CPU_TDP[total_number_nodes];
+	int NCPU[total_number_nodes];
+	for (i = 0; i < total_number_nodes; i++)
+	{
+		CPU_TDP[i] = 100;
+	}
+	
+	/* Idle power in consumption watt of each machine that we add for each job. Data taken from Alok's table here. */
 	double idle_power[total_number_nodes];
 	idle_power[0] = 6.51;
 	idle_power[1] = 110;
@@ -869,7 +888,7 @@ int main(int argc, char *argv[])
 				/* Filling the values for job i on endpoint j */
 				tab_function_machine_energy[i][j] = (77036846*0.000001)/3600; /* In micro joules that I convert to joule then divide by 3600 to get watt-hours */
 				tab_function_machine_runtime[i][j] = 100; /* Seconds */
-				max_watt_hour = tab_function_machine_energy[i][j] + 0.01; /* max watt-hour of the machine */
+				max_watt_hour = CPU_TDP[j]*NCPU[j]*; /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on tyhe machine in hours */
 				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2;
 				printf("Job %d on machine %d: %f Watt-hours - %f seconds - %f credit removed\n", i, j, tab_function_machine_energy[i][j], tab_function_machine_runtime[i][j], tab_function_machine_credit[i][j]);
 			}
