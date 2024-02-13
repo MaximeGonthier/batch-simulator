@@ -917,7 +917,7 @@ int main(int argc, char *argv[])
 		
 		job_pointer = job_pointer->next;
 	}
-	print_csv_energy_incentive(jobs_to_print_list->head);
+	print_csv_energy_incentive(jobs_to_print_list->head, nusers);
 	#else
 	/** END ENERGY INCENTIVE **/
 	

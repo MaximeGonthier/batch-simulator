@@ -62,9 +62,10 @@ void update_credit(int job_id, double* user_credit, double credit_to_remove)
 	*user_credit = *user_credit - credit_to_remove;
 }
 
-void print_csv_energy_incentive(struct To_Print* head_to_print)
+void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers)
 {
 	FILE *f;
+	int job_shared_id = 0; /* To signifie that a job is the same accross al users */
 	f = fopen(output_file, "w");
 	if (!f)
 	{
@@ -72,14 +73,15 @@ void print_csv_energy_incentive(struct To_Print* head_to_print)
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(f, "Job_id, User_id, Selected_endpoint, Credit_lost, New_credit\n");
+	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit\n");
 	while (head_to_print != NULL)
 	{
-		fprintf(f, "%d, %d, %d, %f, %f", head_to_print->job_unique_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit);
-		//~ if (head_to_print->job_id%nusers == 0)
-		//~ {
+		fprintf(f, "%d, %d, %d, %d, %f, %f", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit);
 		fprintf(f, "\n");
-		//~ }
+		if (head_to_print->job_unique_id%nusers == nusers - 1)
+		{
+			job_shared_id++;
+		}
 		head_to_print = head_to_print->next;
 	}
 	

@@ -23,3 +23,5 @@ Added duration_on_machine: 100 120 34 59  in the workload data, much correspond 
 Same for energy_on_machine
 
 I put as ma,y thread on a node as it have core to offset the idle time cost
+
+total_number_jobs must be a multiple of nusers
