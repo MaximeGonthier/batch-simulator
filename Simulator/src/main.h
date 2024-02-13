@@ -267,6 +267,15 @@ struct To_Print {
     int upgraded; /* Was it on bigger nodes ? 0 or 1 */
     int user;
     int input_file;
+    
+    /** START ENERGY INCENTIVE **/
+    #ifdef ENERGY_INCENTIVE
+	int user_behavior;
+	int selected_endpoint;
+	double removed_credit;
+	double new_credit;
+	#endif
+	/** END ENERGY INCENTIVE **/
 };
 
 struct Interval_List {
@@ -415,3 +424,4 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 /* From energy_incentive.c */
 int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine);
 void update_credit(int job_id, double* user_credit, double credit_to_remove);
+void print_csv_energy_incentive(struct To_Print* head_to_print);

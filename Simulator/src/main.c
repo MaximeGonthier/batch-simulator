@@ -316,6 +316,7 @@ int main(int argc, char *argv[])
 	
 	int i = 0;
 	int j = 0;
+	#ifndef ENERGY_INCENTIVE
 	int multiplier_file_to_load = 0;
 	int multiplier_file_evicted = 0;
 	int multiplier_nb_copy = 0;
@@ -323,13 +324,10 @@ int main(int argc, char *argv[])
 	int adaptative_multiplier = 0; /* 0 = no, 1 = yes */
 	int penalty_on_job_sizes = 0; /* 0 = no, 1 = yes */
 	int backfill_big_node_mode = 0;
-	
-	#ifndef ENERGY_INCENTIVE
 	bool use_bigger_nodes = true;
 	#endif
 	
-	//~ long long (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
-	//~ (*Planned_Area)[3] = malloc(sizeof(long long[3][3]));
+	#ifndef ENERGY_INCENTIVE
 	float (*Ratio_Area)[3] = malloc(sizeof(float[3][3]));
 	int start_immediately_if_EAT_is_t = 0;
 	int mixed_strategy = 0;
@@ -570,6 +568,7 @@ int main(int argc, char *argv[])
 			multiplier_area_bigger_nodes = 0;
 		}
 	}
+	#endif
 	
 	/* Récupération du pourcentage à partir duquel on est sur un cluster occupé. */
 	busy_cluster_threshold = atoi(argv[7]);
@@ -861,6 +860,9 @@ int main(int argc, char *argv[])
 	int nusers = 4; /* credit, energy, runtime, random */
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
 	
+	//~ /* Init tab that will get info to print in the output file */
+	//~ data_to_print[total_number_jobs/nusers];
+	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];
 	for (i = 0; i < nusers; i++)
@@ -903,8 +905,19 @@ int main(int argc, char *argv[])
 		update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 		printf("Credit is now %f\n", credit_users[job_pointer->user_behavior]);
 		
+		/* Adding result to the To_Print structure used later to print results into a file. I do that cause it's faster than opening/closing the file each time. */
+		struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));
+		new->next = NULL;
+		new->job_unique_id = job_pointer->unique_id;				
+		new->user_behavior = job_pointer->user_behavior;
+		new->selected_endpoint = selected_endpoint;
+		new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
+		new->new_credit	= credit_users[job_pointer->user_behavior];		
+		insert_tail_to_print_list(jobs_to_print_list, new);
+		
 		job_pointer = job_pointer->next;
 	}
+	print_csv_energy_incentive(jobs_to_print_list->head);
 	#else
 	/** END ENERGY INCENTIVE **/
 	
