@@ -13,7 +13,7 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Just find the best credit from the tab */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			printf("Checked %f\n", tab_function_machine_credit[job_id][i]);
+			//~ printf("Checked %f\n", tab_function_machine_credit[job_id][i]);
 			if (tab_function_machine_credit[job_id][i] < min)
 			{
 				min = tab_function_machine_credit[job_id][i];
@@ -26,7 +26,7 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Just find the least energy consumed (including idle) */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			printf("Checked %f\n", tab_function_machine_energy[job_id][i]);
+			//~ printf("Checked %f\n", tab_function_machine_energy[job_id][i]);
 			if (tab_function_machine_energy[job_id][i] < min)
 			{
 				min = tab_function_machine_energy[job_id][i];
@@ -39,7 +39,7 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Just find the fastest runtime */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			printf("Checked %f\n", duration_on_machine[i]);
+			//~ printf("Checked %f\n", duration_on_machine[i]);
 			if (duration_on_machine[i] < min)
 			{
 				min = duration_on_machine[i];
@@ -53,7 +53,7 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		min_id = rand() % total_number_nodes;
 	}
 	
-	printf("Min is with machine %d\n", min_id);
+	//~ printf("Min is with machine %d\n", min_id);
 	return min_id;
 }
 

@@ -35,7 +35,7 @@ void read_cluster(char* input_node_file)
     
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
-	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s) == 16)
+	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, s, s) == 18)
 	{
 		struct Node *new = (struct Node*) malloc(sizeof(struct Node));
 		new->unique_id = atoi(id);
@@ -277,8 +277,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
-	{
-		
+	{	
 		total_number_jobs += 1;
 		
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
@@ -287,10 +286,8 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->delay = atoi(delay);	
 		new->walltime = atoi(walltime);
 		new->cores = atoi(cores);
-		//~ /** For mixed decreasing strategy **/
 		new->data = atoi(data);
 		new->data_size = atof(data_size);
-		//~ /** For mixed decreasing strategy **/
 		new->workload = atoi(workload);
 		new->start_time_from_history = atoi(start_time_from_history);
 		new->node_from_history = atoi(start_node_from_history);
@@ -311,7 +308,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 			if (fscanf(f, "%s", energy_on_machine) != 1) { exit(EXIT_FAILURE); }
 			new->energy_on_machine[i] = atof(energy_on_machine);
 		}
-		if (fscanf(f, "%s", s) != 1) { exit(EXIT_FAILURE); };
+		if (fscanf(f, "%s %s %s", s, s, s) != 3) { exit(EXIT_FAILURE); };
 		
 		if (strcmp(current_user, last_user) == 0)
 		{
@@ -323,30 +320,6 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 			user_id++;
 			new->user = user_id;
 		}
-		
-		//~ /** For mixed decreasing strategy **/
-		//~ /* Need to create the data if it does not exist. 
-		 //~ * I don't have to look at everything because similar data are always consecutive. */
-		//~ if (d->unique_id == atoi(data)) /* The data already exist. */
-		//~ {
-			//~ d->number_of_task_using_it_not_running += 1;
-		//~ }
-		//~ else /* Need to create the data */
-		//~ {
-			//~ struct Data* d = (struct Data*) malloc(sizeof(struct Data));
-			//~ d->next = NULL;
-			//~ d->unique_id = atoi(data);
-			//~ d->start_time = -1;
-			//~ d->end_time = -1;
-			//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
-			//~ d->intervals->head = NULL;
-			//~ d->intervals->tail = NULL;
-			//~ d->size = atof(data_size);
-			//~ d->number_of_task_using_it_not_running = 1;
-			//~ insert_tail_data_list(data_list, d);	
-		//~ }
-		//~ new->data = d;
-		//~ /** For mixed decreasing strategy **/
 		
 		/* Get index_node */
 		if (constraint_on_sizes != 0)
@@ -414,14 +387,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		//~ new->cores_used = malloc(new->cores*sizeof(int));
 		/* NEW */
 		new->cores_used = (int*) malloc(new->cores*sizeof(int));
-		
-		//~ new->cores_used = malloc(new->cores*sizeof(struct Core*));
-		//~ for (int i = 0; i < new->cores; i++)
-		//~ {
-			//~ new->cores_used[i] = malloc(sizeof(struct Core*));
-		//~ }
-		//~ printf("Mallocs ok.\n"); fflush(stdout);
-		
+				
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
 		new->next = NULL;
@@ -429,9 +395,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		/* Add in job list or job to start from history */
 		if (new->workload != -2)
 		{
-			//~ printf("Insert.\n"); fflush(stdout);
 			insert_tail_job_list(job_list, new);
-			//~ printf("Insert Ok.\n"); fflush(stdout);
 		}
 		else
 		{			

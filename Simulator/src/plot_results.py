@@ -3,7 +3,6 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -21,6 +20,7 @@ Job_shared_id = list(df.iloc[:, 1])
 Nlines = len(Job_shared_id) # Number of lines in the file without the header
 User_id = list(df.iloc[:, 2])
 New_credit = list(df.iloc[:, 5])
+
 for i in range(0, Nlines):
 	print(Job_shared_id[i], User_id[i], New_credit[i])
 	if (New_credit[i] >= 0):
@@ -30,7 +30,7 @@ print("number_jobs_computed_before_credit_expiration:", number_jobs_computed_bef
 
 # Settings of the plot
 bar_width = 0.2
-separation_between_bars=0.4
+separation_between_bars=0.3
 x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars]
 
 # Barplot
@@ -43,7 +43,7 @@ plt.bar(4*separation_between_bars, number_jobs_computed_before_credit_expiration
 labels = ['Credit', 'Energy', 'Runtime', 'Random'] 
 plt.xticks(x, labels, rotation ='horizontal') 
 plt.ylabel("Number of jobs computed before credit expiration")
-plt.locator_params(axis='y', nbins=4) 
+plt.locator_params(axis='y', nbins=4, integer=True) 
 plt.xlabel("User behavior")
 # ~ plt.legend(["Credit", "Energy", "Runtime", "Random"], ncol=4, loc=(-0.022, -0.41))
 
