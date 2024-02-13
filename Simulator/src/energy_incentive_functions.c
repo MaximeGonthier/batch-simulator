@@ -1,7 +1,7 @@
 /** START ENERGY INCENTIVE **/
 #include <main.h>
 
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine)
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double* next_available_time_endpoint)
 {
 	int i = 0;
 	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random */
@@ -36,13 +36,13 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 	}
 	else if (user_behavior == 2)
 	{
-		/* Just find the fastest runtime */
+		/* Just find the earliest finish time */
 		for (i = 0; i < total_number_nodes; i++)
 		{
 			//~ printf("Checked %f\n", duration_on_machine[i]);
-			if (duration_on_machine[i] < min)
+			if (duration_on_machine[i] + next_available_time_endpoint[i] < min)
 			{
-				min = duration_on_machine[i];
+				min = duration_on_machine[i] + next_available_time_endpoint[i];
 				min_id = i;
 			}
 		}
@@ -73,10 +73,10 @@ void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers)
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit\n");
+	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time\n");
 	while (head_to_print != NULL)
 	{
-		fprintf(f, "%d, %d, %d, %d, %f, %f", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit);
+		fprintf(f, "%d, %d, %d, %d, %f, %f, %f", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit, head_to_print->job_end_time_double);
 		fprintf(f, "\n");
 		if (head_to_print->job_unique_id%nusers == nusers - 1)
 		{

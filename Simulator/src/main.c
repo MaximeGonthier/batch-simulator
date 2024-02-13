@@ -867,17 +867,25 @@ int main(int argc, char *argv[])
 	double credit_users[nusers];
 	for (i = 0; i < nusers; i++)
 	{
-		credit_users[i] = 30;
+		credit_users[i] = 1000;
+	}
+	
+	double* next_available_time_endpoint = malloc(total_number_nodes*sizeof(double)); //largeur /* next available time of the machine. I consider that all cores must be available as the functions sue as many threads as there are cores. */
+	for (i = 0; i < total_number_nodes; i++)
+	{
+		next_available_time_endpoint[i] = 0;
 	}
 
-	printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
-	double** tab_function_machine_energy = (double**) malloc(total_number_jobs * sizeof(double*)); //hauteur
-	double** tab_function_machine_credit = (double**) malloc(total_number_jobs * sizeof(double*)); //hauteur
+	//~ printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
+	//~ int** tab_function_machine_calibration = (int**) malloc(total_number_jobs*sizeof(int*)); /* Has the calibration been done on this function-machine association? */
+	double** tab_function_machine_energy = (double**) malloc(total_number_jobs*sizeof(double*)); //hauteur
+	double** tab_function_machine_credit = (double**) malloc(total_number_jobs*sizeof(double*)); //hauteur
 	job_pointer = job_list->head;
 	for (i = 0; i < total_number_jobs; i++)
 	{
-		tab_function_machine_energy[i] = malloc(total_number_nodes * sizeof(double)); //largeur
-		tab_function_machine_credit[i] = malloc(total_number_nodes * sizeof(double)); //largeur
+		//~ tab_function_machine_calibration[i] = malloc(total_number_nodes*sizeof(int)); //largeur
+		tab_function_machine_energy[i] = malloc(total_number_nodes*sizeof(double)); //largeur
+		tab_function_machine_credit[i] = malloc(total_number_nodes*sizeof(double)); //largeur
 		struct Node* n = node_list[0]->head;
 		for (j = 0; j < total_number_nodes; j++)
 		{
@@ -885,7 +893,7 @@ int main(int argc, char *argv[])
 			tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*n->ncores + n->idle_power*(job_pointer->duration_on_machine[j]/3600); /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours + energy of the start up (idle power) but converted to the right duration */
 			max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
 			tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
-			printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
+			//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
 			n = n->next;
 		}
 		job_pointer = job_pointer->next;
@@ -894,7 +902,8 @@ int main(int argc, char *argv[])
 	/* Assigning an endpoint to each job depending on his user's behavior */
 	//~ printf("Assigning an endpoint to each job depending on his user's behavior\n");
 	int selected_endpoint = 0;
-	int number_workload_repetition = 30; /* Number of times I want to repeat the same workload */
+	int number_workload_repetition = 880; /* Number of times I want to repeat the same workload */
+	//~ int number_workload_repetition = 1;
 	i = 0;
 	
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
@@ -904,8 +913,8 @@ int main(int argc, char *argv[])
 		{
 			//~ printf("Job %d - user behavior %d\n", job_pointer->unique_id, job_pointer->user_behavior); fflush(stdout);
 			
-			selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine);
-			
+			selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
+						
 			//~ printf("Credit to remove is %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 			update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 			//~ printf("Credit is now %f\n", credit_users[job_pointer->user_behavior]);
@@ -918,7 +927,12 @@ int main(int argc, char *argv[])
 			new->selected_endpoint = selected_endpoint;
 			new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
 			new->new_credit	= credit_users[job_pointer->user_behavior];		
+			new->job_end_time_double = next_available_time_endpoint[selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
 			insert_tail_to_print_list(jobs_to_print_list, new);
+			
+			/* Update the next available time of the machine (same way we assigned a value to new->job_end_time */
+			next_available_time_endpoint[selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
+			//~ printf("Next avail time for endpoint %d is %f\n", selected_endpoint, next_available_time_endpoint[selected_endpoint]);
 			
 			job_pointer = job_pointer->next;
 		}
