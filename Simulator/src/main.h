@@ -275,6 +275,7 @@ struct To_Print {
 	double removed_credit;
 	double new_credit;
 	double job_end_time_double;
+	double energy_used_watt_hours;
 	#endif
 	/** END ENERGY INCENTIVE **/
 };

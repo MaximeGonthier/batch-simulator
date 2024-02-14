@@ -859,15 +859,15 @@ int main(int argc, char *argv[])
 	#ifdef ENERGY_INCENTIVE
 	int nusers = 4; /* credit, energy, runtime, random */
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
-	
-	//~ /* Init tab that will get info to print in the output file */
-	//~ data_to_print[total_number_jobs/nusers];
+		
+	int number_workload_repetition = 150; /* Number of times I want to repeat the same workload */
+	double credit_to_each_user = 10000;
 	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];
 	for (i = 0; i < nusers; i++)
 	{
-		credit_users[i] = 1000;
+		credit_users[i] = credit_to_each_user;
 	}
 	
 	double* next_available_time_endpoint = malloc(total_number_nodes*sizeof(double)); //largeur /* next available time of the machine. I consider that all cores must be available as the functions sue as many threads as there are cores. */
@@ -889,21 +889,27 @@ int main(int argc, char *argv[])
 		struct Node* n = node_list[0]->head;
 		for (j = 0; j < total_number_nodes; j++)
 		{
-			/* Filling the values for job i on endpoint j */
-			tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*n->ncores + n->idle_power*(job_pointer->duration_on_machine[j]/3600); /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours + energy of the start up (idle power) but converted to the right duration */
-			max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
-			tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
-			//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
+			if (job_pointer->cores > n->ncores*n->ncpu) /* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. */
+			{
+				//~ printf("%d > %d\n", job_pointer->cores, n->ncores*n->ncpu);
+				tab_function_machine_energy[i][j] = -1;
+			}
+			else
+			{
+				//~ printf("%d\n", job_pointer->cores);
+				/* Filling the values for job i on endpoint j */
+				tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600); /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+				max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
+				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
+				//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
+			}
 			n = n->next;
 		}
 		job_pointer = job_pointer->next;
 	}
 	
 	/* Assigning an endpoint to each job depending on his user's behavior */
-	//~ printf("Assigning an endpoint to each job depending on his user's behavior\n");
 	int selected_endpoint = 0;
-	int number_workload_repetition = 880; /* Number of times I want to repeat the same workload */
-	//~ int number_workload_repetition = 1;
 	i = 0;
 	
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
@@ -928,6 +934,8 @@ int main(int argc, char *argv[])
 			new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
 			new->new_credit	= credit_users[job_pointer->user_behavior];		
 			new->job_end_time_double = next_available_time_endpoint[selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
+			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
+			
 			insert_tail_to_print_list(jobs_to_print_list, new);
 			
 			/* Update the next available time of the machine (same way we assigned a value to new->job_end_time */

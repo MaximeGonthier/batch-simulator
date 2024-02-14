@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 
 # bash test.sh 8_functions_4_endpoints set_of_endpoints_1 8_functions_4_endpoints
+# bash test.sh 8_functions_4_endpoints_64coresmax set_of_endpoints_1 8_functions_4_endpoints_64coresmax
 
 nusers=4
 
@@ -15,3 +16,5 @@ make energy_incentive -C src/
 python3 src/plot_barplots.py outputs/${output_name}.csv ${nusers} ${output_name}
 
 python3 src/plot_finish_time.py outputs/${output_name}.csv ${nusers} ${output_name}
+
+python3 src/plot_energy_consumed_over_time.py outputs/${output_name}.csv ${nusers} ${output_name}
