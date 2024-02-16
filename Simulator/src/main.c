@@ -66,9 +66,9 @@ int main(int argc, char *argv[])
 	#endif
 	
 	nb_data_reuse = 0;
-	if (argc != 8 && argc != 9 && argc != 10)
+	if (argc != 9 && argc != 10 && argc != 11)
 	{
-		printf("Error: args must be 8, 9 or 10!\n");
+		printf("Error: args must be 9, 10 or 11!\n");
 		exit(EXIT_FAILURE);
 	}
 	
@@ -79,25 +79,25 @@ int main(int argc, char *argv[])
 	int time_to_save = 0;
 			
 	/* If you add save or resume as the last argument */
-	if (argc > 8)
+	if (argc > 9)
 	{
-		if (strcmp(argv[8], "save") == 0) 
+		if (strcmp(argv[9], "save") == 0) 
 		{
 			need_to_save_state = true;
-			time_to_save = atoi(argv[9]);
+			time_to_save = atoi(argv[10]);
 			printf("Save after %d jobs.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[8], "save_and_resume") == 0)
+		else if (strcmp(argv[9], "save_and_resume") == 0)
 		{
 			need_to_resume_state = true;
 			need_to_save_state = true;
-			time_to_save = atoi(argv[9]);
+			time_to_save = atoi(argv[10]);
 			printf("Time to save_and_resume is %d.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[8], "resume") == 0)
+		else if (strcmp(argv[9], "resume") == 0)
 		{
 			need_to_resume_state = true;
-			if (argc > 9)
+			if (argc > 10)
 			{
 				printf("Error: no arg must be after resume.\n"); fflush(stdout);
 				exit(EXIT_FAILURE);
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("Error: argv[8] must be save or resume.\n");
+			printf("Error: argv[9] must be save or resume.\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -812,39 +812,9 @@ int main(int argc, char *argv[])
 					start_jobs(t, scheduled_job_list->head);
 				}
 			}
-//~ for (i = 0; i < 3; i++)
-//~ {
-//~ struct Node* n = node_list[i]->head;
-//~ for (int k = 0; k < 20; k++)
-//~ {
-//~ if (n->cores[k]->available_time <= t && j->start_time > t)
-					//~ {						
-						//~ struct Core_in_a_hole* new = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
-						//~ new->unique_id = n->cores[k]->unique_id;
-						//~ new->start_time_of_the_hole = j->start_time;
-						//~ new->next = NULL;
-							//~ if (backfill_mode == 2) /* Favorise les jobs backfill car se met sur le coeurs qui a le temps le plus petit possible. */
-							//~ {
-								//~ insert_cores_in_a_hole_list_sorted_increasing_order(n->cores_in_a_hole, new);
-							//~ }
-							//~ else
-							//~ {
-								//~ insert_cores_in_a_hole_list_sorted_decreasing_order(n->cores_in_a_hole, new);
-							//~ }
-					//~ }
-				//~ }
-				//~ n = n->next;
-			//~ }
-
 	}
 	#endif
-	
-	//~ print_node_list(node_list);
-	
-	//~ #ifdef PRINT_CLUSTER_USAGE
-	//~ int time_all_job_workload_1_started = -1;
-	//~ #endif
-	
+		
 	/** START OF SIMULATION **/
 	printf("Start simulation.\n"); fflush(stdout);
 	
@@ -857,11 +827,12 @@ int main(int argc, char *argv[])
 	
 	/** START ENERGY INCENTIVE **/
 	#ifdef ENERGY_INCENTIVE
-	int nusers = 4; /* credit, energy, runtime, random */
+	int nusers = atoi(argv[8]);
+	printf("There are %d users.\n", nusers);
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
 		
-	int number_workload_repetition = 150; /* Number of times I want to repeat the same workload */
-	double credit_to_each_user = 10000;
+	int number_workload_repetition = 150*64; /* Number of times I want to repeat the same workload */
+	double credit_to_each_user = 1000;
 	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];
@@ -935,6 +906,12 @@ int main(int argc, char *argv[])
 			new->new_credit	= credit_users[job_pointer->user_behavior];		
 			new->job_end_time_double = next_available_time_endpoint[selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
 			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
+			
+			if (tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] < 0)
+			{
+				printf("WTF energy %f job %d endpoint %d\n", tab_function_machine_energy[job_pointer->unique_id][selected_endpoint], job_pointer->unique_id, selected_endpoint);
+				exit(1);
+			}
 			
 			insert_tail_to_print_list(jobs_to_print_list, new);
 			
@@ -1219,5 +1196,7 @@ int main(int argc, char *argv[])
 	printf("\nComputing and writing results...\n");
 	print_csv(jobs_to_print_list->head);
 	#endif /* endif du ifdef ENERGY_INCENTIVE */
+	
+	printf("Finished simulation.\n");
 	return 1;
 }

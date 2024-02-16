@@ -4,16 +4,15 @@
 int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double* next_available_time_endpoint)
 {
 	int i = 0;
-	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random */
+	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random - 4 worst credit - 5 = Only theta - 6 = Only midway - 7 = Only faster */
 	double min = DBL_MAX;
 	int min_id = -1;
 	
 	if (user_behavior == 0)
 	{
-		/* Just find the best credit from the tab */
+		/* Find the best credit from the tab */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			//~ printf("Checked %f\n", tab_function_machine_credit[job_id][i]);
 			if (tab_function_machine_credit[job_id][i] < min && tab_function_machine_energy[job_id][i] != -1)
 			{
 				min = tab_function_machine_credit[job_id][i];
@@ -23,10 +22,9 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 	}
 	else if (user_behavior == 1)
 	{
-		/* Just find the least energy consumed (including idle) */
+		/* Find the least energy consumed (including idle) */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			//~ printf("Checked %f\n", tab_function_machine_energy[job_id][i]);
 			if (tab_function_machine_energy[job_id][i] < min && tab_function_machine_energy[job_id][i] != -1)
 			{
 				min = tab_function_machine_energy[job_id][i];
@@ -36,10 +34,9 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 	}
 	else if (user_behavior == 2)
 	{
-		/* Just find the earliest finish time */
+		/* Find the earliest finish time */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			//~ printf("Checked %f\n", duration_on_machine[i]);
 			if (duration_on_machine[i] + next_available_time_endpoint[i] < min && tab_function_machine_energy[job_id][i] != -1)
 			{
 				min = duration_on_machine[i] + next_available_time_endpoint[i];
@@ -61,7 +58,6 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		
 		/* Randomly select a number between 0 and this number */
 		min_id = rand() % total_number_nodes_to_choose_from;
-		//~ printf("min id random is %d\n", min_id);
 		/* Get the corresponding node by ignoring impossible combinations nodes */
 		for (i = 0; i < total_number_nodes; i++)
 		{
@@ -75,6 +71,34 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 				min_id -= 1;
 			}
 		}
+	}
+	else if (user_behavior == 4)
+	{
+		/* Find the worst credit from the tab */
+		min = -1;
+		for (i = 0; i < total_number_nodes; i++)
+		{
+			if (tab_function_machine_credit[job_id][i] > min && tab_function_machine_energy[job_id][i] != -1)
+			{
+				min = tab_function_machine_credit[job_id][i];
+				min_id = i;
+			}
+		}
+	}
+	else if (user_behavior == 5)
+	{
+		/* Always use the theta endpoint */
+		min_id = 0;
+	}
+	else if (user_behavior == 6)
+	{
+		/* Always use the midway endpoint */
+		min_id = 1;
+	}
+	else if (user_behavior == 7)
+	{
+		/* Always use the faster endpoint */
+		min_id = 3;
 	}
 	
 	if (min_id == -1)

@@ -1,20 +1,29 @@
 #!/usr/bin/bash
 
-# bash test.sh 8_functions_4_endpoints set_of_endpoints_1 8_functions_4_endpoints
-# bash test.sh 8_functions_4_endpoints_64coresmax set_of_endpoints_1 8_functions_4_endpoints_64coresmax
+# bash test.sh set_of_endpoints_1 8_functions_4_endpoints_64coresmax_8users 8 64
+# bash test.sh set_of_endpoints_1 8_functions_4_endpoints_1coresmax_8users 8 1
 
-nusers=4
+endpoints=$1
+workload=$2
+nusers=$3
+N_cores_max=$4
 
-workload=$1
-endpoints=$2
-output_name=$3
+python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max}
+
+echo ""
 
 make energy_incentive -C src/
 
-./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} no_schedule 0 outputs/${output_name}.csv 0 100
+echo ""
 
-python3 src/plot_barplots.py outputs/${output_name}.csv ${nusers} ${output_name}
+./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}.csv 0 100 ${nusers}
 
-python3 src/plot_finish_time.py outputs/${output_name}.csv ${nusers} ${output_name}
+echo ""
 
-python3 src/plot_energy_consumed_over_time.py outputs/${output_name}.csv ${nusers} ${output_name}
+python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "total_energy"
+python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed"
+
+echo ""
+
+python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "finish_times"
+python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "energy_consumed"

@@ -8,3 +8,5 @@ To add or remove the constraint that some jobs can't be executed on certain node
 ./src/main inputs/workloads/converted/functions_1 inputs/clusters/set_of_endpoints_1 no_schedule 0 outputs/test.csv 0 100
 
 Considering the next available time of the machine, when will the job will end? We dissociate users here, consider that only one is using the system at a time. They are not competing
+
+Ajout de nusers dans les argument pour lancer le ./main
