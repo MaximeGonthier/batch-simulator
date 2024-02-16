@@ -1,6 +1,0 @@
-Machine order in functions file for simulator:
-
-theta
-midway
-desktop
-faster
