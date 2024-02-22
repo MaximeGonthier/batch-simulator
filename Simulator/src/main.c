@@ -830,8 +830,10 @@ int main(int argc, char *argv[])
 	int nusers = atoi(argv[8]);
 	printf("There are %d users.\n", nusers);
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
-		
-	int number_workload_repetition = 150*64; /* Number of times I want to repeat the same workload */
+	
+	/* Number of times I want to repeat the same workload */
+	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
+	int number_workload_repetition = 15; /*  Good for 8 functions 64 core max */
 	double credit_to_each_user = 1000;
 	
 	/* Credit of each user in watt-hours */

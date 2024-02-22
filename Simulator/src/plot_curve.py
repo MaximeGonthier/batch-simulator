@@ -9,7 +9,7 @@ nusers = int(sys.argv[2])
 output_name = sys.argv[3]
 mode = sys.argv[4] # Between finish times or energy consumed
 
-print("Plotting finish times with input file", input_file)
+print("Plotting", mode, "with input file", input_file, "and", nusers, "users")
 
 data = pd.read_csv(input_file)
 df=pd.DataFrame(data)
@@ -49,11 +49,12 @@ for i in range (0, nusers):
 					evaluated_metric += 1
 				elif mode == "energy_consumed":
 					evaluated_metric += Evaluated_column[j]
-				X.append(Job_end_time[i])
+				X.append(Job_end_time[j])
 				Y.append(evaluated_metric)
 	plt.plot(X, Y, color=colors[i], linewidth=width)
 
-plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
+if mode == "finish_times":
+	plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
 
 # Legend and labels
 if mode == "finish_times":#c60c30
@@ -62,7 +63,7 @@ elif mode == "energy_consumed":
 	plt.ylabel("Total energy used (Watt-hours)")
 	
 plt.xlabel("Time (s)")
-plt.legend(["Credit", "Energy", "Earliest Finish Time (EFT)", "Random"], ncol=4, loc=(-0.022, -0.2))
+plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(-0.022, -0.2))
 
 # Saving plots
 if mode == "finish_times":
