@@ -276,6 +276,9 @@ struct To_Print {
 	double new_credit;
 	double job_end_time_double;
 	double energy_used_watt_hours;
+	double core_hours_used;
+	double queue_time;
+	double mean_duration_on_machine;
 	#endif
 	/** END ENERGY INCENTIVE **/
 };

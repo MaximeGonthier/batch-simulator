@@ -908,6 +908,14 @@ int main(int argc, char *argv[])
 			new->new_credit	= credit_users[job_pointer->user_behavior];		
 			new->job_end_time_double = next_available_time_endpoint[selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
 			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
+			new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
+			new->queue_time = next_available_time_endpoint[selected_endpoint] - job_pointer->subtime;
+			
+			for(j = 0; j < total_number_nodes; j++)
+			{
+				new->mean_duration_on_machine += job_pointer->duration_on_machine[j];
+			}
+			new->mean_duration_on_machine = new->mean_duration_on_machine/total_number_nodes;
 			
 			if (tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] < 0)
 			{

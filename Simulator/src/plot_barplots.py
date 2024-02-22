@@ -20,10 +20,14 @@ Nlines = len(Job_shared_id) # Number of lines in the file without the header
 User_id = list(df.iloc[:, 2])
 New_credit = list(df.iloc[:, 5])
 Energy_used = list(df.iloc[:, 7])
+Queue_time = list(df.iloc[:, 9])
 
 if mode == "total_energy":
 	for i in range(0, Nlines):
 		measured_metric[User_id[i]] += Energy_used[i]
+elif mode == "queue_time":
+	for i in range(0, Nlines):
+		measured_metric[User_id[i]] += Queue_time[i]
 elif mode == "nb_jobs_completed":
 	for i in range(0, Nlines):
 		if (New_credit[i] >= 0):
@@ -54,6 +58,9 @@ if mode == "total_energy":
 elif mode == "nb_jobs_completed":
 	plt.ylabel("Number of jobs computed before credit expiration")
 	mode_name = "_nb_jobs_completed"
+elif mode == "queue_time":
+	plt.ylabel("Total queue time (s) even after credit exp")
+	mode_name = "_queue_time"
 	
 plt.locator_params(axis='y', nbins=4, integer=True) 
 plt.xlabel("User behavior")

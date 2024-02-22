@@ -18,12 +18,16 @@ echo ""
 
 ./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}.csv 0 100 ${nusers}
 
-echo ""
+#~ echo ""
 
-python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "total_energy"
-python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed"
+#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "total_energy"
+#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed"
+#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "queue_time"
 
-echo ""
+#~ echo ""
 
-python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "finish_times"
-python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "energy_consumed"
+#~ python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "finish_times"
+#~ python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "finish_times_core_hours_Y_axis"
+#~ python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "energy_consumed"
+#~ python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "finish_times_core_hours_Y_axis_energy_consumed_X_axis"
+#~ python3 src/plot_curve.py outputs/${workload}.csv ${nusers} ${workload} "finish_times_submission_order_X_axis"
