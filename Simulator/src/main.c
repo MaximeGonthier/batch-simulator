@@ -833,7 +833,8 @@ int main(int argc, char *argv[])
 	
 	/* Number of times I want to repeat the same workload */
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 15; /*  Good for 8 functions 64 core max */
+	int number_workload_repetition = 20;
+	//~ int number_workload_repetition = 3;
 	double credit_to_each_user = 1000;
 	
 	/* Credit of each user in watt-hours */
@@ -910,6 +911,7 @@ int main(int argc, char *argv[])
 			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
 			new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
 			new->queue_time = next_available_time_endpoint[selected_endpoint] - job_pointer->subtime;
+			new->job_cores = job_pointer->cores;
 			
 			for(j = 0; j < total_number_nodes; j++)
 			{

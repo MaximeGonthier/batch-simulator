@@ -21,6 +21,8 @@ User_id = list(df.iloc[:, 2])
 New_credit = list(df.iloc[:, 5])
 Energy_used = list(df.iloc[:, 7])
 Queue_time = list(df.iloc[:, 9])
+Mean_completion_time = list(df.iloc[:, 10])
+Number_of_cores_used = list(df.iloc[:, 11])
 
 if mode == "total_energy":
 	for i in range(0, Nlines):
@@ -32,6 +34,11 @@ elif mode == "nb_jobs_completed":
 	for i in range(0, Nlines):
 		if (New_credit[i] >= 0):
 			measured_metric[User_id[i]] += 1
+elif mode == "nb_jobs_completed_in_mean_core_hours":
+	for i in range(0, Nlines):
+		if (New_credit[i] >= 0):
+			measured_metric[User_id[i]] += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
+			print(Mean_completion_time[i]/3600)
 else:
 	print("ERROR: Wrong mode in plot_batrplots.py")
 
@@ -58,6 +65,9 @@ if mode == "total_energy":
 elif mode == "nb_jobs_completed":
 	plt.ylabel("Number of jobs computed before credit expiration")
 	mode_name = "_nb_jobs_completed"
+elif mode == "nb_jobs_completed_in_mean_core_hours":
+	plt.ylabel("Functions mean core hours completed before credit expiration")
+	mode_name = "_nb_jobs_completed_in_mean_core_hours"
 elif mode == "queue_time":
 	plt.ylabel("Total queue time (s) even after credit exp")
 	mode_name = "_queue_time"
