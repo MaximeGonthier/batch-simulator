@@ -833,9 +833,10 @@ int main(int argc, char *argv[])
 	
 	/* Number of times I want to repeat the same workload */
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 20;
+	int number_workload_repetition = 6;
 	//~ int number_workload_repetition = 3;
-	double credit_to_each_user = 1000;
+	//~ double credit_to_each_user = 1000;
+	double credit_to_each_user = 1200;
 	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];

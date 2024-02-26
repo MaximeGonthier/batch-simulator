@@ -2,12 +2,16 @@
 # The file is written such that each function has a version varying from 1 to 64 cores
 
 # python3 src/write_workload.py output_file
-# python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users 64
+# python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_default 64 default
+# python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_balance_weight 64 balance_weight
+# python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_randomize_weight 64 randomize_weight
+
 import sys
 import random
 
 output_file = sys.argv[1]
 N_cores_max = int(sys.argv[2])
+weight_mode = sys.argv[3] # mode can be "default", "balance_weight" or "randomize_weight" or "balance_nb_calls" or "reasonable_weight_and_randomized_nb_calls"
 
 print("Start writting input workload", output_file, "with", N_cores_max, "cores max per function")
 
@@ -45,27 +49,47 @@ i_user = 0
 i_functions = 0
 nb_functions = 0
 f = open(output_file, "w")
+
 for i in range (0, N_functions*N_users*N_cores_max):
-	required_multiplier_for_balance = int(max_mean_runtime/mean_runtime_functions[i_functions])
-	# ~ required_multiplier_for_balance = 1
-	# print("Number of repetition for balance of core-hours required is", required_multiplier_for_balance)
-	nb_functions += 1
-	f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(i_cores) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
-	for j in range (0, N_endpoints):
-		f.write(str((functions_runtime[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
-	f.write("energy_on_machine: ")
-	for j in range (0, N_endpoints):
-		f.write(str((functions_energy[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
-	f.write("function_name: " + functions[i_functions] + " }\n")
+	if weight_mode == "balance_weight" or weight_mode == "randomize_weight":
+		required_multiplier_for_balance = int(max_mean_runtime/mean_runtime_functions[i_functions])
+	elif weight_mode == "reasonable_weight_and_randomized_nb_calls":
+		required_multiplier_for_balance = max(1, int(10/mean_runtime_functions[i_functions]))
+	else:
+		required_multiplier_for_balance = 1
+	print("Weight multiplier is", required_multiplier_for_balance)
+	
+	if weight_mode == "balance_weight" or weight_mode == "default":
+		nb_of_repetition = 1
+	elif weight_mode == "reasonable_weight_and_randomized_nb_calls":
+		nb_of_repetition = random.randint(0, 10)
+	elif weight_mode == "balance_nb_calls":
+		nb_of_repetition = int(max_mean_runtime/mean_runtime_functions[i_functions])
+	else:
+		nb_of_repetition = random.randint(0, 10)
+	print("Number of repetition is", nb_of_repetition)
+	
+	for k in range (0, nb_of_repetition*N_users):
+		nb_functions += 1
+		f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(i_cores) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
+		for j in range (0, N_endpoints):
+			f.write(str((functions_runtime[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
+		f.write("energy_on_machine: ")
+		for j in range (0, N_endpoints):
+			f.write(str((functions_energy[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
+		f.write("function_name: " + functions[i_functions] + " }\n")
 	
 	# Loop on users first then on cores then on fucntions
-	i_user += 1
-	if (i_user == N_users):
-		i_user = 0
-		i_cores += 1
+		i_user += 1
+		if (i_user == N_users):
+			i_user = 0
+			
+	i_cores += 1
 	if (i_cores == (N_cores_max+1)):
 		i_cores = 1
 		i_functions += 1
+	if i_functions == N_functions:
+		break
 	# Loop on cores first then on users then on fucntions
 	# ~ i_cores += 1
 	# ~ if (i_cores == (N_cores_max+1)):
@@ -77,7 +101,6 @@ for i in range (0, N_functions*N_users*N_cores_max):
 f.close()
 
 # Randomize functions calls
-import random
 
 print("Total number of functions call is", nb_functions)
 print("Finished writting input workload")
@@ -98,3 +121,6 @@ with open(output_file, "w") as file:
 	file.write("".join([''.join(g) for g in groups]))
 
 print("Finished randomizing input workload")
+
+import os
+print("File Size is :", os.stat(output_file).st_size/1000000, "megabytes")

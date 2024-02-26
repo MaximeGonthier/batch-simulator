@@ -13,7 +13,7 @@ print("Plotting", mode, "with input file", input_file, "and", nusers, "users")
 
 data = pd.read_csv(input_file)
 df=pd.DataFrame(data)
-print(data)
+# ~ print(data)
 
 if mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis" or mode == "finish_times_submission_order_X_axis":
 	sorted_df = df # Don't sort
@@ -30,7 +30,8 @@ Evaluated_column_Y = []
 evaluated_metric_Y= 0
 
 if mode == "finish_times_core_hours_Y_axis":
-	Evaluated_column_Y = list(sorted_df.iloc[:, 8]) # Core hours used
+	# ~ Evaluated_column_Y = list(sorted_df.iloc[:, 8]) # Core hours used
+	Evaluated_column_Y = list(sorted_df.iloc[:, 10]) # mean completion time
 elif mode == "energy_consumed":
 	Evaluated_column_Y = list(sorted_df.iloc[:, 7]) # Energy used in watt hours
 elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
@@ -58,11 +59,12 @@ for i in range (0, nusers):
 				evaluated_metric_Y += 1
 				X.append(submission_order)
 				Y.append(evaluated_metric_Y)
-			elif (New_credit[j] > 0 and mode == "finish_times_core_hours_Y_axis"):
+			# ~ elif (New_credit[j] > 0 and mode == "finish_times_core_hours_Y_axis"):
+			elif (mode == "finish_times_core_hours_Y_axis"):
 				evaluated_metric_Y += Evaluated_column_Y[j]
 				X.append(Job_end_time[j])
 				Y.append(evaluated_metric_Y)
-			elif mode == "energy_consumed":
+			elif (New_credit[j] > 0 and mode == "energy_consumed"):
 				evaluated_metric_Y += Evaluated_column_Y[j]
 				X.append(Job_end_time[j])
 				Y.append(evaluated_metric_Y)
@@ -75,18 +77,18 @@ for i in range (0, nusers):
 		submission_order += 1
 	plt.plot(X, Y, color=colors[i], linewidth=width)
 
-if mode == "finish_times":
-	plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
+# ~ if mode == "finish_times":
+	# ~ plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
 
 # Legend and labels
 if mode == "finish_times":
 	plt.ylabel("Number of jobs completed")
 	plt.xlabel("Completion Time (s)")
 elif mode == "finish_times_core_hours_Y_axis":
-	plt.ylabel("Number of core-hours used")
+	plt.ylabel("Number of core-hours completed (even after end of credit)")
 	plt.xlabel("Completion Time (s)")
 elif mode == "energy_consumed":
-	plt.ylabel("Total energy used (Watt-hours) even after end of credit")
+	plt.ylabel("Energy used (Watt-hours)")
 	plt.xlabel("Completion Time (s)")
 elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.ylabel("Core-hours")
