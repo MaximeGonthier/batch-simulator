@@ -30,7 +30,7 @@ print("Job input file:", job_input_file)
 print("Energy input file:", energy_input_file)
 
 f = open(output_file, "w")
-f.write("Energy used, Job Id, Number of cores used, Runtime\n")
+f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Runtime\n")
 
 with open(job_input_file, 'r') as file:
 	for line in file:
@@ -43,6 +43,7 @@ with open(job_input_file, 'r') as file:
 						if (char != ":"):
 							nb_nodes = nb_nodes*10 + int(char)
 						print("Nb of nodes:", nb_nodes)
+						f.write(str(nb_nodes) + ", ")
 						print("Nb of cores:", nb_nodes*20)
 						f.write(str(nb_nodes*20) + ", ")
 						break
@@ -74,8 +75,12 @@ with open(job_input_file, 'r') as file:
 									total_number_of_jobs_with_energy += 1
 									found = True
 									energy_used = line_power[len(word_power)+len("  average power consumption (CPU+DRAM)      :      "):len(line_power)-3]
+									if (str(float(energy_used)) == "nan"):
+										found = False
+										break
+									print("Energy used int:", float(energy_used), "Watts")
 									print("Energy used:", energy_used, "Watts")
-									f.write(str(energy_used) + ", ")
+									f.write(str(float(energy_used)) + ", ")
 									break
 					if found == False:
 						break
@@ -99,7 +104,7 @@ with open(job_input_file, 'r') as file:
 					# ~ nb_nodes = int(char)
 					# ~ print(nb_nodes)
 file.close
-output_file.close
+f.close
 
 print(total_number_of_jobs_with_energy, "/", total_number_of_jobs)
 # ~ Application_name = list(df.iloc[:, 8])
