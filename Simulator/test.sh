@@ -11,31 +11,27 @@ workload=$2
 nusers=$3
 N_cores_max=$4
 
-#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} default
-#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} randomize_weight
-#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} balance_weight
-#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} balance_nb_calls
-#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} reasonable_weight_and_randomized_nb_calls
-
-echo ""
-
 make energy_incentive -C src/
 
 echo ""
 
-#~ for (( i=1; i<=30; i++ ))
-#~ do
-	#~ echo "Iteration ${i}"
-	#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} reasonable_weight_and_randomized_nb_calls
-	#~ ./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}_${i}.csv 0 100 ${nusers}
-#~ done
+for (( i=1; i<=30; i++ ))
+do
+	echo "Iteration ${i}"
+	#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} default
+	#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} randomize_weight
+	#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} balance_weight
+	#~ python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} balance_nb_calls
+	python3 src/write_workload.py inputs/workloads/converted/${workload} ${N_cores_max} reasonable_weight_and_randomized_nb_calls
+	./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}_${i}.csv 0 100 ${nusers}
+done
 
-#~ echo "Plot barplots"
+echo "Plot barplots"
 
-#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "total_energy"
-#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed"
-#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed_in_mean_core_hours"
-#~ python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "queue_time"
+python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "total_energy"
+python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed"
+python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "nb_jobs_completed_in_mean_core_hours"
+python3 src/plot_barplots.py outputs/${workload}.csv ${nusers} ${workload} "queue_time"
 
 echo "Plot curves"
 
