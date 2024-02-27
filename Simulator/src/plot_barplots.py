@@ -12,37 +12,40 @@ mode = sys.argv[4] # Either plotting total energy consumed or number of jobs com
 
 measured_metric = [0]*nusers # First tab cell is for user 0 then 1, etc...
 
-data = pd.read_csv(input_file)
-df=pd.DataFrame(data)
+for j in range(1, 31):
+	input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
 
-Job_shared_id = list(df.iloc[:, 1])
-Nlines = len(Job_shared_id) # Number of lines in the file without the header
-User_id = list(df.iloc[:, 2])
-New_credit = list(df.iloc[:, 5])
-Energy_used = list(df.iloc[:, 7])
-Queue_time = list(df.iloc[:, 9])
-Mean_completion_time = list(df.iloc[:, 10])
-Number_of_cores_used = list(df.iloc[:, 11])
+	data = pd.read_csv(input_file_iteration_i)
+	df=pd.DataFrame(data)
 
-if mode == "total_energy":
-	for i in range(0, Nlines):
-		measured_metric[User_id[i]] += Energy_used[i]
-elif mode == "queue_time":
-	for i in range(0, Nlines):
-		measured_metric[User_id[i]] += Queue_time[i]
-elif mode == "nb_jobs_completed":
-	for i in range(0, Nlines):
-		if (New_credit[i] >= 0):
-			measured_metric[User_id[i]] += 1
-elif mode == "nb_jobs_completed_in_mean_core_hours":
-	for i in range(0, Nlines):
-		if (New_credit[i] >= 0):
-			measured_metric[User_id[i]] += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
-			print(Mean_completion_time[i]/3600)
-else:
-	print("ERROR: Wrong mode in plot_batrplots.py")
+	Job_shared_id = list(df.iloc[:, 1])
+	Nlines = len(Job_shared_id) # Number of lines in the file without the header
+	User_id = list(df.iloc[:, 2])
+	New_credit = list(df.iloc[:, 5])
+	Energy_used = list(df.iloc[:, 7])
+	Queue_time = list(df.iloc[:, 9])
+	Mean_completion_time = list(df.iloc[:, 10])
+	Number_of_cores_used = list(df.iloc[:, 11])
 
-# ~ print("number_jobs_computed_before_credit_expiration:", number_jobs_computed_before_credit_expiration)
+	if mode == "total_energy":
+		for i in range(0, Nlines):
+			measured_metric[User_id[i]] += Energy_used[i]
+	elif mode == "queue_time":
+		for i in range(0, Nlines):
+			measured_metric[User_id[i]] += Queue_time[i]
+	elif mode == "nb_jobs_completed":
+		for i in range(0, Nlines):
+			if (New_credit[i] >= 0):
+				measured_metric[User_id[i]] += 1
+	elif mode == "nb_jobs_completed_in_mean_core_hours":
+		for i in range(0, Nlines):
+			if (New_credit[i] >= 0):
+				measured_metric[User_id[i]] += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
+				print(Mean_completion_time[i]/3600)
+	else:
+		print("ERROR: Wrong mode in plot_batrplots.py")
+for j in range(0, nusers):
+	measured_metric[j] = measured_metric[j]/30
 
 # Settings of the plot
 bar_width = 0.2
@@ -55,7 +58,6 @@ for i in range (0, nusers):
 	plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Legend and labels
-# ~ labels = ['Credit', 'Energy', 'Earliest Finish Time (EFT)', 'Random'] 
 labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'] 
 plt.xticks(x, labels, rotation ='horizontal')
 
@@ -77,5 +79,4 @@ plt.xlabel("User behavior")
 
 # Saving plots
 filename = "plot/" + output_name + mode_name + "_barplot.pdf"
-# ~ fig.set_size_inches(7, 3) # To resize
 plt.savefig(filename, bbox_inches='tight')

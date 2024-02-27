@@ -57,7 +57,7 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		required_multiplier_for_balance = max(1, int(10/mean_runtime_functions[i_functions]))
 	else:
 		required_multiplier_for_balance = 1
-	print("Weight multiplier is", required_multiplier_for_balance)
+	# ~ print("Weight multiplier is", required_multiplier_for_balance)
 	
 	if weight_mode == "balance_weight" or weight_mode == "default":
 		nb_of_repetition = 1
@@ -67,7 +67,7 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		nb_of_repetition = int(max_mean_runtime/mean_runtime_functions[i_functions])
 	else:
 		nb_of_repetition = random.randint(0, 10)
-	print("Number of repetition is", nb_of_repetition)
+	# ~ print("Number of repetition is", nb_of_repetition)
 	
 	for k in range (0, nb_of_repetition*N_users):
 		nb_functions += 1
