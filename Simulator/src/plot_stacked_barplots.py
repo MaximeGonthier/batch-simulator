@@ -1,30 +1,97 @@
+# import necessary libraries
+import pandas as pd
+import sys
+import matplotlib.pyplot as plt
 import seaborn as sns
 
-# For some examples, we'll be able to use the raw data directly.
-tips = sns.load_dataset('tips')
-tips.head()
-agg_tips = tips.groupby(['day', 'sex'])['tip'].sum().unstack().fillna(0)
-agg_tips
-from matplotlib import pyplot as plt
+sns.set_style('darkgrid', {'axes.facecolor': '.9'})
+sns.set_context("paper")
 
-# Very simple one-liner using our agg_tips DataFrame.
-agg_tips.plot(kind='bar', stacked=True)
+input_file = sys.argv[1]
+nusers = int(sys.argv[2])
+output_name = sys.argv[3]
+mode = sys.argv[4]
 
-ax = sns.histplot(
-    tips,
-    x='day',
-    # Use the value variable here to turn histogram counts into weighted
-    # values.
-    weights='tip',
-    hue='sex',
-    multiple='stack',
-    palette=['#24b1d1', '#ae24d1'],
-    # Add white borders to the bars.
-    edgecolor='white',
-    # Shrink the bars a bit so they don't touch.
-    shrink=0.8
-)
+nmachines = 4
 
-ax.set_title('Tips by Day and Gender')
-# Remove 'Count' ylabel.
-ax.set_ylabel(None)
+measured_metric_0 = [0]*nmachines 
+measured_metric_1 = [0]*nmachines 
+measured_metric_2 = [0]*nmachines 
+measured_metric_3 = [0]*nmachines 
+measured_metric_4 = [0]*nmachines 
+measured_metric_5 = [0]*nmachines 
+measured_metric_6 = [0]*nmachines 
+measured_metric_7 = [0]*nmachines 
+
+# ~ Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines, Number_of_cores_used
+# ~ 336, 0, 0, 2, 0.034658, 1199.965342, 1.278849, 0.007840, 0.006039, 0.000000, 9.716979, 17
+
+for j in range(1, 31):
+	input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
+
+	data = pd.read_csv(input_file_iteration_i)
+	df = pd.DataFrame(data)
+	
+	User_id = list(df.iloc[:, 2])
+	Selected_endpoint = list(df.iloc[:, 3])
+	Nlines = len(User_id) # Number of lines in the file without the header
+	New_credit = list(df.iloc[:, 5])
+	Energy_used = list(df.iloc[:, 7])
+	Queue_time = list(df.iloc[:, 9])
+	Mean_completion_time = list(df.iloc[:, 10])
+	Number_of_cores_used = list(df.iloc[:, 11])
+
+	for i in range(0, Nlines):
+		# ~ measured_metric[Selected_endpoint[i]][User_id[i]] += Mean_completion_time[i]
+		if (User_id[i] == 0):
+			measured_metric_0[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 1):
+			measured_metric_1[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 2):
+			measured_metric_2[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 3):
+			measured_metric_3[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 4):
+			measured_metric_4[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 5):
+			measured_metric_5[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 6):
+			measured_metric_6[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 7):
+			measured_metric_7[Selected_endpoint[i]] += 1
+		
+for i in range(0, nmachines):
+		measured_metric_0[i] = measured_metric_0[i]/30
+		measured_metric_1[i] = measured_metric_1[i]/30
+		measured_metric_2[i] = measured_metric_2[i]/30
+		measured_metric_3[i] = measured_metric_3[i]/30
+		measured_metric_4[i] = measured_metric_4[i]/30
+		measured_metric_5[i] = measured_metric_5[i]/30
+		measured_metric_6[i] = measured_metric_6[i]/30
+		measured_metric_7[i] = measured_metric_7[i]/30
+	 
+# create DataFrame
+df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0]],
+                   'Midway': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1]],
+                   'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_2[2], measured_metric_3[2], measured_metric_4[2], measured_metric_5[2], measured_metric_6[2], measured_metric_7[2]],
+                   'Faster': [measured_metric_0[3], measured_metric_1[3], measured_metric_2[3], measured_metric_3[3], measured_metric_4[3], measured_metric_5[3], measured_metric_6[3], measured_metric_7[3]]},
+                  index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "Midway", "Faster"])
+
+# Plot settings
+colors = ["#5875A4", "#CC8963", "#5F9E6E", "#B55D60"]
+
+# create stacked bar chart for monthly temperatures
+df.plot(kind='bar', stacked=True, color=colors)
+
+# labels for x & y axis
+# ~ plt.locator_params(axis='y', nbins=4, integer=True) 
+plt.xlabel('User behavior')
+plt.ylabel('Number of jobs completed from full workload')
+plt.xticks(rotation=360)
+
+plt.legend(['Theta', 'Midway', 'Desktop', 'Faster'], ncol=4, loc=(0.1, -0.18))
+
+# Saving plot
+mode_name = ""
+filename = "plot/" + output_name + mode_name + "_stacked_barplot.pdf"
+plt.savefig(filename, bbox_inches='tight')

@@ -1,7 +1,7 @@
 /** START ENERGY INCENTIVE **/
 #include <main.h>
 
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double* next_available_time_endpoint)
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint)
 {
 	int i = 0;
 	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random - 4 worst credit - 5 = Only theta - 6 = Only midway - 7 = Only faster */
@@ -37,12 +37,14 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Find the earliest finish time */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			if (duration_on_machine[i] + next_available_time_endpoint[i] < min && tab_function_machine_energy[job_id][i] != -1)
+			//~ printf("duration_on_machine %d: %f next_available_time_endpoint: %f\n", i, duration_on_machine[i], next_available_time_endpoint[user_behavior][i]);
+			if (duration_on_machine[i] + next_available_time_endpoint[user_behavior][i] < min && tab_function_machine_energy[job_id][i] != -1)
 			{
-				min = duration_on_machine[i] + next_available_time_endpoint[i];
+				min = duration_on_machine[i] + next_available_time_endpoint[user_behavior][i];
 				min_id = i;
 			}
 		}
+		//~ printf("Selected %d\n", min_id);
 	}
 	else if (user_behavior == 3)
 	{

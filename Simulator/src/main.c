@@ -845,10 +845,17 @@ int main(int argc, char *argv[])
 		credit_users[i] = credit_to_each_user;
 	}
 	
-	double* next_available_time_endpoint = malloc(total_number_nodes*sizeof(double)); //largeur /* next available time of the machine. I consider that all cores must be available as the functions sue as many threads as there are cores. */
-	for (i = 0; i < total_number_nodes; i++)
+	double** next_available_time_endpoint = (double**) malloc(nusers*sizeof(double*)); //largeur /* next available time of the machine. I consider that all cores must be available as the functions sue as many threads as there are cores. */
+	for (i = 0; i < nusers; i++)
 	{
-		next_available_time_endpoint[i] = 0;
+		next_available_time_endpoint[i] = malloc(total_number_nodes*sizeof(double)); //largeur
+	}
+	for (i = 0; i < nusers; i++)
+	{
+		for (j = 0; j < total_number_nodes; j++)
+		{
+			next_available_time_endpoint[i][j] = 0;
+		}
 	}
 
 	//~ printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
@@ -908,10 +915,10 @@ int main(int argc, char *argv[])
 			new->selected_endpoint = selected_endpoint;
 			new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
 			new->new_credit	= credit_users[job_pointer->user_behavior];		
-			new->job_end_time_double = next_available_time_endpoint[selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
+			new->job_end_time_double = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
 			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
 			new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
-			new->queue_time = next_available_time_endpoint[selected_endpoint] - job_pointer->subtime;
+			new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
 			new->job_cores = job_pointer->cores;
 			
 			for(j = 0; j < total_number_nodes; j++)
@@ -929,8 +936,7 @@ int main(int argc, char *argv[])
 			insert_tail_to_print_list(jobs_to_print_list, new);
 			
 			/* Update the next available time of the machine (same way we assigned a value to new->job_end_time */
-			next_available_time_endpoint[selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
-			//~ printf("Next avail time for endpoint %d is %f\n", selected_endpoint, next_available_time_endpoint[selected_endpoint]);
+			next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
 			
 			job_pointer = job_pointer->next;
 		}

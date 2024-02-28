@@ -3,6 +3,10 @@
 import sys
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.set_style('darkgrid', {'axes.facecolor': '.9'})
+sns.set_context("paper")
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -96,16 +100,16 @@ if mode == "finish_times":
 	plt.ylabel("Number of jobs completed")
 	plt.xlabel("Completion Time (s)")
 elif mode == "finish_times_core_hours_Y_axis":
-	plt.ylabel("Number of core-hours completed (even after end of credit)")
+	plt.ylabel("Mean core-hours completed full workload")
 	plt.xlabel("Completion Time (s)")
 elif mode == "energy_consumed":
-	plt.ylabel("Energy used (Watt-hours)")
+	plt.ylabel("Energy used (Wh)")
 	plt.xlabel("Completion Time (s)")
 elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
-	plt.ylabel("Core-hours")
-	plt.xlabel("Watt-hours")
+	plt.ylabel("Core-hours used full workload")
+	plt.xlabel("Energy consumed full workload (Wh)")
 	
-plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(-0.022, -0.3))
+plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(0.1, -0.24))
 
 # Saving plots
 # ~ if mode == "finish_times":
