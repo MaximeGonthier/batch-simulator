@@ -1,7 +1,7 @@
 # Used to parse data from https://zenodo.org/records/3666632 files named emmy
 
-# python3 src/parse_meggy_file_to_get_runtime_energy_data.py meggie_job_input_file meggie_power_input_file
-# python3 src/parse_meggy_file_to_get_runtime_energy_data.py ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/meggie/job_traces/rrze-traces-meggie-jobs-01.txt ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/meggie/pwr_traces/rrze-traces-meggie-avg-pwr-01.txt inputs/workloads/meggie-1-raw
+# python3 src/parse_meggie_file_to_get_runtime_energy_data.py meggie_job_input_file meggie_power_input_file
+# python3 src/parse_meggie_file_to_get_runtime_energy_data.py ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/meggie/job_traces/rrze-traces-meggie-jobs-01.txt ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/meggie/pwr_traces/rrze-traces-meggie-avg-pwr-01.txt inputs/workloads/meggie-1-raw
 
 # Job input file look like this
 # ~ JobID|Submit|Start|End|ReqNodes|Timelimit|Elapsed|User|JobName|
@@ -32,14 +32,13 @@ print("Job input file:", job_input_file)
 print("Energy input file:", energy_input_file)
 
 f = open(output_file, "w")
-f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Runtime\n")
+f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Requested Walltime, Runtime, Username\n")
 
 with open(job_input_file, 'r') as file:
 	next(file)
 	for line in file:
 		total_number_of_jobs += 1
 		# ~ i = 0
-		# ~ while i != 7:
 		
 		job_id = str(line[0:6])
 		# ~ f.write(job_id + ", ")
@@ -50,7 +49,6 @@ with open(job_input_file, 'r') as file:
 				if found == True:
 					break
 				for word_power in line_power.split():
-					# ~ print(word_power)
 					if word_power == job_id:
 						total_number_of_jobs_with_energy += 1
 						found = True
@@ -78,6 +76,24 @@ with open(job_input_file, 'r') as file:
 				end_of_nodes_digit = 60
 			f.write(str(nodes_used) + ", ")
 			f.write(str(nodes_used*20) + ", ")
+			
+			print(line)
+			i = 0
+			# ~ while line[end_of_nodes_digit+i:end_of_nodes_digit+1+i] != "|":
+				# ~ i += 1
+			start_of_walltime = i+end_of_nodes_digit+1
+			i += 1	
+			while line[end_of_nodes_digit+i:end_of_nodes_digit+1+i] != "|":
+				i += 1
+			end_of_walltime = i+end_of_nodes_digit
+			walltime = 0
+			if (len(line[start_of_walltime:end_of_walltime]) > 5):
+				walltime = 24*60*60*int(line[start_of_walltime:start_of_walltime+1]) + 10*60*int(line[start_of_walltime+2:start_of_walltime+3]) + 60*int(line[start_of_walltime+3:start_of_walltime+4]) + 10*int(line[start_of_walltime+5:start_of_walltime+6]) + int(line[start_of_walltime+6:start_of_walltime+7])
+			else:
+				walltime = 10*60*int(line[start_of_walltime:start_of_walltime+1]) + 60*int(line[start_of_walltime+1:start_of_walltime+2]) + 10*int(line[start_of_walltime+3:start_of_walltime+4]) + int(line[start_of_walltime+4:start_of_walltime+5])
+			print("walltime:", walltime)
+			f.write(str(walltime) + ", ")
+			
 			i = 1
 			while line[end_of_nodes_digit+i:end_of_nodes_digit+1+i] != "|":
 				i += 1
@@ -86,61 +102,18 @@ with open(job_input_file, 'r') as file:
 			while line[end_of_nodes_digit+i:end_of_nodes_digit+1+i] != "|":
 				i += 1
 			end_of_runtime = i+end_of_nodes_digit
-			# ~ print(str(line[start_of_runtime:end_of_runtime]))
 			runtime = 0
 			if (len(line[start_of_runtime:end_of_runtime]) > 5):
 				runtime = 24*60*60*int(line[start_of_runtime:start_of_runtime+1]) + 10*60*int(line[start_of_runtime+2:start_of_runtime+3]) + 60*int(line[start_of_runtime+3:start_of_runtime+4]) + 10*int(line[start_of_runtime+5:start_of_runtime+6]) + int(line[start_of_runtime+6:start_of_runtime+7])
 			else:
 				runtime = 10*60*int(line[start_of_runtime:start_of_runtime+1]) + 60*int(line[start_of_runtime+1:start_of_runtime+2]) + 10*int(line[start_of_runtime+3:start_of_runtime+4]) + int(line[start_of_runtime+4:start_of_runtime+5])
-			f.write(str(runtime) + "\n")
+			print("runtime:", runtime)
+			f.write(str(runtime) + ", ")
 			
-		# ~ runtime = str(line[])
-		
-						# ~ break
-					# ~ if get_nb_node_next_char == True:
-						# ~ get_nb_node_next_char = False
-						# ~ if (char == "e"): # Skipping this line cause wrong value for number of nodes
-							# ~ break
-						# ~ check_next_char_for_more_than_9_nodes = True
-						# ~ nb_nodes = int(char)
-					# ~ if (char == "="):
-						# ~ get_nb_node_next_char = True
-			# ~ for char in word:
-				# ~ if (char == "E"): # A terminated job, so getting info on number of nodes
-					# ~ total_number_of_jobs += 1
-					# ~ get_nb_node_next_word = True
-					# ~ i = 11
-					# ~ while word[i] != ".":
-						# ~ i += 1
-					# ~ job_id = word[11:i]
-					# ~ found = False
-					# ~ with open(energy_input_file, 'r') as file_power:
-						# ~ for line_power in file_power:
-							# ~ if found == True:
-								# ~ break
-							# ~ for word_power in line_power.split():
-								# ~ if word_power == job_id:
-									# ~ total_number_of_jobs_with_energy += 1
-									# ~ found = True
-									# ~ energy_used = line_power[len(word_power)+len("  average power consumption (CPU+DRAM)      :      "):len(line_power)-3]
-									# ~ if (str(float(energy_used)) == "nan"):
-										# ~ found = False
-										# ~ break
-									# ~ print("Energy used int:", float(energy_used), "Watts")
-									# ~ print("Energy used:", energy_used, "Watts")
-									# ~ f.write(str(float(energy_used)) + ", ")
-									# ~ break
-					# ~ if found == False:
-						# ~ break
-					# ~ else:
-						# ~ print("Job Id:", job_id)
-						# ~ f.write(str(job_id) + ", ")
-					# ~ file_power.close()
-					# ~ break
-			# ~ if (word[0:24] == "resources_used.walltime=" and found == True): # Getting info on runtime
-				# ~ runtime = int(word[24])*10*3600 + int(word[25])*3600 + int(word[27])*10*60 + int(word[28])*60 + int(word[30])*10 + int(word[31])
-				# ~ print("Runtime:", runtime, "Seconds")
-				# ~ f.write(str(runtime) + "\n")
+			user = line[end_of_runtime+1:end_of_runtime+1+8]
+			print("user:", user)
+			f.write(str(user) + "\n")
+			
 
 file.close
 f.close

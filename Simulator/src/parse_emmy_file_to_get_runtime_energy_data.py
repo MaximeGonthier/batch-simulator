@@ -30,8 +30,8 @@ print("Job input file:", job_input_file)
 print("Energy input file:", energy_input_file)
 
 f = open(output_file, "w")
-f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Runtime\n")
-
+f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Requested Walltime, Runtime, Username\n")
+found = False
 with open(job_input_file, 'r') as file:
 	for line in file:
 		for word in line.split():				
@@ -89,20 +89,19 @@ with open(job_input_file, 'r') as file:
 						f.write(str(job_id) + ", ")
 					file_power.close()
 					break
+			if (word[0:23] == "Resource_List.walltime=" and found == True): # Getting info on runtime
+				walltime = int(word[23])*10*3600 + int(word[24])*3600 + int(word[26])*10*60 + int(word[27])*60 + int(word[29])*10 + int(word[30])
+				print("Walltime:", walltime, "Seconds")
+				f.write(str(walltime) + ", ")
 			if (word[0:24] == "resources_used.walltime=" and found == True): # Getting info on runtime
 				runtime = int(word[24])*10*3600 + int(word[25])*3600 + int(word[27])*10*60 + int(word[28])*60 + int(word[30])*10 + int(word[31])
 				print("Runtime:", runtime, "Seconds")
-				f.write(str(runtime) + "\n")
+				f.write(str(runtime) + ", ")
+			if (word[0:8] == "account=" and found == True): # Getting info on runtime
+				username = word[8:17]
+				print("Username:", username)
+				f.write(str(username) + "\n")
 				
-			# ~ print(word)
-			# ~ if (get_nb_node_next_word == True):
-				# ~ exit(1)
-				# ~ for char in word:
-					# ~ if (char == "="):
-						# ~ get_nb_node_next_char = True
-				# ~ if (get_nb_node_next_char == True):
-					# ~ nb_nodes = int(char)
-					# ~ print(nb_nodes)
 file.close
 f.close
 
