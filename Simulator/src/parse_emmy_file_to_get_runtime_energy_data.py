@@ -101,6 +101,7 @@ with open(job_input_file, 'r') as file:
 				username = word[8:17]
 				print("Username:", username)
 				f.write(str(username) + "\n")
+				found = False
 				
 file.close
 f.close
