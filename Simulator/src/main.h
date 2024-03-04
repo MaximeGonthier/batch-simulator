@@ -162,6 +162,7 @@ struct Job {
     int user_behavior; /* 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random */
     double *duration_on_machine;
     double *energy_on_machine;
+    double *number_of_nodes;
     #endif
     /** END ENERGY INCENTIVE **/
 };

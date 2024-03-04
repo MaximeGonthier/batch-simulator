@@ -294,6 +294,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		
 		new->duration_on_machine = malloc(sizeof(double)*total_number_nodes);
 		new->energy_on_machine = malloc(sizeof(double)*total_number_nodes);
+		new->number_of_nodes = malloc(sizeof(double)*total_number_nodes);
 		
 		char duration_on_machine[100];
 		for (int i = 0; i < total_number_nodes; i++)
@@ -307,6 +308,13 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		{
 			if (fscanf(f, "%s", energy_on_machine) != 1) { exit(EXIT_FAILURE); }
 			new->energy_on_machine[i] = atof(energy_on_machine);
+		}
+		if (fscanf(f, "%s", s) != 1) { exit(EXIT_FAILURE); };
+		char number_of_nodes[100];
+		for (int i = 0; i < total_number_nodes; i++)
+		{
+			if (fscanf(f, "%s", number_of_nodes) != 1) { exit(EXIT_FAILURE); }
+			new->number_of_nodes[i] = atof(number_of_nodes);
 		}
 		if (fscanf(f, "%s %s %s", s, s, s) != 3) { exit(EXIT_FAILURE); };
 		

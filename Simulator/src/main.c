@@ -79,25 +79,25 @@ int main(int argc, char *argv[])
 	int time_to_save = 0;
 			
 	/* If you add save or resume as the last argument */
-	if (argc > 9)
+	if (argc > 10)
 	{
-		if (strcmp(argv[9], "save") == 0) 
+		if (strcmp(argv[10], "save") == 0) 
 		{
 			need_to_save_state = true;
-			time_to_save = atoi(argv[10]);
+			time_to_save = atoi(argv[11]);
 			printf("Save after %d jobs.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[9], "save_and_resume") == 0)
+		else if (strcmp(argv[10], "save_and_resume") == 0)
 		{
 			need_to_resume_state = true;
 			need_to_save_state = true;
-			time_to_save = atoi(argv[10]);
+			time_to_save = atoi(argv[11]);
 			printf("Time to save_and_resume is %d.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[9], "resume") == 0)
+		else if (strcmp(argv[10], "resume") == 0)
 		{
 			need_to_resume_state = true;
-			if (argc > 10)
+			if (argc > 11)
 			{
 				printf("Error: no arg must be after resume.\n"); fflush(stdout);
 				exit(EXIT_FAILURE);
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("Error: argv[9] must be save or resume.\n");
+			printf("Error: argv[10] must be save or resume.\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -880,13 +880,24 @@ int main(int argc, char *argv[])
 			{
 				//~ printf("%d\n", job_pointer->cores);
 				/* Filling the values for job i on endpoint j */
-				tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600); /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+				
+				if (strcmp(argv[9], "alok") == 0)
+				{
+					tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600)*job_pointer->number_of_nodes[j]; /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+				}
+				else /* Meggy and emmy */
+				{
+					tab_function_machine_energy[i][j] = job_pointer->energy_on_machine[j]; /* For meggie and emmy databse the energy is already computed like needed, just need to switch it to watt-hours */
+					//~ printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
+					printf("%f\n", tab_function_machine_energy[i][j]);
+				}
 				max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
 				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
 				//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
 			}
 			n = n->next;
 		}
+
 		job_pointer = job_pointer->next;
 	}
 	
