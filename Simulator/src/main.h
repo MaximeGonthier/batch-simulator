@@ -200,6 +200,8 @@ struct Node {
     int tdp;
     int ncpu;
     double idle_power;
+    double carbon_rate;
+    double carbon_intensity;
     int ncores;
     #endif
     /** END ENERGY INCENTIVE **/

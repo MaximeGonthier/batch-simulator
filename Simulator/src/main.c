@@ -79,25 +79,25 @@ int main(int argc, char *argv[])
 	int time_to_save = 0;
 			
 	/* If you add save or resume as the last argument */
-	if (argc > 10)
+	if (argc > 11)
 	{
-		if (strcmp(argv[10], "save") == 0) 
+		if (strcmp(argv[11], "save") == 0) 
 		{
 			need_to_save_state = true;
-			time_to_save = atoi(argv[11]);
+			time_to_save = atoi(argv[12]);
 			printf("Save after %d jobs.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[10], "save_and_resume") == 0)
+		else if (strcmp(argv[11], "save_and_resume") == 0)
 		{
 			need_to_resume_state = true;
 			need_to_save_state = true;
-			time_to_save = atoi(argv[11]);
+			time_to_save = atoi(argv[12]);
 			printf("Time to save_and_resume is %d.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[10], "resume") == 0)
+		else if (strcmp(argv[11], "resume") == 0)
 		{
 			need_to_resume_state = true;
-			if (argc > 11)
+			if (argc > 12)
 			{
 				printf("Error: no arg must be after resume.\n"); fflush(stdout);
 				exit(EXIT_FAILURE);
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("Error: argv[10] must be save or resume.\n");
+			printf("Error: argv[11] must be save or resume.\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -560,8 +560,6 @@ int main(int argc, char *argv[])
 		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
 		{
 			printf("############################## Error multiplier. 500, 1, 0, 0 affected. ##############################\n");
-			//~ goto get_fcfs_score_multipliers;
-			//~ exit(EXIT_FAILURE);
 			multiplier_file_to_load = 500;
 			multiplier_file_evicted = 1;
 			multiplier_nb_copy = 0;
@@ -835,8 +833,23 @@ int main(int argc, char *argv[])
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
 	int number_workload_repetition = 6;
 	//~ int number_workload_repetition = 3;
-	//~ double credit_to_each_user = 1000;
-	double credit_to_each_user = 1200;
+	
+	double credit_to_each_user = 0;
+	bool is_credit = true;
+	if (strcmp(argv[10], "credit") == 0)
+	{
+		credit_to_each_user = 1200;
+	}
+	else if (strcmp(argv[10], "carbon") == 0)
+	{
+		is_credit = false;
+		credit_to_each_user = 1200;
+	}
+	else
+	{
+		printf("Wrong credit value in 10th argument\n");
+		exit(1);
+	}
 	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];
@@ -892,8 +905,17 @@ int main(int argc, char *argv[])
 					printf("%f\n", tab_function_machine_energy[i][j]);
 				}
 				max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
-				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
-				//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
+				
+				if (is_credit == true)
+				{
+					tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
+				}
+				else
+				{
+					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*(n->carbon_intensity + n->carbon_rate); /* Carbon credit. */
+				}
+					
+				printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
 			}
 			n = n->next;
 		}

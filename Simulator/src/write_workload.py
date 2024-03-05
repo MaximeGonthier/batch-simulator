@@ -104,7 +104,7 @@ else:
 	# ~ print("functions_energy:", functions_energy)
 
 # To get total energy he did avg_power*Ncores*duration + idle*nnodes*duration -> need to facto Nnodes in main for the idle power!!!
-# ~ Total energy colomn is in joule including idle but not tdp.So need to add tdp for runtime*nb of nodes but not idle. Need to consider that in main when computing energy used
+# ~ Total energy colomn is in joule including idle but not tdp. So need to add tdp for runtime*nb of nodes but not idle. Need to consider that in main when computing energy used
 # ~ carbon = energy credit * (intensity + carbon rate)
 
 # Writing in a file format
