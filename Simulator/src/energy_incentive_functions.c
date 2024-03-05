@@ -44,7 +44,6 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 				min_id = i;
 			}
 		}
-		//~ printf("Selected %d\n", min_id);
 	}
 	else if (user_behavior == 3)
 	{

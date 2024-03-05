@@ -901,8 +901,7 @@ int main(int argc, char *argv[])
 				else /* Meggy and emmy */
 				{
 					tab_function_machine_energy[i][j] = job_pointer->energy_on_machine[j]; /* For meggie and emmy databse the energy is already computed like needed, just need to switch it to watt-hours */
-					//~ printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
-					printf("%f\n", tab_function_machine_energy[i][j]);
+					printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
 				}
 				max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
 				

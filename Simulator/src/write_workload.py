@@ -61,6 +61,16 @@ else:
 	print(theta_nodes[2])
 	
 	print("Energy")
+	# Get watt
+	# ~ desktop_energy = df.iloc[:, 1]
+	# ~ print(desktop_energy[2])
+	# ~ faster_energy = df.iloc[:, 2]
+	# ~ print(faster_energy[2])
+	# ~ midway_energy = df.iloc[:, 3]
+	# ~ print(midway_energy[2])
+	# ~ theta_energy = df.iloc[:, 4]
+	# ~ print(theta_energy[2])
+	# Get total energy
 	desktop_energy = df.iloc[:, 13]
 	print(desktop_energy[2])
 	faster_energy = df.iloc[:, 14]
@@ -83,10 +93,6 @@ else:
 		functions_runtime.append(float(midway_runtime[i+2]))
 		functions_runtime.append(float(desktop_runtime[i+2]))
 		functions_runtime.append(float(faster_runtime[i+2]))
-		# ~ functions_energy.append(str(float(theta_energy[i+2])*float(theta_runtime[i+2])*1000000))
-		# ~ functions_energy.append(str(float(midway_energy[i+2])*float(midway_runtime[i+2])*1000000))
-		# ~ functions_energy.append(str(float(desktop_energy[i+2])*float(desktop_runtime[i+2])*1000000))
-		# ~ functions_energy.append(str(float(faster_energy[i+2])*float(faster_runtime[i+2])*1000000))
 		functions_energy.append(theta_energy[i+2])
 		functions_energy.append(midway_energy[i+2])
 		functions_energy.append(desktop_energy[i+2])
@@ -103,9 +109,8 @@ else:
 	# ~ print("functions_nodes:", functions_nodes)
 	# ~ print("functions_energy:", functions_energy)
 
-# To get total energy he did avg_power*Ncores*duration + idle*nnodes*duration -> need to facto Nnodes in main for the idle power!!!
+# To get total energy he did avg_power*Ncores*duration + idle*Nnodes*duration -> need to facto Nnodes in main for the idle power!!!
 # ~ Total energy colomn is in joule including idle but not tdp. So need to add tdp for runtime*nb of nodes but not idle. Need to consider that in main when computing energy used
-# ~ carbon = energy credit * (intensity + carbon rate)
 
 # Writing in a file format
 # { id: 0 subtime: 0 delay: 15 walltime: 15 cores: 20 user: credit data: 1 data_size: 0 workload: 1 start_time_from_history: 0 start_node_from_history: 0 duration_on_machine: 101.67077893333332 16.88655387356321 11.215356666666667 16.26165022047244 energy_on_machine: 77504707.27793983 68758460.13356707 128376269.5872684 39310823.241199575 function_name: dna_visualization }
