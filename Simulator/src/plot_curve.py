@@ -12,6 +12,7 @@ input_file = sys.argv[1]
 nusers = int(sys.argv[2])
 output_name = sys.argv[3]
 mode = sys.argv[4] # Between finish times or energy consumed
+n_iteration = int(sys.argv[5])
 
 print("Plotting", mode, "with input file", input_file, "and", nusers, "users")
 
@@ -22,10 +23,13 @@ for i in range (0, nusers):
 	X.append([])
 	Y.append([])
 
-niteration = 1
+loop = 1
 
-for k in range(1, niteration + 1):
-	input_file_iteration_i = input_file[:-4] + "_" + str(k) + ".csv"
+for k in range(1, loop + 1):
+	if n_iteration > 1:
+		input_file_iteration_i = input_file[:-4] + "_" + str(k) + ".csv"
+	else:
+		input_file_iteration_i = input_file[:-4] + ".csv"
 	
 	data = pd.read_csv(input_file_iteration_i)
 	df = pd.DataFrame(data)
@@ -84,7 +88,7 @@ for k in range(1, niteration + 1):
 
 # Settings of the plot
 width = 2
-colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#e27ea6", "#f9e300", "#62361b", "#522398"]
+colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398"]
 
 # ~ for i in range(0, nusers):
 	# ~ X
@@ -109,7 +113,8 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.ylabel("Core-hours used full workload")
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
-plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(0.1, -0.24))
+# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(0.1, -0.24))
+plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster'], ncol=4, loc=(0.1, -0.24))
 
 # Saving plots
 # ~ if mode == "finish_times":

@@ -11,6 +11,7 @@ input_file = sys.argv[1]
 nusers = int(sys.argv[2])
 output_name = sys.argv[3]
 mode = sys.argv[4]
+n_iteration = int(sys.argv[5])
 
 nmachines = 4
 
@@ -26,7 +27,7 @@ measured_metric_7 = [0]*nmachines
 # ~ Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines, Number_of_cores_used
 # ~ 336, 0, 0, 2, 0.034658, 1199.965342, 1.278849, 0.007840, 0.006039, 0.000000, 9.716979, 17
 
-for j in range(1, 31):
+for j in range(1, n_iteration+1):
 	input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
 
 	data = pd.read_csv(input_file_iteration_i)
@@ -61,14 +62,14 @@ for j in range(1, 31):
 			measured_metric_7[Selected_endpoint[i]] += 1
 		
 for i in range(0, nmachines):
-		measured_metric_0[i] = measured_metric_0[i]/30
-		measured_metric_1[i] = measured_metric_1[i]/30
-		measured_metric_2[i] = measured_metric_2[i]/30
-		measured_metric_3[i] = measured_metric_3[i]/30
-		measured_metric_4[i] = measured_metric_4[i]/30
-		measured_metric_5[i] = measured_metric_5[i]/30
-		measured_metric_6[i] = measured_metric_6[i]/30
-		measured_metric_7[i] = measured_metric_7[i]/30
+		measured_metric_0[i] = measured_metric_0[i]/n_iteration
+		measured_metric_1[i] = measured_metric_1[i]/n_iteration
+		measured_metric_2[i] = measured_metric_2[i]/n_iteration
+		measured_metric_3[i] = measured_metric_3[i]/n_iteration
+		measured_metric_4[i] = measured_metric_4[i]/n_iteration
+		measured_metric_5[i] = measured_metric_5[i]/n_iteration
+		measured_metric_6[i] = measured_metric_6[i]/n_iteration
+		measured_metric_7[i] = measured_metric_7[i]/n_iteration
 	 
 # create DataFrame
 df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0]],

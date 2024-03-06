@@ -4,6 +4,7 @@
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_balance_weight 64 balance_weight null
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_randomize_weight 64 randomize_weight null
 
+# From database. Repetition from database. N variance in number of cores required.
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_9users_nocoresmax_meggie_and_emmy 1 count_from_datase inputs/workloads/meggie_and_emmy-job-trace-extrapolated.csv
 
 import sys
@@ -147,7 +148,7 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		required_multiplier_for_balance = max(1, int(10/mean_runtime_functions[i_functions]))
 	else:
 		required_multiplier_for_balance = 1
-	print("Weight multiplier is", required_multiplier_for_balance)
+	# ~ print("Weight multiplier is", required_multiplier_for_balance)
 	
 	if weight_mode == "balance_weight" or weight_mode == "default":
 		nb_of_repetition = 1
@@ -159,11 +160,11 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		nb_of_repetition = functions_count[i_functions*N_endpoints]
 	else:
 		nb_of_repetition = 1
-	print("Number of repetition is", nb_of_repetition)
+	# ~ print("Number of repetition is", nb_of_repetition)
 			
 	for k in range (0, nb_of_repetition*N_users):
 		nb_functions += 1
-		f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(i_cores) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
+		f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(functions_cores[i_functions*N_endpoints]) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
 		for j in range (0, N_endpoints):
 			f.write(str((functions_runtime[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
 		f.write("energy_on_machine: ")
@@ -192,21 +193,27 @@ f.close()
 print("Total number of functions call is", nb_functions)
 print("Finished writting input workload")
 
-# ~ # Randomize but let users together
-# ~ with open(output_file, "r") as file:
-	# ~ lines = []
-	# ~ groups = []
-	# ~ groups = list(zip(file, file, file, file, file, file, file, file))
-	# ~ for line in file:
-		# ~ lines.append(line[:-1])
-		# ~ if len(lines) > 3:
-			# ~ groups.append(lines)
-			# ~ lines = []
-	# ~ random.shuffle(groups)
+# Randomize but let users together
+with open(output_file, "r") as file:
+	lines = []
+	groups = []
+	if (N_users == 8):
+		groups = list(zip(file, file, file, file, file, file, file, file))
+	elif (N_users == 9):
+		groups = list(zip(file, file, file, file, file, file, file, file, file))
+	else:
+		print("Not dealt with N_users")
+		exit(1)
+	for line in file:
+		lines.append(line[:-1])
+		if len(lines) > 3:
+			groups.append(lines)
+			lines = []
+	random.shuffle(groups)
 
-# ~ with open(output_file, "w") as file:
-	# ~ file.write("".join([''.join(g) for g in groups]))
-# ~ print("Finished randomizing input workload")
+with open(output_file, "w") as file:
+	file.write("".join([''.join(g) for g in groups]))
+print("Finished randomizing input workload")
 
 import os
 print("File Size is :", os.stat(output_file).st_size/1000000, "megabytes")

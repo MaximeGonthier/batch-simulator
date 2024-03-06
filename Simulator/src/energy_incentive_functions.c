@@ -98,13 +98,18 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 	}
 	else if (user_behavior == 7)
 	{
+		/* Always use the desktop endpoint */
+		min_id = 2;
+	}
+	else if (user_behavior == 8)
+	{
 		/* Always use the faster endpoint */
 		min_id = 3;
 	}
 	
 	if (min_id == -1)
 	{
-		printf("Error, min_id = -1 meaning that no endpoint have been choosen\n");
+		printf("Error, min_id = -1 meaning that no endpoint have been choosen!\n");
 		exit(EXIT_FAILURE);
 	}
 	//~ printf("user_behavior = %d, min is with machine %d\n", user_behavior, min_id);

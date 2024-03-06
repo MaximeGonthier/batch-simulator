@@ -13,11 +13,16 @@ input_file = sys.argv[1]
 nusers = int(sys.argv[2])
 output_name = sys.argv[3]
 mode = sys.argv[4] # Either plotting total energy consumed or number of jobs computed
+n_iteration = int(sys.argv[5])
 
 measured_metric = [0]*nusers # First tab cell is for user 0 then 1, etc...
 
-for j in range(1, 31):
-	input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
+for j in range(1, n_iteration+1):
+	
+	if n_iteration > 1:
+		input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
+	else:
+		input_file_iteration_i = input_file[:-4] + ".csv"
 
 	data = pd.read_csv(input_file_iteration_i)
 	df=pd.DataFrame(data)
@@ -48,20 +53,20 @@ for j in range(1, 31):
 	else:
 		print("ERROR: Wrong mode in plot_batrplots.py")
 for j in range(0, nusers):
-	measured_metric[j] = measured_metric[j]/30
+	measured_metric[j] = measured_metric[j]/n_iteration
 
 # Settings of the plot
 bar_width = 0.2
 separation_between_bars=0.3
-x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars]
-colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#522398"]
+x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars]
+colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398"]
 
 # Barplot
 for i in range (0, nusers):
 	plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Legend and labels
-labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'] 
+labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster'] 
 plt.xticks(x, labels, rotation ='horizontal')
 
 if mode == "total_energy":

@@ -831,7 +831,7 @@ int main(int argc, char *argv[])
 	
 	/* Number of times I want to repeat the same workload */
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 6;
+	int number_workload_repetition = 1;
 	//~ int number_workload_repetition = 3;
 	
 	double credit_to_each_user = 0;
@@ -884,26 +884,25 @@ int main(int argc, char *argv[])
 		struct Node* n = node_list[0]->head;
 		for (j = 0; j < total_number_nodes; j++)
 		{
-			if (job_pointer->cores > n->ncores*n->ncpu) /* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. */
+			if ((strcmp(argv[9], "alok") == 0) && (job_pointer->cores > n->ncores*n->ncpu)) /* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. */
 			{
 				//~ printf("%d > %d\n", job_pointer->cores, n->ncores*n->ncpu);
 				tab_function_machine_energy[i][j] = -1;
 			}
 			else
 			{
-				//~ printf("%d\n", job_pointer->cores);
 				/* Filling the values for job i on endpoint j */
-				
 				if (strcmp(argv[9], "alok") == 0)
 				{
 					tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600)*job_pointer->number_of_nodes[j]; /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+					max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
 				}
-				else /* Meggy and emmy */
+				else /* Meggie and Emmy */
 				{
-					tab_function_machine_energy[i][j] = job_pointer->energy_on_machine[j]; /* For meggie and emmy databse the energy is already computed like needed, just need to switch it to watt-hours */
+					tab_function_machine_energy[i][j] = job_pointer->energy_on_machine[j]/3600; /* For meggie and emmy databse the energy is already computed like needed, just need to switch it to watt-hours */
 					printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
+					max_watt_hour = n->tdp*n->ncpu*job_pointer->number_of_nodes[j]*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times Nnodes times CPU TDP times job duration on the machine in hours */
 				}
-				max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
 				
 				if (is_credit == true)
 				{
@@ -914,7 +913,7 @@ int main(int argc, char *argv[])
 					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*(n->carbon_intensity + n->carbon_rate); /* Carbon credit. */
 				}
 					
-				printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
+				printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], job_pointer->cores);
 			}
 			n = n->next;
 		}
