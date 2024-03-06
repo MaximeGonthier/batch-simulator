@@ -1,8 +1,11 @@
 # Write a workload that can be read by the simulator using the given information
 # The file is written such that each function has a version varying from 1 to 64 cores
 
+<<<<<<< HEAD
 # python3 src/write_workload.py output_file
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users 64
+=======
+>>>>>>> c6dec04752c362390955d9717e95e1dbf64e0102
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_balance_weight 64 balance_weight null
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_64coresmax_8users_randomize_weight 64 randomize_weight null
 # python3 src/write_workload.py inputs/workloads/converted/8_functions_4_endpoints_8users_nocoresmax_meggy 1 default inputs/workloads/meggie-job-trace-extrapolated.csv
@@ -83,6 +86,7 @@ else:
 	print(theta_energy[2])
 	
 	cores = df.iloc[:, 17]
+<<<<<<< HEAD
 
 	functions_runtime = []	
 	functions_energy = []	
@@ -131,6 +135,42 @@ for i in range (0, N_functions):
 max_mean_runtime = max(mean_runtime_functions)
 print("Max runtime is", max_mean_runtime)
 
+=======
+
+	functions_runtime = []	
+	functions_energy = []	
+	functions_nodes = []
+	functions_cores = []
+	functions = []
+	for i in range (0, N_functions):
+		functions.append(i)
+		functions_runtime.append(float(theta_runtime[i+2]))
+		functions_runtime.append(float(midway_runtime[i+2]))
+		functions_runtime.append(float(desktop_runtime[i+2]))
+		functions_runtime.append(float(faster_runtime[i+2]))
+		functions_energy.append(theta_energy[i+2])
+		functions_energy.append(midway_energy[i+2])
+		functions_energy.append(desktop_energy[i+2])
+		functions_energy.append(faster_energy[i+2])
+		functions_nodes.append(theta_nodes[i+2])
+		functions_nodes.append(midway_nodes[i+2])
+		functions_nodes.append(desktop_nodes[i+2])
+		functions_nodes.append(faster_nodes[i+2])
+		functions_cores.append(int(cores[i+2]))
+		functions_cores.append(int(cores[i+2]))
+		functions_cores.append(int(cores[i+2]))
+		functions_cores.append(int(cores[i+2]))
+	# ~ print("functions_runtime:", functions_runtime)
+	# ~ print("functions_nodes:", functions_nodes)
+	# ~ print("functions_energy:", functions_energy)
+
+# To get total energy he did avg_power*Ncores*duration + idle*Nnodes*duration -> need to facto Nnodes in main for the idle power!!!
+# ~ Total energy colomn is in joule including idle but not tdp. So need to add tdp for runtime*nb of nodes but not idle. Need to consider that in main when computing energy used
+
+# Writing in a file format
+# { id: 0 subtime: 0 delay: 15 walltime: 15 cores: 20 user: credit data: 1 data_size: 0 workload: 1 start_time_from_history: 0 start_node_from_history: 0 duration_on_machine: 101.67077893333332 16.88655387356321 11.215356666666667 16.26165022047244 energy_on_machine: 77504707.27793983 68758460.13356707 128376269.5872684 39310823.241199575 function_name: dna_visualization }
+
+>>>>>>> c6dec04752c362390955d9717e95e1dbf64e0102
 # Todo add more calls to shorter function
 mean_runtime_functions = [0]*N_functions
 for i in range (0, N_functions):
@@ -138,9 +178,15 @@ for i in range (0, N_functions):
 		mean_runtime_functions[i] += functions_runtime[i*N_endpoints+j]
 	mean_runtime_functions[i] = mean_runtime_functions[i]/N_endpoints
 
+<<<<<<< HEAD
 print("Mean runtime are", mean_runtime_functions)
 max_mean_truntime = max(mean_runtime_functions)
 print("Max runtime is", max_mean_truntime)
+=======
+# ~ print("Mean runtime are", mean_runtime_functions)
+max_mean_runtime = max(mean_runtime_functions)
+print("Max runtime is", max_mean_runtime)
+>>>>>>> c6dec04752c362390955d9717e95e1dbf64e0102
 
 i_cores = 1
 i_user = 0
@@ -149,6 +195,7 @@ nb_functions = 0
 f = open(output_file, "w")
 
 for i in range (0, N_functions*N_users*N_cores_max):
+<<<<<<< HEAD
 <<<<<<< HEAD
 	# ~ print("Number of repetition for balance of core-hours required is", int(max_mean_truntime/mean_runtime_functions[i_functions]))
 	for k in range (0, int(max_mean_truntime/mean_runtime_functions[i_functions])):
@@ -170,6 +217,81 @@ for i in range (0, N_functions*N_users*N_cores_max):
 f.close()
 
 # TODO randomize functions calls
+=======
+	required_multiplier_for_balance = 1
+	if weight_mode == "balance_weight" or weight_mode == "randomize_weight":
+		required_multiplier_for_balance = int(max_mean_runtime/mean_runtime_functions[i_functions])
+	elif weight_mode == "reasonable_weight_and_randomized_nb_calls":
+		required_multiplier_for_balance = max(1, int(10/mean_runtime_functions[i_functions]))
+	else:
+		required_multiplier_for_balance = 1
+	# ~ print("Weight multiplier is", required_multiplier_for_balance)
+	
+	nb_of_repetition = 1
+	if weight_mode == "balance_weight" or weight_mode == "default":
+		nb_of_repetition = 1
+	elif weight_mode == "reasonable_weight_and_randomized_nb_calls":
+		nb_of_repetition = random.randint(0, 10)
+	elif weight_mode == "balance_nb_calls":
+		nb_of_repetition = int(max_mean_runtime/mean_runtime_functions[i_functions])
+	else:
+		nb_of_repetition = random.randint(0, 10)
+	# ~ print("Number of repetition is", nb_of_repetition)
+	
+	if input_file_to_convert == "null":
+		for k in range (0, nb_of_repetition*N_users):
+			nb_functions += 1
+			f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(i_cores) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
+			for j in range (0, N_endpoints):
+				f.write(str((functions_runtime[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
+			f.write("energy_on_machine: ")
+			for j in range (0, N_endpoints):
+				f.write(str((functions_energy[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
+			f.write("nodes: ")
+			for j in range (0, N_endpoints):
+				f.write(str(1) + " ")
+			f.write("function_name: " + functions[i_functions] + " }\n")
+		
+		# Loop on users first then on cores then on fucntions
+			i_user += 1
+			if (i_user == N_users):
+				i_user = 0
+				
+		i_cores += 1
+		if (i_cores == (N_cores_max+1)):
+			i_cores = 1
+			i_functions += 1
+		if i_functions == N_functions:
+			break
+	else:
+		for k in range (0, nb_of_repetition*N_users):
+			nb_functions += 1
+			f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(functions_cores[i_functions*N_endpoints+j]) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
+			for j in range (0, N_endpoints):
+				f.write(str((functions_runtime[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
+			f.write("energy_on_machine: ")
+			for j in range (0, N_endpoints):
+				f.write(str((functions_energy[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
+			f.write("nodes: ")
+			for j in range (0, N_endpoints):
+				f.write(str((functions_nodes[i_functions*N_endpoints+j])) + " ")
+			f.write("function_name: " + str(functions[i_functions]) + " }\n")
+		
+		# Loop on users first then on cores then on fucntions
+			i_user += 1
+			if (i_user == N_users):
+				i_user = 0
+				
+		i_cores += 1
+		if (i_cores == (N_cores_max+1)):
+			i_cores = 1
+			i_functions += 1
+		if i_functions == N_functions:
+			break
+f.close()
+
+# Randomize functions calls
+>>>>>>> c6dec04752c362390955d9717e95e1dbf64e0102
 =======
 	required_multiplier_for_balance = 1
 	if weight_mode == "balance_weight" or weight_mode == "randomize_weight":
