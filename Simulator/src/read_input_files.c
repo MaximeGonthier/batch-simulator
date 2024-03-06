@@ -31,11 +31,13 @@ void read_cluster(char* input_node_file)
     char tdp[100];
     char ncpu[100];
     char idle_power[100];
+    char carbon_rate[100];
+    char carbon_intensity[100];
     int index_node = 0;
     
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
-	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, s, s) == 18)
+	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, carbon_rate, s, carbon_intensity, s, s, s) == 22)
 	{
 		struct Node *new = (struct Node*) malloc(sizeof(struct Node));
 		new->unique_id = atoi(id);
@@ -45,6 +47,8 @@ void read_cluster(char* input_node_file)
 		new->tdp = atoi(tdp);
 		new->ncpu = atoi(ncpu);
 		new->idle_power = atof(idle_power);
+		new->carbon_rate = atof(carbon_rate);
+		new->carbon_intensity = atof(carbon_intensity);
 		new->ncores = atoi(core);
 			
 		if (constraint_on_sizes != 0)
@@ -294,6 +298,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		
 		new->duration_on_machine = malloc(sizeof(double)*total_number_nodes);
 		new->energy_on_machine = malloc(sizeof(double)*total_number_nodes);
+		new->number_of_nodes = malloc(sizeof(double)*total_number_nodes);
 		
 		char duration_on_machine[100];
 		for (int i = 0; i < total_number_nodes; i++)
@@ -307,6 +312,13 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		{
 			if (fscanf(f, "%s", energy_on_machine) != 1) { exit(EXIT_FAILURE); }
 			new->energy_on_machine[i] = atof(energy_on_machine);
+		}
+		if (fscanf(f, "%s", s) != 1) { exit(EXIT_FAILURE); };
+		char number_of_nodes[100];
+		for (int i = 0; i < total_number_nodes; i++)
+		{
+			if (fscanf(f, "%s", number_of_nodes) != 1) { exit(EXIT_FAILURE); }
+			new->number_of_nodes[i] = atof(number_of_nodes);
 		}
 		if (fscanf(f, "%s %s %s", s, s, s) != 3) { exit(EXIT_FAILURE); };
 		

@@ -1,7 +1,7 @@
 # Used to parse data from https://zenodo.org/records/3666632 files named emmy
 
 # python3 src/parse_emmy_file_to_get_runtime_energy_data.py emmy_job_input_file emmy_power_input_file
-# python3 src/parse_emmy_file_to_get_runtime_energy_data.py ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/emmy/job_traces/rrze-traces-emmy-jobs-01.txt ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/emmy/pwr_traces/rrze-traces-emmy-avg-pwr-01.txt
+# python3 src/parse_emmy_file_to_get_runtime_energy_data.py ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/emmy/job_traces/rrze-traces-emmy-jobs-01.txt ../../ipdps20-paper-hpc-power-traces/data/cluster_characteristics/emmy/pwr_traces/rrze-traces-emmy-avg-pwr-01.txt inputs/workloads/emmy-1-raw
 
 # Job input file look like this
 # ~ 01/01/2019 00:01:33;Q;1033693.eadm;queue=route
@@ -17,6 +17,7 @@ import pandas as pd
 
 job_input_file = sys.argv[1]
 energy_input_file = sys.argv[2]
+output_file = sys.argv[3]
 
 get_nb_node_next_word = False
 get_nb_node_next_char = False
@@ -28,10 +29,13 @@ total_number_of_jobs_with_energy = 0
 print("Job input file:", job_input_file)
 print("Energy input file:", energy_input_file)
 
+f = open(output_file, "w")
+f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Requested Walltime, Runtime, Username\n")
+found = False
 with open(job_input_file, 'r') as file:
 	for line in file:
 		for word in line.split():				
-			if (get_nb_node_next_word == True):
+			if (get_nb_node_next_word == True and found == True):
 				get_nb_node_next_word = False
 				for char in word:
 					if check_next_char_for_more_than_9_nodes == True:
@@ -39,6 +43,9 @@ with open(job_input_file, 'r') as file:
 						if (char != ":"):
 							nb_nodes = nb_nodes*10 + int(char)
 						print("Nb of nodes:", nb_nodes)
+						f.write(str(nb_nodes) + ", ")
+						print("Nb of cores:", nb_nodes*20)
+						f.write(str(nb_nodes*20) + ", ")
 						break
 					if get_nb_node_next_char == True:
 						get_nb_node_next_char = False
@@ -57,7 +64,6 @@ with open(job_input_file, 'r') as file:
 					while word[i] != ".":
 						i += 1
 					job_id = word[11:i]
-					print("Job Id:", job_id)
 					found = False
 					with open(energy_input_file, 'r') as file_power:
 						for line_power in file_power:
@@ -69,24 +75,36 @@ with open(job_input_file, 'r') as file:
 									total_number_of_jobs_with_energy += 1
 									found = True
 									energy_used = line_power[len(word_power)+len("  average power consumption (CPU+DRAM)      :      "):len(line_power)-3]
+									if (str(float(energy_used)) == "nan"):
+										found = False
+										break
+									print("Energy used int:", float(energy_used), "Watts")
 									print("Energy used:", energy_used, "Watts")
+									f.write(str(float(energy_used)) + ", ")
 									break
+					if found == False:
+						break
+					else:
+						print("Job Id:", job_id)
+						f.write(str(job_id) + ", ")
 					file_power.close()
 					break
-			if (word[0:24] == "resources_used.walltime="): # Getting info on runtime
+			if (word[0:23] == "Resource_List.walltime=" and found == True): # Getting info on runtime
+				walltime = int(word[23])*10*3600 + int(word[24])*3600 + int(word[26])*10*60 + int(word[27])*60 + int(word[29])*10 + int(word[30])
+				print("Walltime:", walltime, "Seconds")
+				f.write(str(walltime) + ", ")
+			if (word[0:24] == "resources_used.walltime=" and found == True): # Getting info on runtime
 				runtime = int(word[24])*10*3600 + int(word[25])*3600 + int(word[27])*10*60 + int(word[28])*60 + int(word[30])*10 + int(word[31])
 				print("Runtime:", runtime, "Seconds")
+				f.write(str(runtime) + ", ")
+			if (word[0:8] == "account=" and found == True): # Getting info on runtime
+				username = word[8:17]
+				print("Username:", username)
+				f.write(str(username) + "\n")
+				found = False
 				
-			# ~ print(word)
-			# ~ if (get_nb_node_next_word == True):
-				# ~ exit(1)
-				# ~ for char in word:
-					# ~ if (char == "="):
-						# ~ get_nb_node_next_char = True
-				# ~ if (get_nb_node_next_char == True):
-					# ~ nb_nodes = int(char)
-					# ~ print(nb_nodes)
 file.close
+f.close
 
 print(total_number_of_jobs_with_energy, "/", total_number_of_jobs)
 # ~ Application_name = list(df.iloc[:, 8])

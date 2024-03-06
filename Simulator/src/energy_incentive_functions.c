@@ -1,7 +1,7 @@
 /** START ENERGY INCENTIVE **/
 #include <main.h>
 
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double* next_available_time_endpoint)
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint)
 {
 	int i = 0;
 	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random - 4 worst credit - 5 = Only theta - 6 = Only midway - 7 = Only faster */
@@ -37,9 +37,10 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Find the earliest finish time */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			if (duration_on_machine[i] + next_available_time_endpoint[i] < min && tab_function_machine_energy[job_id][i] != -1)
+			//~ printf("duration_on_machine %d: %f next_available_time_endpoint: %f\n", i, duration_on_machine[i], next_available_time_endpoint[user_behavior][i]);
+			if (duration_on_machine[i] + next_available_time_endpoint[user_behavior][i] < min && tab_function_machine_energy[job_id][i] != -1)
 			{
-				min = duration_on_machine[i] + next_available_time_endpoint[i];
+				min = duration_on_machine[i] + next_available_time_endpoint[user_behavior][i];
 				min_id = i;
 			}
 		}
@@ -126,10 +127,10 @@ void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers)
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines\n");
+	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines, Number_of_cores_used\n");
 	while (head_to_print != NULL)
 	{
-		fprintf(f, "%d, %d, %d, %d, %f, %f, %f, %f, %f, %f, %f", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit, head_to_print->job_end_time_double, head_to_print->energy_used_watt_hours, head_to_print->core_hours_used, head_to_print->queue_time, head_to_print->mean_duration_on_machine);
+		fprintf(f, "%d, %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit, head_to_print->job_end_time_double, head_to_print->energy_used_watt_hours, head_to_print->core_hours_used, head_to_print->queue_time, head_to_print->mean_duration_on_machine, head_to_print->job_cores);
 		fprintf(f, "\n");
 		if (head_to_print->job_unique_id%nusers == nusers - 1)
 		{

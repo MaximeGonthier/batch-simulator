@@ -79,25 +79,25 @@ int main(int argc, char *argv[])
 	int time_to_save = 0;
 			
 	/* If you add save or resume as the last argument */
-	if (argc > 9)
+	if (argc > 11)
 	{
-		if (strcmp(argv[9], "save") == 0) 
+		if (strcmp(argv[11], "save") == 0) 
 		{
 			need_to_save_state = true;
-			time_to_save = atoi(argv[10]);
+			time_to_save = atoi(argv[12]);
 			printf("Save after %d jobs.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[9], "save_and_resume") == 0)
+		else if (strcmp(argv[11], "save_and_resume") == 0)
 		{
 			need_to_resume_state = true;
 			need_to_save_state = true;
-			time_to_save = atoi(argv[10]);
+			time_to_save = atoi(argv[12]);
 			printf("Time to save_and_resume is %d.\n", time_to_save); fflush(stdout);
 		}
-		else if (strcmp(argv[9], "resume") == 0)
+		else if (strcmp(argv[11], "resume") == 0)
 		{
 			need_to_resume_state = true;
-			if (argc > 10)
+			if (argc > 12)
 			{
 				printf("Error: no arg must be after resume.\n"); fflush(stdout);
 				exit(EXIT_FAILURE);
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 		}
 		else
 		{
-			printf("Error: argv[9] must be save or resume.\n");
+			printf("Error: argv[11] must be save or resume.\n");
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -560,8 +560,6 @@ int main(int argc, char *argv[])
 		if (multiplier_file_to_load > 500 || multiplier_file_evicted > 500 || multiplier_nb_copy > 500 || multiplier_area_bigger_nodes > 500)
 		{
 			printf("############################## Error multiplier. 500, 1, 0, 0 affected. ##############################\n");
-			//~ goto get_fcfs_score_multipliers;
-			//~ exit(EXIT_FAILURE);
 			multiplier_file_to_load = 500;
 			multiplier_file_evicted = 1;
 			multiplier_nb_copy = 0;
@@ -833,8 +831,25 @@ int main(int argc, char *argv[])
 	
 	/* Number of times I want to repeat the same workload */
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 15; /*  Good for 8 functions 64 core max */
-	double credit_to_each_user = 1000;
+	int number_workload_repetition = 6;
+	//~ int number_workload_repetition = 3;
+	
+	double credit_to_each_user = 0;
+	bool is_credit = true;
+	if (strcmp(argv[10], "credit") == 0)
+	{
+		credit_to_each_user = 1200;
+	}
+	else if (strcmp(argv[10], "carbon") == 0)
+	{
+		is_credit = false;
+		credit_to_each_user = 1200;
+	}
+	else
+	{
+		printf("Wrong credit value in 10th argument\n");
+		exit(1);
+	}
 	
 	/* Credit of each user in watt-hours */
 	double credit_users[nusers];
@@ -843,10 +858,17 @@ int main(int argc, char *argv[])
 		credit_users[i] = credit_to_each_user;
 	}
 	
-	double* next_available_time_endpoint = malloc(total_number_nodes*sizeof(double)); //largeur /* next available time of the machine. I consider that all cores must be available as the functions sue as many threads as there are cores. */
-	for (i = 0; i < total_number_nodes; i++)
+	double** next_available_time_endpoint = (double**) malloc(nusers*sizeof(double*)); //largeur /* next available time of the machine. I consider that all cores must be available as the functions sue as many threads as there are cores. */
+	for (i = 0; i < nusers; i++)
 	{
-		next_available_time_endpoint[i] = 0;
+		next_available_time_endpoint[i] = malloc(total_number_nodes*sizeof(double)); //largeur
+	}
+	for (i = 0; i < nusers; i++)
+	{
+		for (j = 0; j < total_number_nodes; j++)
+		{
+			next_available_time_endpoint[i][j] = 0;
+		}
 	}
 
 	//~ printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
@@ -871,13 +893,32 @@ int main(int argc, char *argv[])
 			{
 				//~ printf("%d\n", job_pointer->cores);
 				/* Filling the values for job i on endpoint j */
-				tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600); /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+				
+				if (strcmp(argv[9], "alok") == 0)
+				{
+					tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600)*job_pointer->number_of_nodes[j]; /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+				}
+				else /* Meggy and emmy */
+				{
+					tab_function_machine_energy[i][j] = job_pointer->energy_on_machine[j]; /* For meggie and emmy databse the energy is already computed like needed, just need to switch it to watt-hours */
+					printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
+				}
 				max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
-				tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
-				//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
+				
+				if (is_credit == true)
+				{
+					tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
+				}
+				else
+				{
+					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*(n->carbon_intensity + n->carbon_rate); /* Carbon credit. */
+				}
+					
+				printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed\n %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], n->ncores);
 			}
 			n = n->next;
 		}
+
 		job_pointer = job_pointer->next;
 	}
 	
@@ -906,10 +947,11 @@ int main(int argc, char *argv[])
 			new->selected_endpoint = selected_endpoint;
 			new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
 			new->new_credit	= credit_users[job_pointer->user_behavior];		
-			new->job_end_time_double = next_available_time_endpoint[selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
+			new->job_end_time_double = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
 			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
 			new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
-			new->queue_time = next_available_time_endpoint[selected_endpoint] - job_pointer->subtime;
+			new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
+			new->job_cores = job_pointer->cores;
 			
 			for(j = 0; j < total_number_nodes; j++)
 			{
@@ -926,8 +968,7 @@ int main(int argc, char *argv[])
 			insert_tail_to_print_list(jobs_to_print_list, new);
 			
 			/* Update the next available time of the machine (same way we assigned a value to new->job_end_time */
-			next_available_time_endpoint[selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
-			//~ printf("Next avail time for endpoint %d is %f\n", selected_endpoint, next_available_time_endpoint[selected_endpoint]);
+			next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
 			
 			job_pointer = job_pointer->next;
 		}
