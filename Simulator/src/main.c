@@ -843,7 +843,7 @@ int main(int argc, char *argv[])
 	else if (strcmp(argv[10], "carbon") == 0)
 	{
 		is_credit = false;
-		credit_to_each_user = 120000000;
+		credit_to_each_user = 12000000;
 	}
 	else
 	{
@@ -900,7 +900,7 @@ int main(int argc, char *argv[])
 				else /* Meggie and Emmy */
 				{
 					tab_function_machine_energy[i][j] = job_pointer->energy_on_machine[j]/3600; /* For meggie and emmy databse the energy is already computed like needed, just need to switch it to watt-hours */
-					printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
+					//~ printf("%f %d %f %f %f\n", job_pointer->energy_on_machine[j], job_pointer->cores, n->idle_power, job_pointer->duration_on_machine[j], job_pointer->number_of_nodes[j]);
 					max_watt_hour = n->tdp*n->ncpu*job_pointer->number_of_nodes[j]*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times Nnodes times CPU TDP times job duration on the machine in hours */
 				}
 				
@@ -910,10 +910,11 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*(n->carbon_intensity + n->carbon_rate); /* Carbon credit. */
+					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*((n->carbon_intensity + n->carbon_rate)/1000); /* Carbon credit. Divided by 1000 because the value were in kwh */
+					printf("%f[%d][%d] = (%f + %f)/2 x (%f + %f)/1000\n", tab_function_machine_credit[i][j], i, j, tab_function_machine_energy[i][j], max_watt_hour, n->carbon_intensity, n->carbon_rate);
 				}
 					
-				printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], job_pointer->cores);
+				//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], job_pointer->cores);
 			}
 			n = n->next;
 		}

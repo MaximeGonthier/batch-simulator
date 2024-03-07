@@ -38,7 +38,7 @@ echo ""
 # Without randomization
 n_iteration=1
 #~ python3 src/write_workload.py ${workload} 1 count_from_datase inputs/workloads/meggie_and_emmy-job-trace-extrapolated.csv
-python3 src/write_workload.py inputs/workloads/converted//${workload}_default 1 default inputs/workloads/meggie_and_emmy-job-trace-extrapolated.csv
+#~ python3 src/write_workload.py inputs/workloads/converted//${workload}_default 1 default inputs/workloads/meggie_and_emmy-job-trace-extrapolated.csv
 ./src/main inputs/workloads/converted/${workload}_default inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}_default_credit.csv 0 100 ${nusers} from_emmy_and_meggie credit
 ./src/main inputs/workloads/converted//${workload}_default inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}_default_carbon.csv 0 100 ${nusers} from_emmy_and_meggie carbon
 
