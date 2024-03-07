@@ -838,12 +838,12 @@ int main(int argc, char *argv[])
 	bool is_credit = true;
 	if (strcmp(argv[10], "credit") == 0)
 	{
-		credit_to_each_user = 1200;
+		credit_to_each_user = 12000000;
 	}
 	else if (strcmp(argv[10], "carbon") == 0)
 	{
 		is_credit = false;
-		credit_to_each_user = 1200;
+		credit_to_each_user = 120000000;
 	}
 	else
 	{

@@ -23,12 +23,16 @@ measured_metric_4 = [0]*nmachines
 measured_metric_5 = [0]*nmachines 
 measured_metric_6 = [0]*nmachines 
 measured_metric_7 = [0]*nmachines 
+measured_metric_8 = [0]*nmachines 
 
 # ~ Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines, Number_of_cores_used
 # ~ 336, 0, 0, 2, 0.034658, 1199.965342, 1.278849, 0.007840, 0.006039, 0.000000, 9.716979, 17
 
 for j in range(1, n_iteration+1):
-	input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
+	if n_iteration > 1:
+		input_file_iteration_i = input_file[:-4] + "_" + str(j) + ".csv"
+	else:
+		input_file_iteration_i = input_file[:-4] + ".csv"
 
 	data = pd.read_csv(input_file_iteration_i)
 	df = pd.DataFrame(data)
@@ -60,6 +64,8 @@ for j in range(1, n_iteration+1):
 			measured_metric_6[Selected_endpoint[i]] += 1
 		elif (User_id[i] == 7):
 			measured_metric_7[Selected_endpoint[i]] += 1
+		elif (User_id[i] == 8):
+			measured_metric_8[Selected_endpoint[i]] += 1
 		
 for i in range(0, nmachines):
 		measured_metric_0[i] = measured_metric_0[i]/n_iteration
@@ -70,13 +76,14 @@ for i in range(0, nmachines):
 		measured_metric_5[i] = measured_metric_5[i]/n_iteration
 		measured_metric_6[i] = measured_metric_6[i]/n_iteration
 		measured_metric_7[i] = measured_metric_7[i]/n_iteration
+		measured_metric_8[i] = measured_metric_8[i]/n_iteration
 	 
 # create DataFrame
-df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0]],
-                   'Midway': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1]],
-                   'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_2[2], measured_metric_3[2], measured_metric_4[2], measured_metric_5[2], measured_metric_6[2], measured_metric_7[2]],
-                   'Faster': [measured_metric_0[3], measured_metric_1[3], measured_metric_2[3], measured_metric_3[3], measured_metric_4[3], measured_metric_5[3], measured_metric_6[3], measured_metric_7[3]]},
-                  index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "Midway", "Faster"])
+df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0], measured_metric_8[0]],
+                   'Midway': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1], measured_metric_8[1]],
+                   'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_2[2], measured_metric_3[2], measured_metric_4[2], measured_metric_5[2], measured_metric_6[2], measured_metric_7[2], measured_metric_8[2]],
+                   'Faster': [measured_metric_0[3], measured_metric_1[3], measured_metric_2[3], measured_metric_3[3], measured_metric_4[3], measured_metric_5[3], measured_metric_6[3], measured_metric_7[3], measured_metric_8[3]]},
+                  index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "Midway", "Desktop", "Faster"])
 
 # Plot settings
 colors = ["#5875A4", "#CC8963", "#5F9E6E", "#B55D60"]
