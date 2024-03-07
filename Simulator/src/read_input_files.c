@@ -34,13 +34,15 @@ void read_cluster(char* input_node_file)
     char carbon_rate[100];
     char carbon_intensity[100];
     int index_node = 0;
+    int unique_id = 0;
     
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
 	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, carbon_rate, s, carbon_intensity, s, s, s) == 22)
 	{
 		struct Node *new = (struct Node*) malloc(sizeof(struct Node));
-		new->unique_id = atoi(id);
+		new->unique_id = unique_id;
+		unique_id += 1;
 		new->memory = atoi(memory);
 		new->bandwidth = atof(bandwidth);
 		new->n_available_cores = 20;
@@ -276,6 +278,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     char* current_user = malloc(sizeof(char)*9);
     char* last_user = malloc(sizeof(char)*9);
     //~ current_user = "";
+    int unique_id = 0;
     //~ last_user = "";
     
     /** START ENERGY INCENTIVE **/
@@ -285,7 +288,8 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		total_number_jobs += 1;
 		
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
-		new->unique_id = atoi(id);
+		new->unique_id = unique_id;
+		unique_id += 1;
 		new->subtime = atoi(subtime);
 		new->delay = atoi(delay);	
 		new->walltime = atoi(walltime);

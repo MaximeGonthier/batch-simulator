@@ -88,16 +88,14 @@ for k in range(1, loop + 1):
 
 # Settings of the plot
 width = 2
-colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398"]
+colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
-# ~ for i in range(0, nusers):
-	# ~ X
 	
 for i in range(0, nusers):
 	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
 
-# ~ if mode == "finish_times":
-	# ~ plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
+if mode == "finish_times":
+	plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
 
 # Legend and labels
 if mode == "finish_times":
@@ -114,12 +112,11 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
 # ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(0.1, -0.24))
-plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster'], ncol=4, loc=(0.1, -0.24))
+plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
 
 # Saving plots
 # ~ if mode == "finish_times":
 	# ~ filename = "plot/" + output_name + "_finish_times.pdf"
-# ~ elif mode == "finish_times_core_hours_Y_axis":
 	# ~ filename = "plot/" + output_name + "_finish_times_core_hours_Y_axis.pdf"
 # ~ elif mode == "energy_consumed":
 filename = "plot/" + output_name + "_" + mode + ".pdf"

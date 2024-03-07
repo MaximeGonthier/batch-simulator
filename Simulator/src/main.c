@@ -826,7 +826,7 @@ int main(int argc, char *argv[])
 	/** START ENERGY INCENTIVE **/
 	#ifdef ENERGY_INCENTIVE
 	int nusers = atoi(argv[8]);
-	printf("There are %d users.\n", nusers);
+	printf("There are %d users and %d jobs.\n", nusers, total_number_jobs);
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
 	
 	/* Number of times I want to repeat the same workload */
@@ -894,7 +894,7 @@ int main(int argc, char *argv[])
 				/* Filling the values for job i on endpoint j */
 				if (strcmp(argv[9], "alok") == 0)
 				{
-					tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600)*job_pointer->number_of_nodes[j]; /* Energy in micro joules that I convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
+					tab_function_machine_energy[i][j] = ((job_pointer->energy_on_machine[j]*0.000001)/3600)*job_pointer->cores + n->idle_power*(job_pointer->duration_on_machine[j]/3600)*job_pointer->number_of_nodes[j]; /* Energy in micro joules that I  convert to joule then divide by 3600 to get watt-hours and multiply by the number of cores used by the job + energy of the start up (idle power) but converted to the right duration */
 					max_watt_hour = n->tdp*n->ncpu*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times CPU TDP times job duration on the machine in hours */
 				}
 				else /* Meggie and Emmy */
@@ -911,28 +911,35 @@ int main(int argc, char *argv[])
 				else
 				{
 					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*((n->carbon_intensity + n->carbon_rate)/1000); /* Carbon credit. Divided by 1000 because the value were in kwh */
-					printf("%f[%d][%d] = (%f + %f)/2 x (%f + %f)/1000\n", tab_function_machine_credit[i][j], i, j, tab_function_machine_energy[i][j], max_watt_hour, n->carbon_intensity, n->carbon_rate);
+					//~ printf("%d: %f[%d][%d] = (%f + %f)/2 x (%f + %f)/1000\n", job_pointer->unique_id, tab_function_machine_credit[i][j], i, j, tab_function_machine_energy[i][j], max_watt_hour, n->carbon_intensity, n->carbon_rate);
 				}
 					
 				//~ printf("Job %d on machine %d: %f Watt-hours %f max_watt_hour - %f seconds - %f credit removed %d cores\n", i, j, tab_function_machine_energy[i][j], max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], job_pointer->cores);
 			}
 			n = n->next;
 		}
-
 		job_pointer = job_pointer->next;
+	}
+	
+	
+	/* Putting in a tab the carbon cost per Wh for printing in output file. */
+	double* carbon_cost_per_wh = malloc(total_number_nodes*sizeof(double));
+	struct Node* n = node_list[0]->head;
+	for (i = 0; i < total_number_nodes; i++)
+	{
+		carbon_cost_per_wh[i] = (n->carbon_intensity + n->carbon_rate)/1000;
+		n = n->next;
 	}
 	
 	/* Assigning an endpoint to each job depending on his user's behavior */
 	int selected_endpoint = 0;
 	i = 0;
-	
+
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
 		while (job_pointer != NULL)
-		{
-			//~ printf("Job %d - user behavior %d\n", job_pointer->unique_id, job_pointer->user_behavior); fflush(stdout);
-			
+		{			
 			selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
 						
 			//~ printf("Credit to remove is %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
@@ -952,6 +959,7 @@ int main(int argc, char *argv[])
 			new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
 			new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
 			new->job_cores = job_pointer->cores;
+			new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
 			
 			for(j = 0; j < total_number_nodes; j++)
 			{

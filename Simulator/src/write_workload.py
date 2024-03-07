@@ -20,11 +20,12 @@ print("Start writting input workload", output_file, "with", N_cores_max, "cores 
 
 # Inputs (todo: put in a file or in the command line)
 # ~ N_users = 8
-N_users = 9
+# ~ N_users = 9
+N_users = 10
 # ~ users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster"]
-users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "desktop", "faster"]
+users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "desktop", "faster", "mixed"]
 # ~ users = [0, 1, 2, 3, 4, 5, 6, 7]
-users = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+users = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 N_endpoints = 4
 endpoints = ["theta", "midway", "desktop", "faster"]
@@ -201,6 +202,8 @@ with open(output_file, "r") as file:
 		groups = list(zip(file, file, file, file, file, file, file, file))
 	elif (N_users == 9):
 		groups = list(zip(file, file, file, file, file, file, file, file, file))
+	elif (N_users == 10):
+		groups = list(zip(file, file, file, file, file, file, file, file, file, file))
 	else:
 		print("Not dealt with N_users")
 		exit(1)

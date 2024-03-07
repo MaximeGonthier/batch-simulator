@@ -17,6 +17,8 @@ n_iteration = int(sys.argv[5])
 
 measured_metric = [0]*nusers # First tab cell is for user 0 then 1, etc...
 
+print("Plotting", mode, "with input file", input_file, "and", nusers, "users")
+
 for j in range(1, n_iteration+1):
 	
 	if n_iteration > 1:
@@ -35,6 +37,7 @@ for j in range(1, n_iteration+1):
 	Queue_time = list(df.iloc[:, 9])
 	Mean_completion_time = list(df.iloc[:, 10])
 	Number_of_cores_used = list(df.iloc[:, 11])
+	Carbon_used = list(df.iloc[:, 12])
 
 	if mode == "total_energy":
 		for i in range(0, Nlines):
@@ -42,6 +45,9 @@ for j in range(1, n_iteration+1):
 	elif mode == "queue_time":
 		for i in range(0, Nlines):
 			measured_metric[User_id[i]] += Queue_time[i]
+	elif mode == "carbon_used":
+		for i in range(0, Nlines):
+			measured_metric[User_id[i]] += Carbon_used[i]
 	elif mode == "nb_jobs_completed":
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
@@ -58,15 +64,15 @@ for j in range(0, nusers):
 # Settings of the plot
 bar_width = 0.2
 separation_between_bars=0.3
-x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars]
-colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398"]
+x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars, 10*separation_between_bars]
+colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
 # Barplot
 for i in range (0, nusers):
 	plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Legend and labels
-labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster'] 
+labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster', 'Mixed'] 
 plt.xticks(x, labels, rotation ='horizontal')
 
 if mode == "total_energy":
@@ -81,6 +87,9 @@ elif mode == "nb_jobs_completed_in_mean_core_hours":
 elif mode == "queue_time":
 	plt.ylabel("Total queue time full workload (s)")
 	mode_name = "_queue_time"
+elif mode == "carbon_used":
+	plt.ylabel("Total carbon consumed (gCO2)")
+	mode_name = "_carbon_used"
 	
 # Control grid on Y-axis
 # ~ plt.locator_params(axis='y', nbins=4, integer=True)
