@@ -831,19 +831,19 @@ int main(int argc, char *argv[])
 	
 	/* Number of times I want to repeat the same workload */
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 1;
+	int number_workload_repetition = 2;
 	//~ int number_workload_repetition = 3;
 	
 	double credit_to_each_user = 0;
 	bool is_credit = true;
 	if (strcmp(argv[10], "credit") == 0)
 	{
-		credit_to_each_user = 12000000;
+		credit_to_each_user = 14000000;
 	}
 	else if (strcmp(argv[10], "carbon") == 0)
 	{
 		is_credit = false;
-		credit_to_each_user = 12000000;
+		credit_to_each_user = 14000000;
 	}
 	else
 	{

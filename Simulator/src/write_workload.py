@@ -68,14 +68,15 @@ else:
 	
 	print("Energy")
 	# Get watt
-	# ~ desktop_energy = df.iloc[:, 1]
-	# ~ print(desktop_energy[2])
-	# ~ faster_energy = df.iloc[:, 2]
-	# ~ print(faster_energy[2])
-	# ~ midway_energy = df.iloc[:, 3]
-	# ~ print(midway_energy[2])
-	# ~ theta_energy = df.iloc[:, 4]
-	# ~ print(theta_energy[2])
+	desktop_watt = df.iloc[:, 1]
+	print(desktop_watt[2])
+	faster_watt = df.iloc[:, 2]
+	print(faster_watt[2])
+	midway_watt = df.iloc[:, 3]
+	print(midway_watt[2])
+	theta_watt = df.iloc[:, 4]
+	print(theta_watt[2])
+	
 	# Get total energy
 	desktop_energy = df.iloc[:, 13]
 	print(desktop_energy[2])
