@@ -84,15 +84,15 @@ for i in range(0, nmachines):
 	 
 # create DataFrame
 df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0], measured_metric_8[0]],
-                   'Midway': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1], measured_metric_8[1]],
+                   'IC': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1], measured_metric_8[1]],
                    'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_2[2], measured_metric_3[2], measured_metric_4[2], measured_metric_5[2], measured_metric_6[2], measured_metric_7[2], measured_metric_8[2]],
                    'Faster': [measured_metric_0[3], measured_metric_1[3], measured_metric_2[3], measured_metric_3[3], measured_metric_4[3], measured_metric_5[3], measured_metric_6[3], measured_metric_7[3], measured_metric_8[3]]},
-                  index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "Midway", "Faster", "Mixed"])
+                  index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "IC", "Faster", "Mixed"])
 # ~ df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0], measured_metric_8[0], measured_metric_9[0]],
-                   # ~ 'Midway': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1], measured_metric_8[1], measured_metric_9[1]],
+                   # ~ 'IC': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1], measured_metric_8[1], measured_metric_9[1]],
                    # ~ 'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_2[2], measured_metric_3[2], measured_metric_4[2], measured_metric_5[2], measured_metric_6[2], measured_metric_7[2], measured_metric_8[2], measured_metric_9[2]],
                    # ~ 'Faster': [measured_metric_0[3], measured_metric_1[3], measured_metric_2[3], measured_metric_3[3], measured_metric_4[3], measured_metric_5[3], measured_metric_6[3], measured_metric_7[3], measured_metric_8[3], measured_metric_9[3]]},
-                  # ~ index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "Midway", "Desktop", "Faster", "Mixed"])
+                  # ~ index=["Credit", "Energy", "EFT", "Random", "Worst", "Theta", "IC", "Desktop", "Faster", "Mixed"])
 
 # Plot settings
 colors = ["#5875A4", "#CC8963", "#5F9E6E", "#B55D60"]
@@ -106,7 +106,7 @@ plt.xlabel('User behavior')
 plt.ylabel('Number of jobs completed from full workload')
 plt.xticks(rotation=360)
 
-plt.legend(['Theta', 'Midway', 'Desktop', 'Faster'], ncol=4, loc=(0.1, -0.18))
+plt.legend(['Theta', 'IC', 'Desktop', 'Faster'], ncol=4, loc=(0.1, -0.18))
 
 # Saving plot
 mode_name = ""

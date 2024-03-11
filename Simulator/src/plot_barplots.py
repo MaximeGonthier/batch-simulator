@@ -74,8 +74,8 @@ for i in range (0, nusers):
 	plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Legend and labels
-labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster', 'Mixed'] 
-# ~ labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster', 'Mixed'] 
+labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Faster', 'Mixed'] 
+# ~ labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Desktop', 'Faster', 'Mixed'] 
 plt.xticks(x, labels, rotation ='horizontal')
 
 if mode == "total_energy":

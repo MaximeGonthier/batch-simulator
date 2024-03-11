@@ -112,9 +112,9 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.ylabel("Core-hours used full workload")
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
-# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster'], ncol=4, loc=(0.1, -0.24))
-plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
-# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
+# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Faster'], ncol=4, loc=(0.1, -0.24))
+plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
+# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Desktop', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
 
 # Saving plots
 # ~ if mode == "finish_times":
