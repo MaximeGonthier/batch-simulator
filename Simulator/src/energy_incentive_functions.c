@@ -96,17 +96,17 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Always use the midway endpoint */
 		min_id = 1;
 	}
+	//~ else if (user_behavior == 7)
+	//~ {
+		//~ /* Always use the desktop endpoint */
+		//~ min_id = 2;
+	//~ }
 	else if (user_behavior == 7)
-	{
-		/* Always use the desktop endpoint */
-		min_id = 2;
-	}
-	else if (user_behavior == 8)
 	{
 		/* Always use the faster endpoint */
 		min_id = 3;
 	}
-	else if (user_behavior == 9)
+	else if (user_behavior == 8)
 	{
 		/* Mixed user that select eft if the job can complete twice as fast. Else choose energy. */
 		int min_credit_id = 0;

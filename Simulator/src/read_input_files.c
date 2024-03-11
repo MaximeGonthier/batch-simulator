@@ -286,6 +286,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
 	{	
 		total_number_jobs += 1;
+		if (total_number_jobs%10000 == 0) { printf("Read %d jobs\n", total_number_jobs); }
 		
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
 		new->unique_id = unique_id;

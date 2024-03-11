@@ -871,22 +871,25 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	//~ printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines\n", total_number_jobs, total_number_nodes);
+	printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines...\n", total_number_jobs, total_number_nodes);
 	//~ int** tab_function_machine_calibration = (int**) malloc(total_number_jobs*sizeof(int*)); /* Has the calibration been done on this function-machine association? */
 	double** tab_function_machine_energy = (double**) malloc(total_number_jobs*sizeof(double*)); //hauteur
 	double** tab_function_machine_credit = (double**) malloc(total_number_jobs*sizeof(double*)); //hauteur
 	job_pointer = job_list->head;
 	for (i = 0; i < total_number_jobs; i++)
 	{
+		if (i%10000 == 0) { printf("%d/total_number_jobs\n", i); }
+		
 		//~ tab_function_machine_calibration[i] = malloc(total_number_nodes*sizeof(int)); //largeur
 		tab_function_machine_energy[i] = malloc(total_number_nodes*sizeof(double)); //largeur
 		tab_function_machine_credit[i] = malloc(total_number_nodes*sizeof(double)); //largeur
 		struct Node* n = node_list[0]->head;
 		for (j = 0; j < total_number_nodes; j++)
 		{
-			if ((strcmp(argv[9], "alok") == 0) && (job_pointer->cores > n->ncores*n->ncpu)) /* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. */
+			if (((strcmp(argv[9], "alok") == 0) && (job_pointer->cores > n->ncores*n->ncpu)) || (j == 2 && job_pointer->number_of_nodes[j] > 1 && job_pointer->cores > 20))/* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. The second part of the if is a work around for emmy and meggie database */
 			{
 				//~ printf("%d > %d\n", job_pointer->cores, n->ncores*n->ncpu);
+				//~ printf("Too much nodes for desktop, node %d %f nodes\n", j, job_pointer->number_of_nodes[j]);
 				tab_function_machine_energy[i][j] = -1;
 			}
 			else
@@ -934,12 +937,17 @@ int main(int argc, char *argv[])
 	/* Assigning an endpoint to each job depending on his user's behavior */
 	int selected_endpoint = 0;
 	i = 0;
-
+	int processed_jobs = 0;
+	
+	printf("Assigning jobs to endpoints. %d workload repetition...\n", number_workload_repetition);
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
 		while (job_pointer != NULL)
-		{			
+		{	
+			if (processed_jobs%10000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
+			processed_jobs += 1;
+			
 			selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
 						
 			//~ printf("Credit to remove is %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);

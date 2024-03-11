@@ -64,15 +64,18 @@ for j in range(0, nusers):
 # Settings of the plot
 bar_width = 0.2
 separation_between_bars=0.3
-x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars, 10*separation_between_bars]
-colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
+x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars]
+# ~ x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars, 10*separation_between_bars]
+colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#522398", "#123456"]
+# ~ colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
 # Barplot
 for i in range (0, nusers):
 	plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Legend and labels
-labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster', 'Mixed'] 
+labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Faster', 'Mixed'] 
+# ~ labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'Midway', 'Desktop', 'Faster', 'Mixed'] 
 plt.xticks(x, labels, rotation ='horizontal')
 
 if mode == "total_energy":

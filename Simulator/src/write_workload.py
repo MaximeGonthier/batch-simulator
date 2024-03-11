@@ -20,12 +20,14 @@ print("Start writting input workload", output_file, "with", N_cores_max, "cores 
 
 # Inputs (todo: put in a file or in the command line)
 # ~ N_users = 8
-# ~ N_users = 9
-N_users = 10
+N_users = 9
+# ~ N_users = 10
 # ~ users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster"]
-users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "desktop", "faster", "mixed"]
+users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster", "mixed"]
+# ~ users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "desktop", "faster", "mixed"]
 # ~ users = [0, 1, 2, 3, 4, 5, 6, 7]
-users = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+users = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+# ~ users = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 N_endpoints = 4
 endpoints = ["theta", "midway", "desktop", "faster"]
@@ -66,7 +68,7 @@ else:
 	theta_nodes = df.iloc[:, 12]
 	print(theta_nodes[2])
 	
-	print("Energy")
+	print("Watt")
 	# Get watt
 	desktop_watt = df.iloc[:, 1]
 	print(desktop_watt[2])
@@ -76,7 +78,8 @@ else:
 	print(midway_watt[2])
 	theta_watt = df.iloc[:, 4]
 	print(theta_watt[2])
-	
+
+	print("Energy")
 	# Get total energy
 	desktop_energy = df.iloc[:, 13]
 	print(desktop_energy[2])
@@ -97,6 +100,7 @@ else:
 	functions_nodes = []
 	functions_cores = []
 	functions_count = []
+	functions_computed_energy = []
 	functions = []
 	for i in range (0, N_functions):
 		functions.append(i)
@@ -120,6 +124,16 @@ else:
 		functions_count.append(int(count[i+2]))
 		functions_count.append(int(count[i+2]))
 		functions_count.append(int(count[i+2]))
+		functions_computed_energy.append(float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]))
+		functions_computed_energy.append(float(midway_watt[i+2])*int(cores[i+2])*float(midway_runtime[i+2]) + 136*float(midway_nodes[i+2])*float(midway_runtime[i+2]))
+		functions_computed_energy.append(float(desktop_watt[i+2])*int(cores[i+2])*float(desktop_runtime[i+2]) + 6.51*float(desktop_nodes[i+2])*float(desktop_runtime[i+2]))
+		functions_computed_energy.append(float(faster_watt[i+2])*int(cores[i+2])*float(faster_runtime[i+2]) + 205*float(faster_nodes[i+2])*float(faster_runtime[i+2]))
+		# My computation to check
+		# ~ functions_computed_energy.append(float(theta_watt[i+2])*int(cores[i+2])*theta_runtime[i+2] + 110*theta_nodes[i+2]*theta_runtime[i+2])
+		if (float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]) > 1+ float(theta_energy[i+2])):
+			print("Error", float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]), "!=", float(theta_energy[i+2]))
+			# ~ exit(1)
+			# ~ print("Error", i+2)
 
 # To get total energy he did avg_power*Ncores*duration + idle*Nnodes*duration -> need to facto Nnodes in main for the idle power!!!
 # ~ Total energy colomn is in joule including idle but not tdp. So need to add tdp for runtime*nb of nodes but not idle. Need to consider that in main when computing energy used
@@ -158,8 +172,9 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		nb_of_repetition = random.randint(0, 10)
 	elif weight_mode == "balance_nb_calls":
 		nb_of_repetition = int(max_mean_runtime/mean_runtime_functions[i_functions])
-	elif weight_mode == "count_from_datase":
-		nb_of_repetition = functions_count[i_functions*N_endpoints]
+	elif weight_mode == "count_from_database":
+		nb_of_repetition = min(functions_count[i_functions*N_endpoints], 10) # To not have too much
+		# ~ nb_of_repetition = functions_count[i_functions*N_endpoints]
 	else:
 		nb_of_repetition = 1
 	# ~ print("Number of repetition is", nb_of_repetition)
