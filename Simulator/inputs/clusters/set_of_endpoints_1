@@ -2,9 +2,3 @@
 { id: 1 memory: 128 bandwidth: 0.1 core: 48 cpu_tdp: 205 ncpu: 2 idle_power: 136 carbon_rate: 81.02104911 carbon_intensity: 502 endpoint_id: midway }
 { id: 2 memory: 128 bandwidth: 0.1 core: 16 cpu_tdp: 65 ncpu: 1 idle_power: 6.51 carbon_rate: 376.3119073 carbon_intensity: 502 endpoint_id: desktop }
 { id: 3 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 205 ncpu: 2 idle_power: 205 carbon_rate: 511.9946542 carbon_intensity: 389 endpoint_id: faster }
-
-
-
-Reduce carbon intensity of all of them to see different results.
-Then reduce carbon intensity of only Theta.
-carbon_intensity to use of Uppsala: 16
