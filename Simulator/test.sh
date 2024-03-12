@@ -6,8 +6,8 @@
 # bash test.sh set_of_endpoints_1 8_functions_4_endpoints_64coresmax_8users_reasonable_weight_and_randomized_nb_calls 8 64
 
 # Meggie and Emmys and 10 users
-# bash test.sh set_of_endpoints_1 8_functions_4_endpoints_10users_nocoresmax_meggie_and_emmy 9 1 default
-# bash test.sh set_of_endpoints_1 8_functions_4_endpoints_10users_nocoresmax_meggie_and_emmy 9 1 count_from_database
+# bash test.sh set_of_endpoints_1 8_functions_4_endpoints_9users_nocoresmax_meggie_and_emmy 9 1 default
+# bash test.sh set_of_endpoints_1 8_functions_4_endpoints_9users_nocoresmax_meggie_and_emmy 9 1 count_from_database
 
 
 endpoints=$1
@@ -40,6 +40,7 @@ echo ""
 # Without randomization
 n_iteration=1
 python3 src/write_workload.py inputs/workloads/converted/${workload}_${mode_for_repetition} 1 ${mode_for_repetition} inputs/workloads/meggie_and_emmy-job-trace-extrapolated.csv
+#~ exit
 ./src/main inputs/workloads/converted/${workload}_${mode_for_repetition} inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}_${mode_for_repetition}_credit.csv 0 100 ${nusers} from_emmy_and_meggie credit
 ./src/main inputs/workloads/converted/${workload}_${mode_for_repetition} inputs/clusters/${endpoints} no_schedule 0 outputs/${workload}_${mode_for_repetition}_carbon.csv 0 100 ${nusers} from_emmy_and_meggie carbon
 

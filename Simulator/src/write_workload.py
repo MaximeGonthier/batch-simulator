@@ -68,16 +68,16 @@ else:
 	theta_nodes = df.iloc[:, 12]
 	print(theta_nodes[2])
 	
-	print("Watt")
-	# Get watt
-	desktop_watt = df.iloc[:, 1]
-	print(desktop_watt[2])
-	faster_watt = df.iloc[:, 2]
-	print(faster_watt[2])
-	midway_watt = df.iloc[:, 3]
-	print(midway_watt[2])
-	theta_watt = df.iloc[:, 4]
-	print(theta_watt[2])
+	# ~ print("Watt")
+	# ~ # Get watt
+	# ~ desktop_watt = df.iloc[:, 1]
+	# ~ print(desktop_watt[2])
+	# ~ faster_watt = df.iloc[:, 2]
+	# ~ print(faster_watt[2])
+	# ~ midway_watt = df.iloc[:, 3]
+	# ~ print(midway_watt[2])
+	# ~ theta_watt = df.iloc[:, 4]
+	# ~ print(theta_watt[2])
 
 	print("Energy")
 	# Get total energy
@@ -116,24 +116,21 @@ else:
 		functions_nodes.append(midway_nodes[i+2])
 		functions_nodes.append(desktop_nodes[i+2])
 		functions_nodes.append(faster_nodes[i+2])
-		functions_cores.append(int(cores[i+2]))
-		functions_cores.append(int(cores[i+2]))
-		functions_cores.append(int(cores[i+2]))
-		functions_cores.append(int(cores[i+2]))
-		functions_count.append(int(count[i+2]))
-		functions_count.append(int(count[i+2]))
-		functions_count.append(int(count[i+2]))
-		functions_count.append(int(count[i+2]))
-		functions_computed_energy.append(float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]))
-		functions_computed_energy.append(float(midway_watt[i+2])*int(cores[i+2])*float(midway_runtime[i+2]) + 136*float(midway_nodes[i+2])*float(midway_runtime[i+2]))
-		functions_computed_energy.append(float(desktop_watt[i+2])*int(cores[i+2])*float(desktop_runtime[i+2]) + 6.51*float(desktop_nodes[i+2])*float(desktop_runtime[i+2]))
-		functions_computed_energy.append(float(faster_watt[i+2])*int(cores[i+2])*float(faster_runtime[i+2]) + 205*float(faster_nodes[i+2])*float(faster_runtime[i+2]))
-		# My computation to check
-		# ~ functions_computed_energy.append(float(theta_watt[i+2])*int(cores[i+2])*theta_runtime[i+2] + 110*theta_nodes[i+2]*theta_runtime[i+2])
-		if (float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]) > 1+ float(theta_energy[i+2])):
-			print("Error", float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]), "!=", float(theta_energy[i+2]))
-			# ~ exit(1)
-			# ~ print("Error", i+2)
+		functions_cores.append(cores[i+2])
+		functions_cores.append(cores[i+2])
+		functions_cores.append(cores[i+2])
+		functions_cores.append(cores[i+2])
+		functions_count.append(count[i+2])
+		functions_count.append(count[i+2])
+		functions_count.append(count[i+2])
+		functions_count.append(count[i+2])
+		# ~ functions_computed_energy.append(float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]))
+		# ~ functions_computed_energy.append(float(midway_watt[i+2])*int(cores[i+2])*float(midway_runtime[i+2]) + 136*float(midway_nodes[i+2])*float(midway_runtime[i+2]))
+		# ~ functions_computed_energy.append(float(desktop_watt[i+2])*int(cores[i+2])*float(desktop_runtime[i+2]) + 6.51*float(desktop_nodes[i+2])*float(desktop_runtime[i+2]))
+		# ~ functions_computed_energy.append(float(faster_watt[i+2])*int(cores[i+2])*float(faster_runtime[i+2]) + 205*float(faster_nodes[i+2])*float(faster_runtime[i+2]))
+		# ~ # My computation to check
+		# ~ if (float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]) > 1+ float(theta_energy[i+2])):
+			# ~ print("Error", float(theta_watt[i+2])*int(cores[i+2])*float(theta_runtime[i+2]) + 110*float(theta_nodes[i+2])*float(theta_runtime[i+2]), "!=", float(theta_energy[i+2]))
 
 # To get total energy he did avg_power*Ncores*duration + idle*Nnodes*duration -> need to facto Nnodes in main for the idle power!!!
 # ~ Total energy colomn is in joule including idle but not tdp. So need to add tdp for runtime*nb of nodes but not idle. Need to consider that in main when computing energy used

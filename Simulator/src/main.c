@@ -886,7 +886,7 @@ int main(int argc, char *argv[])
 		struct Node* n = node_list[0]->head;
 		for (j = 0; j < total_number_nodes; j++)
 		{
-			if (((strcmp(argv[9], "alok") == 0) && (job_pointer->cores > n->ncores*n->ncpu)) || (j == 2 && job_pointer->number_of_nodes[j] > 1 && job_pointer->cores > 20))/* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. The second part of the if is a work around for emmy and meggie database */
+			if (((strcmp(argv[9], "alok") == 0) && (job_pointer->cores > n->ncores*n->ncpu)) || (j == 2 && job_pointer->number_of_nodes[j] > 1))/* If the job requires too many core, we put -1 in tab_function_machine_energy to signifie that this association is not possible. We then use tab_function_machine_energy when selecting the endpoint to avoid choosing an impossible combination. The second part of the if is a work around for emmy and meggie database */
 			{
 				//~ printf("%d > %d\n", job_pointer->cores, n->ncores*n->ncpu);
 				//~ printf("Too much nodes for desktop, node %d %f nodes\n", j, job_pointer->number_of_nodes[j]);
