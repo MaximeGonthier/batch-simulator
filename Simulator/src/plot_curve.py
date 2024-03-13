@@ -13,6 +13,10 @@ nusers = int(sys.argv[2])
 output_name = sys.argv[3]
 mode = sys.argv[4] # Between finish times or energy consumed
 n_iteration = int(sys.argv[5])
+credit_or_carbon = sys.argv[6]
+
+if credit_or_carbon == "carbon":
+	sns.set_style(rc = {'axes.facecolor': 'gray'})
 
 print("Plotting", mode, "with input file", input_file, "and", nusers, "users")
 
@@ -71,13 +75,17 @@ for k in range(1, loop + 1):
 					evaluated_metric_Y += 1
 					X[User_id[j]].append(submission_order)
 					Y[User_id[j]].append(evaluated_metric_Y)
-				elif (mode == "finish_times_core_hours_Y_axis"):
+				elif (New_credit[j] > 0 and mode == "finish_times_core_hours_Y_axis"):
 					evaluated_metric_Y += Evaluated_column_Y[j]
 					X[User_id[j]].append(Job_end_time[j])
 					Y[User_id[j]].append(evaluated_metric_Y)
+				# ~ elif (New_credit[j] > 0 and mode == "energy_consumed"):
+				# ~ elif (mode == "energy_consumed"):
 				elif (New_credit[j] > 0 and mode == "energy_consumed"):
-					evaluated_metric_Y += Evaluated_column_Y[j]
-					X[User_id[j]].append(Job_end_time[j])
+					evaluated_metric_Y += Evaluated_column_Y[j]/1000
+					# ~ X[User_id[j]].append(Job_end_time[j])
+					evaluated_metric_X += 1
+					X[User_id[j]].append(evaluated_metric_X)
 					Y[User_id[j]].append(evaluated_metric_Y)
 				elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 					evaluated_metric_Y += Evaluated_column_Y[j]
@@ -88,15 +96,42 @@ for k in range(1, loop + 1):
 
 # Settings of the plot
 width = 2
-colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#522398", "#123456"]
-# ~ colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
-	
-for i in range(0, nusers):
+if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c"]
+else: # Not plotting Random and Worst
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#e27ea6", "#f9e300", "#62361b"]
+
+# ~ for i in range(0, nusers):
+	# ~ plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+
+if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
+	i = 0
 	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	i = 1
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	i = 2 # Putting mixed after energy
+	plt.plot(X[8], Y[8], color=colors[i], linewidth=width)
+	i = 3
+	plt.plot(X[2], Y[2], color=colors[i], linewidth=width)
+else:
+	i = 0
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	i = 1
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	i = 2 # Putting mixed after energy
+	plt.plot(X[8], Y[8], color=colors[i], linewidth=width)
+	i = 3
+	plt.plot(X[2], Y[2], color=colors[i], linewidth=width)
+	i = 4
+	plt.plot(X[5], Y[5], color=colors[i], linewidth=width)
+	i = 5
+	plt.plot(X[6], Y[6], color=colors[i], linewidth=width)
+	i = 6
+	plt.plot(X[7], Y[7], color=colors[i], linewidth=width)
 
-if mode == "finish_times":
-	plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
+# ~ if mode == "finish_times":
+	# ~ plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
 
 # Legend and labels
 if mode == "finish_times":
@@ -106,21 +141,18 @@ elif mode == "finish_times_core_hours_Y_axis":
 	plt.ylabel("Mean core-hours completed full workload")
 	plt.xlabel("Completion Time (s)")
 elif mode == "energy_consumed":
-	plt.ylabel("Energy used (Wh)")
-	plt.xlabel("Completion Time (s)")
+	plt.ylabel("Energy used (KWh)")
+	# ~ plt.xlabel("Completion Time (s)")
+	plt.xlabel("Number of jobs completed")
 elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.ylabel("Core-hours used full workload")
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
-# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Faster'], ncol=4, loc=(0.1, -0.24))
-plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
-# ~ plt.legend(['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Desktop', 'Faster', 'Mixed'], ncol=4, loc=(0.1, -0.24))
+if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
+	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT'], ncol=4, loc=(0.1, -0.24))
+else: 
+	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Theta', 'IC', 'Faster'], ncol=4, loc=(0.1, -0.24))
 
-# Saving plots
-# ~ if mode == "finish_times":
-	# ~ filename = "plot/" + output_name + "_finish_times.pdf"
-	# ~ filename = "plot/" + output_name + "_finish_times_core_hours_Y_axis.pdf"
-# ~ elif mode == "energy_consumed":
 filename = "plot/" + output_name + "_" + mode + ".pdf"
 
 plt.savefig(filename, bbox_inches='tight')

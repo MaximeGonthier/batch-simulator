@@ -11,6 +11,9 @@ int nb_cores;
 int nb_job_to_evaluate;
 int finished_jobs;
 int total_number_jobs;
+/** START ENERGY INCENTIVE **/
+int total_number_jobs_no_repetition;
+/** END ENERGY INCENTIVE **/
 int total_number_nodes;
 struct Job_List* job_list; /* All jobs not available yet */
 struct Job_List* new_job_list; /* New available jobs */
@@ -129,6 +132,7 @@ int main(int argc, char *argv[])
 	/* Init global variables */
 	finished_jobs = 0;
 	total_number_jobs = 0;
+	total_number_jobs_no_repetition = 0;
 	running_cores = 0;
 	running_nodes = 0;
 	#ifdef PRINT_CLUSTER_USAGE
@@ -826,24 +830,44 @@ int main(int argc, char *argv[])
 	/** START ENERGY INCENTIVE **/
 	#ifdef ENERGY_INCENTIVE
 	int nusers = atoi(argv[8]);
-	printf("There are %d users and %d jobs.\n", nusers, total_number_jobs);
+	printf("There are %d users and %d jobs, %d without repetition.\n", nusers, total_number_jobs, total_number_jobs_no_repetition);
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
 	
 	/* Number of times I want to repeat the same workload */
 	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 2;
+	int number_workload_repetition = 2; /* Good for default database */
 	//~ int number_workload_repetition = 3;
 	
 	double credit_to_each_user = 0;
 	bool is_credit = true;
 	if (strcmp(argv[10], "credit") == 0)
 	{
-		credit_to_each_user = 14000000;
+		//~ credit_to_each_user = 22000000; /* Good for default database */
+		//~ credit_to_each_user = 110000000; /* Good for 10 rep max database */
+		credit_to_each_user = 400000000; /* Good for count database */
 	}
 	else if (strcmp(argv[10], "carbon") == 0)
 	{
 		is_credit = false;
-		credit_to_each_user = 14000000;
+		//~ credit_to_each_user = 16650000; /* Good for default database */
+		printf("%s\n", input_node_file);
+		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0)
+		{
+			credit_to_each_user = 300000000; /* Good for count database */
+		}
+		else if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_2") == 0)
+		{
+			credit_to_each_user = 50000000; /* Good for count database with set_of_endpoints_2 */
+		}
+		else if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_3") == 0)
+		{
+			credit_to_each_user = 100000000; /* Good for count database with set_of_endpoints_2 */
+		}
+		else
+		{
+			printf("Error set_of_endpoints.\n");
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
 	{
@@ -871,14 +895,14 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	printf("Get association of each of the %d jobs energy consumption and credit for each of the %d machines...\n", total_number_jobs, total_number_nodes);
-	//~ int** tab_function_machine_calibration = (int**) malloc(total_number_jobs*sizeof(int*)); /* Has the calibration been done on this function-machine association? */
-	double** tab_function_machine_energy = (double**) malloc(total_number_jobs*sizeof(double*)); //hauteur
-	double** tab_function_machine_credit = (double**) malloc(total_number_jobs*sizeof(double*)); //hauteur
+	printf("Get association of each of the %d jobs (no rep) energy consumption and credit for each of the %d machines...\n", total_number_jobs_no_repetition, total_number_nodes);
+	//~ int** tab_function_machine_calibration = (int**) malloc(total_number_jobs_no_repetition*sizeof(int*)); /* Has the calibration been done on this function-machine association? */
+	double** tab_function_machine_energy = (double**) malloc(total_number_jobs_no_repetition*sizeof(double*)); //hauteur
+	double** tab_function_machine_credit = (double**) malloc(total_number_jobs_no_repetition*sizeof(double*)); //hauteur
 	job_pointer = job_list->head;
-	for (i = 0; i < total_number_jobs; i++)
+	for (i = 0; i < total_number_jobs_no_repetition; i++)
 	{
-		if (i%10000 == 0) { printf("%d/total_number_jobs\n", i); }
+		if (i%25000 == 0) { printf("%d/%d\n", i, total_number_jobs_no_repetition); }
 		
 		//~ tab_function_machine_calibration[i] = malloc(total_number_nodes*sizeof(int)); //largeur
 		tab_function_machine_energy[i] = malloc(total_number_nodes*sizeof(double)); //largeur
@@ -938,53 +962,55 @@ int main(int argc, char *argv[])
 	int selected_endpoint = 0;
 	i = 0;
 	int processed_jobs = 0;
+	int k = 0;
 	
 	printf("Assigning jobs to endpoints. %d workload repetition...\n", number_workload_repetition);
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
 		while (job_pointer != NULL)
-		{	
-			if (processed_jobs%10000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
-			processed_jobs += 1;
-			
-			selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
-						
-			//~ printf("Credit to remove is %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
-			update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
-			//~ printf("Credit is now %f\n", credit_users[job_pointer->user_behavior]);
-			
-			/* Adding result to the To_Print structure used later to print results into a file. I do that cause it's faster than opening/closing the file each time. */
-			struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));
-			new->next = NULL;
-			new->job_unique_id = job_pointer->unique_id;				
-			new->user_behavior = job_pointer->user_behavior;
-			new->selected_endpoint = selected_endpoint;
-			new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
-			new->new_credit	= credit_users[job_pointer->user_behavior];		
-			new->job_end_time_double = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
-			new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
-			new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
-			new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
-			new->job_cores = job_pointer->cores;
-			new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
-			
-			for(j = 0; j < total_number_nodes; j++)
+		{
+			for (k = 0; k < job_pointer->nb_of_repetition; k++)
 			{
-				new->mean_duration_on_machine += job_pointer->duration_on_machine[j];
+				if (processed_jobs%250000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
+				processed_jobs += 1;
+				
+				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
+							
+				update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+				
+				/* Adding result to the To_Print structure used later to print results into a file. I do that cause it's faster than opening/closing the file each time. */
+				struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));
+				new->next = NULL;
+				new->job_unique_id = job_pointer->unique_id;				
+				new->user_behavior = job_pointer->user_behavior;
+				new->selected_endpoint = selected_endpoint;
+				new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
+				new->new_credit	= credit_users[job_pointer->user_behavior];		
+				new->job_end_time_double = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
+				new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
+				new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
+				new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
+				new->job_cores = job_pointer->cores;
+				new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
+				
+				for(j = 0; j < total_number_nodes; j++)
+				{
+					new->mean_duration_on_machine += job_pointer->duration_on_machine[j];
+				}
+				new->mean_duration_on_machine = new->mean_duration_on_machine/total_number_nodes;
+				
+				if (tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] < 0)
+				{
+					printf("WTF energy %f job %d endpoint %d\n", tab_function_machine_energy[job_pointer->unique_id][selected_endpoint], job_pointer->unique_id, selected_endpoint);
+					exit(1);
+				}
+				
+				insert_tail_to_print_list(jobs_to_print_list, new);
+				
+				/* Update the next available time of the machine (same way we assigned a value to new->job_end_time */
+				next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
 			}
-			new->mean_duration_on_machine = new->mean_duration_on_machine/total_number_nodes;
-			
-			if (tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] < 0)
-			{
-				printf("WTF energy %f job %d endpoint %d\n", tab_function_machine_energy[job_pointer->unique_id][selected_endpoint], job_pointer->unique_id, selected_endpoint);
-				exit(1);
-			}
-			
-			insert_tail_to_print_list(jobs_to_print_list, new);
-			
-			/* Update the next available time of the machine (same way we assigned a value to new->job_end_time */
-			next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] += job_pointer->duration_on_machine[selected_endpoint];
 			
 			job_pointer = job_pointer->next;
 		}
