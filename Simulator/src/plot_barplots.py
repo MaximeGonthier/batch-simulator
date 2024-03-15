@@ -16,8 +16,9 @@ mode = sys.argv[4] # Either plotting total energy consumed or number of jobs com
 n_iteration = int(sys.argv[5])
 credit_or_carbon = sys.argv[6]
 
+hatch_style = ""
 if credit_or_carbon == "carbon":
-	sns.set_style(rc = {'axes.facecolor': 'gray'})
+	hatch_style = "//"
 
 
 measured_metric = [0]*nusers # First tab cell is for user 0 then 1, etc...
@@ -91,28 +92,28 @@ else: # Not plotting Random and Worst
 # Not plotting Random and Worst and the 3 machines
 if mode == "total_energy" or mode == "carbon_used":
 	i = 0
-	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i], hatch=hatch_style)
 	i = 1
-	plt.bar((i+1)*separation_between_bars, measured_metric[1], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[1], bar_width, color=colors[i], hatch=hatch_style)
 	i = 2 # Putting mixed after energy
-	plt.bar((i+1)*separation_between_bars, measured_metric[8], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[8], bar_width, color=colors[i], hatch=hatch_style)
 	i = 3
-	plt.bar((i+1)*separation_between_bars, measured_metric[2], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[2], bar_width, color=colors[i], hatch=hatch_style)
 else:
 	i = 0
-	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i], hatch=hatch_style)
 	i = 1
-	plt.bar((i+1)*separation_between_bars, measured_metric[1], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[1], bar_width, color=colors[i], hatch=hatch_style)
 	i = 2 # Putting mixed after energy
-	plt.bar((i+1)*separation_between_bars, measured_metric[8], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[8], bar_width, color=colors[i], hatch=hatch_style)
 	i = 3
-	plt.bar((i+1)*separation_between_bars, measured_metric[2], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[2], bar_width, color=colors[i], hatch=hatch_style)
 	i = 4
-	plt.bar((i+1)*separation_between_bars, measured_metric[5], bar_width, color=colors[i]) # Not plotting random and worst
+	plt.bar((i+1)*separation_between_bars, measured_metric[5], bar_width, color=colors[i], hatch=hatch_style) # Not plotting random and worst
 	i = 5
-	plt.bar((i+1)*separation_between_bars, measured_metric[6], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[6], bar_width, color=colors[i], hatch=hatch_style)
 	i = 6
-	plt.bar((i+1)*separation_between_bars, measured_metric[7], bar_width, color=colors[i])
+	plt.bar((i+1)*separation_between_bars, measured_metric[7], bar_width, color=colors[i], hatch=hatch_style)
 
 # Legend and labels
 # ~ labels = ['Credit', 'Energy', 'EFT', 'Random', 'Worst', 'Theta', 'IC', 'Faster', 'Mixed'] 

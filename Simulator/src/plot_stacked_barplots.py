@@ -14,8 +14,9 @@ mode = sys.argv[4]
 n_iteration = int(sys.argv[5])
 credit_or_carbon = sys.argv[6]
 
+hatch_style = ""
 if credit_or_carbon == "carbon":
-	sns.set_style(rc = {'axes.facecolor': 'gray'})
+	hatch_style = "//"
 
 nmachines = 4
 
@@ -102,7 +103,7 @@ df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measure
 colors = ["#5875A4", "#CC8963", "#5F9E6E", "#B55D60"]
 
 # create stacked bar chart for monthly temperatures
-df.plot(kind='bar', stacked=True, color=colors)
+df.plot(kind='bar', stacked=True, color=colors, hatch=hatch_style)
 
 # labels for x & y axis
 # ~ plt.locator_params(axis='y', nbins=4, integer=True) 

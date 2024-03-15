@@ -15,8 +15,11 @@ mode = sys.argv[4] # Between finish times or energy consumed
 n_iteration = int(sys.argv[5])
 credit_or_carbon = sys.argv[6]
 
+# ~ if credit_or_carbon == "carbon":
+	# ~ sns.set_style(rc = {'axes.facecolor': 'gray'})
+line_style = "solid"
 if credit_or_carbon == "carbon":
-	sns.set_style(rc = {'axes.facecolor': 'gray'})
+	line_style = "dashed"
 
 print("Plotting", mode, "with input file", input_file, "and", nusers, "users")
 
@@ -107,28 +110,28 @@ else: # Not plotting Random and Worst
 
 if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
 	i = 0
-	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 1
-	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 2 # Putting mixed after energy
-	plt.plot(X[8], Y[8], color=colors[i], linewidth=width)
+	plt.plot(X[8], Y[8], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 3
-	plt.plot(X[2], Y[2], color=colors[i], linewidth=width)
+	plt.plot(X[2], Y[2], color=colors[i], linewidth=width, linestyle=line_style)
 else:
 	i = 0
-	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 1
-	plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
+	plt.plot(X[i], Y[i], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 2 # Putting mixed after energy
-	plt.plot(X[8], Y[8], color=colors[i], linewidth=width)
+	plt.plot(X[8], Y[8], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 3
-	plt.plot(X[2], Y[2], color=colors[i], linewidth=width)
+	plt.plot(X[2], Y[2], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 4
-	plt.plot(X[5], Y[5], color=colors[i], linewidth=width)
+	plt.plot(X[5], Y[5], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 5
-	plt.plot(X[6], Y[6], color=colors[i], linewidth=width)
+	plt.plot(X[6], Y[6], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 6
-	plt.plot(X[7], Y[7], color=colors[i], linewidth=width)
+	plt.plot(X[7], Y[7], color=colors[i], linewidth=width, linestyle=line_style)
 
 # ~ if mode == "finish_times":
 	# ~ plt.axhline(y=(Nlines/nusers), color='black', linestyle="dotted", linewidth=width)  # Total number of jobs given to each user
