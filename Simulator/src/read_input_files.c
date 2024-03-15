@@ -285,8 +285,6 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 #ifdef ENERGY_INCENTIVE
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
 	{	
-		total_number_jobs += 1;
-		if (total_number_jobs%10000 == 0) { printf("Read %d jobs\n", total_number_jobs); }
 		
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
 		new->unique_id = unique_id;
@@ -325,7 +323,16 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 			if (fscanf(f, "%s", number_of_nodes) != 1) { exit(EXIT_FAILURE); }
 			new->number_of_nodes[i] = atof(number_of_nodes);
 		}
-		if (fscanf(f, "%s %s %s", s, s, s) != 3) { exit(EXIT_FAILURE); };
+		
+		char nb_of_repetition[100];
+		if (fscanf(f, "%s %s %s %s", s, s, s, nb_of_repetition) != 4) { exit(EXIT_FAILURE); };
+		new->nb_of_repetition = atoi(nb_of_repetition);
+		
+		total_number_jobs += new->nb_of_repetition;
+		total_number_jobs_no_repetition += 1;
+		if (total_number_jobs%10000 == 0) { printf("Read %d jobs, %d without repetition\n", total_number_jobs, total_number_jobs_no_repetition); }
+
+		if (fscanf(f, "%s", s) != 1) { exit(EXIT_FAILURE); };
 		
 		if (strcmp(current_user, last_user) == 0)
 		{

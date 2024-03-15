@@ -170,14 +170,14 @@ for i in range (0, N_functions*N_users*N_cores_max):
 	elif weight_mode == "balance_nb_calls":
 		nb_of_repetition = int(max_mean_runtime/mean_runtime_functions[i_functions])
 	elif weight_mode == "count_from_database":
-		nb_of_repetition = min(functions_count[i_functions*N_endpoints], 10) # To not have too much
-		# ~ nb_of_repetition = functions_count[i_functions*N_endpoints]
+		# ~ nb_of_repetition = int(min(functions_count[i_functions*N_endpoints], 10)) # To not have too much
+		nb_of_repetition = int(functions_count[i_functions*N_endpoints])
 	else:
 		nb_of_repetition = 1
-	# ~ print("Number of repetition is", nb_of_repetition)
 			
-	for k in range (0, nb_of_repetition*N_users):
-		nb_functions += 1
+	# ~ for k in range (0, nb_of_repetition*N_users):
+	for k in range (0, N_users):
+		nb_functions += nb_of_repetition
 		f.write("{ id: " + str(i) + " subtime: " + str(0) + " delay: " + str(0) + " walltime: " + str(0) + " cores: " + str(functions_cores[i_functions*N_endpoints]) + " user: " + str(users[i_user]) + " data: " + str(0) + " data_size: " + str(0) + " workload: " + str(0) + " start_time_from_history: " + str(0) + " start_node_from_history: " + str(0) + " duration_on_machine: ")
 		for j in range (0, N_endpoints):
 			f.write(str((functions_runtime[i_functions*N_endpoints+j])*required_multiplier_for_balance) + " ")
@@ -187,7 +187,8 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		f.write("nodes: ")
 		for j in range (0, N_endpoints):
 			f.write(functions_nodes[i_functions*N_endpoints+j] + " ")
-		f.write("function_name: " + str(functions[i_functions]) + " }\n")
+		f.write("function_name: " + str(functions[i_functions]) + " ")
+		f.write("nb_of_repetition: " + str(nb_of_repetition) + " }\n")
 		
 		# Loop on users first then on cores then on functions
 		i_user += 1

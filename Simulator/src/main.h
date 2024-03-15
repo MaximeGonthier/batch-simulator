@@ -31,6 +31,11 @@ extern int nb_cores;
 extern int nb_job_to_evaluate;
 extern int finished_jobs;
 extern int total_number_jobs;
+/** START ENERGY INCENTIVE **/
+#ifdef ENERGY_INCENTIVE
+extern int total_number_jobs_no_repetition;
+#endif
+/** END ENERGY INCENTIVE **/
 extern int total_number_nodes;
 extern struct Job_List* job_list; /* All jobs not available yet */
 extern struct Job_List* new_job_list; /* New available jobs */
@@ -163,6 +168,7 @@ struct Job {
     double *duration_on_machine;
     double *energy_on_machine;
     double *number_of_nodes;
+    int nb_of_repetition;
     #endif
     /** END ENERGY INCENTIVE **/
 };
