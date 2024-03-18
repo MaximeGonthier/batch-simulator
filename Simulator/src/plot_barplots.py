@@ -80,11 +80,11 @@ separation_between_bars=0.3
 
 # Not plotting Random and Worst and the 3 machines
 if mode == "total_energy" or mode == "carbon_used":
-	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars]
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c"]
+	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202"]
 else: # Not plotting Random and Worst
-	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars]
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#e27ea6", "#f9e300", "#62361b"]
+	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202", "#e27ea6", "#f9e300", "#62361b"]
 
 # ~ for i in range (0, nusers):
 	# ~ plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
@@ -99,6 +99,8 @@ if mode == "total_energy" or mode == "carbon_used":
 	plt.bar((i+1)*separation_between_bars, measured_metric[8], bar_width, color=colors[i], hatch=hatch_style)
 	i = 3
 	plt.bar((i+1)*separation_between_bars, measured_metric[2], bar_width, color=colors[i], hatch=hatch_style)
+	i = 4
+	plt.bar((i+1)*separation_between_bars, measured_metric[9], bar_width, color=colors[i], hatch=hatch_style)
 else:
 	i = 0
 	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i], hatch=hatch_style)
@@ -109,10 +111,12 @@ else:
 	i = 3
 	plt.bar((i+1)*separation_between_bars, measured_metric[2], bar_width, color=colors[i], hatch=hatch_style)
 	i = 4
-	plt.bar((i+1)*separation_between_bars, measured_metric[5], bar_width, color=colors[i], hatch=hatch_style) # Not plotting random and worst
+	plt.bar((i+1)*separation_between_bars, measured_metric[9], bar_width, color=colors[i], hatch=hatch_style)
 	i = 5
-	plt.bar((i+1)*separation_between_bars, measured_metric[6], bar_width, color=colors[i], hatch=hatch_style)
+	plt.bar((i+1)*separation_between_bars, measured_metric[5], bar_width, color=colors[i], hatch=hatch_style) # Not plotting random and worst
 	i = 6
+	plt.bar((i+1)*separation_between_bars, measured_metric[6], bar_width, color=colors[i], hatch=hatch_style)
+	i = 7
 	plt.bar((i+1)*separation_between_bars, measured_metric[7], bar_width, color=colors[i], hatch=hatch_style)
 
 # Legend and labels
@@ -124,9 +128,9 @@ if mode == "queue_time":
 	
 # Not plotting Random and Worst
 if mode == "total_energy" or mode == "carbon_used":
-	labels = ['Credit', 'Energy', 'Mixed', 'EFT']
+	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime']
 else: 
-	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Theta', 'IC', 'Faster'] 
+	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster'] 
 
 plt.xticks(x, labels, rotation ='horizontal')
 

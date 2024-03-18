@@ -20,14 +20,14 @@ print("Start writting input workload", output_file, "with", N_cores_max, "cores 
 
 # Inputs (todo: put in a file or in the command line)
 # ~ N_users = 8
-N_users = 9
-# ~ N_users = 10
+# ~ N_users = 9
+N_users = 10
 # ~ users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster"]
-users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster", "mixed"]
-# ~ users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "desktop", "faster", "mixed"]
+# ~ users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster", "mixed"]
+users_names = ["credit", "energy", "runtime", "random", "worst", "theta", "midway", "faster", "mixed", "runtime"]
 # ~ users = [0, 1, 2, 3, 4, 5, 6, 7]
-users = [0, 1, 2, 3, 4, 5, 6, 7, 8]
-# ~ users = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+# ~ users = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+users = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 N_endpoints = 4
 endpoints = ["theta", "midway", "desktop", "faster"]

@@ -101,9 +101,9 @@ for k in range(1, loop + 1):
 width = 2
 
 if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c"]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202"]
 else: # Not plotting Random and Worst
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#e27ea6", "#f9e300", "#62361b"]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202", "#e27ea6", "#f9e300", "#62361b"]
 
 # ~ for i in range(0, nusers):
 	# ~ plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
@@ -117,6 +117,8 @@ if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
 	plt.plot(X[8], Y[8], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 3
 	plt.plot(X[2], Y[2], color=colors[i], linewidth=width, linestyle=line_style)
+	i = 4
+	plt.plot(X[9], Y[9], color=colors[i], linewidth=width, linestyle=line_style)
 else:
 	i = 0
 	plt.plot(X[i], Y[i], color=colors[i], linewidth=width, linestyle=line_style)
@@ -127,10 +129,12 @@ else:
 	i = 3
 	plt.plot(X[2], Y[2], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 4
-	plt.plot(X[5], Y[5], color=colors[i], linewidth=width, linestyle=line_style)
+	plt.plot(X[9], Y[9], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 5
-	plt.plot(X[6], Y[6], color=colors[i], linewidth=width, linestyle=line_style)
+	plt.plot(X[5], Y[5], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 6
+	plt.plot(X[6], Y[6], color=colors[i], linewidth=width, linestyle=line_style)
+	i = 7
 	plt.plot(X[7], Y[7], color=colors[i], linewidth=width, linestyle=line_style)
 
 # ~ if mode == "finish_times":
@@ -152,9 +156,9 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
 if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
-	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT'], ncol=4, loc=(0.1, -0.24))
+	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime'], ncol=5, loc=(0.1, -0.24))
 else: 
-	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Theta', 'IC', 'Faster'], ncol=4, loc=(0.1, -0.24))
+	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster'], ncol=4, loc=(0.1, -0.24))
 
 filename = "plot/" + output_name + "_" + mode + ".pdf"
 

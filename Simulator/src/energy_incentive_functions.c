@@ -147,6 +147,18 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 			min_id = min_credit_id;
 		}
 	}
+	else if (user_behavior == 9) /* Runtime user. Always choose the endpoint with the lowest runtime. Do not consider queues. */
+	{
+		/* Find the earliest finish time */
+		for (i = 0; i < total_number_nodes; i++)
+		{
+			if (duration_on_machine[i] < min && tab_function_machine_energy[job_id][i] != -1)
+			{
+				min = duration_on_machine[i];
+				min_id = i;
+			}
+		}
+	}
 	
 	if (min_id == -1)
 	{
