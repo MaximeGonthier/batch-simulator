@@ -99,16 +99,16 @@ for k in range(1, loop + 1):
 
 # Settings of the plot
 width = 2
-
+#532A92
 if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202"]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#532A92"]
 else: # Not plotting Random and Worst
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202", "#e27ea6", "#f9e300", "#62361b"]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#532A92", "#e27ea6", "#f9e300", "#62361b"]
 
 # ~ for i in range(0, nusers):
 	# ~ plt.plot(X[i], Y[i], color=colors[i], linewidth=width)
 
-if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
+if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis" or (mode == "finish_times" and output_name == "set_of_endpoints_2_meggie_and_emmy_count_from_database_carbon"):
 	i = 0
 	plt.plot(X[i], Y[i], color=colors[i], linewidth=width, linestyle=line_style)
 	i = 1
@@ -155,7 +155,7 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.ylabel("Core-hours used full workload")
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
-if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis":
+if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis"or (mode == "finish_times" and output_name == "set_of_endpoints_2_meggie_and_emmy_count_from_database_carbon"):
 	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime'], ncol=5, loc=(0.1, -0.24))
 else: 
 	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster'], ncol=4, loc=(0.1, -0.24))

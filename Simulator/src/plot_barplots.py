@@ -73,7 +73,7 @@ for j in range(0, nusers):
 bar_width = 0.2
 separation_between_bars=0.3
 
-if mode == "total_energy" or mode == "carbon_used":
+if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours":
 	print("Credit:", measured_metric[0])
 	print("Energy:", measured_metric[1])
 	print("Mixed:", measured_metric[8])
@@ -86,18 +86,20 @@ if mode == "total_energy" or mode == "carbon_used":
 # ~ colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
 # Not plotting Random and Worst and the 3 machines
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours":
+if mode == "total_energy" or mode == "carbon_used":
+	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars]
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202"]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#532A92"]
 else: # Not plotting Random and Worst
 	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars]
-	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#020202", "#e27ea6", "#f9e300", "#62361b"]
+	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#532A92", "#e27ea6", "#f9e300", "#62361b"]
 
 # ~ for i in range (0, nusers):
 	# ~ plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Not plotting Random and Worst and the 3 machines
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours":
+if mode == "total_energy" or mode == "carbon_used":
+	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	i = 0
 	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i], hatch=hatch_style)
 	i = 1
@@ -134,7 +136,8 @@ if mode == "queue_time":
 	plt.ylim(0, measured_metric[5]/4)
 	
 # Not plotting Random and Worst
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours":
+if mode == "total_energy" or mode == "carbon_used":
+	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime']
 else: 
 	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster'] 
