@@ -894,6 +894,8 @@ int main(int argc, char *argv[])
 			next_available_time_endpoint[i][j] = 0;
 		}
 	}
+	
+	int nb_job_forbidden_for_desktop = 0;
 
 	printf("Get association of each of the %d jobs (no rep) energy consumption and credit for each of the %d machines...\n", total_number_jobs_no_repetition, total_number_nodes);
 	//~ int** tab_function_machine_calibration = (int**) malloc(total_number_jobs_no_repetition*sizeof(int*)); /* Has the calibration been done on this function-machine association? */
@@ -914,6 +916,7 @@ int main(int argc, char *argv[])
 			{
 				//~ printf("%d > %d\n", job_pointer->cores, n->ncores*n->ncpu);
 				//~ printf("Too much nodes for desktop, node %d %f nodes\n", j, job_pointer->number_of_nodes[j]);
+				nb_job_forbidden_for_desktop ++;
 				tab_function_machine_energy[i][j] = -1;
 			}
 			else
@@ -938,6 +941,8 @@ int main(int argc, char *argv[])
 				else
 				{
 					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*((n->carbon_intensity + n->carbon_rate)/1000); /* Carbon credit. Divided by 1000 because the value were in kwh */
+					
+					
 					//~ printf("%d: %f[%d][%d] = (%f + %f)/2 x (%f + %f)/1000\n", job_pointer->unique_id, tab_function_machine_credit[i][j], i, j, tab_function_machine_energy[i][j], max_watt_hour, n->carbon_intensity, n->carbon_rate);
 				}
 					
@@ -951,10 +956,16 @@ int main(int argc, char *argv[])
 	
 	/* Putting in a tab the carbon cost per Wh for printing in output file. */
 	double* carbon_cost_per_wh = malloc(total_number_nodes*sizeof(double));
+	double* carbon_intensity_per_wh = malloc(total_number_nodes*sizeof(double));
+	double* carbon_rate_per_wh = malloc(total_number_nodes*sizeof(double));
+	double* tdp_for_carbon = malloc(total_number_nodes*sizeof(double));
 	struct Node* n = node_list[0]->head;
 	for (i = 0; i < total_number_nodes; i++)
 	{
 		carbon_cost_per_wh[i] = (n->carbon_intensity + n->carbon_rate)/1000;
+		carbon_intensity_per_wh[i] = (n->carbon_intensity)/1000;
+		carbon_rate_per_wh[i] = (n->carbon_rate)/1000;
+		tdp_for_carbon[i] = n->tdp*n->ncpu;
 		n = n->next;
 	}
 	
@@ -964,7 +975,7 @@ int main(int argc, char *argv[])
 	int processed_jobs = 0;
 	int k = 0;
 	
-	printf("Assigning jobs to endpoints. %d workload repetition...\n", number_workload_repetition);
+	//~ printf("Assigning jobs to endpoints. %d workload repetition...\n", number_workload_repetition);
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
@@ -972,7 +983,7 @@ int main(int argc, char *argv[])
 		{
 			for (k = 0; k < job_pointer->nb_of_repetition; k++)
 			{
-				if (processed_jobs%250000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
+				//~ if (processed_jobs%250000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
 				processed_jobs += 1;
 				
 				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
@@ -992,7 +1003,12 @@ int main(int argc, char *argv[])
 				new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
 				new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
 				new->job_cores = job_pointer->cores;
-				new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
+				
+				//~ new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
+				
+				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
+				
+				//~ how to get carbon used at the end: tdp * rate and energy used * intensity
 				
 				for(j = 0; j < total_number_nodes; j++)
 				{
@@ -1017,6 +1033,7 @@ int main(int argc, char *argv[])
 		i++;
 	}
 	print_csv_energy_incentive(jobs_to_print_list->head, nusers);
+	printf("Nb jobs that Desktop could not compute: %d.\n", nb_job_forbidden_for_desktop);
 	#else
 	/** END ENERGY INCENTIVE **/
 	

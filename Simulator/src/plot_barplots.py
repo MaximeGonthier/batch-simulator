@@ -6,8 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.set_style('darkgrid', {'axes.facecolor': '.9'})
-sns.set_context("paper")
+sns.set_theme(style='darkgrid', context='paper', font_scale=1.75, rc={'axes.facecolor': '.9', 'figure.figsize':(7,4)})
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -59,7 +58,7 @@ for j in range(1, n_iteration+1):
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
 				measured_metric[User_id[i]] += 1
-	elif mode == "nb_jobs_completed_in_mean_core_hours":
+	elif mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
 				measured_metric[User_id[i]] += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
@@ -73,7 +72,7 @@ for j in range(0, nusers):
 bar_width = 0.2
 separation_between_bars=0.3
 
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours":
+if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	print("Credit:", measured_metric[0])
 	print("Energy:", measured_metric[1])
 	print("Mixed:", measured_metric[8])
@@ -86,7 +85,7 @@ if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed
 # ~ colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
 # Not plotting Random and Worst and the 3 machines
-if mode == "total_energy" or mode == "carbon_used":
+if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars]
 	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#532A92"]
@@ -98,7 +97,7 @@ else: # Not plotting Random and Worst
 	# ~ plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Not plotting Random and Worst and the 3 machines
-if mode == "total_energy" or mode == "carbon_used":
+if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	i = 0
 	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i], hatch=hatch_style)
@@ -136,28 +135,30 @@ if mode == "queue_time":
 	plt.ylim(0, measured_metric[5]/4)
 	
 # Not plotting Random and Worst
-if mode == "total_energy" or mode == "carbon_used":
+if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime']
+	plt.xticks(x, labels, rotation ='horizontal')
 else: 
-	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster'] 
+	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster']
+	plt.xticks(x, labels, rotation = 42)
 
-plt.xticks(x, labels, rotation ='horizontal')
 
 if mode == "total_energy":
-	plt.ylabel("Energy consumed over full workload (KWh)")
+	# ~ plt.ylabel("Energy consumed over full workload (KWh)")
+	plt.ylabel("Energy consumed (KWh)")
 	mode_name = "_energy_used"
 elif mode == "nb_jobs_completed":
 	plt.ylabel("Number of jobs completed")
 	mode_name = "_nb_jobs_completed"
-elif mode == "nb_jobs_completed_in_mean_core_hours":
+elif mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	plt.ylabel("Mean core-hours completed")
 	mode_name = "_nb_jobs_completed_in_mean_core_hours"
 elif mode == "queue_time":
-	plt.ylabel("Total queue time full workload (s)")
+	plt.ylabel("Total queue time (s)")
 	mode_name = "_queue_time"
 elif mode == "carbon_used":
-	plt.ylabel("Total carbon consumed (kgCO2)")
+	plt.ylabel("Carbon consumed (kgCO2)")
 	mode_name = "_carbon_used"
 	
 # Control grid on Y-axis

@@ -4,8 +4,7 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.set_style('darkgrid', {'axes.facecolor': '.9'})
-sns.set_context("paper")
+sns.set_theme(style='darkgrid', context='paper', font_scale=1.75, rc={'axes.facecolor': '.9', 'figure.figsize':(7,4)})
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -108,10 +107,10 @@ df.plot(kind='bar', stacked=True, color=colors, hatch=hatch_style)
 # labels for x & y axis
 # ~ plt.locator_params(axis='y', nbins=4, integer=True) 
 plt.xlabel('User behavior')
-plt.ylabel('Number of jobs completed from full workload')
+plt.ylabel('Number of jobs')
 plt.xticks(rotation=360)
 
-plt.legend(['Theta', 'IC', 'Desktop', 'Faster'], ncol=4, loc=(0.1, -0.18))
+plt.legend(['Theta', 'IC', 'Desktop', 'Faster'], ncol=4, loc=(-0.1, -0.32))
 
 # Saving plot
 mode_name = ""
