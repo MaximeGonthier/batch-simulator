@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.set_theme(style='darkgrid', context='paper', font_scale=1.75, rc={'axes.facecolor': '.9', 'figure.figsize':(7,4)})
+sns.set_theme(style='whitegrid', context='paper', font_scale=1.75, rc={'axes.facecolor': 'white', 'figure.figsize':(7,4)})
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -140,7 +140,7 @@ if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed
 	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime']
 	plt.xticks(x, labels, rotation ='horizontal')
 else: 
-	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster']
+	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER']
 	plt.xticks(x, labels, rotation = 42)
 
 

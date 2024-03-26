@@ -4,7 +4,7 @@ import sys
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.set_theme(style='darkgrid', context='paper', font_scale=1.75, rc={'axes.facecolor': '.9', 'figure.figsize':(7,4)})
+sns.set_theme(style='whitegrid', context='paper', font_scale=1.75, rc={'axes.facecolor': 'white', 'figure.figsize':(7,4)})
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -95,7 +95,7 @@ for i in range(0, nmachines):
 df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_8[0], measured_metric_2[0], measured_metric_9[0]],
                    'IC': [measured_metric_0[1], measured_metric_1[1], measured_metric_8[1], measured_metric_2[1], measured_metric_9[1]],
                    'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_8[2], measured_metric_2[2], measured_metric_9[2]],
-                   'Faster': [measured_metric_0[3], measured_metric_1[3], measured_metric_8[3], measured_metric_2[3], measured_metric_9[3]]},
+                   'FASTER': [measured_metric_0[3], measured_metric_1[3], measured_metric_8[3], measured_metric_2[3], measured_metric_9[3]]},
                   index=["Credit", "Energy", "Mixed", "EFT", "Runtime"])
 
 # Plot settings
@@ -110,7 +110,7 @@ plt.xlabel('User behavior')
 plt.ylabel('Number of jobs')
 plt.xticks(rotation=360)
 
-plt.legend(['Theta', 'IC', 'Desktop', 'Faster'], ncol=4, loc=(-0.1, -0.32))
+plt.legend(['Theta', 'IC', 'Desktop', 'FASTER'], ncol=4, loc=(-0.1, -0.32))
 
 # Saving plot
 mode_name = ""

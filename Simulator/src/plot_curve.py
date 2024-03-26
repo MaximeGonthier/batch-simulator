@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-sns.set_theme(style='darkgrid', context='paper', font_scale=1.75, rc={'axes.facecolor': '.9', 'figure.figsize':(7,4)})
+sns.set_theme(style='whitegrid', context='paper', font_scale=1.75, rc={'axes.facecolor': 'white', 'figure.figsize':(7,4)})
 
 input_file = sys.argv[1]
 nusers = int(sys.argv[2])
@@ -157,7 +157,8 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis"or (mode == "finish_times" and output_name == "set_of_endpoints_2_meggie_and_emmy_count_from_database_carbon"):
 	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime'], ncol=5, loc=(0.1, -0.24))
 else: 
-	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'Faster'], ncol=4, loc=(-0.2, -0.44))
+	# ~ plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER'], ncol=4, loc=(-0.2, -0.44))
+	plt.legend(['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER'], ncol=4, loc=(-0.257, -0.44))
 
 filename = "plot/" + output_name + "_" + mode + ".pdf"
 
