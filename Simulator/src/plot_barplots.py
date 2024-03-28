@@ -24,6 +24,8 @@ measured_metric = [0]*nusers # First tab cell is for user 0 then 1, etc...
 
 print("Plotting", mode, "with input file", input_file, "and", nusers, "users", n_iteration, "iterations")
 
+total_mean_core_hours = 0
+
 for j in range(1, n_iteration+1):
 	
 	if n_iteration > 1:
@@ -62,16 +64,25 @@ for j in range(1, n_iteration+1):
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
 				measured_metric[User_id[i]] += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
+			if i%nusers == 0:
+				total_mean_core_hours += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
 	else:
 		print("ERROR: Wrong mode in plot_batrplots.py")
 		
 for j in range(0, nusers):
 	measured_metric[j] = measured_metric[j]/n_iteration
+total_mean_core_hours = total_mean_core_hours/n_iteration
 
 # Settings of the plot
 bar_width = 0.2
 separation_between_bars=0.3
 
+if  mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
+	print("Total Mean Core Hours:", total_mean_core_hours)
+	print("% by Credit:", (measured_metric[0]*100)/total_mean_core_hours, "%")
+	print("% by Energy:", (measured_metric[1]*100)/total_mean_core_hours, "%")
+	print("% difference between Credit and Energy:", ((measured_metric[0] - measured_metric[1])/((measured_metric[0] + measured_metric[1])/2))*100, "%")
+	
 if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	print("Credit:", measured_metric[0])
 	print("Energy:", measured_metric[1])
