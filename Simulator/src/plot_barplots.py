@@ -89,6 +89,11 @@ if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed
 	print("Mixed:", measured_metric[8])
 	print("EFT:", measured_metric[2])
 	print("Runtime:", measured_metric[9])
+	
+	if mode == "nb_jobs_completed_in_mean_core_hours":
+		print("% difference between Credit and EFT:", ((measured_metric[0] - measured_metric[2])/((measured_metric[0] + measured_metric[2])/2))*100, "%")
+	if mode == "total_energy":
+		print("% difference between Credit and EFT:", ((measured_metric[2] - measured_metric[0])/((measured_metric[2] + measured_metric[0])/2))*100, "%")
 
 # ~ x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars]
 # ~ x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars, 6*separation_between_bars, 7*separation_between_bars, 8*separation_between_bars, 9*separation_between_bars, 10*separation_between_bars]
