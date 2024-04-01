@@ -153,10 +153,10 @@ if mode == "queue_time":
 # Not plotting Random and Worst
 if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
-	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime']
+	labels = ['Best', 'Energy', 'Mixed', 'EFT', 'Runtime']
 	plt.xticks(x, labels, rotation ='horizontal')
 else: 
-	labels = ['Credit', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER']
+	labels = ['Best', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER']
 	plt.xticks(x, labels, rotation = 42)
 
 
@@ -180,7 +180,7 @@ elif mode == "carbon_used":
 # Control grid on Y-axis
 # ~ plt.locator_params(axis='y', nbins=4, integer=True)
 
-plt.xlabel("User behavior")
+# ~ plt.xlabel("Policy")
 
 # Saving plots
 filename = "plot/" + output_name + mode_name + "_barplot.pdf"
