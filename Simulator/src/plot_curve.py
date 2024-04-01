@@ -71,8 +71,9 @@ for k in range(1, loop + 1):
 			if (User_id[j] == i):
 				if (New_credit[j] > 0 and mode == "finish_times"):
 					evaluated_metric_Y += 1
-					X[User_id[j]].append(Job_end_time[j])
-					Y[User_id[j]].append(evaluated_metric_Y)
+					# ~ X[User_id[j]].append(Job_end_time[j])
+					X[User_id[j]].append(Job_end_time[j]/(60*60))
+					Y[User_id[j]].append(evaluated_metric_Y/1000)
 				elif (New_credit[j] > 0 and mode == "finish_times_submission_order_X_axis"):
 					evaluated_metric_Y += 1
 					X[User_id[j]].append(submission_order)
@@ -141,8 +142,8 @@ else:
 
 # Legend and labels
 if mode == "finish_times":
-	plt.ylabel("Number of jobs completed")
-	plt.xlabel("Completion Time (s)")
+	plt.ylabel("Thousands of jobs completed", fontsize=15)
+	plt.xlabel("Elapsed Time (hours)")
 elif mode == "finish_times_core_hours_Y_axis":
 	plt.ylabel("Mean core-hours completed full workload")
 	plt.xlabel("Completion Time (s)")

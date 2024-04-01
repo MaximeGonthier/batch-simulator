@@ -21,7 +21,7 @@ nmachines = 4
 
 measured_metric_0 = [0]*nmachines 
 measured_metric_1 = [0]*nmachines 
-measured_metric_2 = [0]*nmachines 
+measured_metric_2 = [0]*nmachines
 measured_metric_3 = [0]*nmachines 
 measured_metric_4 = [0]*nmachines 
 measured_metric_5 = [0]*nmachines 
@@ -75,6 +75,17 @@ for j in range(1, n_iteration+1):
 			measured_metric_9[Selected_endpoint[i]] += 1
 		
 for i in range(0, nmachines):
+	measured_metric_0[i] = measured_metric_0[i]/1000
+	measured_metric_1[i] = measured_metric_1[i]/1000
+	measured_metric_2[i] = measured_metric_2[i]/1000
+	measured_metric_3[i] = measured_metric_3[i]/1000
+	measured_metric_4[i] = measured_metric_4[i]/1000
+	measured_metric_5[i] = measured_metric_5[i]/1000
+	measured_metric_6[i] = measured_metric_6[i]/1000
+	measured_metric_7[i] = measured_metric_7[i]/1000
+	measured_metric_8[i] = measured_metric_8[i]/1000
+	measured_metric_9[i] = measured_metric_9[i]/1000
+	
 	measured_metric_0[i] = measured_metric_0[i]/n_iteration
 	measured_metric_1[i] = measured_metric_1[i]/n_iteration
 	measured_metric_2[i] = measured_metric_2[i]/n_iteration
@@ -109,7 +120,7 @@ df.plot(kind='bar', stacked=True, color=colors, hatch=hatch_style)
 # labels for x & y axis
 # ~ plt.locator_params(axis='y', nbins=4, integer=True) 
 plt.xlabel('User behavior')
-plt.ylabel('Number of jobs')
+plt.ylabel('Thoushands of jobs')
 plt.xticks(rotation=360)
 
 plt.legend(['Theta', 'IC', 'Desktop', 'FASTER'], ncol=4, loc=(-0.1, -0.32))

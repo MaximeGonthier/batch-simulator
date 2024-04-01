@@ -49,7 +49,7 @@ for j in range(1, n_iteration+1):
 
 	if mode == "total_energy":
 		for i in range(0, Nlines):
-			measured_metric[User_id[i]] += Energy_used[i]/1000
+			measured_metric[User_id[i]] += Energy_used[i]/1000000
 	elif mode == "queue_time":
 		for i in range(0, Nlines):
 			measured_metric[User_id[i]] += Queue_time[i]
@@ -63,9 +63,9 @@ for j in range(1, n_iteration+1):
 	elif mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
-				measured_metric[User_id[i]] += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
+				measured_metric[User_id[i]] += ((Mean_completion_time[i]/3600)*Number_of_cores_used[i])/1000000
 			if i%nusers == 0:
-				total_mean_core_hours += (Mean_completion_time[i]/3600)*Number_of_cores_used[i]
+				total_mean_core_hours += ((Mean_completion_time[i]/3600)*Number_of_cores_used[i])/1000000
 	else:
 		print("ERROR: Wrong mode in plot_batrplots.py")
 		
@@ -162,13 +162,13 @@ else:
 
 if mode == "total_energy":
 	# ~ plt.ylabel("Energy consumed over full workload (KWh)")
-	plt.ylabel("Energy consumed (KWh)")
+	plt.ylabel("Energy consumed (MWh)")
 	mode_name = "_energy_used"
 elif mode == "nb_jobs_completed":
 	plt.ylabel("Number of jobs completed")
 	mode_name = "_nb_jobs_completed"
 elif mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
-	plt.ylabel("Mean core-hours completed")
+	plt.ylabel("Millions of core-hours")
 	mode_name = "_nb_jobs_completed_in_mean_core_hours"
 elif mode == "queue_time":
 	plt.ylabel("Total queue time (s)")
