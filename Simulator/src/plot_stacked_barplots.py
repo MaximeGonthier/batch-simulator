@@ -85,7 +85,9 @@ for i in range(0, nmachines):
 	measured_metric_7[i] = measured_metric_7[i]/n_iteration
 	measured_metric_8[i] = measured_metric_8[i]/n_iteration
 	measured_metric_9[i] = measured_metric_9[i]/n_iteration
-	 
+	
+print(measured_metric_0[3])
+print(measured_metric_0[0]+measured_metric_0[1]+measured_metric_0[2]+measured_metric_0[3])
 # create DataFrame
 # ~ df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measured_metric_2[0], measured_metric_3[0], measured_metric_4[0], measured_metric_5[0], measured_metric_6[0], measured_metric_7[0], measured_metric_8[0]],
                    # ~ 'IC': [measured_metric_0[1], measured_metric_1[1], measured_metric_2[1], measured_metric_3[1], measured_metric_4[1], measured_metric_5[1], measured_metric_6[1], measured_metric_7[1], measured_metric_8[1]],
