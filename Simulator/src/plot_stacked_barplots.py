@@ -109,7 +109,7 @@ df = pd.DataFrame({'Theta': [measured_metric_0[0], measured_metric_1[0], measure
                    'IC': [measured_metric_0[1], measured_metric_1[1], measured_metric_8[1], measured_metric_2[1], measured_metric_9[1]],
                    'Desktop': [measured_metric_0[2], measured_metric_1[2], measured_metric_8[2], measured_metric_2[2], measured_metric_9[2]],
                    'FASTER': [measured_metric_0[3], measured_metric_1[3], measured_metric_8[3], measured_metric_2[3], measured_metric_9[3]]},
-                  index=["Best", "Energy", "Mixed", "EFT", "Runtime"])
+                  index=["Greedy", "Energy", "Mixed", "EFT", "Runtime"])
 
 # Plot settings
 colors = ["#5875A4", "#CC8963", "#5F9E6E", "#B55D60"]

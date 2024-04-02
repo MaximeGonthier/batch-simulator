@@ -156,9 +156,9 @@ elif mode == "finish_times_core_hours_Y_axis_energy_consumed_X_axis":
 	plt.xlabel("Energy consumed full workload (Wh)")
 	
 if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis"or (mode == "finish_times" and output_name == "set_of_endpoints_2_meggie_and_emmy_count_from_database_carbon"):
-	plt.legend(['Best', 'Energy', 'Mixed', 'EFT', 'Runtime'], ncol=5, loc=(0.1, -0.24))
+	plt.legend(['Greedy', 'Energy', 'Mixed', 'EFT', 'Runtime'], ncol=5, loc=(0.1, -0.24))
 else: 
-	plt.legend(['Best', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER'], ncol=4, loc=(-0.257, -0.44))
+	plt.legend(['Greedy', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER'], ncol=4, loc=(-0.257, -0.44))
 
 filename = "plot/" + output_name + "_" + mode + ".pdf"
 

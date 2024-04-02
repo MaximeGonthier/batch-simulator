@@ -153,10 +153,10 @@ if mode == "queue_time":
 # Not plotting Random and Worst
 if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
-	labels = ['Best', 'Energy', 'Mixed', 'EFT', 'Runtime']
+	labels = ['Greedy', 'Energy', 'Mixed', 'EFT', 'Runtime']
 	plt.xticks(x, labels, rotation ='horizontal')
 else: 
-	labels = ['Best', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER']
+	labels = ['Greedy', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER']
 	plt.xticks(x, labels, rotation = 42)
 
 
