@@ -14,6 +14,7 @@ output_name = sys.argv[3]
 mode = sys.argv[4] # Either plotting total energy consumed or number of jobs computed
 n_iteration = int(sys.argv[5])
 credit_or_carbon = sys.argv[6]
+fig_name = sys.argv[7]
 
 hatch_style = ""
 if credit_or_carbon == "carbon":
@@ -55,7 +56,7 @@ for j in range(1, n_iteration+1):
 			measured_metric[User_id[i]] += Queue_time[i]
 	elif mode == "carbon_used":
 		for i in range(0, Nlines):
-			measured_metric[User_id[i]] += Carbon_used[i]/1000
+			measured_metric[User_id[i]] += Carbon_used[i]/1000000
 	elif mode == "nb_jobs_completed":
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
@@ -183,5 +184,5 @@ elif mode == "carbon_used":
 # ~ plt.xlabel("Policy")
 
 # Saving plots
-filename = "plot/" + output_name + mode_name + "_barplot.pdf"
+filename = "plot/" + fig_name + ".pdf"
 plt.savefig(filename, bbox_inches='tight')

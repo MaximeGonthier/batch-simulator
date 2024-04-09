@@ -13,7 +13,7 @@ output_name = sys.argv[3]
 mode = sys.argv[4] # Between finish times or energy consumed
 n_iteration = int(sys.argv[5])
 credit_or_carbon = sys.argv[6]
-
+fig_name = sys.argv[7]
 # ~ if credit_or_carbon == "carbon":
 	# ~ sns.set_style(rc = {'axes.facecolor': 'gray'})
 line_style = "solid"
@@ -160,6 +160,6 @@ if mode == "energy_consumed" or mode == "finish_times_core_hours_Y_axis"or (mode
 else: 
 	plt.legend(['Greedy', 'Energy', 'Mixed', 'EFT', 'Runtime', 'Theta', 'IC', 'FASTER'], ncol=4, loc=(-0.257, -0.44))
 
-filename = "plot/" + output_name + "_" + mode + ".pdf"
+filename = "plot/" + fig_name + ".pdf"
 
 plt.savefig(filename, bbox_inches='tight')

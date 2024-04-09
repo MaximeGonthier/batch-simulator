@@ -12,7 +12,7 @@ output_name = sys.argv[3]
 mode = sys.argv[4]
 n_iteration = int(sys.argv[5])
 credit_or_carbon = sys.argv[6]
-
+fig_name = sys.argv[7]
 hatch_style = ""
 if credit_or_carbon == "carbon":
 	hatch_style = "//"
@@ -127,5 +127,5 @@ plt.legend(['Theta', 'IC', 'Desktop', 'FASTER'], ncol=4, loc=(-0.1, -0.32))
 
 # Saving plot
 mode_name = ""
-filename = "plot/" + output_name + mode_name + "_stacked_barplot.pdf"
+filename = "plot/" + fig_name + ".pdf"
 plt.savefig(filename, bbox_inches='tight')

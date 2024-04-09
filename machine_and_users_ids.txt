@@ -1,10 +1,5 @@
 Machine order in functions file for simulator:
 
-theta
-midway
-desktop
-faster
-
 machines_names = ["theta", "midway", "desktop", "faster"]
 machines = [0, 1, 2, 3]
 
