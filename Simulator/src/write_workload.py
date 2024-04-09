@@ -161,7 +161,6 @@ for i in range (0, N_functions*N_users*N_cores_max):
 		required_multiplier_for_balance = max(1, int(10/mean_runtime_functions[i_functions]))
 	else:
 		required_multiplier_for_balance = 1
-	# ~ print("Weight multiplier is", required_multiplier_for_balance)
 	
 	if weight_mode == "balance_weight" or weight_mode == "default":
 		nb_of_repetition = 1
@@ -202,8 +201,6 @@ for i in range (0, N_functions*N_users*N_cores_max):
 	if i_functions == N_functions:
 		break
 f.close()
-
-# TODO: Use count to have multiple time the same functions!!
 
 print("Total number of functions call is", nb_functions)
 print("Finished writting input workload")

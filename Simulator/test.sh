@@ -6,7 +6,7 @@ nusers=$3
 N_cores_max=$4
 mode_for_repetition=$5
 
-make energy_incentive -C src/
+make -C src/
 
 echo ""
 

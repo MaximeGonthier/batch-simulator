@@ -77,7 +77,7 @@ with open(job_input_file, 'r') as file:
 			f.write(str(nodes_used) + ", ")
 			f.write(str(nodes_used*20) + ", ")
 			
-			print(line)
+			# ~ print(line)
 			i = 0
 			# ~ while line[end_of_nodes_digit+i:end_of_nodes_digit+1+i] != "|":
 				# ~ i += 1
@@ -91,7 +91,7 @@ with open(job_input_file, 'r') as file:
 				walltime = 24*60*60*int(line[start_of_walltime:start_of_walltime+1]) + 10*60*int(line[start_of_walltime+2:start_of_walltime+3]) + 60*int(line[start_of_walltime+3:start_of_walltime+4]) + 10*int(line[start_of_walltime+5:start_of_walltime+6]) + int(line[start_of_walltime+6:start_of_walltime+7])
 			else:
 				walltime = 10*60*int(line[start_of_walltime:start_of_walltime+1]) + 60*int(line[start_of_walltime+1:start_of_walltime+2]) + 10*int(line[start_of_walltime+3:start_of_walltime+4]) + int(line[start_of_walltime+4:start_of_walltime+5])
-			print("walltime:", walltime)
+			# ~ print("walltime:", walltime)
 			f.write(str(walltime) + ", ")
 			
 			i = 1
@@ -107,11 +107,11 @@ with open(job_input_file, 'r') as file:
 				runtime = 24*60*60*int(line[start_of_runtime:start_of_runtime+1]) + 10*60*int(line[start_of_runtime+2:start_of_runtime+3]) + 60*int(line[start_of_runtime+3:start_of_runtime+4]) + 10*int(line[start_of_runtime+5:start_of_runtime+6]) + int(line[start_of_runtime+6:start_of_runtime+7])
 			else:
 				runtime = 10*60*int(line[start_of_runtime:start_of_runtime+1]) + 60*int(line[start_of_runtime+1:start_of_runtime+2]) + 10*int(line[start_of_runtime+3:start_of_runtime+4]) + int(line[start_of_runtime+4:start_of_runtime+5])
-			print("runtime:", runtime)
+			# ~ print("runtime:", runtime)
 			f.write(str(runtime) + ", ")
 			
 			user = line[end_of_runtime+1:end_of_runtime+1+8]
-			print("user:", user)
+			# ~ print("user:", user)
 			f.write(str(user) + "\n")
 			
 

@@ -42,9 +42,9 @@ with open(job_input_file, 'r') as file:
 						check_next_char_for_more_than_9_nodes = False
 						if (char != ":"):
 							nb_nodes = nb_nodes*10 + int(char)
-						print("Nb of nodes:", nb_nodes)
+						# ~ print("Nb of nodes:", nb_nodes)
 						f.write(str(nb_nodes) + ", ")
-						print("Nb of cores:", nb_nodes*20)
+						# ~ print("Nb of cores:", nb_nodes*20)
 						f.write(str(nb_nodes*20) + ", ")
 						break
 					if get_nb_node_next_char == True:
@@ -78,28 +78,28 @@ with open(job_input_file, 'r') as file:
 									if (str(float(energy_used)) == "nan"):
 										found = False
 										break
-									print("Energy used int:", float(energy_used), "Watts")
-									print("Energy used:", energy_used, "Watts")
+									# ~ print("Energy used int:", float(energy_used), "Watts")
+									# ~ print("Energy used:", energy_used, "Watts")
 									f.write(str(float(energy_used)) + ", ")
 									break
 					if found == False:
 						break
 					else:
-						print("Job Id:", job_id)
+						# ~ print("Job Id:", job_id)
 						f.write(str(job_id) + ", ")
 					file_power.close()
 					break
 			if (word[0:23] == "Resource_List.walltime=" and found == True): # Getting info on runtime
 				walltime = int(word[23])*10*3600 + int(word[24])*3600 + int(word[26])*10*60 + int(word[27])*60 + int(word[29])*10 + int(word[30])
-				print("Walltime:", walltime, "Seconds")
+				# ~ print("Walltime:", walltime, "Seconds")
 				f.write(str(walltime) + ", ")
 			if (word[0:24] == "resources_used.walltime=" and found == True): # Getting info on runtime
 				runtime = int(word[24])*10*3600 + int(word[25])*3600 + int(word[27])*10*60 + int(word[28])*60 + int(word[30])*10 + int(word[31])
-				print("Runtime:", runtime, "Seconds")
+				# ~ print("Runtime:", runtime, "Seconds")
 				f.write(str(runtime) + ", ")
 			if (word[0:8] == "account=" and found == True): # Getting info on runtime
 				username = word[8:17]
-				print("Username:", username)
+				# ~ print("Username:", username)
 				f.write(str(username) + "\n")
 				found = False
 				
