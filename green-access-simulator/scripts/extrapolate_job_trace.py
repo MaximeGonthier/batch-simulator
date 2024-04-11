@@ -24,7 +24,7 @@ midway_model = gmr.GMM(
     n_components=4, priors=clf.weights_, means=clf.means_,
     covariances=clf.covariances_)
 
-jobs = pd.read_csv("inputs/workloads/raw_data/meggie-raw", on_bad_lines='warn')
+jobs = pd.read_csv("inputs/workloads/meggie-raw", on_bad_lines='warn')
 jobs = jobs.rename(columns={
     "Power used per node": "ppn", " Job Id": "jid", " Number of nodes used": "nodes", " Number of cores used": "cores", " Requested Walltime": "req_walltime", " Runtime": "duration_s", " Username": "user"
 })
@@ -60,6 +60,7 @@ cross_platform_df[("avg_power_W", "Faster")] = X_filled_2[:, 1]
 cross_platform_df[("avg_power_W", "Theta")] = X_filled_2[:, 3]
 
 jobs["req_walltime"] = jobs["req_walltime"].astype(np.float64)
+cross_platform_df.columns = cross_platform_df.columns.to_flat_index()
 new_job_trace = pd.merge(cross_platform_df, pd.pivot_table(jobs, values=["cores","req_walltime"], index=["func_name"], aggfunc="mean"), how="left", left_index=True, right_index=True)
 new_job_trace = pd.merge(new_job_trace, jobs["func_name"].value_counts(ascending=True), how="left", left_index=True, right_index=True)
 new_job_trace = new_job_trace.rename(columns={"func_name": "count"})
@@ -109,7 +110,7 @@ df["req_walltime"] = new_job_trace["req_walltime"]
 df["count"] = new_job_trace["count"]
 meggie_job_trace = df
 
-jobs = pd.read_csv("inputs/workloads/raw_data/emmy-raw", on_bad_lines='warn')
+jobs = pd.read_csv("inputs/workloads/emmy-raw", on_bad_lines='warn')
 jobs = jobs.rename(columns={
     "Power used per node": "ppn", " Job Id": "jid", " Number of nodes used": "nodes", " Number of cores used": "cores", " Requested Walltime": "req_walltime", " Runtime": "duration_s", " Username": "user"
 })
@@ -144,6 +145,7 @@ cross_platform_df[("avg_power_W", "Faster")] = X_filled_2[:, 1]
 cross_platform_df[("avg_power_W", "Theta")] = X_filled_2[:, 3]
 
 jobs["req_walltime"] = jobs["req_walltime"].astype(np.float64)
+cross_platform_df.columns = cross_platform_df.columns.to_flat_index()
 new_job_trace = pd.merge(cross_platform_df, pd.pivot_table(jobs, values=["cores","req_walltime"], index=["func_name"], aggfunc="mean"), how="left", left_index=True, right_index=True)
 new_job_trace = pd.merge(new_job_trace, jobs["func_name"].value_counts(ascending=True), how="left", left_index=True, right_index=True)
 new_job_trace = new_job_trace.rename(columns={"func_name": "count"})
@@ -195,4 +197,4 @@ df["count"] = new_job_trace["count"]
 emmy_job_trace = df
 
 extrapolated_trace = task_stats = pd.concat([meggie_job_trace, emmy_job_trace])
-extrapolated_trace.to_csv("inputs/workloads/raw_data/meggie_and_emmy-job-trace-extrapolated.csv")
+extrapolated_trace.to_csv("inputs/workloads/meggie_and_emmy-job-trace-extrapolated.csv")
