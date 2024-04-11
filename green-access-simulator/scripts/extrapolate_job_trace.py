@@ -24,7 +24,7 @@ midway_model = gmr.GMM(
     n_components=4, priors=clf.weights_, means=clf.means_,
     covariances=clf.covariances_)
 
-jobs = pd.read_csv("inputs/workloads/raw_data/meggie-job-trace.csv", on_bad_lines='warn')
+jobs = pd.read_csv("inputs/workloads/raw_data/meggie-raw", on_bad_lines='warn')
 jobs = jobs.rename(columns={
     "Power used per node": "ppn", " Job Id": "jid", " Number of nodes used": "nodes", " Number of cores used": "cores", " Requested Walltime": "req_walltime", " Runtime": "duration_s", " Username": "user"
 })
@@ -109,7 +109,7 @@ df["req_walltime"] = new_job_trace["req_walltime"]
 df["count"] = new_job_trace["count"]
 meggie_job_trace = df
 
-jobs = pd.read_csv("inputs/workloads/raw_data/emmy-job-trace.csv", on_bad_lines='warn')
+jobs = pd.read_csv("inputs/workloads/raw_data/emmy-raw", on_bad_lines='warn')
 jobs = jobs.rename(columns={
     "Power used per node": "ppn", " Job Id": "jid", " Number of nodes used": "nodes", " Number of cores used": "cores", " Requested Walltime": "req_walltime", " Runtime": "duration_s", " Username": "user"
 })

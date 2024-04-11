@@ -1,5 +1,5 @@
-pandas
-numpy
-scikitlearn
-fancyimpute
-gmr
+pandas==2.2.1
+numpy==1.26.4
+scikit-learn==1.4.1
+fancyimpute @ git+https://github.com/iskandr/fancyimpute.git@36374f84b14a0e870049815bd0b2bc4792d697a1
+gmr==1.6.2
