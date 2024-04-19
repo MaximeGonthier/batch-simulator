@@ -63,11 +63,7 @@ int nb_call_finished_jobs;
 int nb_call_new_jobs;
 
 int main(int argc, char *argv[])
-{
-	#ifdef NB_HOUR_MAX
-	nb_h_scheduled = 1;
-	#endif
-	
+{	
 	nb_data_reuse = 0;
 	if (argc != 9 && argc != 10 && argc != 11)
 	{
@@ -76,55 +72,11 @@ int main(int argc, char *argv[])
 	}
 	
 	bool need_to_resume_state = false;
-	#ifdef SAVE
-	/* By default I don't save/resume */
-	bool need_to_save_state = false;
-	int time_to_save = 0;
-			
-	/* If you add save or resume as the last argument */
-	if (argc > 11)
-	{
-		if (strcmp(argv[11], "save") == 0) 
-		{
-			need_to_save_state = true;
-			time_to_save = atoi(argv[12]);
-			printf("Save after %d jobs.\n", time_to_save); fflush(stdout);
-		}
-		else if (strcmp(argv[11], "save_and_resume") == 0)
-		{
-			need_to_resume_state = true;
-			need_to_save_state = true;
-			time_to_save = atoi(argv[12]);
-			printf("Time to save_and_resume is %d.\n", time_to_save); fflush(stdout);
-		}
-		else if (strcmp(argv[11], "resume") == 0)
-		{
-			need_to_resume_state = true;
-			if (argc > 12)
-			{
-				printf("Error: no arg must be after resume.\n"); fflush(stdout);
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
-		{
-			printf("Error: argv[11] must be save or resume.\n");
-			exit(EXIT_FAILURE);
-		}
-	}
-	#endif
-	
+
 	new_job_list = (struct Job_List*) malloc(sizeof(struct Job_List));
 	new_job_list->head = NULL;
 	new_job_list->tail = NULL;
-	
-	#ifdef PLOT_STATS
-	number_of_backfilled_jobs = 0;
-	number_of_tie_breaks_before_computing_evicted_files_fcfs_score = 0;
-	total_number_of_scores_computed = 0;
-	data_persistence_exploited = 0;
-	#endif
-	
+		
 	/* Random seed init. */
 	busy_cluster = 0; /* Not busy initially */
 	srand(time(NULL));
@@ -184,14 +136,6 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 	
-	#ifdef DATA_PERSISTENCE
-	if (constraint_on_sizes != 0)
-	{
-		printf("Constraint on sizes not dealt with if it's not 0 with data persistence (because of the way I look at the memory usage of a node.\n");
-		exit(1);
-	}
-	#endif
-	
 	printf("Workload: %s\n", input_job_file);
 	printf("Scheduler: %s - Backfill mode: %d\n", scheduler, backfill_mode);
 
@@ -212,19 +156,13 @@ int main(int argc, char *argv[])
 	#endif
 	
 	/* Read workload */
-	//~ #ifndef SAVE
 	if (need_to_resume_state == false)
 	{
 		read_workload(input_job_file, constraint_on_sizes);	
 		nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
 		first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	}
-	//~ #endif
-	
-	#ifdef PRINT_CLUSTER_USAGE
-	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
-	#endif
-	
+		
 	#ifndef ENERGY_INCENTIVE
 	int next_submit_time = first_subtime_day_0;
 	#endif
@@ -839,7 +777,7 @@ int main(int argc, char *argv[])
 	//~ int number_workload_repetition = 3;
 	
 	double credit_to_each_user = 0;
-	bool is_credit = true;
+	int is_credit = 0;
 	if (strcmp(argv[10], "credit") == 0)
 	{
 		//~ credit_to_each_user = 22000000; /* Good for default database */
@@ -848,7 +786,7 @@ int main(int argc, char *argv[])
 	}
 	else if (strcmp(argv[10], "carbon") == 0)
 	{
-		is_credit = false;
+		is_credit = 1;
 		//~ credit_to_each_user = 16650000; /* Good for default database */
 		printf("%s\n", input_node_file);
 		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0)
@@ -868,6 +806,11 @@ int main(int argc, char *argv[])
 			printf("Error set_of_endpoints.\n");
 			exit(EXIT_FAILURE);
 		}
+	}
+	else if (strcmp(argv[10], "carbon_with_carbon_per_hour") == 0)
+	{
+		is_credit = 2;
+		credit_to_each_user = 166000000;
 	}
 	else
 	{
@@ -934,19 +877,24 @@ int main(int argc, char *argv[])
 					max_watt_hour = n->tdp*n->ncpu*job_pointer->number_of_nodes[j]*(job_pointer->duration_on_machine[j]/3600); /* max watt-hour of the machine on the given duration. Calculated as NCPU times Nnodes times CPU TDP times job duration on the machine in hours */
 				}
 				
-				if (is_credit == true)
+				if (is_credit == 0) /* Credit allocation */
 				{
-					tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2; /* credit that would be used with this combination. */
+					tab_function_machine_credit[i][j] = (tab_function_machine_energy[i][j] + max_watt_hour)/2;
 				}
-				else
+				else if (is_credit == 1) /* Carbon allocation */
 				{
+					/* First credit allocation used in SC submission */
 					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*((n->carbon_intensity + n->carbon_rate)/1000); /* Carbon credit. Divided by 1000 because the value were in kwh */
-					
-					
-					//~ printf("%d: %f[%d][%d] = (%f + %f)/2 x (%f + %f)/1000\n", job_pointer->unique_id, tab_function_machine_credit[i][j], i, j, tab_function_machine_energy[i][j], max_watt_hour, n->carbon_intensity, n->carbon_rate);
 				}
-					
-				//~ printf("Job %d on machine %d: %f Watt-hours used (including %f idle power) - %f Max Watt Hour (TDP*NCPU*runtime) - %f seconds of runtime - %f credit removed - %d cores used\n", i, j, tab_function_machine_energy[i][j], n->idle_power, max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], job_pointer->cores);
+				else if (is_credit == 2)
+				{
+					/* Torsten proposition: cost = (energy * intensity) + (duration * carbon-per-hour)
+					 * gives for us:
+					 * energy in wh * carbon intensity converted in wh + duration in second converted to hours * carbon per hour in g per hour
+					 */
+					tab_function_machine_credit[i][j] = tab_function_machine_energy[i][j]*(n->carbon_intensity/1000) + (job_pointer->duration_on_machine[j]/3600)*n->carbon_per_hour;
+					printf("For %d %d the credit removed would be %f\n", i, j, tab_function_machine_energy[i][j]*(n->carbon_intensity/1000) + (job_pointer->duration_on_machine[j]/3600)*n->carbon_per_hour);
+				}
 			}
 			n = n->next;
 		}
@@ -959,6 +907,7 @@ int main(int argc, char *argv[])
 	double* carbon_intensity_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* carbon_rate_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* tdp_for_carbon = malloc(total_number_nodes*sizeof(double));
+	double* carbon_per_hour = malloc(total_number_nodes*sizeof(double));
 	struct Node* n = node_list[0]->head;
 	for (i = 0; i < total_number_nodes; i++)
 	{
@@ -966,6 +915,7 @@ int main(int argc, char *argv[])
 		carbon_intensity_per_wh[i] = (n->carbon_intensity)/1000;
 		carbon_rate_per_wh[i] = (n->carbon_rate)/1000;
 		tdp_for_carbon[i] = n->tdp*n->ncpu;
+		carbon_per_hour[i] = n->carbon_per_hour;
 		n = n->next;
 	}
 	
@@ -1006,10 +956,16 @@ int main(int argc, char *argv[])
 				
 				//~ new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
 				
-				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
-				
-				//~ how to get carbon used at the end: tdp * rate and energy used * intensity
-				
+				/* Carbon used */
+				if (is_credit == 0 || is_credit == 1)
+				{ 
+					new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
+				}
+				else if (is_credit == 2)
+				{
+					new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_per_hour[selected_endpoint]*(job_pointer->duration_on_machine[selected_endpoint]/3600);
+				}
+								
 				for(j = 0; j < total_number_nodes; j++)
 				{
 					new->mean_duration_on_machine += job_pointer->duration_on_machine[j];

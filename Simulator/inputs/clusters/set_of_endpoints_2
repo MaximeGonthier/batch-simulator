@@ -1,4 +1,4 @@
-{ id: 0 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 215 ncpu: 1 idle_power: 110 carbon_rate: 18.31162536 carbon_intensity: 16 endpoint_id: theta }
-{ id: 1 memory: 128 bandwidth: 0.1 core: 48 cpu_tdp: 205 ncpu: 2 idle_power: 136 carbon_rate: 81.02104911 carbon_intensity: 16 endpoint_id: midway }
-{ id: 2 memory: 128 bandwidth: 0.1 core: 16 cpu_tdp: 65 ncpu: 1 idle_power: 6.51 carbon_rate: 376.3119073 carbon_intensity: 16 endpoint_id: desktop }
-{ id: 3 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 205 ncpu: 2 idle_power: 205 carbon_rate: 511.9946542 carbon_intensity: 16 endpoint_id: faster }
+{ id: 0 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 215 ncpu: 1 idle_power: 110 carbon_rate: 18.31162536 carbon_intensity: 16 carbon_per_hour: 1.973907692 endpoint_id: theta }
+{ id: 1 memory: 128 bandwidth: 0.1 core: 48 cpu_tdp: 205 ncpu: 2 idle_power: 136 carbon_rate: 81.02104911 carbon_intensity: 16 carbon_per_hour: 16.65494505 endpoint_id: midway }
+{ id: 2 memory: 128 bandwidth: 0.1 core: 16 cpu_tdp: 65 ncpu: 1 idle_power: 6.51 carbon_rate: 376.3119073 carbon_intensity: 16 carbon_per_hour: 12.26373626 endpoint_id: desktop }
+{ id: 3 memory: 128 bandwidth: 0.1 core: 64 cpu_tdp: 205 ncpu: 2 idle_power: 205 carbon_rate: 511.9946542 carbon_intensity: 16 carbon_per_hour: 105.2472527 endpoint_id: faster }

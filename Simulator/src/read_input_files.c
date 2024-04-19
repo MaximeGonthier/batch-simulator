@@ -33,12 +33,13 @@ void read_cluster(char* input_node_file)
     char idle_power[100];
     char carbon_rate[100];
     char carbon_intensity[100];
+    char carbon_per_hour[100];
     int index_node = 0;
     int unique_id = 0;
     
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
-	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, carbon_rate, s, carbon_intensity, s, s, s) == 22)
+	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, carbon_rate, s, carbon_intensity, s, carbon_per_hour, s, s, s) == 24)
 	{
 		struct Node *new = (struct Node*) malloc(sizeof(struct Node));
 		new->unique_id = unique_id;
@@ -52,6 +53,7 @@ void read_cluster(char* input_node_file)
 		new->carbon_rate = atof(carbon_rate);
 		new->carbon_intensity = atof(carbon_intensity);
 		new->ncores = atoi(core);
+		new->carbon_per_hour = atof(carbon_per_hour);
 			
 		if (constraint_on_sizes != 0)
 		{

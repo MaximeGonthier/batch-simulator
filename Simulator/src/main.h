@@ -209,6 +209,7 @@ struct Node {
     double carbon_rate;
     double carbon_intensity;
     int ncores;
+    double carbon_per_hour;
     #endif
     /** END ENERGY INCENTIVE **/
 };
