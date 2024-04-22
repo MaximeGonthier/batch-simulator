@@ -892,6 +892,8 @@ int main(int argc, char *argv[])
 					 * gives for us:
 					 * energy in wh * carbon intensity converted in wh + duration in second converted to hours * carbon per hour in g per hour
 					 */
+					//~ printf("n->carbon_intensity = %f\n", n->carbon_intensity);
+					//~ printf("n->carbon_per_hour = %f\n", n->carbon_per_hour);
 					tab_function_machine_credit[i][j] = tab_function_machine_energy[i][j]*(n->carbon_intensity/1000) + (job_pointer->duration_on_machine[j]/3600)*n->carbon_per_hour;
 					printf("For %d %d the credit removed would be %f\n", i, j, tab_function_machine_energy[i][j]*(n->carbon_intensity/1000) + (job_pointer->duration_on_machine[j]/3600)*n->carbon_per_hour);
 				}
