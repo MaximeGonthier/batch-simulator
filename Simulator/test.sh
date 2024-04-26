@@ -37,9 +37,9 @@ n_iteration=1
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "carbon_used" ${n_iteration} carbon carbon_used_carbon
 #~ fi
 
-python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "total_energy" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_energy
-python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "nb_jobs_completed_in_mean_core_hours" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_figure6
-python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "carbon_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_carbon
+#~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "total_energy" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_energy
+#~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "nb_jobs_completed_in_mean_core_hours" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_figure6
+#~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "carbon_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_carbon
 
 
 #~ if [ ${endpoints} == set_of_endpoints_2 ]; then
@@ -66,7 +66,7 @@ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetit
 
 #~ if [ ${endpoints} == set_of_endpoints_1 ]; then
 #~ python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_credit.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_credit "machine_used" ${n_iteration} credit figure5
-python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "machine_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_figure5
+#~ python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "machine_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_figure5
 #~ fi
 
 #~ if [ ${endpoints} == set_of_endpoints_2 ]; then

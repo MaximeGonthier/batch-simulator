@@ -19,6 +19,18 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 				min_id = i;
 			}
 		}
+		
+		/* just plotting some stats */
+		//~ if (tab_function_machine_energy[job_id][2] != -1)
+		//~ {
+			//~ nb_jobs_desktop_can_compute += 1;
+			//~ printf("Desktop can execute that, %d in total\n", nb_jobs_desktop_can_compute);
+		//~ }
+		//~ if (tab_function_machine_energy[job_id][2] != -1 && min_id == 2)
+		//~ {
+			//~ nb_jobs_desktop_can_compute_and_was_chosen_by_greedy += 1;
+			//~ printf("Greedy chose desktop, %d in total corresponding to %d percent of the jobs desktop can execute :O\n", nb_jobs_desktop_can_compute_and_was_chosen_by_greedy, (nb_jobs_desktop_can_compute_and_was_chosen_by_greedy*100)/nb_jobs_desktop_can_compute);
+		//~ }
 	}
 	else if (user_behavior == 1)
 	{

@@ -55,6 +55,9 @@ int global_nb_non_available_cores_at_time_t;
 int nb_data_reuse;
 int busy_cluster_threshold;
 
+int nb_jobs_desktop_can_compute;
+int nb_jobs_desktop_can_compute_and_was_chosen_by_greedy;
+
 #ifdef NB_HOUR_MAX
 int nb_h_scheduled;
 #endif
@@ -64,6 +67,9 @@ int nb_call_new_jobs;
 
 int main(int argc, char *argv[])
 {	
+	nb_jobs_desktop_can_compute = 0;
+	nb_jobs_desktop_can_compute_and_was_chosen_by_greedy = 0;
+
 	nb_data_reuse = 0;
 	if (argc != 9 && argc != 10 && argc != 11)
 	{
