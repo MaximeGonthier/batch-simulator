@@ -17,7 +17,7 @@ credit_or_carbon = sys.argv[6]
 fig_name = sys.argv[7]
 
 hatch_style = ""
-if credit_or_carbon == "carbon":
+if credit_or_carbon == "carbon" or credit_or_carbon == "carbon_with_carbon_per_hour":
 	hatch_style = "//"
 
 

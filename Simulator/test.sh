@@ -20,8 +20,8 @@ n_iteration=1
 #~ ./src/main inputs/workloads/converted/${workload}_${mode_for_repetition} inputs/clusters/${endpoints} no_schedule 0 outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv 0 100 ${nusers} from_emmy_and_meggie carbon
 ./src/main inputs/workloads/converted/${workload}_${mode_for_repetition} inputs/clusters/${endpoints} no_schedule 0 outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv 0 100 ${nusers} from_emmy_and_meggie carbon_with_carbon_per_hour
 
-# echo ""
-# echo "Plot barplots"
+echo ""
+echo "Plot barplots"
 
 #~ if [ ${endpoints} == set_of_endpoints_1 ]; then
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_credit.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_credit "total_energy" ${n_iteration} credit figure4
@@ -33,14 +33,16 @@ n_iteration=1
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "total_energy" ${n_iteration} carbon table2_energy
 #python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "nb_jobs_completed" ${n_iteration} carbon
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "nb_jobs_completed_in_mean_core_hours_reduced" ${n_iteration} carbon figure6
+python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "nb_jobs_completed_in_mean_core_hours_reduced" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_amount_of_work_completed_${endpoints}
 #python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "queue_time" ${n_iteration} carbon
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "carbon_used" ${n_iteration} carbon carbon_used_carbon
 #~ fi
 
-#~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "total_energy" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_energy
+#~ if [ ${endpoints} == set_of_endpoints_1 ]; then
+python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "total_energy" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_energy_${endpoints}
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "nb_jobs_completed_in_mean_core_hours" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_figure6
-#~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "carbon_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_carbon
-
+python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon_with_carbon_per_hour "carbon_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_table2_carbon_${endpoints}
+#~ fi
 
 #~ if [ ${endpoints} == set_of_endpoints_2 ]; then
 #~ python3 src/plot_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "nb_jobs_completed_in_mean_core_hours_reduced" ${n_iteration} carbon figure7
@@ -61,8 +63,8 @@ n_iteration=1
 #python3 src/plot_curve.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "finish_times_core_hours_Y_axis" ${n_iteration} carbon
 #python3 src/plot_curve.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "energy_consumed" ${n_iteration} carbon
 
-#echo ""
-#echo "Plot stacked barplots"
+echo ""
+echo "Plot stacked barplots"
 
 #~ if [ ${endpoints} == set_of_endpoints_1 ]; then
 #~ python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_credit.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_credit "machine_used" ${n_iteration} credit figure5
@@ -71,6 +73,6 @@ n_iteration=1
 
 #~ if [ ${endpoints} == set_of_endpoints_2 ]; then
 #~ python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "machine_used" ${n_iteration} carbon figure8
+python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "machine_used" ${n_iteration} carbon_with_carbon_per_hour carbon_with_carbon_per_hour_stacked_barplots_${endpoints}
 #~ fi
 
-#~ python3 src/plot_stacked_barplots.py outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv ${nusers} ${endpoints}_${workload}_${mode_for_repetition}_carbon "machine_used" ${n_iteration} carbon carbon_stacked_barplot
