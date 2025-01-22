@@ -131,8 +131,8 @@ struct Data_List {
 };
 
 struct Job {
-	struct Job* next;
-	int unique_id;
+    struct Job* next;
+    int unique_id;
     int subtime;
     int delay;
     int walltime;
@@ -174,7 +174,7 @@ struct Job {
 };
 
 struct Node {
-	struct Node* next;
+    struct Node* next;
     int unique_id;
     int memory;
     float bandwidth;
@@ -186,8 +186,6 @@ struct Node {
     /* Pour conservative bf */
     int number_cores_in_a_hole;
     struct Core_in_a_hole_List* cores_in_a_hole;
-    //~ int* cores_in_a_hole;
-    //~ int* start_time_of_the_hole; /* Temps auquel le trou n'existera plus. Il y a en a 1 par core car 2 jobs aux starts times différents peuvent créer des trou sur une node. */
     
     /* Pour les data qui restent si rien ne les remplacent */
     #ifdef DATA_PERSISTENCE
@@ -208,6 +206,7 @@ struct Node {
     double idle_power;
     double carbon_rate;
     double carbon_intensity;
+    double* carbon_intensity_one_hour_slices;
     int ncores;
     #endif
     /** END ENERGY INCENTIVE **/
@@ -260,8 +259,8 @@ struct To_Print_List {
 };
 
 struct To_Print {
-	struct To_Print* next;
-	int job_unique_id;
+    struct To_Print* next;
+    int job_unique_id;
     int job_subtime;
     int time;
     int time_used;
@@ -437,6 +436,6 @@ void get_new_biggest_hole(struct Node_List** head_node);
 void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigger_nodes, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy, int adaptative_multiplier, int penalty_on_job_sizes, int start_immediately_if_EAT_is_t, int backfill_mode, int number_node_size_128_and_more, int number_node_size_256_and_more, int number_node_size_1024, float (*Ratio_Area)[3], int multiplier_area_bigger_nodes, int division_by_planned_area, int backfill_big_node_mode, int mixed_strategy);
 
 /* From energy_incentive.c */
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint);
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine);
 void update_credit(int job_id, double* user_credit, double credit_to_remove);
 void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers);

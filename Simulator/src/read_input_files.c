@@ -52,7 +52,59 @@ void read_cluster(char* input_node_file)
 		new->carbon_rate = atof(carbon_rate);
 		new->carbon_intensity = atof(carbon_intensity);
 		new->ncores = atoi(core);
-			
+		new->carbon_intensity_one_hour_slices = malloc(sizeof(double)*8760);
+		
+		/** Varying carbon intensity **/
+		/** Varying carbon intensity input being read and added to a tab. Input file depends on which machine it is. Each cell is a one hour slice. **/
+		char* input_varying_carbon_intensity = NULL;
+		if (new->unique_id == 0) // Miso for theta
+		{
+			input_varying_carbon_intensity = "inputs/carbon/US-MIDW-MISO_2023_hourly.csv";
+		}
+		else if (new->unique_id == 1 || new->unique_id == 2) // PJM for desktop and midway
+		{
+			input_varying_carbon_intensity = "inputs/carbon/US-MIDA-PJM_2023_hourly.csv";
+		}
+		else // ERCO for faster
+		{
+			input_varying_carbon_intensity = "inputs/carbon/US-TEX-ERCO_2023_hourly.csv";
+		}
+		FILE *file_varying_carbon_intensity = fopen(input_varying_carbon_intensity, "r");
+		if (!file_varying_carbon_intensity)
+		{
+			perror("Failed to open file");
+			exit(1);
+		}
+		int MAX_LINE_LENGTH = 256;
+		char line[MAX_LINE_LENGTH];
+	    // Skip the header line
+		if (fgets(line, sizeof(line), file_varying_carbon_intensity) == NULL) {
+			perror("Failed to read header");
+			fclose(file_varying_carbon_intensity);
+			exit(1);
+		}
+		int count = 0;
+		while (fgets(line, sizeof(line), file_varying_carbon_intensity)) {
+			char *token;
+			double direct = 0.0, lca = 0.0;
+
+			// Tokenize the line
+			int column_index = 0;
+			token = strtok(line, ",");
+			while (token) {
+				if (column_index == 5) {  // Column "Carbon Intensity gCO₂eq/kWh (direct)"
+					direct = atof(token);
+				} else if (column_index == 6) {  // Column "Carbon Intensity gCO₂eq/kWh (LCA)"
+					lca = atof(token);
+				}
+				token = strtok(NULL, ",");
+				column_index++;
+			}
+			// Store the result in the array
+			new->carbon_intensity_one_hour_slices[count++] = direct + lca;
+		}
+		fclose(file_varying_carbon_intensity);
+		
 		if (constraint_on_sizes != 0)
 		{
 			if (new->memory == 128)

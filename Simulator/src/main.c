@@ -242,11 +242,6 @@ int main(int argc, char *argv[])
 	}
 	//~ #endif
 
-	//~ #ifdef PRINT
-	//~ printf("\nScheduled job list after scheduling -2 jobs from history. Must be full.\n");
-	//~ print_job_list(scheduled_job_list->head);
-	//~ #endif
-
 	/* getting the number of jobs we need to schedule */
 	//~ #ifndef SAVE
 	if (need_to_resume_state == false)
@@ -270,11 +265,6 @@ int main(int argc, char *argv[])
 		}
 		//~ printf("Start jobs before day 0 done.\n");
 	}
-	//~ #endif
-	
-	//~ #ifdef PRINT
-	//~ printf("\nSchedule job list after starting - 2. Must be less full.\n"); fflush(stdout);
-	//~ print_job_list(scheduled_job_list->head);
 	//~ #endif
 
 	#ifdef PRINT_SCORES_DATA
@@ -499,7 +489,6 @@ int main(int argc, char *argv[])
 		/* Multiplier 1 */
 		while (scheduler[i] != '_')
 		{
-			//~ printf("1: ++ with %c\n", scheduler[i]);
 			i += 1;
 			number_of_char += 1;
 		}
@@ -940,13 +929,10 @@ int main(int argc, char *argv[])
 				}
 				else
 				{
-					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*((n->carbon_intensity + n->carbon_rate)/1000); /* Carbon credit. Divided by 1000 because the value were in kwh */
-					
-					
-					//~ printf("%d: %f[%d][%d] = (%f + %f)/2 x (%f + %f)/1000\n", job_pointer->unique_id, tab_function_machine_credit[i][j], i, j, tab_function_machine_energy[i][j], max_watt_hour, n->carbon_intensity, n->carbon_rate);
+					/** Varying carbon intensity **/
+					//~ tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2)*((n->carbon_intensity + n->carbon_rate)/1000); /* Carbon credit. Divided by 1000 because the value were in kwh */
+					tab_function_machine_credit[i][j] = ((tab_function_machine_energy[i][j] + max_watt_hour)/2);
 				}
-					
-				//~ printf("Job %d on machine %d: %f Watt-hours used (including %f idle power) - %f Max Watt Hour (TDP*NCPU*runtime) - %f seconds of runtime - %f credit removed - %d cores used\n", i, j, tab_function_machine_energy[i][j], n->idle_power, max_watt_hour, job_pointer->duration_on_machine[j], tab_function_machine_credit[i][j], job_pointer->cores);
 			}
 			n = n->next;
 		}
@@ -959,6 +945,8 @@ int main(int argc, char *argv[])
 	double* carbon_intensity_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* carbon_rate_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* tdp_for_carbon = malloc(total_number_nodes*sizeof(double));
+	double* carbon_rates = malloc(total_number_nodes*sizeof(double));
+	double** carbon_intensity_one_hour_slices_per_machine = (double**) malloc(8760*sizeof(double*));
 	struct Node* n = node_list[0]->head;
 	for (i = 0; i < total_number_nodes; i++)
 	{
@@ -966,6 +954,10 @@ int main(int argc, char *argv[])
 		carbon_intensity_per_wh[i] = (n->carbon_intensity)/1000;
 		carbon_rate_per_wh[i] = (n->carbon_rate)/1000;
 		tdp_for_carbon[i] = n->tdp*n->ncpu;
+		carbon_rates[i] = n->carbon_rate;
+		for (j = 0; j < 8760; j++) {
+			carbon_intensity_one_hour_slices_per_machine[j][i] = n->carbon_intensity_one_hour_slices[j];
+		}
 		n = n->next;
 	}
 	
@@ -974,8 +966,7 @@ int main(int argc, char *argv[])
 	i = 0;
 	int processed_jobs = 0;
 	int k = 0;
-	
-	//~ printf("Assigning jobs to endpoints. %d workload repetition...\n", number_workload_repetition);
+		
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
@@ -983,10 +974,13 @@ int main(int argc, char *argv[])
 		{
 			for (k = 0; k < job_pointer->nb_of_repetition; k++)
 			{
-				//~ if (processed_jobs%250000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
+				if (processed_jobs%250000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
 				processed_jobs += 1;
 				
-				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint);
+				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine);
+				
+				/** Varying carbon intensity **/
+				tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[job_pointer->user_behavior][i]/3600)%8760][selected_endpoint] + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
 							
 				update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 				
@@ -998,18 +992,19 @@ int main(int argc, char *argv[])
 				new->selected_endpoint = selected_endpoint;
 				new->removed_credit = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
 				new->new_credit	= credit_users[job_pointer->user_behavior];		
-				new->job_end_time_double = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job will end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
+				new->job_end_time_double = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] + job_pointer->duration_on_machine[selected_endpoint]; /* Considering the next available time of the machine, when will the job end running it on this endpoint? We dissociate users here, consider that only one is using the system at a time. They are not competing. */
 				new->energy_used_watt_hours = tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
 				new->core_hours_used = job_pointer->cores*(job_pointer->duration_on_machine[selected_endpoint]/3600);
 				new->queue_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint] - job_pointer->subtime;
 				new->job_cores = job_pointer->cores;
-				
-				//~ new->carbon_used = carbon_cost_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint]; /* Carbon used in grams */
+					
+				/** Varying carbon intensity **/
+				carbon_intensity_per_wh[selected_endpoint] = carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][selected_endpoint]/1000;
+				carbon_cost_per_wh[selected_endpoint] = (carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][selected_endpoint]/1000 + carbon_rates[selected_endpoint])/1000;
 				
 				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
 				
 				//~ how to get carbon used at the end: tdp * rate and energy used * intensity
-				
 				for(j = 0; j < total_number_nodes; j++)
 				{
 					new->mean_duration_on_machine += job_pointer->duration_on_machine[j];
@@ -1037,17 +1032,9 @@ int main(int argc, char *argv[])
 	#else
 	/** END ENERGY INCENTIVE **/
 	
-	//~ #ifdef PRINT_CLUSTER_USAGE
-	//~ while (finished_jobs != total_number_jobs)
-	//~ while (finished_jobs != 50000)
-	//~ #else
 	while (nb_job_to_evaluate != nb_job_to_evaluate_started)
-	//~ #endif
 	{
-		//~ if (finished_jobs >= 5001) { printf("next end = %d new_jobs: %d\n", end_times->head->time, new_jobs); fflush(stdout); exit(1); }
 		#ifdef SAVE
-		//~ /* Test pour save l'état et recommencer */
-		// if (need_to_save_state == true && t >= time_to_save) /* Avec le temps */
 		if (need_to_save_state == true && finished_jobs >= time_to_save) /* Avec le nb de jobs terminés */
 		{
 			//~ printf("T = %d\n", t); fflush(stdout);

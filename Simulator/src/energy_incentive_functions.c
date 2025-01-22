@@ -1,21 +1,29 @@
 /** START ENERGY INCENTIVE **/
 #include <main.h>
 
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint)
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine)
 {
 	int i = 0;
 	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random - 4 worst credit - 5 = Only theta - 6 = Only midway - 7 = Only faster */
 	double min = DBL_MAX;
 	int min_id = -1;
+	double tab_function_machine_credit_predicted = 0;
 	
 	if (user_behavior == 0)
 	{
 		/* Find the best credit from the tab */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			if (tab_function_machine_credit[job_id][i] < min && tab_function_machine_energy[job_id][i] != -1)
+			/** Varying carbon intensity **/
+			//~ TODO: find the proportion of tie used on each slice. Once done do the same once in main and then test
+			start_slice = next_available_time_endpoint[user_behavior][i]/3600;
+			end_time = start_time + job_length
+			
+			tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][i] + carbon_rates[i])/1000);
+			
+			if (tab_function_machine_credit_predicted < min && tab_function_machine_energy[job_id][i] != -1)
 			{
-				min = tab_function_machine_credit[job_id][i];
+				min = tab_function_machine_credit_predicted;
 				min_id = i;
 			}
 		}
@@ -79,9 +87,12 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		min = -1;
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			if (tab_function_machine_credit[job_id][i] > min && tab_function_machine_energy[job_id][i] != -1)
+			/** Varying carbon intensity **/
+			tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][i] + carbon_rates[i])/1000);
+			
+			if (tab_function_machine_credit_predicted > min && tab_function_machine_energy[job_id][i] != -1)
 			{
-				min = tab_function_machine_credit[job_id][i];
+				min = tab_function_machine_credit_predicted;
 				min_id = i;
 			}
 		}
@@ -116,9 +127,12 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Find what endpoint would give the best credit. */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			if (tab_function_machine_credit[job_id][i] < min && tab_function_machine_energy[job_id][i] != -1)
+			/** Varying carbon intensity **/
+			tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][i] + carbon_rates[i])/1000);
+			
+			if (tab_function_machine_credit_predicted < min && tab_function_machine_energy[job_id][i] != -1)
 			{
-				min = tab_function_machine_credit[job_id][i];
+				min = tab_function_machine_credit_predicted;
 				min_credit_id = i;
 				min_credit_completion_time = duration_on_machine[i] + next_available_time_endpoint[user_behavior][i];
 			}
