@@ -1,0 +1,13 @@
+Plotting total_energy with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_credit.csv and 10 users 1 iterations
+Credit: 328.10376931291194
+Energy: 320.4997908178525
+Mixed: 408.2525016641627
+EFT: 481.84325667551485
+Runtime: 501.4071530601798
+
+Plotting carbon_used with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_carbon.csv and 10 users 1 iterations
+Credit: 362.60394948196915
+Energy: 413.91686415240116
+Mixed: 394.6958187904471
+EFT: 453.7910747396145
+Runtime: 376.8124546695543

@@ -843,6 +843,7 @@ int main(int argc, char *argv[])
 		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0)
 		{
 			credit_to_each_user = 300000000; /* Good for count database */
+			//~ credit_to_each_user = 3000000000000; /* Good for count database */
 		}
 		else if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_2") == 0)
 		{
@@ -982,6 +983,7 @@ int main(int argc, char *argv[])
 	int processed_jobs = 0;
 	int k = 0;
 	double avg_carbon_intensity = 0;
+	double tab_function_machine_credit_predicted = 0;
 	
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
@@ -993,7 +995,7 @@ int main(int argc, char *argv[])
 				if (processed_jobs%250000 == 0) { printf("%d/%d processed jobs\n", processed_jobs, total_number_jobs*number_workload_repetition); }
 				processed_jobs += 1;
 				
-				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine);
+				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine, is_credit);
 				
 				/** Varying carbon intensity **/
 				if (is_credit == false) {
@@ -1005,6 +1007,7 @@ int main(int argc, char *argv[])
 					int num_slices;
 					int current_slice;
 					avg_carbon_intensity = 0;
+					tab_function_machine_credit_predicted = 0;
 
 					get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
 					
@@ -1016,13 +1019,19 @@ int main(int argc, char *argv[])
 						avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][selected_endpoint]*proportions[j];
 						//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
 					}
-					tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (avg_carbon_intensity + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
+					//~ tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (avg_carbon_intensity + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
+					tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]*((avg_carbon_intensity + carbon_rates[selected_endpoint])/1000); // Update tab_function_machine_credit with time at which the job will run
 					//~ printf("tab_function_machine_credit = %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+					if (tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] > 1000000000) { printf("ERROR too big\n"); printf("avg_carbon_intensity %f\n", avg_carbon_intensity); printf("carbon_rates[selected_endpoint] = %f\n", carbon_rates[selected_endpoint]); exit(1); }
 					free(slice_indices);
 					free(proportions);
 				}
+				else {
+					tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
+				}
 							
-				update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+				//~ update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+				update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit_predicted);
 				
 				/* Adding result to the To_Print structure used later to print results into a file. I do that cause it's faster than opening/closing the file each time. */
 				struct To_Print* new = (struct To_Print*) malloc(sizeof(struct To_Print));

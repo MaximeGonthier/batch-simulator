@@ -1,7 +1,7 @@
 /** START ENERGY INCENTIVE **/
 #include <main.h>
 
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine)
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine, bool is_credit)
 {
 	int i = 0;
 	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random - 4 worst credit - 5 = Only theta - 6 = Only midway - 7 = Only faster */
@@ -15,29 +15,34 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Find the best credit from the tab */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			/** Varying carbon intensity **/
-			double current_time = next_available_time_endpoint[user_behavior][i];
-			int job_length = duration_on_machine[i];
-			int *slice_indices = NULL;
-			double *proportions = NULL;
-			int num_slices;
-			int current_slice;
-			avg_carbon_intensity = 0;
+			if (is_credit == false) {
+				/** Varying carbon intensity **/
+				double current_time = next_available_time_endpoint[user_behavior][i];
+				int job_length = duration_on_machine[i];
+				int *slice_indices = NULL;
+				double *proportions = NULL;
+				int num_slices;
+				int current_slice;
+				avg_carbon_intensity = 0;
 
-			get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
-			
-			//~ printf("Job starts at %.2f seconds and lasts %d seconds.\n", current_time, job_length);
-			//~ printf("The job starts in slice %d.\n", current_slice);
-			for (int j = 0; j < num_slices; j++) {
-				//~ printf("Slice %d: %.2f%% of the job\n", slice_indices[j], proportions[j] * 100);
-				if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR user_behavior = %d\n", user_behavior); exit(1); }
-				avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
-				//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
+				get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
+				
+				//~ printf("Job starts at %.2f seconds and lasts %d seconds.\n", current_time, job_length);
+				//~ printf("The job starts in slice %d.\n", current_slice);
+				for (int j = 0; j < num_slices; j++) {
+					//~ printf("Slice %d: %.2f%% of the job\n", slice_indices[j], proportions[j] * 100);
+					if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR user_behavior = %d\n", user_behavior); exit(1); }
+					avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
+					//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
+				}
+				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
+				//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
+				free(slice_indices);
+				free(proportions);
 			}
-			tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
-			//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
-			free(slice_indices);
-			free(proportions);
+			else {
+				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i];
+			}
 			
 			if (tab_function_machine_credit_predicted < min && tab_function_machine_energy[job_id][i] != -1)
 			{
@@ -105,24 +110,34 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		min = -1;
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			/** Varying carbon intensity **/
-			double current_time = next_available_time_endpoint[user_behavior][i];
-			int job_length = duration_on_machine[i];
-			int *slice_indices = NULL;
-			double *proportions = NULL;
-			int num_slices;
-			int current_slice;
-			avg_carbon_intensity = 0;
+			if (is_credit == false) {
+				/** Varying carbon intensity **/
+				double current_time = next_available_time_endpoint[user_behavior][i];
+				int job_length = duration_on_machine[i];
+				int *slice_indices = NULL;
+				double *proportions = NULL;
+				int num_slices;
+				int current_slice;
+				avg_carbon_intensity = 0;
 
-			get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
-			
-			for (int j = 0; j < num_slices; j++) {
-				if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR\n"); exit(1); }
-				avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
+				get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
+				
+				//~ printf("Job starts at %.2f seconds and lasts %d seconds.\n", current_time, job_length);
+				//~ printf("The job starts in slice %d.\n", current_slice);
+				for (int j = 0; j < num_slices; j++) {
+					//~ printf("Slice %d: %.2f%% of the job\n", slice_indices[j], proportions[j] * 100);
+					if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR user_behavior = %d\n", user_behavior); exit(1); }
+					avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
+					//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
+				}
+				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
+				//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
+				free(slice_indices);
+				free(proportions);
 			}
-			tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
-			free(slice_indices);
-			free(proportions);
+			else {
+				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i];
+			}
 			
 			if (tab_function_machine_credit_predicted > min && tab_function_machine_energy[job_id][i] != -1)
 			{
@@ -156,24 +171,34 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		/* Find what endpoint would give the best credit. */
 		for (i = 0; i < total_number_nodes; i++)
 		{
-			/** Varying carbon intensity **/
-			double current_time = next_available_time_endpoint[user_behavior][i];
-			int job_length = duration_on_machine[i];
-			int *slice_indices = NULL;
-			double *proportions = NULL;
-			int num_slices;
-			int current_slice;
-			avg_carbon_intensity = 0;
+			if (is_credit == false) {
+				/** Varying carbon intensity **/
+				double current_time = next_available_time_endpoint[user_behavior][i];
+				int job_length = duration_on_machine[i];
+				int *slice_indices = NULL;
+				double *proportions = NULL;
+				int num_slices;
+				int current_slice;
+				avg_carbon_intensity = 0;
 
-			get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
-			
-			for (int j = 0; j < num_slices; j++) {
-				if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR\n"); exit(1); }
-				avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
+				get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
+				
+				//~ printf("Job starts at %.2f seconds and lasts %d seconds.\n", current_time, job_length);
+				//~ printf("The job starts in slice %d.\n", current_slice);
+				for (int j = 0; j < num_slices; j++) {
+					//~ printf("Slice %d: %.2f%% of the job\n", slice_indices[j], proportions[j] * 100);
+					if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR user_behavior = %d\n", user_behavior); exit(1); }
+					avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
+					//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
+				}
+				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
+				//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
+				free(slice_indices);
+				free(proportions);
 			}
-			tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
-			free(slice_indices);
-			free(proportions);
+			else {
+				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i];
+			}
 						
 			if (tab_function_machine_credit_predicted < min && tab_function_machine_energy[job_id][i] != -1)
 			{

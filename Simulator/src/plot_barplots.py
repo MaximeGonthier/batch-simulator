@@ -63,6 +63,7 @@ for j in range(1, n_iteration+1):
 				measured_metric[User_id[i]] += 1
 	elif mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 		for i in range(0, Nlines):
+			# ~ print(New_credit[i])
 			if (New_credit[i] >= 0):
 				measured_metric[User_id[i]] += ((Mean_completion_time[i]/3600)*Number_of_cores_used[i])/1000000
 			if i%nusers == 0:
