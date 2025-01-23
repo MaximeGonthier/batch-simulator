@@ -886,15 +886,28 @@ int main(int argc, char *argv[])
 	
 	int nb_job_forbidden_for_desktop = 0;
 
-	printf("Get association of each of the %d jobs (no rep) energy consumption and credit for each of the %d machines...\n", total_number_jobs_no_repetition, total_number_nodes);
 	//~ int** tab_function_machine_calibration = (int**) malloc(total_number_jobs_no_repetition*sizeof(int*)); /* Has the calibration been done on this function-machine association? */
 	double** tab_function_machine_energy = (double**) malloc(total_number_jobs_no_repetition*sizeof(double*)); //hauteur
 	double** tab_function_machine_credit = (double**) malloc(total_number_jobs_no_repetition*sizeof(double*)); //hauteur
+	
+	/** Varying carbon intensity **/
+	printf("Get association of varying carbon intensity...\n");
+	double** carbon_intensity_one_hour_slices_per_machine = (double**) malloc(8760*sizeof(double*));
+	for (i = 0; i < 8760; i++) {
+		struct Node* n2 = node_list[0]->head;
+		carbon_intensity_one_hour_slices_per_machine[i] = malloc(total_number_nodes*sizeof(double));
+		for (j = 0; j < total_number_nodes; j++) {
+			carbon_intensity_one_hour_slices_per_machine[i][j] = n2->carbon_intensity_one_hour_slices[i];
+			n2 = n2->next;
+		}
+	}
+
+	printf("Get association of each of the %d jobs (no rep) energy consumption and credit for each of the %d machines...\n", total_number_jobs_no_repetition, total_number_nodes);
 	job_pointer = job_list->head;
 	for (i = 0; i < total_number_jobs_no_repetition; i++)
 	{
 		if (i%25000 == 0) { printf("%d/%d\n", i, total_number_jobs_no_repetition); }
-		
+					
 		//~ tab_function_machine_calibration[i] = malloc(total_number_nodes*sizeof(int)); //largeur
 		tab_function_machine_energy[i] = malloc(total_number_nodes*sizeof(double)); //largeur
 		tab_function_machine_credit[i] = malloc(total_number_nodes*sizeof(double)); //largeur
@@ -945,8 +958,10 @@ int main(int argc, char *argv[])
 	double* carbon_intensity_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* carbon_rate_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* tdp_for_carbon = malloc(total_number_nodes*sizeof(double));
+	
+	/** Varying carbon intensity **/
 	double* carbon_rates = malloc(total_number_nodes*sizeof(double));
-	double** carbon_intensity_one_hour_slices_per_machine = (double**) malloc(8760*sizeof(double*));
+	
 	struct Node* n = node_list[0]->head;
 	for (i = 0; i < total_number_nodes; i++)
 	{
@@ -954,10 +969,10 @@ int main(int argc, char *argv[])
 		carbon_intensity_per_wh[i] = (n->carbon_intensity)/1000;
 		carbon_rate_per_wh[i] = (n->carbon_rate)/1000;
 		tdp_for_carbon[i] = n->tdp*n->ncpu;
+		
+		/** Varying carbon intensity **/
 		carbon_rates[i] = n->carbon_rate;
-		for (j = 0; j < 8760; j++) {
-			carbon_intensity_one_hour_slices_per_machine[j][i] = n->carbon_intensity_one_hour_slices[j];
-		}
+		
 		n = n->next;
 	}
 	
@@ -966,7 +981,8 @@ int main(int argc, char *argv[])
 	i = 0;
 	int processed_jobs = 0;
 	int k = 0;
-		
+	double avg_carbon_intensity = 0;
+	
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
@@ -974,13 +990,37 @@ int main(int argc, char *argv[])
 		{
 			for (k = 0; k < job_pointer->nb_of_repetition; k++)
 			{
-				if (processed_jobs%250000 == 0) { printf("%d/%d\n", processed_jobs, total_number_jobs*number_workload_repetition); }
+				if (processed_jobs%250000 == 0) { printf("%d/%d processed jobs\n", processed_jobs, total_number_jobs*number_workload_repetition); }
 				processed_jobs += 1;
 				
 				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine);
 				
 				/** Varying carbon intensity **/
-				tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[job_pointer->user_behavior][i]/3600)%8760][selected_endpoint] + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
+				if (is_credit == false) {
+					//~ tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[job_pointer->user_behavior][i]/3600)%8760][selected_endpoint] + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
+					double current_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint];
+					int job_length = job_pointer->duration_on_machine[selected_endpoint];
+					int *slice_indices = NULL;
+					double *proportions = NULL;
+					int num_slices;
+					int current_slice;
+					avg_carbon_intensity = 0;
+
+					get_slices(current_time, job_length, &current_slice, &slice_indices, &proportions, &num_slices);
+					
+					//~ printf("Job starts at %.2f seconds and lasts %d seconds.\n", current_time, job_length);
+					//~ printf("The job starts in slice %d.\n", current_slice);
+					for (j = 0; j < num_slices; j++) {
+						//~ printf("Slice %d: %.2f%% of the job\n", slice_indices[j], proportions[j] * 100);
+						if (slice_indices[j] < 0 || proportions[j] < 0) { printf("ERROR main user %d\n", job_pointer->user_behavior); printf("%d slices. Slice[%d] %d: %.2f%% of the job\n", num_slices, j, slice_indices[j], proportions[j] * 100); printf("Job starts at %.2f seconds and lasts %d seconds.\n", current_time, job_length); printf("The job starts in slice %d.\n", current_slice); printf("avg_carbon_intensity = %f\n", avg_carbon_intensity); exit(1); }
+						avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][selected_endpoint]*proportions[j];
+						//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
+					}
+					tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (avg_carbon_intensity + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
+					//~ printf("tab_function_machine_credit = %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
+					free(slice_indices);
+					free(proportions);
+				}
 							
 				update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 				
@@ -999,12 +1039,14 @@ int main(int argc, char *argv[])
 				new->job_cores = job_pointer->cores;
 					
 				/** Varying carbon intensity **/
-				carbon_intensity_per_wh[selected_endpoint] = carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][selected_endpoint]/1000;
-				carbon_cost_per_wh[selected_endpoint] = (carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[user_behavior][i]/3600)%8760][selected_endpoint]/1000 + carbon_rates[selected_endpoint])/1000;
+				if (is_credit == false) {
+					carbon_intensity_per_wh[selected_endpoint] = avg_carbon_intensity/1000;
+					carbon_cost_per_wh[selected_endpoint] = (avg_carbon_intensity/1000 + carbon_rates[selected_endpoint])/1000;
+				}
 				
 				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
 				
-				//~ how to get carbon used at the end: tdp * rate and energy used * intensity
+				// How to get carbon used at the end: tdp * rate and energy used * intensity
 				for(j = 0; j < total_number_nodes; j++)
 				{
 					new->mean_duration_on_machine += job_pointer->duration_on_machine[j];

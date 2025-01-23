@@ -439,3 +439,4 @@ void call_scheduler(char* scheduler, struct Job_List* liste, int t, int use_bigg
 int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine);
 void update_credit(int job_id, double* user_credit, double credit_to_remove);
 void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers);
+void get_slices(double current_time, int job_length, int *current_slice, int **slice_indices, double **proportions, int *num_slices);
