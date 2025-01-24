@@ -101,7 +101,8 @@ void read_cluster(char* input_node_file)
 				column_index++;
 			}
 			// Store the result in the array
-			new->carbon_intensity_one_hour_slices[count++] = direct + lca;
+			//~ new->carbon_intensity_one_hour_slices[count++] = direct + lca;
+			new->carbon_intensity_one_hour_slices[count++] = lca;
 		}
 		fclose(file_varying_carbon_intensity);
 		
