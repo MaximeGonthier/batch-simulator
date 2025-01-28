@@ -57,17 +57,35 @@ void read_cluster(char* input_node_file)
 		/** Varying carbon intensity **/
 		/** Varying carbon intensity input being read and added to a tab. Input file depends on which machine it is. Each cell is a one hour slice. **/
 		char* input_varying_carbon_intensity = NULL;
-		if (new->unique_id == 0) // Miso for theta
-		{
-			input_varying_carbon_intensity = "inputs/carbon/US-MIDW-MISO_2023_hourly.csv";
+		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0) {
+			printf("set_of_endpoints_1\n");
+			if (new->unique_id == 0) // Miso for theta
+			{
+				input_varying_carbon_intensity = "inputs/carbon/US-MIDW-MISO_2023_hourly.csv";
+			}
+			else if (new->unique_id == 1 || new->unique_id == 2) // PJM for desktop and midway
+			{
+				input_varying_carbon_intensity = "inputs/carbon/US-MIDA-PJM_2023_hourly.csv";
+			}
+			else // ERCO for faster
+			{
+				input_varying_carbon_intensity = "inputs/carbon/US-TEX-ERCO_2023_hourly.csv";
+			}
 		}
-		else if (new->unique_id == 1 || new->unique_id == 2) // PJM for desktop and midway
-		{
-			input_varying_carbon_intensity = "inputs/carbon/US-MIDA-PJM_2023_hourly.csv";
-		}
-		else // ERCO for faster
-		{
-			input_varying_carbon_intensity = "inputs/carbon/US-TEX-ERCO_2023_hourly.csv";
+		else { // Reduced carbon
+			printf("set_of_endpoints_2\n");
+			if (new->unique_id == 0)
+			{
+				input_varying_carbon_intensity = "inputs/carbon/AU-SA_2023_hourly.csv";
+			}
+			else if (new->unique_id == 1 || new->unique_id == 2)
+			{
+				input_varying_carbon_intensity = "inputs/carbon/CA-ON_2023_hourly.csv";
+			}
+			else // ERCO for faster
+			{
+				input_varying_carbon_intensity = "inputs/carbon/DK-BHM_2023_hourly.csv";
+			}			
 		}
 		FILE *file_varying_carbon_intensity = fopen(input_varying_carbon_intensity, "r");
 		if (!file_varying_carbon_intensity)

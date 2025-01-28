@@ -47,6 +47,7 @@ for j in range(1, n_iteration+1):
 	Mean_completion_time = list(df.iloc[:, 10])
 	Number_of_cores_used = list(df.iloc[:, 11])
 	Carbon_used = list(df.iloc[:, 12])
+	Direct_carbon_used = list(df.iloc[:, 13])
 
 	if mode == "total_energy":
 		for i in range(0, Nlines):
@@ -57,6 +58,9 @@ for j in range(1, n_iteration+1):
 	elif mode == "carbon_used":
 		for i in range(0, Nlines):
 			measured_metric[User_id[i]] += Carbon_used[i]/1000000
+	elif mode == "direct_carbon_used":
+		for i in range(0, Nlines):
+			measured_metric[User_id[i]] += Direct_carbon_used[i]/1000000
 	elif mode == "nb_jobs_completed":
 		for i in range(0, Nlines):
 			if (New_credit[i] >= 0):
@@ -85,12 +89,12 @@ if  mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed
 	print("% by Energy:", (measured_metric[1]*100)/total_mean_core_hours, "%")
 	print("% difference between Credit and Energy:", ((measured_metric[0] - measured_metric[1])/((measured_metric[0] + measured_metric[1])/2))*100, "%")
 	
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
-	print("Credit:", measured_metric[0])
-	print("Energy:", measured_metric[1])
-	print("Mixed:", measured_metric[8])
-	print("EFT:", measured_metric[2])
-	print("Runtime:", measured_metric[9])
+if mode == "total_energy" or mode == "carbon_used" or mode == "direct_carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
+	print("Greedy:", f"{measured_metric[0]:.1f}")
+	print("Energy:", f"{measured_metric[1]:.1f}")
+	print("Mixed:", f"{measured_metric[8]:.1f}")
+	print("EFT:", f"{measured_metric[2]:.1f}")
+	print("Runtime:", f"{measured_metric[9]:.1f}")
 	
 	if mode == "nb_jobs_completed_in_mean_core_hours":
 		print("% difference between Credit and EFT:", ((measured_metric[0] - measured_metric[2])/((measured_metric[0] + measured_metric[2])/2))*100, "%")
@@ -103,7 +107,7 @@ if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed
 # ~ colors = ["#00a1de", "#009b3a", "#c60c30", "#62361b", "#e27ea6", "#f9e300", "#f9461c", "#020202", "#522398", "#123456"]
 
 # Not plotting Random and Worst and the 3 machines
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
+if mode == "total_energy" or mode == "carbon_used" or mode == "direct_carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	x = [1*separation_between_bars, 2*separation_between_bars, 3*separation_between_bars, 4*separation_between_bars, 5*separation_between_bars]
 	colors = ["#00a1de", "#009b3a", "#c60c30", "#f9461c", "#532A92"]
@@ -115,7 +119,7 @@ else: # Not plotting Random and Worst
 	# ~ plt.bar((i+1)*separation_between_bars, measured_metric[i], bar_width, color=colors[i])
 
 # Not plotting Random and Worst and the 3 machines
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
+if mode == "total_energy" or mode == "carbon_used" or mode == "direct_carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	i = 0
 	plt.bar((i+1)*separation_between_bars, measured_metric[0], bar_width, color=colors[i], hatch=hatch_style)
@@ -153,7 +157,7 @@ if mode == "queue_time":
 	plt.ylim(0, measured_metric[5]/4)
 	
 # Not plotting Random and Worst
-if mode == "total_energy" or mode == "carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
+if mode == "total_energy" or mode == "carbon_used" or mode == "direct_carbon_used" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	# ~ or mode == "nb_jobs_completed_in_mean_core_hours":
 	labels = ['Greedy', 'Energy', 'Mixed', 'EFT', 'Runtime']
 	plt.xticks(x, labels, rotation ='horizontal')
@@ -178,6 +182,9 @@ elif mode == "queue_time":
 elif mode == "carbon_used":
 	plt.ylabel("Carbon consumed (kgCO2)")
 	mode_name = "_carbon_used"
+elif mode == "direct_carbon_used":
+	plt.ylabel("Direct carbon consumed (kgCO2)")
+	mode_name = "_direct_carbon_used"
 	
 # Control grid on Y-axis
 # ~ plt.locator_params(axis='y', nbins=4, integer=True)

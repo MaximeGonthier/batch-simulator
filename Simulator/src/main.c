@@ -1054,6 +1054,7 @@ int main(int argc, char *argv[])
 				}
 				
 				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
+				new->direct_carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
 				
 				// How to get carbon used at the end: tdp * rate and energy used * intensity
 				for(j = 0; j < total_number_nodes; j++)
@@ -1239,9 +1240,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		else if (new_jobs == true) /* Pas de jobs fini mais des nouveaux jobs à schedule. */
-		{
-			//~ nb_call_new_jobs++;
-			
+		{			
 			#ifdef PRINT
 			printf("Schedule only new jobs.\n");
 			#endif
@@ -1298,29 +1297,10 @@ int main(int argc, char *argv[])
 		
 		/* Time is advancing. */
 		t += 1;
-		
-		//~ if (need_to_save_state == true && finished_jobs >= time_to_save) /* Avec le nb de jobs terminés */
-		//~ {
-			//~ printf("T = %d\n", t); fflush(stdout);
-			//~ #ifdef PLOT_SATS
-			//~ printf("Cas pas géré #ifdef PLOT_SATS avec asave_state\n");
-			//~ exit(1);
-			//~ #endif
-			//~ save_state(t, old_finished_jobs, next_submit_time, input_job_file);
-			//~ exit(1);
-		//~ }
-		
-		/* Je dépasse les int max ? */
-		//~ if (t > 2000000000)
-		//~ {
-			//~ printf("Risque de dépasser les int max t = %d.\n", t);
-			//~ exit(EXIT_FAILURE);
-		//~ }
 	}
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	fclose(f_stats);
-	//~ fclose(f_reduced_stats);
 	#endif
 		
 	/* NEW */

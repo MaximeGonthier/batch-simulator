@@ -288,6 +288,7 @@ struct To_Print {
 	double queue_time;
 	double mean_duration_on_machine;
 	double carbon_used;
+	double direct_carbon_used;
 	#endif
 	/** END ENERGY INCENTIVE **/
 };
