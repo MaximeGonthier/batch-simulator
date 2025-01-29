@@ -289,6 +289,8 @@ struct To_Print {
 	double mean_duration_on_machine;
 	double carbon_used;
 	double direct_carbon_used;
+	int num_slices;
+	int* slice_indices;
 	#endif
 	/** END ENERGY INCENTIVE **/
 };

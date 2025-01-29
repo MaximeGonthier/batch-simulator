@@ -341,16 +341,20 @@ void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers)
 	FILE *f;
 	int job_shared_id = 0; /* To signifie that a job is the same accross al users */
 	f = fopen(output_file, "w");
+	int i = 0;
 	if (!f)
 	{
 		perror("Error opening file in print_csv_energy_incentive.\n"); fflush(stdout);
 		exit(EXIT_FAILURE);
 	}
 
-	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines, Number_of_cores_used, Carbon_used_in_grams, Direct_carbon_used_in_grams\n");
+	fprintf(f, "Job_unique_id, Job_shared_id, User_id, Selected_endpoint, Credit_lost, New_credit, Job_end_time, Energy_used_watt_hours, Number_of_cores_hours_used, Queue_time, Mean_duration_on_machines, Number_of_cores_used, Carbon_used_in_grams, Direct_carbon_used_in_grams, num_slices, slices\n");
 	while (head_to_print != NULL)
 	{
-		fprintf(f, "%d, %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d, %f, %f", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit, head_to_print->job_end_time_double, head_to_print->energy_used_watt_hours, head_to_print->core_hours_used, head_to_print->queue_time, head_to_print->mean_duration_on_machine, head_to_print->job_cores, head_to_print->carbon_used, head_to_print->direct_carbon_used);
+		fprintf(f, "%d, %d, %d, %d, %f, %f, %f, %f, %f, %f, %f, %d, %f, %f, %d,", head_to_print->job_unique_id, job_shared_id, head_to_print->user_behavior, head_to_print->selected_endpoint, head_to_print->removed_credit, head_to_print->new_credit, head_to_print->job_end_time_double, head_to_print->energy_used_watt_hours, head_to_print->core_hours_used, head_to_print->queue_time, head_to_print->mean_duration_on_machine, head_to_print->job_cores, head_to_print->carbon_used, head_to_print->direct_carbon_used, head_to_print->num_slices);
+		for (i = 0; i < head_to_print->num_slices; i++) {
+		    fprintf(f, " %d", head_to_print->slice_indices[i]);
+		}
 		fprintf(f, "\n");
 		if (head_to_print->job_unique_id%nusers == nusers - 1)
 		{

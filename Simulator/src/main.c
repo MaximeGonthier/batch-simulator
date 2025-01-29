@@ -1029,7 +1029,7 @@ int main(int argc, char *argv[])
 					}
 					//~ printf("tab_function_machine_credit = %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 					if (tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] > 1000000000) { printf("ERROR too big\n"); printf("avg_carbon_intensity %f\n", avg_carbon_intensity); printf("carbon_rates[selected_endpoint] = %f\n", carbon_rates[selected_endpoint]); exit(1); }
-					free(slice_indices);
+					//~ free(slice_indices); I free it later but still in the for loop
 					free(proportions);
 				//~ }
 				//~ else {
@@ -1061,6 +1061,13 @@ int main(int argc, char *argv[])
 				
 				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
 				new->direct_carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
+				
+				new->num_slices = num_slices;
+				new->slice_indices = malloc(num_slices*sizeof(int));
+				for (j = 0; j < num_slices; j++) {
+					new->slice_indices[j] = slice_indices[j];
+				}
+				free(slice_indices);
 				
 				// How to get carbon used at the end: tdp * rate and energy used * intensity
 				for(j = 0; j < total_number_nodes; j++)
