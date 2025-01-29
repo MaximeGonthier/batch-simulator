@@ -847,7 +847,8 @@ int main(int argc, char *argv[])
 		}
 		else if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_2") == 0)
 		{
-			credit_to_each_user = 50000000; /* Good for count database with set_of_endpoints_2 */
+			//~ credit_to_each_user = 50000000; /* Good for count database with set_of_endpoints_2 */
+			credit_to_each_user = 90000000; /* Good for new data varying carbon */
 		}
 		else if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_3") == 0)
 		{
@@ -998,7 +999,7 @@ int main(int argc, char *argv[])
 				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine, is_credit);
 				
 				/** Varying carbon intensity **/
-				if (is_credit == false) {
+				//~ if (is_credit == false) {
 					//~ tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (carbon_intensity_one_hour_slices_per_machine[(next_available_time_endpoint[job_pointer->user_behavior][i]/3600)%8760][selected_endpoint] + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
 					double current_time = next_available_time_endpoint[job_pointer->user_behavior][selected_endpoint];
 					int job_length = job_pointer->duration_on_machine[selected_endpoint];
@@ -1020,15 +1021,20 @@ int main(int argc, char *argv[])
 						//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
 					}
 					//~ tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (avg_carbon_intensity + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
-					tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]*((avg_carbon_intensity + carbon_rates[selected_endpoint])/1000); // Update tab_function_machine_credit with time at which the job will run
+					if (is_credit == false) {
+						tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]*((avg_carbon_intensity + carbon_rates[selected_endpoint])/1000); // Update tab_function_machine_credit with time at which the job will run
+					}
+					else {
+						tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
+					}
 					//~ printf("tab_function_machine_credit = %f\n", tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 					if (tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] > 1000000000) { printf("ERROR too big\n"); printf("avg_carbon_intensity %f\n", avg_carbon_intensity); printf("carbon_rates[selected_endpoint] = %f\n", carbon_rates[selected_endpoint]); exit(1); }
 					free(slice_indices);
 					free(proportions);
-				}
-				else {
-					tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
-				}
+				//~ }
+				//~ else {
+					//~ tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint];
+				//~ }
 							
 				//~ update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]);
 				update_credit(job_pointer->unique_id, &credit_users[job_pointer->user_behavior], tab_function_machine_credit_predicted);
@@ -1048,10 +1054,10 @@ int main(int argc, char *argv[])
 				new->job_cores = job_pointer->cores;
 					
 				/** Varying carbon intensity **/
-				if (is_credit == false) {
+				//~ if (is_credit == false) {
 					carbon_intensity_per_wh[selected_endpoint] = avg_carbon_intensity/1000;
 					carbon_cost_per_wh[selected_endpoint] = (avg_carbon_intensity/1000 + carbon_rates[selected_endpoint])/1000;
-				}
+				//~ }
 				
 				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
 				new->direct_carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
