@@ -983,7 +983,6 @@ int main(int argc, char *argv[])
 	
 	/* Assigning an endpoint to each job depending on his user's behavior */
 	int selected_endpoint = 0;
-	i = 0;
 	int processed_jobs = 0;
 	int k = 0;
 	double avg_carbon_intensity = 0;
@@ -1001,8 +1000,8 @@ int main(int argc, char *argv[])
 			printf("Experiment with fixed slice %d of fixed carbon intensity %f on endpoint %d\n", fixed_slice, fixed_carbon_intensity[i], i);
 		}
 	}
-	exit(1);
 	
+	i = 0;
 	while (i < number_workload_repetition) /* To loop on the workload until one or more user exhaust is credit */
 	{
 		job_pointer = job_list->head;
@@ -1013,7 +1012,7 @@ int main(int argc, char *argv[])
 				if (processed_jobs%250000 == 0) { printf("%d/%d processed jobs\n", processed_jobs, total_number_jobs*number_workload_repetition); }
 				processed_jobs += 1;
 				
-				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine, is_credit);
+				selected_endpoint = endpoint_selection(job_pointer->unique_id, job_pointer->user_behavior, tab_function_machine_credit, total_number_nodes, tab_function_machine_energy, job_pointer->duration_on_machine, next_available_time_endpoint, carbon_rates, carbon_intensity_one_hour_slices_per_machine, is_credit, fixed_slice_experiment, fixed_carbon_intensity);
 				
 				/** Varying carbon intensity **/
 				//~ if (is_credit == false) {
@@ -1038,6 +1037,11 @@ int main(int argc, char *argv[])
 						//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
 					}
 					//~ tab_function_machine_credit[job_pointer->unique_id][selected_endpoint] *= (avg_carbon_intensity + carbon_rates[selected_endpoint])/1000; // Update tab_function_machine_credit with time at which the job will run
+					
+					if (fixed_slice_experiment == true) {
+						avg_carbon_intensity = fixed_carbon_intensity[selected_endpoint];
+					}
+					//~ printf("%f\n", avg_carbon_intensity);
 					
 					if (is_credit == false) {
 						tab_function_machine_credit_predicted = tab_function_machine_credit[job_pointer->unique_id][selected_endpoint]*((avg_carbon_intensity + carbon_rates[selected_endpoint])/1000); // Update tab_function_machine_credit with time at which the job will run

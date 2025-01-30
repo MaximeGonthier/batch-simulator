@@ -78,9 +78,14 @@ void read_cluster(char* input_node_file)
 			{
 				input_varying_carbon_intensity = "inputs/carbon/AU-SA_2023_hourly.csv";
 			}
-			else if (new->unique_id == 1 || new->unique_id == 2)
+			else if (new->unique_id == 1)
 			{
 				input_varying_carbon_intensity = "inputs/carbon/CA-ON_2023_hourly.csv";
+			}
+			else if (new->unique_id == 2)
+			{
+				input_varying_carbon_intensity = "inputs/carbon/CA-ON_2023_hourly.csv";
+				//~ input_varying_carbon_intensity = "inputs/carbon/DK-BHM_2023_hourly.csv";
 			}
 			else // DK for faster
 			{

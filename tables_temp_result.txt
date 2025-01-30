@@ -11,3 +11,92 @@ Energy: 344.53651539958554
 Mixed: 273.3829034235321
 EFT: 312.1648367641152
 Runtime: 237.01844222343718
+
+NEW
+
+total_energy EBA
+Greedy: 328.1
+Energy: 320.5
+Mixed: 407.9
+EFT: 486.4
+Runtime: 501.4
+
+total_energy CBA
+Greedy: 491.4
+Energy: 320.5
+Mixed: 493.8
+EFT: 486.4
+Runtime: 501.4
+
+carbon_used EBA
+Greedy: 322.2
+Energy: 344.5
+Mixed: 319.3
+EFT: 315.4
+Runtime: 237.0
+
+carbon_used CBA
+Greedy: 228.3
+Energy: 344.5
+Mixed: 275.1
+EFT: 315.4
+Runtime: 237.0
+
+direct_carbon_used EBA
+Greedy: 88.3
+Energy: 82.6
+Mixed: 132.0
+EFT: 169.1
+Runtime: 169.5
+
+direct_carbon_used CBA
+Greedy: 166.8
+Energy: 82.6
+Mixed: 171.9
+EFT: 169.1
+Runtime: 169.5
+
+
+NEW NEW
+
+Plotting total_energy with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_credit.csv and 10 users 1 iterations
+Greedy: 328.1
+Energy: 320.5
+Mixed: 407.9
+EFT: 486.4
+Runtime: 501.4
+
+Plotting total_energy with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_carbon.csv and 10 users 1 iterations
+Greedy: 491.4
+Energy: 320.5
+Mixed: 493.8
+EFT: 486.4
+Runtime: 501.4
+
+Plotting carbon_used with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_carbon.csv and 10 users 1 iterations
+Greedy: 228.3
+Energy: 344.5
+Mixed: 275.1
+EFT: 315.4
+Runtime: 237.0
+
+Plotting direct_carbon_used with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_carbon.csv and 10 users 1 iterations
+Greedy: 166.8
+Energy: 82.6
+Mixed: 171.9
+EFT: 169.1
+Runtime: 169.5
+
+Plotting carbon_used with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_credit.csv and 10 users 1 iterations
+Greedy: 322.2
+Energy: 344.5
+Mixed: 319.3
+EFT: 315.4
+Runtime: 237.0
+
+Plotting direct_carbon_used with input file outputs/set_of_endpoints_1_meggie_and_emmy_count_from_database_credit.csv and 10 users 1 iterations
+Greedy: 88.3
+Energy: 82.6
+Mixed: 132.0
+EFT: 169.1
+Runtime: 169.5

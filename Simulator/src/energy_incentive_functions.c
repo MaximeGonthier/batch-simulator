@@ -1,7 +1,7 @@
 /** START ENERGY INCENTIVE **/
 #include <main.h>
 
-int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine, bool is_credit)
+int endpoint_selection(int job_id, int user_behavior, double** tab_function_machine_credit, int total_number_nodes, double** tab_function_machine_energy, double* duration_on_machine, double** next_available_time_endpoint, double* carbon_rates, double** carbon_intensity_one_hour_slices_per_machine, bool is_credit, bool fixed_slice_experiment, double* fixed_carbon_intensity)
 {
 	int i = 0;
 	/* User behavior: 0 = best credit - 1 = best energy - 2 = best runtime - 3 = random - 4 worst credit - 5 = Only theta - 6 = Only midway - 7 = Only faster */
@@ -35,6 +35,11 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 					avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
 					//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
 				}
+				
+				if (fixed_slice_experiment == true) {
+				    avg_carbon_intensity = fixed_carbon_intensity[i];
+				}
+				
 				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
 				//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
 				free(slice_indices);
@@ -44,6 +49,7 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i];
 			}
 			
+			//~ printf("%d %f\n", i, tab_function_machine_credit_predicted);
 			if (tab_function_machine_credit_predicted < min && tab_function_machine_energy[job_id][i] != -1)
 			{
 				min = tab_function_machine_credit_predicted;
@@ -130,6 +136,11 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 					avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
 					//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
 				}
+				
+				if (fixed_slice_experiment == true) {
+				    avg_carbon_intensity = fixed_carbon_intensity[i];
+				}
+				
 				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
 				//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
 				free(slice_indices);
@@ -191,6 +202,11 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 					avg_carbon_intensity += carbon_intensity_one_hour_slices_per_machine[j][i]*proportions[j];
 					//~ printf("avg_carbon_intensity = %f\n", avg_carbon_intensity);
 				}
+				
+				if (fixed_slice_experiment == true) {
+				    avg_carbon_intensity = fixed_carbon_intensity[i];
+				}
+				
 				tab_function_machine_credit_predicted = tab_function_machine_credit[job_id][i]*((avg_carbon_intensity + carbon_rates[i])/1000);
 				//~ printf("tab_function_machine_credit_predicted = %f\n", tab_function_machine_credit_predicted);
 				free(slice_indices);
@@ -249,7 +265,8 @@ int endpoint_selection(int job_id, int user_behavior, double** tab_function_mach
 		printf("Error, min_id = -1 meaning that no endpoint have been choosen!\n");
 		exit(EXIT_FAILURE);
 	}
-	//~ printf("user_behavior = %d, min is with machine %d\n", user_behavior, min_id);
+	//~ if (user_behavior == 0) { 
+	//~ printf("user_behavior = %d, min is with machine %d\n", user_behavior, min_id); }
 	return min_id;
 }
 
