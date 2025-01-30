@@ -58,7 +58,7 @@ void read_cluster(char* input_node_file)
 		/** Varying carbon intensity input being read and added to a tab. Input file depends on which machine it is. Each cell is a one hour slice. **/
 		char* input_varying_carbon_intensity = NULL;
 		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0) {
-			printf("set_of_endpoints_1\n");
+			//~ printf("set_of_endpoints_1\n");
 			if (new->unique_id == 0) // Miso for theta
 			{
 				input_varying_carbon_intensity = "inputs/carbon/US-MIDW-MISO_2023_hourly.csv";
@@ -73,7 +73,7 @@ void read_cluster(char* input_node_file)
 			}
 		}
 		else { // Reduced carbon
-			printf("set_of_endpoints_2\n");
+			//~ printf("set_of_endpoints_2\n");
 			if (new->unique_id == 0)
 			{
 				input_varying_carbon_intensity = "inputs/carbon/AU-SA_2023_hourly.csv";
@@ -82,10 +82,10 @@ void read_cluster(char* input_node_file)
 			{
 				input_varying_carbon_intensity = "inputs/carbon/CA-ON_2023_hourly.csv";
 			}
-			else // ERCO for faster
+			else // DK for faster
 			{
 				input_varying_carbon_intensity = "inputs/carbon/DK-BHM_2023_hourly.csv";
-			}			
+			}
 		}
 		FILE *file_varying_carbon_intensity = fopen(input_varying_carbon_intensity, "r");
 		if (!file_varying_carbon_intensity)
@@ -102,25 +102,33 @@ void read_cluster(char* input_node_file)
 			exit(1);
 		}
 		int count = 0;
+		int starting_index = 0;
+		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0) {
+			starting_index = 5;
+		} else { starting_index = 4; }
 		while (fgets(line, sizeof(line), file_varying_carbon_intensity)) {
 			char *token;
 			double direct = 0.0, lca = 0.0;
-
+			//~ printf("%s\n", line);
 			// Tokenize the line
 			int column_index = 0;
 			token = strtok(line, ",");
 			while (token) {
-				if (column_index == 5) {  // Column "Carbon Intensity gCO₂eq/kWh (direct)"
+				if (column_index == starting_index) {  // Column "Carbon Intensity gCO₂eq/kWh (direct)"
 					direct = atof(token);
-				} else if (column_index == 6) {  // Column "Carbon Intensity gCO₂eq/kWh (LCA)"
+				} else if (column_index == starting_index+1) {  // Column "Carbon Intensity gCO₂eq/kWh (LCA)"
 					lca = atof(token);
 				}
 				token = strtok(NULL, ",");
 				column_index++;
 			}
+			//~ if (new->unique_id == 0) { printf("%f %f\n", direct, lca); }
 			// Store the result in the array
 			//~ new->carbon_intensity_one_hour_slices[count++] = direct + lca;
-			new->carbon_intensity_one_hour_slices[count++] = lca;
+			new->carbon_intensity_one_hour_slices[count] = lca;
+			//~ printf("ci of slice %d on endpoint %d is %f\n", count, new->unique_id, new->carbon_intensity_one_hour_slices[count]);
+			
+			count += 1;
 		}
 		fclose(file_varying_carbon_intensity);
 		
@@ -302,7 +310,7 @@ void read_cluster(char* input_node_file)
 		}
 #endif
  	fclose(f);
- 	printf("Finished reading cluster.\n");
+ 	//~ printf("Finished reading cluster.\n");
 }
 
 void read_workload(char* input_job_file, int constraint_on_sizes)
@@ -351,12 +359,12 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     //~ current_user = "";
     int unique_id = 0;
     //~ last_user = "";
-    
+    //~ int total_duration_on_midway = 0;
+    //~ int divide = 0;
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
-	{	
-		
+	{
 		struct Job *new = (struct Job*) malloc(sizeof(struct Job));
 		new->unique_id = unique_id;
 		unique_id += 1;
@@ -401,7 +409,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		
 		total_number_jobs += new->nb_of_repetition;
 		total_number_jobs_no_repetition += 1;
-		if (total_number_jobs%10000 == 0) { printf("Read %d jobs, %d without repetition\n", total_number_jobs, total_number_jobs_no_repetition); }
+		//~ if (total_number_jobs%10000 == 0) { printf("Read %d jobs, %d without repetition\n", total_number_jobs, total_number_jobs_no_repetition); }
 
 		if (fscanf(f, "%s", s) != 1) { exit(EXIT_FAILURE); };
 		
@@ -463,6 +471,11 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 				
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
+		
+		//~ // To delete
+		//~ if (new->user_behavior == 0) { printf("%f\n", new->duration_on_machine[1]); total_duration_on_midway += new->duration_on_machine[1]; divide += 1; }
+		//~ // To delete
+		
 		new->next = NULL;
 		
 		/* Add in job list or job to start from history */
@@ -474,8 +487,19 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		{			
 			insert_job_in_sorted_list(job_list_to_start_from_history, new);
 		}
-		//~ printf("Added job %d.\n", new->unique_id); fflush(stdout);
 	}
+	
+	//~ // To delete
+	//~ printf("Mean duration on midway over %d jobs: %d\n", divide, total_duration_on_midway/divide);
+	//~ int* tab_of_duration = malloc(sizeof(int)*divide);
+	//~ struct Job *new = (struct Job*) malloc(sizeof(struct Job));
+	//~ new = job_list->head;
+	//~ int i = 0;
+	//~ while(new != NULL) { if(new->user_behavior == 0) { tab_of_duration[i] = new->duration_on_machine[1]; i++; } new = new->next; }
+	//~ printf("Median is %d\n", tab_of_duration[divide]);
+	//~ exit(1);
+	//~ // To delete
+	
     /** END ENERGY INCENTIVE **/
 #else
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
@@ -628,7 +652,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 	
 	free(current_user);
 	free(last_user);
-	printf("Finished reading workload.\n");
+	//~ printf("Finished reading workload.\n");
 }
 
 int get_nb_job_to_evaluate(struct Job* l)
