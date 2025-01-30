@@ -15,7 +15,8 @@ echo ""
 n_iteration=1
 
 # For fixed slice experiment
-start_at=4344
+start_at=0 # January 1st
+#~ start_at=4344 # July 1st
 for ((starting_slice=start_at; starting_slice<=start_at+23; starting_slice++)); do
     ./src/main inputs/workloads/converted/${workload}_${mode_for_repetition} inputs/clusters/${endpoints} no_schedule 0 outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv 0 100 ${nusers} from_emmy_and_meggie carbon ${starting_slice}
     mv outputs/${endpoints}_${workload}_${mode_for_repetition}_carbon.csv outputs/slice_${starting_slice}
