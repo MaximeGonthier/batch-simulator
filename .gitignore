@@ -21,6 +21,7 @@ MBSS/outputs/
 Slides/ipdps.pdf
 MBSS/src/__pycache__
 todo.pdf
+Simulator/outputs/slice_*
 MBSS/C/main
 MBSS/terminal_output
 CCGrid/RR-9497.pdf
