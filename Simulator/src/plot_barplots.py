@@ -83,7 +83,7 @@ total_mean_core_hours = total_mean_core_hours/n_iteration
 bar_width = 0.2
 separation_between_bars=0.3
 
-if  mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
+if mode == "nb_jobs_completed_in_mean_core_hours" or mode == "nb_jobs_completed_in_mean_core_hours_reduced":
 	print("Total Mean Core Hours:", total_mean_core_hours)
 	print("% by Credit:", (measured_metric[0]*100)/total_mean_core_hours, "%")
 	print("% by Energy:", (measured_metric[1]*100)/total_mean_core_hours, "%")
