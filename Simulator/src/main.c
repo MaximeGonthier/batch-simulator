@@ -902,7 +902,6 @@ int main(int argc, char *argv[])
 		carbon_intensity_one_hour_slices_per_machine[i] = malloc(total_number_nodes*sizeof(double));
 		for (j = 0; j < total_number_nodes; j++) {
 			carbon_intensity_one_hour_slices_per_machine[i][j] = n2->carbon_intensity_one_hour_slices[i];
-			//~ printf("slice %d on endpoint %d: %f\n", i+1, j, carbon_intensity_one_hour_slices_per_machine[i][j]);
 			n2 = n2->next;
 		}
 	}
