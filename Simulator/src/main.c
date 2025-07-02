@@ -823,16 +823,12 @@ int main(int argc, char *argv[])
 	double max_watt_hour = 0; /* Max watt-hour the machine can use */
 	
 	/* Number of times I want to repeat the same workload */
-	//~ int number_workload_repetition = 150*64; /* Good for 8 functions 1 core max */
-	int number_workload_repetition = 2; /* Good for default database */
-	//~ int number_workload_repetition = 3;
+	int number_workload_repetition = 1;
 	
 	double credit_to_each_user = 0;
 	bool is_credit = true;
 	if (strcmp(argv[10], "credit") == 0)
 	{
-		//~ credit_to_each_user = 22000000; /* Good for default database */
-		//~ credit_to_each_user = 110000000; /* Good for 10 rep max database */
 		credit_to_each_user = 400000000; /* Good for count database */
 	}
 	else if (strcmp(argv[10], "carbon") == 0)
@@ -956,7 +952,6 @@ int main(int argc, char *argv[])
 		job_pointer = job_pointer->next;
 	}
 	
-	
 	/* Putting in a tab the carbon cost per Wh for printing in output file. */
 	double* carbon_cost_per_wh = malloc(total_number_nodes*sizeof(double));
 	double* carbon_intensity_per_wh = malloc(total_number_nodes*sizeof(double));
@@ -1074,10 +1069,8 @@ int main(int argc, char *argv[])
 				new->job_cores = job_pointer->cores;
 					
 				/** Varying carbon intensity **/
-				//~ if (is_credit == false) {
 					carbon_intensity_per_wh[selected_endpoint] = avg_carbon_intensity/1000;
 					carbon_cost_per_wh[selected_endpoint] = (avg_carbon_intensity/1000 + carbon_rates[selected_endpoint])/1000;
-				//~ }
 				
 				new->carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] + carbon_rate_per_wh[selected_endpoint]*(tdp_for_carbon[selected_endpoint]*job_pointer->number_of_nodes[selected_endpoint]*job_pointer->duration_on_machine[selected_endpoint])/3600; /* Carbon used in grams with tdp and energy used separated and using runtime */
 				new->direct_carbon_used = carbon_intensity_per_wh[selected_endpoint]*tab_function_machine_energy[job_pointer->unique_id][selected_endpoint];
@@ -1148,15 +1141,6 @@ int main(int argc, char *argv[])
 			}
 		}
 				
-		//~ if ((running_nodes*100)/486 >= busy_cluster_threshold)
-		//~ {
-			//~ busy_cluster = 1;
-		//~ }
-		//~ else
-		//~ {
-			//~ busy_cluster = 0;
-		//~ }
-		//~ printf("t = %d\n", t); fflush(stdout);
 		new_jobs = false;
 		/* Get the set of available jobs at time t */
 		/* Jobs are already sorted by subtime so I can simply stop with a break */

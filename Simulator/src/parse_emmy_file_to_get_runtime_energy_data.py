@@ -30,7 +30,7 @@ print("Job input file:", job_input_file)
 print("Energy input file:", energy_input_file)
 
 f = open(output_file, "w")
-f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Requested Walltime, Runtime, Username\n")
+f.write("Power used per node, Job Id, Number of nodes used, Number of cores used, Submission time, Requested Walltime, Runtime, Username\n")
 found = False
 with open(job_input_file, 'r') as file:
 	for line in file:
@@ -42,9 +42,7 @@ with open(job_input_file, 'r') as file:
 						check_next_char_for_more_than_9_nodes = False
 						if (char != ":"):
 							nb_nodes = nb_nodes*10 + int(char)
-						# ~ print("Nb of nodes:", nb_nodes)
 						f.write(str(nb_nodes) + ", ")
-						# ~ print("Nb of cores:", nb_nodes*20)
 						f.write(str(nb_nodes*20) + ", ")
 						break
 					if get_nb_node_next_char == True:
@@ -57,7 +55,6 @@ with open(job_input_file, 'r') as file:
 						get_nb_node_next_char = True
 			for char in word:
 				if (char == "E"): # A terminated job, so getting info on number of nodes
-					# ~ print(line)
 					total_number_of_jobs += 1
 					get_nb_node_next_word = True
 					i = 11
@@ -85,7 +82,6 @@ with open(job_input_file, 'r') as file:
 					if found == False:
 						break
 					else:
-						# ~ print("Job Id:", job_id)
 						f.write(str(job_id) + ", ")
 					file_power.close()
 					break
@@ -107,19 +103,3 @@ file.close
 f.close
 
 print(total_number_of_jobs_with_energy, "/", total_number_of_jobs)
-# ~ Application_name = list(df.iloc[:, 8])
-# ~ Nlines = len(Application_name) # Number of lines in the file without the header
-# ~ Endpoint_used = list(df.iloc[:, 16])
-# ~ Endpoint_status = list(df.iloc[:, 12]) # WARM or WARMING, need to ignore WARMING
-# ~ Energy = list(df.iloc[:, 13])
-# ~ Runtime = list(df.iloc[:, 14])
-
-# ~ nruns = 0
-# ~ total_energy = 0
-# ~ total_runtime = 0
-# ~ current_application_name = ""
-# ~ current_endpoint = ""
-# ~ for i in range(0, Nlines):
-
-# Printing the last read values
-# ~ print(current_application_name, "-", current_endpoint, "-", total_energy/nruns, "-", total_runtime/nruns)
