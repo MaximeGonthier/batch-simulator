@@ -69,12 +69,7 @@ int main(int argc, char *argv[])
 	#endif
 	
 	nb_data_reuse = 0;
-	//~ if (argc != 9 && argc != 10 && argc != 11)
-	//~ {
-		//~ printf("Error: args must be 9, 10 or 11!\n");
-		//~ exit(EXIT_FAILURE);
-	//~ }
-	
+
 	bool need_to_resume_state = false;
 	#ifdef SAVE
 	/* By default I don't save/resume */
@@ -164,6 +159,8 @@ int main(int argc, char *argv[])
 	#ifndef ENERGY_INCENTIVE
 	int old_finished_jobs = 0;
 	#endif
+	
+	printf("Made it to exit(1)\n"); exit(1);
 	
 	/** Args **/
 	input_job_file = argv[1];
