@@ -1,0 +1,10 @@
+{ id: 0 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 0 }
+{ id: 1 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 1 }
+{ id: 2 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 2 }
+{ id: 3 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 3 }
+{ id: 4 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 4 }
+{ id: 5 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 5 }
+{ id: 6 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 6 }
+{ id: 7 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 7 }
+{ id: 8 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 8 }
+{ id: 9 memory: 256 bandwidth: 0 core: 32 cpu_tdp: 0 ncpu: 2 ngpu: 4 idle_power: 0 carbon_rate: 0 carbon_intensity: 0 endpoint_id: 9 }

@@ -46,7 +46,9 @@ df["power"] = df["node_power_consumption"].apply(lambda arr: float(np.mean(arr))
 # 5) Prepare everything else
 df["cores"]    = df["num_cores_req"]
 df["gpu"]      = df["num_gpus_req"]
-df["start_node_from_history"] = df["nodes"]
+df["start_node_from_history"] = df["nodes"].apply(
+    lambda x: "[" + ",".join(map(str, x)) + "]" if isinstance(x, (list, tuple, np.ndarray)) else str(x)
+)
 df["nodes"]    = df["num_nodes_req"]
 df["shared"]   = df["shared"]
 df["user"]     = df["user_id"]
