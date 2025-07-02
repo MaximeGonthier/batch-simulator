@@ -1,4 +1,4 @@
-# Batch simulator for energy incentive
+ Batch simulator for energy incentive
 
 This repository is a modification of the repository https://gitlab.inria.fr/mgonthie/data-aware-batch-scheduling made on the 8 Feb 2024.
 It does not contain all of the things related to the project conducted in the previous repo like scripts, plots, articles and so on.
@@ -16,3 +16,10 @@ Added duration_on_machine: 100 120 34 59  in the workload data, much correspond 
 Same for energy_on_machine
 
 total_number_jobs must be a multiple of nusers
+
+
+
+
+------
+This branch looks at temporal shifting based on carbon intensity.
+the simulator supports parralel jobs, compute carbon and energy cost, and supports walltime and runtime difference
