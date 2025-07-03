@@ -10,7 +10,8 @@ echo ""
 
 n_iteration=1
 
-./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} no_schedule 0 outputs/${endpoints}_${workload}_${mode_for_repetition}_credit.csv 0 100 ${nusers} from_emmy_and_meggie credit
+# Args are: workload_trace, cluster_trace, scheduler, job_hardware_constraint, output_file, backfill_mode, busy_cluster_percentage_threshold
+./src/main inputs/workloads/converted/${workload} inputs/clusters/${endpoints} fcfs 0 outputs/${endpoints}_${workload}.csv 0 100
 
 #~ # echo ""
 #~ # echo "Plot barplots"

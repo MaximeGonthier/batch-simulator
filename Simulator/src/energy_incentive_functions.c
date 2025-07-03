@@ -355,6 +355,7 @@ void update_credit(int job_id, double* user_credit, double credit_to_remove)
 
 void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers)
 {
+	#ifdef ENERGY_INCENTIVE
 	FILE *f;
 	int job_shared_id = 0; /* To signifie that a job is the same accross al users */
 	f = fopen(output_file, "w");
@@ -381,5 +382,6 @@ void print_csv_energy_incentive(struct To_Print* head_to_print, int nusers)
 	}
 	
 	fclose(f);
+	#endif
 }
 /** END ENERGY INCENTIVE **/

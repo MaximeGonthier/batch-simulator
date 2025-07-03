@@ -160,12 +160,10 @@ int main(int argc, char *argv[])
 	int old_finished_jobs = 0;
 	#endif
 	
-	printf("Made it to exit(1)\n"); exit(1);
-	
 	/** Args **/
 	input_job_file = argv[1];
 	char* input_node_file = argv[2];
-	scheduler = argv[3]; /* malloc ? */
+	scheduler = argv[3];
 	constraint_on_sizes = atoi(argv[4]); /* To add or remove the constraint that some jobs can't be executed on certain nodes. 0 for no constraint, 1 for constraint, 2 for constraint but we don't consider transfer time. 3 for constraint and you can only execute on your specific size. */
 	output_file = argv[5];
 	if (output_file == NULL)
@@ -207,16 +205,15 @@ int main(int argc, char *argv[])
 	#ifdef PRINT
 	print_node_list(node_list);
 	#endif
-	
+
 	/* Read workload */
-	//~ #ifndef SAVE
 	if (need_to_resume_state == false)
 	{
 		read_workload(input_job_file, constraint_on_sizes);	
-		nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
-		first_subtime_day_0 = get_first_time_day_0(job_list->head);
+		//~ nb_job_to_evaluate = get_nb_job_to_evaluate(job_list->head);
+		//~ printf("nb_job_to_evaluate: %d\n", nb_job_to_evaluate);
+		//~ first_subtime_day_0 = get_first_time_day_0(job_list->head);
 	}
-	//~ #endif
 	
 	#ifdef PRINT_CLUSTER_USAGE
 	write_in_file_first_times_all_day(job_list->head, first_subtime_day_0);
@@ -227,6 +224,8 @@ int main(int argc, char *argv[])
 	#endif
 	
 	int t = first_subtime_day_0;
+
+	printf("Success\n"); exit(1);
 
 	/* First start jobs from rackham's history. First need to sort it by start time */
 	//~ #ifndef SAVE
@@ -888,18 +887,17 @@ int main(int argc, char *argv[])
 	double** tab_function_machine_credit = (double**) malloc(total_number_jobs_no_repetition*sizeof(double*)); //hauteur
 	
 	/** Varying carbon intensity **/
-	printf("Get association of varying carbon intensity...\n");
-	double** carbon_intensity_one_hour_slices_per_machine = (double**) malloc(8760*sizeof(double*));
-	for (i = 0; i < 8760; i++) {
-		struct Node* n2 = node_list[0]->head;
-		carbon_intensity_one_hour_slices_per_machine[i] = malloc(total_number_nodes*sizeof(double));
-		for (j = 0; j < total_number_nodes; j++) {
-			carbon_intensity_one_hour_slices_per_machine[i][j] = n2->carbon_intensity_one_hour_slices[i];
-			n2 = n2->next;
-		}
-	}
+	//~ printf("Get association of varying carbon intensity...\n");
+	//~ double** carbon_intensity_one_hour_slices_per_machine = (double**) malloc(8760*sizeof(double*));
+	//~ for (i = 0; i < 8760; i++) {
+		//~ struct Node* n2 = node_list[0]->head;
+		//~ carbon_intensity_one_hour_slices_per_machine[i] = malloc(total_number_nodes*sizeof(double));
+		//~ for (j = 0; j < total_number_nodes; j++) {
+			//~ carbon_intensity_one_hour_slices_per_machine[i][j] = n2->carbon_intensity_one_hour_slices[i];
+			//~ n2 = n2->next;
+		//~ }
+	//~ }
 
-	//~ printf("Get association of each of the %d jobs (no rep) energy consumption and credit for each of the %d machines...\n", total_number_jobs_no_repetition, total_number_nodes);
 	job_pointer = job_list->head;
 	for (i = 0; i < total_number_jobs_no_repetition; i++)
 	{
@@ -1240,7 +1238,7 @@ int main(int argc, char *argv[])
 			
 			call_scheduler(scheduler, scheduled_job_list, t, use_bigger_nodes, multiplier_file_to_load, multiplier_file_evicted, multiplier_nb_copy, adaptative_multiplier, penalty_on_job_sizes, start_immediately_if_EAT_is_t, backfill_mode, number_node_size_128_and_more, number_node_size_256_and_more, number_node_size_1024, Ratio_Area, multiplier_area_bigger_nodes, division_by_planned_area, backfill_big_node_mode, mixed_strategy);
 							
-			#ifdef PRINT	
+			#ifdef PRINT
 			printf("End of reschedule.\n");
 			#endif
 			

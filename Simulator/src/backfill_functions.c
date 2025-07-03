@@ -5,7 +5,6 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 	*nb_cores_from_hole = 0;
 	*nb_cores_from_outside = 0;
 	int k = 0;
-	//~ struct Core_in_a_hole* c = (struct Core_in_a_hole*) malloc(sizeof(struct Core_in_a_hole));
 	struct Core_in_a_hole* c = n->cores_in_a_hole->head;
 	
 	#ifdef PRINT
@@ -20,13 +19,9 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 		#ifdef PRINT
 		printf("It could maybe fit or partially fit in the %d cores composing the hole of node %d.\n", n->number_cores_in_a_hole, n->unique_id); fflush(stdout);
 		#endif
-		
-		//~ printf("Before affecting c\n"); fflush(stdout);
-		
-		c = n->cores_in_a_hole->head;
-		
-		//~ printf("After affecting c\n"); fflush(stdout);
 				
+		c = n->cores_in_a_hole->head;
+						
 		for (k = 0; k < n->number_cores_in_a_hole; k++)
 		{
 			//~ printf("Checking core %d next start time %d.\n", c->unique_id, c->start_time_of_the_hole); fflush(stdout);
@@ -35,31 +30,14 @@ bool can_it_get_backfilled (struct Job* j, struct Node* n, int t, int* nb_cores_
 			{
 				*nb_cores_from_hole += 1;
 			}
-			
-			//~ if (c->next != NULL)
-			//~ {
-			//~ printf("next\n"); fflush(stdout);
-			
+						
 			c = c->next;
 			
-			//~ printf("next done\n"); fflush(stdout);
-			
-			//~ }
-			//~ else
-			//~ {
-				//~ break;
-			//~ }
 			if (j->cores == *nb_cores_from_hole)
 			{
-				//~ printf("break\n"); fflush(stdout);
 				break;
 			}
 		}
-		//~ exit(1);
-		
-		//~ #ifdef PRINT
-		//~ printf("nb_cores_from_hole = %d.\n", *nb_cores_from_hole);
-		//~ #endif
 					
 		if (nb_cores_from_hole > 0)
 		{

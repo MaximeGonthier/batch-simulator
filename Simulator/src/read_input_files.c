@@ -1,5 +1,5 @@
 #include <main.h>
-
+#include <ctype.h>
 void read_cluster(char* input_node_file)
 {
 	node_list = (struct Node_List**) malloc(3*sizeof(struct Node_List));
@@ -26,210 +26,22 @@ void read_cluster(char* input_node_file)
     char s[100];
     char id[100];
     char memory[100];
-    char bandwidth[100];
+    //~ char bandwidth[100];
     char core[100];
-    char tdp[100];
-    char ncpu[100];
-    char idle_power[100];
-    char carbon_rate[100];
-    char carbon_intensity[100];
+    //~ char ncpu[100];
+    //~ char idle_power[100];
+    //~ char carbon_rate[100];
+    //~ char carbon_intensity[100];
     int index_node = 0;
-    int unique_id = 0;
+    //~ int unique_id = 0;
     
-    /** START ENERGY INCENTIVE **/
-#ifdef ENERGY_INCENTIVE
-	while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s, tdp, s, ncpu, s, idle_power, s, carbon_rate, s, carbon_intensity, s, s, s) == 22)
-	{
-		struct Node *new = (struct Node*) malloc(sizeof(struct Node));
-		new->unique_id = unique_id;
-		unique_id += 1;
-		new->memory = atoi(memory);
-		new->bandwidth = atof(bandwidth);
-		new->n_available_cores = 20;
-		new->tdp = atoi(tdp);
-		new->ncpu = atoi(ncpu);
-		new->idle_power = atof(idle_power);
-		new->carbon_rate = atof(carbon_rate);
-		new->carbon_intensity = atof(carbon_intensity);
-		new->ncores = atoi(core);
-		new->carbon_intensity_one_hour_slices = malloc(sizeof(double)*8760);
-		
-		/** Varying carbon intensity **/
-		/** Varying carbon intensity input being read and added to a tab. Input file depends on which machine it is. Each cell is a one hour slice. **/
-		char* input_varying_carbon_intensity = NULL;
-		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0) {
-			//~ printf("set_of_endpoints_1\n");
-			if (new->unique_id == 0) // Miso for theta
-			{
-				input_varying_carbon_intensity = "inputs/carbon/US-MIDW-MISO_2023_hourly.csv";
-			}
-			else if (new->unique_id == 1 || new->unique_id == 2) // PJM for desktop and midway
-			{
-				input_varying_carbon_intensity = "inputs/carbon/US-MIDA-PJM_2023_hourly.csv";
-			}
-			else // ERCO for faster
-			{
-				input_varying_carbon_intensity = "inputs/carbon/US-TEX-ERCO_2023_hourly.csv";
-			}
-		}
-		else { // Reduced carbon
-			//~ printf("set_of_endpoints_2\n");
-			if (new->unique_id == 0)
-			{
-				input_varying_carbon_intensity = "inputs/carbon/AU-SA_2023_hourly.csv";
-			}
-			else if (new->unique_id == 1)
-			{
-				input_varying_carbon_intensity = "inputs/carbon/CA-ON_2023_hourly.csv";
-			}
-			else if (new->unique_id == 2)
-			{
-				input_varying_carbon_intensity = "inputs/carbon/CA-ON_2023_hourly.csv";
-				//~ input_varying_carbon_intensity = "inputs/carbon/DK-BHM_2023_hourly.csv";
-			}
-			else // DK for faster
-			{
-				input_varying_carbon_intensity = "inputs/carbon/DK-BHM_2023_hourly.csv";
-			}
-		}
-		FILE *file_varying_carbon_intensity = fopen(input_varying_carbon_intensity, "r");
-		if (!file_varying_carbon_intensity)
-		{
-			perror("Failed to open file");
-			exit(1);
-		}
-		int MAX_LINE_LENGTH = 256;
-		char line[MAX_LINE_LENGTH];
-	    // Skip the header line
-		if (fgets(line, sizeof(line), file_varying_carbon_intensity) == NULL) {
-			perror("Failed to read header");
-			fclose(file_varying_carbon_intensity);
-			exit(1);
-		}
-		int count = 0;
-		int starting_index = 0;
-		if (strcmp(input_node_file, "inputs/clusters/set_of_endpoints_1") == 0) {
-			starting_index = 5;
-		} else { starting_index = 4; }
-		while (fgets(line, sizeof(line), file_varying_carbon_intensity)) {
-			char *token;
-			double direct = 0.0, lca = 0.0;
-			//~ printf("%s\n", line);
-			// Tokenize the line
-			int column_index = 0;
-			token = strtok(line, ",");
-			while (token) {
-				if (column_index == starting_index) {  // Column "Carbon Intensity gCO₂eq/kWh (direct)"
-					direct = atof(token);
-				} else if (column_index == starting_index+1) {  // Column "Carbon Intensity gCO₂eq/kWh (LCA)"
-					lca = atof(token);
-				}
-				token = strtok(NULL, ",");
-				column_index++;
-			}
-			//~ if (new->unique_id == 0) { printf("%f %f\n", direct, lca); }
-			// Store the result in the array
-			//~ new->carbon_intensity_one_hour_slices[count++] = direct + lca;
-			new->carbon_intensity_one_hour_slices[count] = lca;
-			//~ printf("ci of slice %d on endpoint %d is %f\n", count, new->unique_id, new->carbon_intensity_one_hour_slices[count]);
-			
-			count += 1;
-		}
-		fclose(file_varying_carbon_intensity);
-		
-		if (constraint_on_sizes != 0)
-		{
-			if (new->memory == 128)
-			{
-				number_node_size[0] += 1;
-				index_node = 0;
-			}
-			else if (new->memory == 256)
-			{
-				number_node_size[1] += 1;
-				index_node = 1;
-			}
-			else if (new->memory == 1024)
-			{
-				number_node_size[2] += 1;
-				index_node = 2;
-			}
-			else
-			{
-				perror("Error memory size in read_cluster"); fflush(stdout);
-				exit(EXIT_FAILURE);
-			}
-		}
-		new->index_node_list = index_node;
-			
-		new->data = malloc(sizeof(*new->data));
-		new->data->head = NULL;
-		new->data->tail = NULL;
-			
-		new->cores = (struct Core**) malloc(20*sizeof(struct Core));
-		for (int i = 0; i < 20; i++)
-		{
-			new->cores[i] = (struct Core*) malloc(sizeof(struct Core));
-			new->cores[i]->unique_id = i;
-			new->cores[i]->available_time = 0;
-			new->cores[i]->running_job = false;
-			new->cores[i]->running_job_end = -1;
-				
-			#ifdef PRINT_CLUSTER_USAGE
-			new->end_of_file_load = 0; /* Used to then get the total number of cores running a load */
-			#endif
-		}
-			
-		/* For conservative bf */
-		new->number_cores_in_a_hole = 0;
-		new->cores_in_a_hole = malloc(sizeof(*new->cores_in_a_hole));
-		new->cores_in_a_hole->head = NULL;
-		new->cores_in_a_hole->tail = NULL;
-		
-		#ifdef DATA_PERSISTENCE
-		new->data_occupation = 0; /* From 0 to 128 */
-		new->temp_data = malloc(sizeof(*new->temp_data));
-		new->temp_data->head = NULL;
-		new->temp_data->tail = NULL;
-		#endif
-			
-		#ifdef PRINT_CLUSTER_USAGE
-		new->nb_jobs_workload_1 = 0;
-		new->end_of_file_load = 0;
-		#endif
-
-		new->next = NULL;
-		if (new->memory == 128)
-		{
-			insert_tail_node_list(node_list[0], new);
-		}
-		else if (new->memory == 256)
-		{
-			insert_tail_node_list(node_list[1], new);
-		}
-		else if (new->memory == 1024)
-		{
-			insert_tail_node_list(node_list[2], new);
-		}
-		else
-		{
-			printf("Error cluster\n");
-			exit(EXIT_FAILURE);
-		}
-		total_number_nodes += 1;
-			
-		nb_cores += 20;
-	}
-    /** END ENERGY INCENTIVE **/
-#else
-		while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, bandwidth, s, core, s) == 10)
+		while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, memory, s, core, s, s, s, s, s) == 12)
 		{
 			struct Node *new = (struct Node*) malloc(sizeof(struct Node));
 			new->unique_id = atoi(id);
 			new->memory = atoi(memory);
-			new->bandwidth = atof(bandwidth);
-			new->n_available_cores = 20;
-			
+			new->n_available_cores = atoi(core);
+			printf("%d\n", new->n_available_cores);
 			if (constraint_on_sizes != 0)
 			{
 				if (new->memory == 128)
@@ -259,8 +71,8 @@ void read_cluster(char* input_node_file)
 			new->data->head = NULL;
 			new->data->tail = NULL;
 			
-			new->cores = (struct Core**) malloc(20*sizeof(struct Core));
-			for (int i = 0; i < 20; i++)
+			new->cores = (struct Core**) malloc(new->n_available_cores*sizeof(struct Core));
+			for (int i = 0; i < new->n_available_cores; i++)
 			{
 				new->cores[i] = (struct Core*) malloc(sizeof(struct Core));
 				new->cores[i]->unique_id = i;
@@ -311,11 +123,74 @@ void read_cluster(char* input_node_file)
 			}
 			total_number_nodes += 1;
 			
-			nb_cores += 20;
+			nb_cores += new->n_available_cores;
 		}
-#endif
  	fclose(f);
- 	//~ printf("Finished reading cluster.\n");
+}
+
+//~ void parse_node_list(char *input, int *output, int *count) {
+    //~ *count = 0;
+
+    //~ // Remove brackets by replacing them with space/null
+    //~ char *start = strchr(input, '[');
+    //~ char *end = strchr(input, ']');
+
+    //~ if (!start || !end || end <= start) {
+        //~ fprintf(stderr, "Invalid input format: %s\n", input);
+        //~ return;
+    //~ }
+
+    //~ *end = '\0';  // truncate the string at ']'
+    //~ start++;      // move past '['
+	//~ int sum = 0;
+    //~ // Tokenize the comma-separated values
+    //~ char *token = strtok(start, ",");
+    //~ while (token != NULL) {
+		//~ printf("here\n");
+		//~ printf("%c\n", *token);
+        //~ output[*count] = atoi(token);
+        
+        //~ printf("here\n");
+        //~ (*count)++;
+        //~ printf("here\n");
+        //~ token = strtok(NULL, ",");
+    //~ }
+    //~ exit(1);
+//~ }
+
+void parse_node_list(const char *input, int *output, int *count) {
+    *count = 0;
+    
+    const char *ptr = input;
+
+    // Skip until '['
+    while (*ptr && *ptr != '[') ptr++;
+    if (*ptr != '[') return;
+    ptr++;  // skip '['
+
+    while (*ptr && *ptr != ']') {
+        // Skip whitespace
+        while (isspace(*ptr)) ptr++;
+
+        // Parse integer manually
+        int value = 0;
+        int matched = 0;
+        while (isdigit(*ptr)) {
+            value = value * 10 + (*ptr - '0');
+            ptr++;
+            matched = 1;
+        }
+        //~ printf("value: %d\n", value);
+
+        if (matched) {
+            output[*count] = value;
+            (*count)++;
+        }
+
+        // Skip comma if any
+        while (*ptr == ',' || isspace(*ptr)) ptr++;
+    }
+    //~ exit(1);
 }
 
 void read_workload(char* input_job_file, int constraint_on_sizes)
@@ -345,6 +220,12 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 	}
 	
 	int index_node = 0;
+	char runtime[100];
+	char nodes[100];
+	char gpu[100];
+	char power[100];
+	char shared[100];
+	char function_name[100];
 	char s[100];
     char id[100];
     char subtime[100];
@@ -356,16 +237,12 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
     char workload[100];
     char start_time_from_history[100];
     char start_node_from_history[100];
-    //~ char* duration_on_machine = malloc(100*sizeof(char)
     
     int user_id = 0;
-    char* current_user = malloc(sizeof(char)*9);
-    char* last_user = malloc(sizeof(char)*9);
-    //~ current_user = "";
+    //~ char* current_user = malloc(sizeof(char)*9);
+    //~ char* last_user = malloc(sizeof(char)*9);
     int unique_id = 0;
-    //~ last_user = "";
-    //~ int total_duration_on_midway = 0;
-    //~ int divide = 0;
+
     /** START ENERGY INCENTIVE **/
 #ifdef ENERGY_INCENTIVE
     while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
@@ -484,9 +361,10 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->next = NULL;
 		
 		/* Add in job list or job to start from history */
-		if (new->workload != -2)
+		if (new->workload != -2){
+
 		{
-			insert_tail_job_list(job_list, new);
+			inserStack Smashing here is actually caused due to a protection mechanism used by gcc to detect buffer overflow errors. For example in the following snippet:t_tail_job_list(job_list, new);
 		}
 		else
 		{			
@@ -507,7 +385,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 	
     /** END ENERGY INCENTIVE **/
 #else
-    while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, delay, s, walltime, s, cores, s, current_user, s, data, s, data_size, s, workload, s, start_time_from_history, s, start_node_from_history, s) == 24)
+    while (fscanf(f, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s", s, s, id, s, subtime, s, walltime, s, delay, s, nodes, s, cores, s, gpu, s, power, s, shared, s, s, s, start_time_from_history, s, start_node_from_history, s, function_name, s) == 28)
 	{
 		total_number_jobs += 1;
 		
@@ -515,52 +393,30 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->unique_id = atoi(id);
 		new->subtime = atoi(subtime);
 		new->delay = atoi(delay);	
+		new->power = atof(power);	
 		new->walltime = atoi(walltime);
-		new->cores = atoi(cores);
-		//~ /** For mixed decreasing strategy **/
-		new->data = atoi(data);
-		new->data_size = atof(data_size);
-		//~ /** For mixed decreasing strategy **/
-		new->workload = atoi(workload);
+		new->cores = atoi(nodes); /* I switch nodes and cores here because the bf work with cores. Give the same thing in the end */
 		new->start_time_from_history = atoi(start_time_from_history);
-		new->node_from_history = atoi(start_node_from_history);
-		
-		//~ printf("%s\n", current_user); fflush(stdout);
-		if (strcmp(current_user, last_user) == 0)
-		{
-			new->user = user_id;
-		}
-		else
-		{
-			strcpy(last_user, current_user);
-			user_id++;
-			new->user = user_id;
-		}
-		
-		//~ /** For mixed decreasing strategy **/
-		//~ /* Need to create the data if it does not exist. 
-		 //~ * I don't have to look at everything because similar data are always consecutive. */
-		//~ if (d->unique_id == atoi(data)) /* The data already exist. */
-		//~ {
-			//~ d->number_of_task_using_it_not_running += 1;
+		new->node_from_history = malloc(sizeof(int)*new->cores);
+		int actual_node_count = 0;
+		//~ printf("Job id: %d\n", new->unique_id);
+		//~ printf("start_node_from_history: %s\n", start_node_from_history);
+		parse_node_list(start_node_from_history, new->node_from_history, &actual_node_count);
+		//~ printf("function_name: %d\n", atoi(function_name));
+		//~ for (int i = 0; i < actual_node_count; i++) {
+			//~ printf("%d\n", new->node_from_history[i]);
 		//~ }
-		//~ else /* Need to create the data */
+
+		//~ if (strcmp(current_user, last_user) == 0)
 		//~ {
-			//~ struct Data* d = (struct Data*) malloc(sizeof(struct Data));
-			//~ d->next = NULL;
-			//~ d->unique_id = atoi(data);
-			//~ d->start_time = -1;
-			//~ d->end_time = -1;
-			//~ d->intervals = (struct Interval_List*) malloc(sizeof(struct Interval_List));
-			//~ d->intervals->head = NULL;
-			//~ d->intervals->tail = NULL;
-			//~ d->size = atof(data_size);
-			//~ d->number_of_task_using_it_not_running = 1;
-			//~ insert_tail_data_list(data_list, d);	
+			//~ new->user = user_id;
 		//~ }
-		//~ new->data = d;
-		//~ /** For mixed decreasing strategy **/
-		
+		//~ else
+		//~ {
+			//~ strcpy(last_user, current_user);
+			//~ user_id++;
+			//~ new->user = user_id;
+		//~ }
 		/* Get index_node */
 		if (constraint_on_sizes != 0)
 		{
@@ -601,6 +457,7 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		new->node_used = NULL;
 		
 		/** START ENERGY INCENTIVE **/
+		#ifdef ENERGY_INCENTIVE
 		if (strcmp(current_user, "credit") == 0)
 		{
 			new->user_behavior = 0;
@@ -621,20 +478,11 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		{
 			new->user_behavior = 0;
 		}
+		#endif
 		/** END ENERGY INCENTIVE **/
 		
-		/* OLD */
-		//~ new->cores_used = malloc(new->cores*sizeof(int));
-		/* NEW */
 		new->cores_used = (int*) malloc(new->cores*sizeof(int));
-		
-		//~ new->cores_used = malloc(new->cores*sizeof(struct Core*));
-		//~ for (int i = 0; i < new->cores; i++)
-		//~ {
-			//~ new->cores_used[i] = malloc(sizeof(struct Core*));
-		//~ }
-		//~ printf("Mallocs ok.\n"); fflush(stdout);
-		
+				
 		new->transfer_time = 0;
 		new->waiting_for_a_load_time = 0;
 		new->next = NULL;
@@ -642,22 +490,19 @@ void read_workload(char* input_job_file, int constraint_on_sizes)
 		/* Add in job list or job to start from history */
 		if (new->workload != -2)
 		{
-			//~ printf("Insert.\n"); fflush(stdout);
 			insert_tail_job_list(job_list, new);
-			//~ printf("Insert Ok.\n"); fflush(stdout);
 		}
 		else
 		{			
 			insert_job_in_sorted_list(job_list_to_start_from_history, new);
 		}
-		//~ printf("Added job %d.\n", new->unique_id); fflush(stdout);
 	}
 #endif
-	fclose(f);
-	
-	free(current_user);
-	free(last_user);
-	//~ printf("Finished reading workload.\n");
+	fclose(f);	
+	//~ free(current_user);
+
+	//~ free(last_user);
+	printf("Finished reading workload.\n"); fflush(stdout);
 }
 
 int get_nb_job_to_evaluate(struct Job* l)

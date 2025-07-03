@@ -136,11 +136,10 @@ struct Job {
     int subtime;
     int delay;
     int walltime;
+    float power;
     int cores;
-    //~ /** For mixed decreasing strategy **/
     int data;
     float data_size;
-    //~ /** For mixed decreasing strategy **/
     int index_node_list;
     int start_time;
     int end_time;
@@ -151,10 +150,7 @@ struct Job {
     int waiting_for_a_load_time;
     int workload;
     int start_time_from_history;
-    int node_from_history;
-    //~ /** For mixed decreasing strategy **/
-    //~ struct Data* data;
-    //~ /** For mixed decreasing strategy **/
+    int* node_from_history;
     
     #ifdef PLOT_STATS /*pour plot les stats sur la dernière décision prise pour un job */
     int last_choosen_method;
@@ -198,18 +194,6 @@ struct Node {
     #endif
     
     int end_of_file_load;
-
-    /** START ENERGY INCENTIVE **/
-    #ifdef ENERGY_INCENTIVE
-    int tdp;
-    int ncpu;
-    double idle_power;
-    double carbon_rate;
-    double carbon_intensity;
-    double* carbon_intensity_one_hour_slices;
-    int ncores;
-    #endif
-    /** END ENERGY INCENTIVE **/
 };
 
 struct Core_in_a_hole_List {

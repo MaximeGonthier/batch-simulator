@@ -26,11 +26,7 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 
 	struct Job* j = j2;
 	while (j != NULL)
-	{
-		/* Insert in scheduled_job_list */
-		//~ copy_job_and_insert_tail_job_list(scheduled_job_list, j);
-		//~ insert_tail_job_list(scheduled_job_list, j);
-		
+	{		
 		int time_since_start = t - j->start_time_from_history;
 		j->delay -= time_since_start;
 		if(j->delay <= 0)
@@ -44,7 +40,8 @@ void get_state_before_day_0_scheduler(struct Job* j2, struct Node_List** n, int 
 		}
 		
 		struct Node *choosen_node = (struct Node*) malloc(sizeof(struct Node));
-		int index_node = (j->node_from_history - 1)%(nb_node[0] + nb_node[1] + nb_node[2]);
+		//~ int index_node = (j->node_from_history - 1)%(nb_node[0] + nb_node[1] + nb_node[2]);
+		int index_node = (j->node_from_history[0] - 1)%(nb_node[0] + nb_node[1] + nb_node[2]); // Need to fix this for parralel jobs
 		if (index_node >= nb_node[0])
 		{
 			if (index_node >= nb_node[0] + nb_node[1])
@@ -141,47 +138,6 @@ void fcfs_scheduler(struct Job* head_job, struct Node_List** head_node, int t, b
 		}
 	}
 }
-
-//~ void fcfs_with_a_score_mixed_strategy_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int multiplier_nb_copy)
-//~ {
-	//~ #ifdef PRINT
-	//~ printf("Start fcfs mixed scheduler.\n");
-	//~ #endif
-		
-	//~ int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
-
-	//~ struct Job* j = head_job;
-	//~ while (j != NULL)
-	//~ {
-		//~ if (nb_non_available_cores < nb_cores)
-		//~ {
-			//~ #ifdef PRINT
-			//~ printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
-			//~ #endif
-			
-			//~ nb_non_available_cores = schedule_job_on_earliest_available_cores(j, head_node, t, nb_non_available_cores, use_bigger_nodes);
-			
-			//~ insert_next_time_in_sorted_list(start_times, j->start_time);
-			
-			//~ j = j->next;
-		//~ }
-		//~ else
-		//~ {
-			//~ #ifdef PRINT
-			//~ printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
-			//~ #endif
-			
-			//~ /* Need to put -1 at remaining start times of jobs to avoid error in n_vailable_cores. */
-			//~ while (j != NULL)
-			//~ {
-				//~ j->start_time = -1;
-				//~ j = j->next;
-			//~ }
-			
-			//~ break;
-		//~ }
-	//~ }
-//~ }
 
 /**
  * Schedule normalement.
@@ -287,10 +243,8 @@ void fcfs_conservativebf_scheduler(struct Job* head_job, struct Node_List** head
 
 void fcfs_with_a_score_conservativebf_scheduler(struct Job* head_job, struct Node_List** head_node, int t, int multiplier_file_to_load, int multiplier_file_evicted, int adaptative_multiplier, int start_immediately_if_EAT_is_t, int backfill_mode, int mixed_strategy)
 {
-	//~ int nb_cores_rescheduled = 0; /* 486*20 = 9720 */
 	int nb_non_available_cores = get_nb_non_available_cores(node_list, t);
 	int nb_non_available_cores_at_time_t = global_nb_non_available_cores_at_time_t;
-	//~ biggest_hole = 0;
 	
 	#ifdef PRINT
 	printf("There are %d/%d available cores.\n", nb_cores - nb_non_available_cores, nb_cores);
