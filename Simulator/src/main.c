@@ -1099,7 +1099,7 @@ int main(int argc, char *argv[])
 				
 				if (tab_function_machine_energy[job_pointer->unique_id][selected_endpoint] < 0)
 				{
-					printf("WTF energy %f job %d endpoint %d\n", tab_function_machine_energy[job_pointer->unique_id][selected_endpoint], job_pointer->unique_id, selected_endpoint);
+					printf("energy %f job %d endpoint %d\n", tab_function_machine_energy[job_pointer->unique_id][selected_endpoint], job_pointer->unique_id, selected_endpoint);
 					exit(1);
 				}
 				
